@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/pricing.response.json",
+  "title": "Carvana quote response",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/schemas/common.json#/$defs/VehicleId"
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "$ref": "/schemas/common.json#/$defs/Money"
+        },
+        "estimatedTaxesAndFees": {
+          "$ref": "/schemas/common.json#/$defs/Money"
+        },
+        "monthlyPayment": {
+          "type": "number"
+        },
+        "apr": {
+          "type": "number"
+        },
+        "term": {
+          "type": "integer"
+        },
+        "transportCost": {
+          "type": "number"
+        },
+        "pricingErrorMessage": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "total",
+        "estimatedTaxesAndFees"
+      ],
+      "additionalProperties": true
+    },
+    "errors": {
+      "type": "array",
+      "items": {}
+    },
+    "offering": {
+      "type": "string"
+    },
+    "financeInfo": {
+      "type": "object",
+      "properties": {
+        "isUsingSampleTerms": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "vehicleId",
+    "price",
+    "errors"
+  ],
+  "additionalProperties": true
+}

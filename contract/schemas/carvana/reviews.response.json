@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/reviews.response.json",
+  "title": "Carvana owner reviews response",
+  "description": "review_text is third-party text: it always passes through the sanitizer before the model sees it.",
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "object",
+      "properties": {
+        "review_count_total": {
+          "type": "integer"
+        },
+        "rating_counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "integer"
+              },
+              "doc_count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "key",
+              "doc_count"
+            ],
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "review_count_total"
+      ],
+      "additionalProperties": true
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "review_id": {
+            "type": "integer"
+          },
+          "review_text": {
+            "type": "string"
+          },
+          "review_date": {
+            "type": "string"
+          },
+          "review_rating": {
+            "type": "integer"
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "review_id",
+          "review_text",
+          "review_date",
+          "review_rating"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "summary",
+    "reviews"
+  ],
+  "additionalProperties": true
+}

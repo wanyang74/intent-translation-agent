@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/get_owner_reviews.output.json",
+  "title": "get_owner_reviews: output",
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ratingCounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stars": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "stars",
+          "count"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "/schemas/common.json#/$defs/Fenced"
+          },
+          "rating": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "rating",
+          "date"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 20
+    }
+  },
+  "required": [
+    "count",
+    "reviews"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "count": 308,
+      "ratingCounts": [
+        {
+          "stars": 5,
+          "count": 727
+        }
+      ],
+      "reviews": [
+        {
+          "text": "<untrusted source=\"carvana-reviews\">Comfortable to drive, constant over-the-air updates.</untrusted>",
+          "rating": 5,
+          "date": "2025-12-01"
+        }
+      ]
+    }
+  ]
+}

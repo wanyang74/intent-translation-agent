@@ -1,0 +1,13 @@
+{
+  "name": "intent-agent-phase0",
+  "private": true,
+  "type": "module",
+  "description": "Phase 0 assumption checks: split loop, script sandbox, engine portability",
+  "scripts": {
+    "test": "node --test",
+    "engines": "node engine/run-engines.mjs"
+  },
+  "dependencies": {
+    "quickjs-emscripten": "0.32.0"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "@intent/evals",
+  "private": true,
+  "type": "module",
+  "description": "Snapshot evals for the agent's answers. Built from phase 6."
+}

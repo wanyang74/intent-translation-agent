@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/facets.request.json",
+  "title": "Carvana facets request (POST /merch/search/api/v2/search/facets)",
+  "type": "object",
+  "properties": {
+    "dealershipId": {
+      "type": "null"
+    },
+    "filters": {
+      "$ref": "/schemas/common.json#/$defs/Filters"
+    },
+    "pagination": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "const": 24
+        }
+      },
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "additionalProperties": false
+    },
+    "requestedFeatures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "sortBy": {
+      "type": "string",
+      "examples": [
+        "MostPopular"
+      ]
+    },
+    "zip5": {
+      "$ref": "/schemas/common.json#/$defs/Zip5"
+    },
+    "browserCookieId": {
+      "type": "string"
+    },
+    "analyticsData": {
+      "$ref": "/schemas/common.json#/$defs/AnalyticsData"
+    }
+  },
+  "required": [
+    "filters",
+    "pagination",
+    "requestedFeatures",
+    "sortBy",
+    "zip5"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla",
+            "parentModels": [
+              {
+                "name": "Model Y"
+              }
+            ]
+          }
+        ],
+        "driveTypes": [
+          "Awd"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering"
+      ],
+      "sortBy": "MostPopular",
+      "zip5": "94402"
+    }
+  ]
+}

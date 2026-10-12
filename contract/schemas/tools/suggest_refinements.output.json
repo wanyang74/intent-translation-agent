@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/suggest_refinements.output.json",
+  "title": "suggest_refinements: output",
+  "type": "object",
+  "properties": {
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "suggestionId": {
+            "$ref": "/schemas/common.json#/$defs/SuggestionId"
+          },
+          "label": {
+            "type": "string"
+          },
+          "matches": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "suggestionId",
+          "label",
+          "matches"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "suggestions"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "suggestions": [
+        {
+          "suggestionId": "4ebc7c31-d7a5-4b83-982e-94675481bb37",
+          "label": "2023 or newer",
+          "matches": 780
+        }
+      ]
+    }
+  ]
+}

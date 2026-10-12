@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/find_similar.input.json",
+  "title": "find_similar: input",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/schemas/common.json#/$defs/VehicleId"
+    },
+    "zip5": {
+      "$ref": "/schemas/common.json#/$defs/Zip5"
+    }
+  },
+  "required": [
+    "vehicleId",
+    "zip5"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "vehicleId": 4812031,
+      "zip5": "94402"
+    }
+  ]
+}

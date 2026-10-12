@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/search.response.json",
+  "title": "Carvana search response",
+  "type": "object",
+  "properties": {
+    "inventory": {
+      "type": "object",
+      "properties": {
+        "vehicles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "vehicleId": {
+                "$ref": "/schemas/common.json#/$defs/VehicleId"
+              },
+              "stockNumber": {
+                "$ref": "/schemas/common.json#/$defs/StockNumber"
+              },
+              "year": {
+                "type": "integer",
+                "minimum": 1990,
+                "maximum": 2100
+              },
+              "make": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "parentModel": {
+                "type": "string"
+              },
+              "trim": {
+                "type": "string"
+              },
+              "kbbTrim": {
+                "type": "string"
+              },
+              "mileage": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "color": {
+                "type": "string"
+              },
+              "interiorColor": {
+                "type": "string"
+              },
+              "locationId": {
+                "type": "integer"
+              },
+              "vehicleInventoryType": {
+                "type": "integer"
+              },
+              "vdpSlug": {
+                "type": "string"
+              },
+              "isPurchasePending": {
+                "type": "boolean"
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "total": {
+                    "$ref": "/schemas/common.json#/$defs/Money"
+                  },
+                  "estimatedTaxesAndFees": {
+                    "$ref": "/schemas/common.json#/$defs/Money"
+                  },
+                  "monthlyPayment": {
+                    "type": "number"
+                  },
+                  "apr": {
+                    "type": "number"
+                  },
+                  "term": {
+                    "type": "integer"
+                  },
+                  "transportCost": {
+                    "type": "number"
+                  },
+                  "pricingErrorMessage": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "total",
+                  "estimatedTaxesAndFees"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "vehicleId",
+              "stockNumber",
+              "year",
+              "make",
+              "model",
+              "trim",
+              "mileage",
+              "locationId",
+              "price",
+              "vdpSlug"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "pagination": {
+          "type": "object",
+          "properties": {
+            "currentPage": {
+              "type": "integer"
+            },
+            "pageSize": {
+              "type": "integer"
+            },
+            "totalMatchedInventory": {
+              "type": "integer"
+            },
+            "totalMatchedPages": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "currentPage",
+            "pageSize",
+            "totalMatchedInventory",
+            "totalMatchedPages"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "vehicles",
+        "pagination"
+      ],
+      "additionalProperties": true
+    },
+    "searchRequestId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "inventory",
+    "searchRequestId"
+  ],
+  "additionalProperties": true
+}

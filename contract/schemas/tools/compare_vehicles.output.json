@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/compare_vehicles.output.json",
+  "title": "compare_vehicles: output",
+  "type": "object",
+  "properties": {
+    "cars": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/tools/get_vehicle_quote.output.json"
+      },
+      "minItems": 2,
+      "maxItems": 4
+    }
+  },
+  "required": [
+    "cars"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "cars": [
+        {
+          "vehicleId": 4812031,
+          "price": 35590,
+          "estimatedTaxesAndFees": 3837,
+          "estimatedTotal": 39427,
+          "option": "delivery",
+          "when": "Saturday",
+          "gapWaiver": {
+            "available": true,
+            "price": 1195
+          }
+        },
+        {
+          "vehicleId": 4773662,
+          "price": 34590,
+          "estimatedTaxesAndFees": 3736,
+          "estimatedTotal": 38326,
+          "option": "delivery",
+          "when": "tomorrow",
+          "gapWaiver": {
+            "available": true,
+            "price": 1195
+          }
+        }
+      ]
+    }
+  ]
+}

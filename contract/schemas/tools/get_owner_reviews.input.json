@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/get_owner_reviews.input.json",
+  "title": "get_owner_reviews: input",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/schemas/common.json#/$defs/VehicleId"
+    }
+  },
+  "required": [
+    "vehicleId"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "vehicleId": 4812031
+    }
+  ]
+}

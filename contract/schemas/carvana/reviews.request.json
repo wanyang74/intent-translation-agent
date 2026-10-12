@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/reviews.request.json",
+  "title": "Carvana owner reviews request (POST /merch/reviews/api/review/sv)",
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "trim": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "from",
+    "size",
+    "make",
+    "model",
+    "trim",
+    "year"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "from": 0,
+      "make": "Tesla",
+      "model": "Model Y",
+      "size": 20,
+      "trim": "Long Range Sport Utility 4D",
+      "year": 2023
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/search_vehicles.input.json",
+  "title": "search_vehicles: input",
+  "type": "object",
+  "properties": {
+    "zip5": {
+      "$ref": "/schemas/common.json#/$defs/Zip5"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "trims": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "year_min": {
+      "type": "integer"
+    },
+    "year_max": {
+      "type": "integer"
+    },
+    "mileage_max": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "price_max": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "interior_colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "drive_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "body_styles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tag_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "free_delivery": {
+      "type": "boolean"
+    },
+    "sort": {
+      "type": "string",
+      "default": "MostPopular"
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    }
+  },
+  "required": [
+    "zip5"
+  ],
+  "additionalProperties": false,
+  "description": "Filter values must come from the facets response; the boundary checks refuse anything else.",
+  "examples": [
+    {
+      "zip5": "94402",
+      "make": "Tesla",
+      "model": "Model Y",
+      "drive_types": [
+        "Awd"
+      ],
+      "price_max": 40000
+    }
+  ]
+}

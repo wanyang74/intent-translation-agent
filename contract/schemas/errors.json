@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/errors.json",
+  "title": "Tool error, as the model receives it",
+  "description": "Errors are instructions the model can act on, never bare codes.",
+  "type": "object",
+  "properties": {
+    "code": {
+      "enum": [
+        "unknown_id",
+        "invalid_filter_value",
+        "no_results",
+        "route_other_zip",
+        "route_missing",
+        "pricing_error",
+        "not_found",
+        "format_changed",
+        "budget_reached",
+        "rate_limited",
+        "tool_disabled",
+        "upstream_error"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retryable": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "code",
+    "message",
+    "retryable"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "code": "unknown_id",
+      "message": "This ID wasn't returned in this session. Use an ID from the search results.",
+      "retryable": false
+    }
+  ]
+}

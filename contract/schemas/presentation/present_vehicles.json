@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_vehicles.json",
+  "title": "present_vehicles: an ordered list of vehicle cards",
+  "type": "object",
+  "properties": {
+    "heading": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/common.json#/$defs/VehicleId"
+      },
+      "minItems": 1,
+      "maxItems": 24,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "rows"
+  ],
+  "additionalProperties": false,
+  "description": "IDs and layout only. Execute fills in every displayed field from this session's tool results.",
+  "examples": [
+    {
+      "heading": "Arrives by Saturday",
+      "rows": [
+        4773662,
+        4812031
+      ]
+    }
+  ]
+}

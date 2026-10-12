@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/find_similar.output.json",
+  "title": "find_similar: output",
+  "$ref": "/schemas/tools/search_vehicles.output.json",
+  "examples": [
+    {
+      "vehicles": [
+        {
+          "vehicleId": 4812031,
+          "stockNumber": 3006794022,
+          "year": 2023,
+          "make": "Tesla",
+          "model": "Model Y",
+          "trim": "Long Range",
+          "mileage": 41533,
+          "color": "Gray",
+          "price": 35590,
+          "estimatedTaxesAndFees": 3837,
+          "estimatedTotal": 39427,
+          "locationId": 300,
+          "deepLink": "https://www.carvana.com/vehicle/4812031"
+        }
+      ],
+      "totalMatches": 694,
+      "totalPages": 31,
+      "page": 1,
+      "searchLink": "https://www.carvana.com/cars/filters?cvnaid=eyJmaWx0ZXJzIjp7Im1ha2VzIjpbeyJuYW1lIjoiVGVzbGEiLCJwYXJlbnRNb2RlbHMiOlt7Im5hbWUiOiJNb2RlbCBZIn1dfV0sImRyaXZlVHlwZXMiOlsiQXdkIl19fQ==",
+      "nextStep": "To check delivery dates, call get_delivery_dates once with all the vehicle IDs."
+    }
+  ]
+}

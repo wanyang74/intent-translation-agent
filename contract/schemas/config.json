@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/config.json",
+  "title": "Remote config: off switches and budgets",
+  "description": "Signed; core.js checks the signature before using it (signing scheme to be decided in phase 9).",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "disabledTools": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "search_vehicles",
+          "get_delivery_dates",
+          "suggest_refinements",
+          "get_vehicle_quote",
+          "compare_vehicles",
+          "get_owner_reviews",
+          "vehicle_details",
+          "find_similar"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "disabledSkills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {
+        "perTask": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "perSession": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "perDay": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [
+        "perTask",
+        "perSession",
+        "perDay"
+      ],
+      "additionalProperties": false
+    },
+    "rateLimitPerSecond": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 2
+    },
+    "signature": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "version",
+    "issuedAt",
+    "disabledTools",
+    "disabledSkills",
+    "budgets",
+    "rateLimitPerSecond",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "version": "2026-10-12.1",
+      "issuedAt": "2026-10-12T00:00:00Z",
+      "disabledTools": [],
+      "disabledSkills": [],
+      "budgets": {
+        "perTask": 60,
+        "perSession": null,
+        "perDay": null
+      },
+      "rateLimitPerSecond": 1,
+      "signature": "unsigned-example"
+    }
+  ]
+}

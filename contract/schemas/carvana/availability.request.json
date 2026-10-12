@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/carvana/availability.request.json",
+  "title": "Carvana bulk availability request (POST /merch/buffering/api/v1/soonestavailabilitybulk)",
+  "description": "The frontend sends two shapes. We send only the search-page shape, which phase 0 verified live; the vehicle-page shape is documented so recorded traffic still validates. Headers clientid, browsercookieid and correlationid are sent as the frontend does, with fresh IDs (not tested without them).",
+  "$defs": {
+    "SearchPageShape": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "vehicles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "vehicleId": {
+                "$ref": "/schemas/common.json#/$defs/VehicleId"
+              },
+              "vehicleLocationId": {
+                "type": "integer"
+              },
+              "vehicleInventoryType": {
+                "enum": [
+                  "Core",
+                  "Unknown"
+                ],
+                "description": "Mapped from the search response's vehicleInventoryType: 1 -> Core, 2 -> Unknown (seen on an on-demand car)."
+              },
+              "vehicleSaleStatus": {
+                "const": "Available"
+              }
+            },
+            "required": [
+              "vehicleId",
+              "vehicleLocationId",
+              "vehicleInventoryType",
+              "vehicleSaleStatus"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "zipCode": {
+          "$ref": "/schemas/common.json#/$defs/Zip5"
+        }
+      },
+      "required": [
+        "userId",
+        "vehicles",
+        "zipCode"
+      ],
+      "additionalProperties": false,
+      "description": "Sent with header clientid: srp_ui. The only shape we send."
+    },
+    "VehiclePageShape": {
+      "type": "object",
+      "properties": {
+        "vehicles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "vehicleId": {
+                "$ref": "/schemas/common.json#/$defs/VehicleId"
+              },
+              "vehicleLocationId": {
+                "type": "integer"
+              },
+              "VehicleLocationId": {
+                "type": "integer"
+              },
+              "vehicleInventoryType": {
+                "enum": [
+                  "Core",
+                  "Unknown"
+                ],
+                "description": "Mapped from the search response's vehicleInventoryType: 1 -> Core, 2 -> Unknown (seen on an on-demand car)."
+              }
+            },
+            "required": [
+              "vehicleId",
+              "vehicleInventoryType"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "zipCode": {
+          "$ref": "/schemas/common.json#/$defs/Zip5"
+        }
+      },
+      "required": [
+        "vehicles",
+        "zipCode"
+      ],
+      "additionalProperties": false,
+      "description": "Sent by the vehicle page with header clientid: vdp_ui: no userId, no sale status, and once a capitalized VehicleLocationId. Documented only; we don't send it."
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/SearchPageShape"
+    },
+    {
+      "$ref": "#/$defs/VehiclePageShape"
+    }
+  ],
+  "examples": [
+    {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available",
+          "vehicleId": 4812031
+        }
+      ],
+      "zipCode": "94402"
+    }
+  ]
+}

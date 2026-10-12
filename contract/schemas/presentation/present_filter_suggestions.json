@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_filter_suggestions.json",
+  "title": "present_filter_suggestions: filter chips",
+  "type": "object",
+  "properties": {
+    "suggestionIds": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/common.json#/$defs/SuggestionId"
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "suggestionIds"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "suggestionIds": [
+        "4ebc7c31-d7a5-4b83-982e-94675481bb37"
+      ]
+    }
+  ]
+}

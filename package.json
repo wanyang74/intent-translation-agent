@@ -1,0 +1,19 @@
+{
+  "name": "intent-translation-agent",
+  "private": true,
+  "type": "module",
+  "description": "Intent Agent: an agent layer for consumer websites and apps. Design doc: intent-agent-mini.html",
+  "workspaces": ["contract", "core", "brain", "evals"],
+  "scripts": {
+    "check:contract": "npm run check -w @intent/contract"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

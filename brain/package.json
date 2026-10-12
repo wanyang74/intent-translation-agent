@@ -1,0 +1,6 @@
+{
+  "name": "@intent/brain",
+  "private": true,
+  "type": "module",
+  "description": "The agentic brain: the server-side agent loop, prompt and skills, model calls and quotas. Built from phase 4."
+}

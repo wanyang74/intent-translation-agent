@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/tools/get_vehicle_quote.input.json",
+  "title": "get_vehicle_quote: input",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/schemas/common.json#/$defs/VehicleId"
+    },
+    "zip5": {
+      "$ref": "/schemas/common.json#/$defs/Zip5"
+    },
+    "option": {
+      "enum": [
+        "delivery",
+        "pickup"
+      ],
+      "default": "delivery"
+    }
+  },
+  "required": [
+    "vehicleId",
+    "zip5"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "vehicleId": 4812031,
+      "zip5": "94402",
+      "option": "delivery"
+    }
+  ]
+}

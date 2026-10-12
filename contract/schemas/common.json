@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/common.json",
+  "title": "Shared definitions",
+  "$defs": {
+    "VehicleId": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Carvana's vehicle ID. Tools and presentation calls accept only IDs a tool returned in this session."
+    },
+    "StockNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "RouteId": {
+      "type": "string",
+      "pattern": "^H4sI[A-Za-z0-9_-]+={0,2}$",
+      "description": "Opaque and server-issued. Gzip-compressed, base64url-encoded JSON of servicing location and zip code. Never built by us."
+    },
+    "SuggestionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Zip5": {
+      "type": "string",
+      "pattern": "^[0-9]{5}$",
+      "description": "Always passed explicitly: from the page context or the user, never the browser's location."
+    },
+    "UsState": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "Money": {
+      "type": "number",
+      "minimum": 0
+    },
+    "CallId": {
+      "type": "string",
+      "pattern": "^call_[A-Za-z0-9_-]+$"
+    },
+    "TraceId": {
+      "type": "string",
+      "minLength": 8
+    },
+    "SessionId": {
+      "type": "string",
+      "minLength": 8
+    },
+    "Range": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "Make": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "parentModels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "trims": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "Filters": {
+      "type": "object",
+      "properties": {
+        "makes": {
+          "type": "array",
+          "items": {
+            "$ref": "/schemas/common.json#/$defs/Make"
+          }
+        },
+        "year": {
+          "$ref": "/schemas/common.json#/$defs/Range"
+        },
+        "mileage": {
+          "$ref": "/schemas/common.json#/$defs/Range"
+        },
+        "price": {
+          "$ref": "/schemas/common.json#/$defs/Range"
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "interiorColors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "driveTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bodyStyles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transmissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fuelTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tagIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cvnaFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isFreeDelivery": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Carvana search filters. Only keys the frontend produces: seen in requests or in Carvana's own filter suggestions, plus facet groups. Values come from the facets response."
+    },
+    "AnalyticsData": {
+      "type": "object",
+      "description": "The frontend's tracking block. We send only the fields an endpoint requires, with fresh IDs (decision D4).",
+      "properties": {
+        "clientId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "Fenced": {
+      "type": "string",
+      "pattern": "^<untrusted source=\"[a-z-]+\">[\\s\\S]*</untrusted>$",
+      "description": "Third-party text after the sanitizer: control characters removed, length capped, wrapped in a labeled fence."
+    }
+  }
+}
