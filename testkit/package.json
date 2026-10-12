@@ -1,0 +1,10 @@
+{
+  "name": "@intent/testkit",
+  "private": true,
+  "type": "module",
+  "description": "Fakes for testing each module on its own: the Carvana fixture library and FakeHost now; FakeModel, FakeBrain, FakeClient and FakeSurface in later phases",
+  "scripts": {
+    "fixtures": "node scripts/build-fixtures.ts",
+    "test": "node --test test/*.test.ts"
+  }
+}

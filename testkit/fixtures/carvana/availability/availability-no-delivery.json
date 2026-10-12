@@ -1,0 +1,74 @@
+{
+  "id": "availability-no-delivery",
+  "endpoint": "availability",
+  "kind": "synthetic",
+  "source": "edited copy of availability-01",
+  "description": "1 car whose delivery option failed (pickup still available); the failure shape is a guess",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "browsercookieid": "00000000-0000-4000-8000-000000000001",
+      "clientid": "srp_ui",
+      "content-type": "application/json",
+      "correlationid": "00000000-0000-4000-8000-000000000005"
+    },
+    "body": {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleId": 4811903,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 356,
+          "vehicleSaleStatus": "Available"
+        }
+      ],
+      "zipCode": "94402"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "content": [
+        {
+          "vehicleId": 4811903,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": null,
+            "status": "Failed",
+            "errorMessage": "No delivery route available"
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9942,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        }
+      ],
+      "status": "Succeeded",
+      "errorMessage": ""
+    }
+  }
+}

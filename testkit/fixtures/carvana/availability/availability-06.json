@@ -1,0 +1,1128 @@
+{
+  "id": "availability-06",
+  "endpoint": "availability",
+  "kind": "recorded",
+  "source": "recording 2026-10-08, HAR entry 94",
+  "description": "21 cars, search-page shape",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "browsercookieid": "00000000-0000-4000-8000-000000000001",
+      "clientid": "srp_ui",
+      "content-type": "application/json",
+      "correlationid": "00000000-0000-4000-8000-000000000015"
+    },
+    "body": {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleId": 4812031,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4795274,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4801523,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 292,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4781875,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 357,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4694969,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4760129,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 43,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4695181,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 413,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4805089,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 247,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4681880,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 473,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4794078,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 224,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4802209,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 162,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4799447,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 111,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4795494,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 111,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4759131,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 247,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4731947,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 158,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4768607,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 371,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4787346,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 248,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4744652,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 79,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4730680,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 111,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4801398,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 13,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4770248,
+          "vehicleInventoryType": "Unknown",
+          "vehicleLocationId": 158,
+          "vehicleSaleStatus": "Available"
+        }
+      ],
+      "zipCode": "94402"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "content": [
+        {
+          "vehicleId": 4812031,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791677700000,
+              "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4795274,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791677700000,
+              "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4801523,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791677700000,
+              "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4781875,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791825300000,
+              "utcSoonestDateTimeIso": "2026-10-12T17:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Monday",
+              "daysToAvailability": 4,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4694969,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791677700000,
+              "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4760129,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791667800000,
+              "utcSoonestDateTimeIso": "2026-10-10T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4695181,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791667800000,
+              "utcSoonestDateTimeIso": "2026-10-10T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4805089,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792110600000,
+              "utcSoonestDateTimeIso": "2026-10-16T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/15/2026",
+              "daysToAvailability": 7,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792170900000,
+              "utcSoonestDateTimeIso": "2026-10-16T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4681880,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792170900000,
+              "utcSoonestDateTimeIso": "2026-10-16T17:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792170900000,
+              "utcSoonestDateTimeIso": "2026-10-16T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4794078,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792110600000,
+              "utcSoonestDateTimeIso": "2026-10-16T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/15/2026",
+              "daysToAvailability": 7,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4802209,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792272600000,
+              "utcSoonestDateTimeIso": "2026-10-17T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792343700000,
+              "utcSoonestDateTimeIso": "2026-10-18T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/18/2026",
+              "daysToAvailability": 10,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4799447,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792197000000,
+              "utcSoonestDateTimeIso": "2026-10-17T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4795494,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792197000000,
+              "utcSoonestDateTimeIso": "2026-10-17T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4759131,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792110600000,
+              "utcSoonestDateTimeIso": "2026-10-16T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/15/2026",
+              "daysToAvailability": 7,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792170900000,
+              "utcSoonestDateTimeIso": "2026-10-16T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4731947,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792186200000,
+              "utcSoonestDateTimeIso": "2026-10-16T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4768607,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792343700000,
+              "utcSoonestDateTimeIso": "2026-10-18T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/18/2026",
+              "daysToAvailability": 10,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4787346,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792430100000,
+              "utcSoonestDateTimeIso": "2026-10-19T17:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/19/2026",
+              "daysToAvailability": 11,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792430100000,
+              "utcSoonestDateTimeIso": "2026-10-19T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/19/2026",
+              "daysToAvailability": 11,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4744652,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792186200000,
+              "utcSoonestDateTimeIso": "2026-10-16T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4730680,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792197000000,
+              "utcSoonestDateTimeIso": "2026-10-17T00:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4801398,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792445400000,
+              "utcSoonestDateTimeIso": "2026-10-19T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/19/2026",
+              "daysToAvailability": 11,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792430100000,
+              "utcSoonestDateTimeIso": "2026-10-19T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/19/2026",
+              "daysToAvailability": 11,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4770248,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792186200000,
+              "utcSoonestDateTimeIso": "2026-10-16T21:30:00Z",
+              "drivingMiles": 54,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/16/2026",
+              "daysToAvailability": 8,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWpiY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1ANQaEwtsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792257300000,
+              "utcSoonestDateTimeIso": "2026-10-17T17:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "10/17/2026",
+              "daysToAvailability": 9,
+              "secondsUntilCutoff": 9888,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        }
+      ],
+      "status": "Succeeded",
+      "errorMessage": ""
+    }
+  }
+}

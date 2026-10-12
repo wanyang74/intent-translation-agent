@@ -3,11 +3,21 @@
   "private": true,
   "type": "module",
   "description": "Intent Agent: an agent layer for consumer websites and apps. Design doc: intent-agent-mini.html",
-  "workspaces": ["contract", "core", "brain", "evals"],
+  "workspaces": [
+    "contract",
+    "testkit",
+    "core",
+    "brain",
+    "evals"
+  ],
   "scripts": {
-    "check:contract": "npm run check -w @intent/contract"
+    "check:contract": "npm run check -w @intent/contract",
+    "fixtures": "npm run fixtures -w @intent/testkit",
+    "test": "npm run check -w @intent/contract && npm test -w @intent/testkit",
+    "typecheck": "tsc -p contract && tsc -p testkit"
   },
   "devDependencies": {
+    "@types/node": "24.19.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "esbuild": "0.28.2",

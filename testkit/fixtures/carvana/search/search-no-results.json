@@ -1,0 +1,115 @@
+{
+  "id": "search-no-results",
+  "endpoint": "search",
+  "kind": "synthetic",
+  "source": "edited copy of search-01",
+  "description": "Tesla · 2026 or newer · under 100 mi, page 1: no matching cars",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v2/search",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json",
+      "x-cvna-ncc-disabled": "false",
+      "x-cvna-sebs-srp": "true"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000002",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000003",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ],
+        "year": {
+          "min": 2026
+        },
+        "mileage": {
+          "max": 100
+        }
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "EarliestAcquisitionBoosting",
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LoanTermPricing",
+        "LocationBasedPrefiltering",
+        "Personalization",
+        "ConditionalTiles",
+        "Sprinkles",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "MostPopular",
+      "zip5": "94402",
+      "preferredAcquisitionName": ""
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "inventory": {
+        "pagination": {
+          "currentPage": 1,
+          "pageSize": 24,
+          "totalMatchedInventory": 0,
+          "totalMatchedPages": 0
+        },
+        "vehicles": [],
+        "conditionalTiles": []
+      },
+      "searchRequestId": "00000000-0000-4000-8000-000000000005",
+      "financeInfo": {
+        "financingType": "estimatedFinancing",
+        "maxMonthlyPayment": 2000,
+        "minDownPayment": 0,
+        "pricingHasErrored": false,
+        "isUsingTerms2": false,
+        "isUsingSampleTerms": true,
+        "terms2ErrorMessage": "",
+        "tradeTaxSavings": 0,
+        "creditStatusErrorMessage": ""
+      },
+      "userDeliveryInfo": {
+        "city": "San Mateo",
+        "state": "CA",
+        "zip5": "94402",
+        "isDeliveryAllowed": true,
+        "isMeetupAllowed": false,
+        "isOutOfMarket": false,
+        "isPickupAllowed": true,
+        "milesToPickup": 17,
+        "earliestDaysToDelivery": 0,
+        "earliestDeliveryDateUtc": "2026-10-08T19:15:00Z",
+        "pickupAddress": {
+          "addressTypeId": 0,
+          "line1": "2123 Junipero Serra Blvd.",
+          "line2": "",
+          "city": "Daly City",
+          "state": "CA",
+          "zip5": "94014",
+          "zip4": "1907"
+        }
+      }
+    }
+  }
+}

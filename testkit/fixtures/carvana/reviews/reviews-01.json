@@ -1,0 +1,358 @@
+{
+  "id": "reviews-01",
+  "endpoint": "reviews",
+  "kind": "recorded",
+  "source": "recording 2026-10-08, HAR entry 113",
+  "description": "2023 Tesla Model Y Long Range Sport Utility 4D",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/reviews/api/review/sv",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "from": 0,
+      "make": "Tesla",
+      "model": "Model Y",
+      "size": 20,
+      "trim": "Long Range Sport Utility 4D",
+      "year": 2023
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "summary": {
+        "review_count_total": 308,
+        "rating_counts": [
+          {
+            "key": 5,
+            "doc_count": 727
+          },
+          {
+            "key": 4,
+            "doc_count": 494
+          },
+          {
+            "key": 3,
+            "doc_count": 207
+          },
+          {
+            "key": 2,
+            "doc_count": 78
+          },
+          {
+            "key": 1,
+            "doc_count": 12
+          }
+        ]
+      },
+      "reviews": [
+        {
+          "review_id": 60932816,
+          "review_text": "I was hesitant about owning an EV and especially Tesla since I have heard stories about quality issues. However, my Tesla has been amazing and it's one of the best purchases I have made in the car realm.  Extremely comfortable to drive, amazing safety features. Constant over the air updates. Solid warranty on power train and battery.",
+          "review_date": "2025-12-01",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Steven B."
+          }
+        },
+        {
+          "review_id": 60263500,
+          "review_text": "Don't listen to the haters. The Tesla Model Y is safe, reliable, and has all the tech you want but simplified in an easy to understand interface.",
+          "review_date": "2025-08-12",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "William H."
+          }
+        },
+        {
+          "review_id": 59345621,
+          "review_text": "I use this car to drive rideshare (my retirement job). I drive most of the day 5 days a week everyone loves my car, including me. Completely problem free.",
+          "review_date": "2025-05-10",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Steve B."
+          }
+        },
+        {
+          "review_id": 59346192,
+          "review_text": "Love it, don't miss pumping gas, love how quickly it accelerates.",
+          "review_date": "2025-05-10",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Elaine H."
+          }
+        },
+        {
+          "review_id": 55478425,
+          "review_text": "Don't buy it. AC or heating system is a failure. Air doesn't distribute uniformly. No phone mirroring; Difficult to control using small font screen. Service is aweful; You won't get an appointment in the next 2 months. Navigation system doesn't always find the superchargers;",
+          "review_date": "2024-09-03",
+          "review_rating": 2,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Kazi I."
+          }
+        },
+        {
+          "review_id": 55810905,
+          "review_text": "Great all around choice. It looks good and drives nicely. It reduces emissions and saves money by charging at home.",
+          "review_date": "2024-06-04",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "James M."
+          }
+        },
+        {
+          "review_id": 55811376,
+          "review_text": "I love the Tesla. Charging is easy. I love all the technology in the car. It is fun to drive.",
+          "review_date": "2024-03-31",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Michael W."
+          }
+        },
+        {
+          "review_id": 55811863,
+          "review_text": "The cruise control and auto steer features of this vehicle are crap. They constantly brake and slow down for no apparent reason.",
+          "review_date": "2024-03-29",
+          "review_rating": 2,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Leslie Z."
+          }
+        },
+        {
+          "review_id": 55878273,
+          "review_text": "The Tesla Y has been somewhat of a disappointment. On the downside, the cabin is not airtight. Once the speed reaches over 45 mph, you can hear the wind enter the car. Two, the screen is way too large. This is distracting to the driver and child passengers are drawn to it and want to constantly play around with the games/music etc. The screen does not tilt towards the driver as in the Model X. Third, there is no sunglass holder under the rearview mirror. More importantly, I cannot stream podcasts from my iPhone. I cannot mirror my phone onto the Tesla screen. Only Spotify and calls from my phone work while in the car. Another major downside, the GPS has gotten me lost. It has brought me to the wrong location numerous times. This does not happen with the exact same addresses when inputted onto the Apple map app on my phone. Lastly, the trunk does not close properly. It looks closed but once you begin driving the car will beep and tell you the trunk is not closed. This happens quite often. Also, the mileage is not accurate. On the plus side, the driving experience is awesome in terms of the one-pedal driving, the pick-up speed, and ease of driving. It's a fun vehicle to drive. It's fast and overall comfortable.",
+          "review_date": "2024-03-25",
+          "review_rating": 2,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Lauren S."
+          }
+        },
+        {
+          "review_id": 56135584,
+          "review_text": "I am very happy with the Tesla Model Y. It handles and performs incredibly. I feel very good about the safety features in the car and the ability to have power when needed for passing. I hope in future models that they design a smoother ride on roads that are not smooth and that Tesla designs the Model Y to have better visibility out the back.",
+          "review_date": "2024-03-22",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Wynde K."
+          }
+        },
+        {
+          "review_id": 56135570,
+          "review_text": "If you have daily commutes, golf, tennis, etc. and you enjoy technology, comfy quiet ride, and safety features when buzzing on interstates or just two lanes, try a Tesla.",
+          "review_date": "2024-03-22",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Anita W."
+          }
+        },
+        {
+          "review_id": 56135049,
+          "review_text": "The Tesla Model Y is a very comfortable and smooth ride. As soon as you get used to the feel of driving an electric vehicle and the screen, it is easy to drive and fun.",
+          "review_date": "2024-03-21",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Melissa B."
+          }
+        },
+        {
+          "review_id": 56135392,
+          "review_text": "Tesla is the safest car available to protect you and your family, it also costs a lot less to operate if you can charge at home.",
+          "review_date": "2024-03-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Spencer J."
+          }
+        },
+        {
+          "review_id": 55876780,
+          "review_text": "Think of the Model Y as a Camry that gets 100mpg but only has a three gallon tank. If you can't charge at home buy a ICE.",
+          "review_date": "2024-03-20",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Jonathan B."
+          }
+        },
+        {
+          "review_id": 55811016,
+          "review_text": "It is great to drive, it's safe, and you will love not having to go to a gas station. You will fall in love with it.",
+          "review_date": "2024-03-12",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Lori M."
+          }
+        },
+        {
+          "review_id": 56082398,
+          "review_text": "Best first ev you can buy if you're wanting to go electric and not sure what to buy. Reliability for ev owners is paramount and Tesla delivers that overall.",
+          "review_date": "2024-03-11",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Rodney Y."
+          }
+        },
+        {
+          "review_id": 56082395,
+          "review_text": "Technology at your hands - true work of art from performance to comfort. Charging infrastructure makes up for lack of customer service from Tesla. Don't believe the catchy articles of “Tesla recalled… millions\" or “I hear the battery dies and costs a lot\". Do your own research, numbers don't lie when you take into consideration short term vs long term upkeep/maintenance costs.",
+          "review_date": "2024-03-07",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Dennie J."
+          }
+        },
+        {
+          "review_id": 55878354,
+          "review_text": "It is fun to drive and helps the environment",
+          "review_date": "2024-03-04",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Laura M."
+          }
+        },
+        {
+          "review_id": 55810841,
+          "review_text": "Prepare to be wowed. Great experience every time I get in the driver's seat.",
+          "review_date": "2024-03-04",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Vincent M."
+          }
+        },
+        {
+          "review_id": 55876896,
+          "review_text": "Range anxiety is a myth.",
+          "review_date": "2024-03-03",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model Y",
+            "make": "Tesla",
+            "model": "Tesla Model Y",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Bruce W."
+          }
+        }
+      ]
+    }
+  }
+}

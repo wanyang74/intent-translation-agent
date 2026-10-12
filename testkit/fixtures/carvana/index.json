@@ -1,0 +1,268 @@
+[
+  {
+    "id": "facets-01",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla: valid filter values",
+    "file": "facets/facets-01.json"
+  },
+  {
+    "id": "suggest-01",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla: 10 suggestions",
+    "file": "suggest/suggest-01.json"
+  },
+  {
+    "id": "search-01",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1871",
+    "file": "search/search-01.json"
+  },
+  {
+    "id": "availability-01",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-01.json"
+  },
+  {
+    "id": "facets-02",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer: valid filter values",
+    "file": "facets/facets-02.json"
+  },
+  {
+    "id": "suggest-02",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer: 10 suggestions",
+    "file": "suggest/suggest-02.json"
+  },
+  {
+    "id": "search-02",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer, page 1: 21 cars of 780",
+    "file": "search/search-02.json"
+  },
+  {
+    "id": "availability-02",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-02.json"
+  },
+  {
+    "id": "facets-03",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi: valid filter values",
+    "file": "facets/facets-03.json"
+  },
+  {
+    "id": "suggest-03",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi: 10 suggestions",
+    "file": "suggest/suggest-03.json"
+  },
+  {
+    "id": "search-03",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi, page 1: 21 cars of 480",
+    "file": "search/search-03.json"
+  },
+  {
+    "id": "availability-03",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-03.json"
+  },
+  {
+    "id": "facets-04",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray: valid filter values",
+    "file": "facets/facets-04.json"
+  },
+  {
+    "id": "suggest-04",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray: 10 suggestions",
+    "file": "suggest/suggest-04.json"
+  },
+  {
+    "id": "search-04",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray, page 1: 21 cars of 150",
+    "file": "search/search-04.json"
+  },
+  {
+    "id": "availability-04",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-04.json"
+  },
+  {
+    "id": "facets-05",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior: valid filter values",
+    "file": "facets/facets-05.json"
+  },
+  {
+    "id": "suggest-05",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior: 10 suggestions",
+    "file": "suggest/suggest-05.json"
+  },
+  {
+    "id": "search-05",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior, page 1: 21 cars of 131",
+    "file": "search/search-05.json"
+  },
+  {
+    "id": "availability-05",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-05.json"
+  },
+  {
+    "id": "facets-06",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior · Awd: valid filter values",
+    "file": "facets/facets-06.json"
+  },
+  {
+    "id": "suggest-06",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior · Awd: 10 suggestions",
+    "file": "suggest/suggest-06.json"
+  },
+  {
+    "id": "search-06",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2023 or newer · under 42100 mi · Gray · Black interior · Awd, page 1: 21 cars of 75",
+    "file": "search/search-06.json"
+  },
+  {
+    "id": "availability-06",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-06.json"
+  },
+  {
+    "id": "availability-07",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "1 car, search-page shape",
+    "file": "availability/availability-07.json"
+  },
+  {
+    "id": "reviews-01",
+    "endpoint": "reviews",
+    "kind": "recorded",
+    "description": "2023 Tesla Model Y Long Range Sport Utility 4D",
+    "file": "reviews/reviews-01.json"
+  },
+  {
+    "id": "pricing-01",
+    "endpoint": "pricing",
+    "kind": "recorded",
+    "description": "car 4812031, delivery route, zip 94402",
+    "file": "pricing/pricing-01.json"
+  },
+  {
+    "id": "availability-08",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "6 cars, vehicle-page shape",
+    "file": "availability/availability-08.json"
+  },
+  {
+    "id": "gap-01",
+    "endpoint": "gap",
+    "kind": "recorded",
+    "description": "car 4812031, 39427 financed",
+    "file": "gap/gap-01.json"
+  },
+  {
+    "id": "availability-09",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "50 cars, vehicle-page shape",
+    "file": "availability/availability-09.json"
+  },
+  {
+    "id": "availability-10",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "7 cars, vehicle-page shape",
+    "file": "availability/availability-10.json"
+  },
+  {
+    "id": "pricing-err-no-client-id",
+    "endpoint": "pricing",
+    "kind": "observed",
+    "description": "quote request without analyticsData.clientId: 400 \"ClientId cannot be null\"",
+    "file": "pricing/pricing-err-no-client-id.json"
+  },
+  {
+    "id": "suggest-err-no-ids",
+    "endpoint": "suggest",
+    "kind": "observed",
+    "description": "suggestions request without a visitor ID and client ID: 400 \"Invalid Request\"",
+    "file": "suggest/suggest-err-no-ids.json"
+  },
+  {
+    "id": "gap-err-null-amount",
+    "endpoint": "gap",
+    "kind": "observed",
+    "description": "GAP waiver request with amountFinanced=null: 400 validation problem",
+    "file": "gap/gap-err-null-amount.json"
+  },
+  {
+    "id": "search-no-results",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1: no matching cars",
+    "file": "search/search-no-results.json"
+  },
+  {
+    "id": "availability-no-delivery",
+    "endpoint": "availability",
+    "kind": "synthetic",
+    "description": "1 car whose delivery option failed (pickup still available); the failure shape is a guess",
+    "file": "availability/availability-no-delivery.json"
+  },
+  {
+    "id": "pricing-error",
+    "endpoint": "pricing",
+    "kind": "synthetic",
+    "description": "car 4812031 at zip 99701: Carvana couldn't price it; the error shape is a guess",
+    "file": "pricing/pricing-error.json"
+  },
+  {
+    "id": "search-shape-changed",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "search response missing price.estimatedTaxesAndFees on every car: a shape change the change monitor must catch",
+    "file": "search/search-shape-changed.json"
+  }
+]
