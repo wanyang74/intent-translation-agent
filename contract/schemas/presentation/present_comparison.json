@@ -7,7 +7,8 @@
     "vehicleIds": {
       "type": "array",
       "items": {
-        "$ref": "/schemas/common.json#/$defs/VehicleId"
+        "$ref": "/schemas/common.json#/$defs/VehicleId",
+        "type": "integer"
       },
       "minItems": 2,
       "maxItems": 4,
@@ -26,7 +27,8 @@
           "delivery",
           "gapWaiver",
           "ownerRating"
-        ]
+        ],
+        "type": "string"
       },
       "minItems": 1,
       "maxItems": 9,

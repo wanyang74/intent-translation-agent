@@ -9,8 +9,7 @@
       "type": "string"
     },
     "issuedAt": {
-      "type": "string",
-      "format": "date-time"
+      "$ref": "/schemas/common.json#/$defs/DateTime"
     },
     "disabledTools": {
       "type": "array",
@@ -24,7 +23,8 @@
           "get_owner_reviews",
           "vehicle_details",
           "find_similar"
-        ]
+        ],
+        "type": "string"
       },
       "uniqueItems": true
     },
@@ -70,7 +70,7 @@
     },
     "signature": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^[\\s\\S]{1,}$"
     }
   },
   "required": [

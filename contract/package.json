@@ -4,6 +4,8 @@
   "type": "module",
   "description": "The language-neutral contract: JSON Schemas for Carvana's endpoints, the agent's tools, presentation tools, errors, client-brain messages and remote config",
   "scripts": {
-    "check": "node scripts/check.ts"
+    "check": "node scripts/check.ts",
+    "generate": "node scripts/generate.ts",
+    "test": "node --test test/*.test.ts"
   }
 }

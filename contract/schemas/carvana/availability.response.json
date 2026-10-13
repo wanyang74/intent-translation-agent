@@ -59,8 +59,7 @@
                         "minimum": 0
                       },
                       "utcSoonestDateTimeIso": {
-                        "type": "string",
-                        "format": "date-time"
+                        "$ref": "/schemas/common.json#/$defs/DateTime"
                       },
                       "drivingMiles": {
                         "type": "number"
@@ -127,8 +126,7 @@
                         "minimum": 0
                       },
                       "utcSoonestDateTimeIso": {
-                        "type": "string",
-                        "format": "date-time"
+                        "$ref": "/schemas/common.json#/$defs/DateTime"
                       },
                       "drivingMiles": {
                         "type": "number"

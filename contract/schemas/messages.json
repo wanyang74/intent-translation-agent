@@ -45,8 +45,7 @@
         },
         "message": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 2000
+          "pattern": "^[\\s\\S]{1,2000}$"
         },
         "pageContext": {
           "$ref": "/schemas/messages.json#/$defs/PageContext"
@@ -273,8 +272,7 @@
         },
         "text": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 200
+          "pattern": "^[\\s\\S]{1,200}$"
         }
       },
       "required": [

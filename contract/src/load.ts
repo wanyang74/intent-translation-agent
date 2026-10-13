@@ -2,7 +2,6 @@
 // Shared by the contract check and the testkit's FakeHost.
 import Ajv2020 from 'ajv/dist/2020.js';
 import type { ValidateFunction } from 'ajv/dist/2020.js';
-import addFormats from 'ajv-formats';
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,9 +31,15 @@ export interface Contract {
   validator(rel: string): ValidateFunction;
 }
 
+/**
+ * Ajv options shared by this loader and the generated validators, so both give the same verdicts.
+ * The schemas avoid format, minLength and maxLength (length limits are patterns) so the generated
+ * validators need no runtime helper.
+ */
+export const AJV_OPTIONS = { strict: true, allowUnionTypes: true } as const;
+
 export function loadContract(): Contract {
-  const ajv = new Ajv2020({ strict: true, allErrors: true, allowUnionTypes: true });
-  addFormats(ajv);
+  const ajv = new Ajv2020({ ...AJV_OPTIONS, allErrors: true });
   const schemas = listSchemas();
   for (const s of schemas) ajv.addSchema(s.doc);
   return {

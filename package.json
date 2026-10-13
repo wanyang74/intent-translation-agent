@@ -12,15 +12,17 @@
   ],
   "scripts": {
     "check:contract": "npm run check -w @intent/contract",
+    "generate": "npm run generate -w @intent/contract",
     "fixtures": "npm run fixtures -w @intent/testkit",
-    "test": "npm run check -w @intent/contract && npm test -w @intent/testkit",
+    "test": "npm run check -w @intent/contract && npm test -w @intent/contract && npm test -w @intent/testkit",
     "typecheck": "tsc -p contract && tsc -p testkit"
   },
   "devDependencies": {
     "@types/node": "24.19.0",
     "ajv": "8.20.0",
-    "ajv-formats": "3.0.1",
     "esbuild": "0.28.2",
+    "json-schema-to-typescript": "16.0.0",
+    "quickjs-emscripten": "0.32.0",
     "typescript": "7.0.2"
   },
   "engines": {

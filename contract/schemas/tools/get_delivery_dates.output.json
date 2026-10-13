@@ -24,8 +24,7 @@
                     "type": "string"
                   },
                   "date": {
-                    "type": "string",
-                    "format": "date-time"
+                    "$ref": "/schemas/common.json#/$defs/DateTime"
                   },
                   "location": {
                     "type": "string"
@@ -56,8 +55,7 @@
                     "type": "string"
                   },
                   "date": {
-                    "type": "string",
-                    "format": "date-time"
+                    "$ref": "/schemas/common.json#/$defs/DateTime"
                   },
                   "location": {
                     "type": "string"

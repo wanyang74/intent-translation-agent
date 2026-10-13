@@ -6,12 +6,13 @@
   "properties": {
     "heading": {
       "type": "string",
-      "maxLength": 80
+      "pattern": "^[\\s\\S]{0,80}$"
     },
     "rows": {
       "type": "array",
       "items": {
-        "$ref": "/schemas/common.json#/$defs/VehicleId"
+        "$ref": "/schemas/common.json#/$defs/VehicleId",
+        "type": "integer"
       },
       "minItems": 1,
       "maxItems": 24,
