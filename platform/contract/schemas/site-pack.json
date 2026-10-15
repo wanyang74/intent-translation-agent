@@ -121,7 +121,8 @@
         "type": "object",
         "properties": {
           "template": {
-            "type": "string"
+            "type": "string",
+            "description": "{name} inserts a parameter, URL-encoded; {base64json:name} inserts a parameter as JSON, base64-encoded."
           },
           "description": {
             "type": "string"
@@ -491,7 +492,8 @@
               },
               "message": {
                 "type": "string",
-                "pattern": "^[\\s\\S]{1,}$"
+                "pattern": "^[\\s\\S]{1,}$",
+                "description": "Shown to the model. {name} placeholders are filled when the error is raised. For problems core.js finds itself the standard names are tool, value, field, options, kind and id."
               },
               "retryable": {
                 "type": "boolean"

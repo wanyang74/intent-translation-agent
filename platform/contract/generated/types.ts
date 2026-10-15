@@ -628,6 +628,9 @@ export interface Tool {
             | 'tool_disabled'
             | 'format_changed'
             | 'upstream_error';
+          /**
+           * Shown to the model. {name} placeholders are filled when the error is raised. For problems core.js finds itself the standard names are tool, value, field, options, kind and id.
+           */
           message: string;
           retryable?: boolean;
         }
@@ -755,6 +758,9 @@ export interface SitePack {
   deepLinks?: {
     [k: string]:
       | {
+          /**
+           * {name} inserts a parameter, URL-encoded; {base64json:name} inserts a parameter as JSON, base64-encoded.
+           */
           template: string;
           description?: string;
         }

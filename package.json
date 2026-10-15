@@ -12,7 +12,7 @@
     "generate": "node platform/contract/scripts/generate.ts",
     "fixtures": "node platform/testkit/scripts/build-fixtures.ts",
     "test": "npm run check && node platform/contract/scripts/generate.ts --check && node --test \"platform/*/test/*.test.ts\" \"sites/*/test/*.test.ts\"",
-    "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && for d in sites/*/; do tsc -p \"$d\" || exit 1; done"
+    "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && tsc -p platform/core && tsc -p platform/core/test && for d in sites/*/; do tsc -p \"$d\" || exit 1; done"
   },
   "devDependencies": {
     "@types/node": "24.19.0",

@@ -131,7 +131,7 @@ tools:
     ids: { output: [{ kind: vehicle, path: "vehicles[].vehicleId" }] }
     nextStep: To check delivery dates, call get_delivery_dates once with all the vehicle IDs.
     errors:
-      invalid_filter_value: { code: invalid_value, message: "'{value}' isn't a valid {filter} here. Valid options: {options}.", retryable: true }
+      invalid_filter_value: { code: invalid_value, message: "'{value}' isn't one of the {field} offered here. Valid options: {options}.", retryable: true }
       no_results: { code: no_results, message: No cars match. Suggest removing one filter; the facet counts show what each option would return., retryable: true }
   get_delivery_dates:
     description: Earliest delivery and pickup dates for a list of cars, in one call
@@ -216,7 +216,7 @@ policies:
   writes: none
 
 deepLinks:
-  search: { template: "https://www.carvana.com/cars/filters?cvnaid={base64json:filters}", description: The same search results page on the site }
+  search: { template: "https://www.carvana.com/cars/filters?cvnaid={base64json:cvnaid}", description: The same search results page on the site }
   vehicle: { template: "https://www.carvana.com/vehicle/{vehicleId}" }
 
 skills:

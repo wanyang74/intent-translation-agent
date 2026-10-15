@@ -288,7 +288,7 @@
       "errors": {
         "invalid_filter_value": {
           "code": "invalid_value",
-          "message": "'{value}' isn't a valid {filter} here. Valid options: {options}.",
+          "message": "'{value}' isn't one of the {field} offered here. Valid options: {options}.",
           "retryable": true
         },
         "no_results": {
@@ -505,7 +505,7 @@
   },
   "deepLinks": {
     "search": {
-      "template": "https://www.carvana.com/cars/filters?cvnaid={base64json:filters}",
+      "template": "https://www.carvana.com/cars/filters?cvnaid={base64json:cvnaid}",
       "description": "The same search results page on the site"
     },
     "vehicle": {

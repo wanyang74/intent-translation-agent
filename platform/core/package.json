@@ -2,5 +2,8 @@
   "name": "@intent/core",
   "private": true,
   "type": "module",
-  "description": "The tool runtime (core.js). Runs in web pages, JavaScriptCore, QuickJS and Node, using only the JavaScript language plus the Host interface. Built from phase 2."
+  "description": "The tool runtime (core.js). Runs in web pages, JavaScriptCore, QuickJS and Node, using only the JavaScript language plus the Host interface. Phase 2: the pure logic.",
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
 }
