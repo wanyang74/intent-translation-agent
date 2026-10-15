@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/carvana/schemas/endpoints/availability.response.json",
+  "title": "Carvana bulk availability response",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "$ref": "/sites/carvana/schemas/common.json#/$defs/VehicleId"
+          },
+          "closestLocationId": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "content",
+              "status"
+            ],
+            "additionalProperties": true
+          },
+          "soonestDelivery": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "errorMessage": {
+                "type": "string"
+              },
+              "content": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "activityType": {
+                        "type": "string"
+                      },
+                      "asSoonAsText": {
+                        "type": "string"
+                      },
+                      "daysToAvailability": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "utcSoonestDateTimeIso": {
+                        "$ref": "/schemas/common.json#/$defs/DateTime"
+                      },
+                      "drivingMiles": {
+                        "type": "number"
+                      },
+                      "servicingLocationId": {
+                        "type": "integer"
+                      },
+                      "locationCity": {
+                        "type": "string"
+                      },
+                      "locationState": {
+                        "type": "string"
+                      },
+                      "routeId": {
+                        "$ref": "/sites/carvana/schemas/common.json#/$defs/RouteId"
+                      }
+                    },
+                    "required": [
+                      "activityType",
+                      "asSoonAsText",
+                      "daysToAvailability",
+                      "utcSoonestDateTimeIso",
+                      "servicingLocationId",
+                      "locationCity",
+                      "locationState",
+                      "routeId"
+                    ],
+                    "additionalProperties": true
+                  }
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "content"
+            ],
+            "additionalProperties": true
+          },
+          "soonestPickup": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "errorMessage": {
+                "type": "string"
+              },
+              "content": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "activityType": {
+                        "type": "string"
+                      },
+                      "asSoonAsText": {
+                        "type": "string"
+                      },
+                      "daysToAvailability": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "utcSoonestDateTimeIso": {
+                        "$ref": "/schemas/common.json#/$defs/DateTime"
+                      },
+                      "drivingMiles": {
+                        "type": "number"
+                      },
+                      "servicingLocationId": {
+                        "type": "integer"
+                      },
+                      "locationCity": {
+                        "type": "string"
+                      },
+                      "locationState": {
+                        "type": "string"
+                      },
+                      "routeId": {
+                        "$ref": "/sites/carvana/schemas/common.json#/$defs/RouteId"
+                      }
+                    },
+                    "required": [
+                      "activityType",
+                      "asSoonAsText",
+                      "daysToAvailability",
+                      "utcSoonestDateTimeIso",
+                      "servicingLocationId",
+                      "locationCity",
+                      "locationState",
+                      "routeId"
+                    ],
+                    "additionalProperties": true
+                  }
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "content"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "vehicleId",
+          "soonestDelivery",
+          "soonestPickup"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "status": {
+      "type": "string"
+    },
+    "errorMessage": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "content",
+    "status"
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/offers.response.json",
+  "title": "Demo Flights offer search response",
+  "type": "object",
+  "properties": {
+    "searchId": {
+      "type": "string"
+    },
+    "offers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/OfferId"
+          },
+          "expiresAt": {
+            "$ref": "/schemas/common.json#/$defs/DateTime"
+          },
+          "price": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "$ref": "/schemas/common.json#/$defs/Money"
+              },
+              "base": {
+                "$ref": "/schemas/common.json#/$defs/Money"
+              },
+              "taxesAndFees": {
+                "$ref": "/schemas/common.json#/$defs/Money"
+              },
+              "currency": {
+                "const": "USD"
+              }
+            },
+            "required": [
+              "total",
+              "base",
+              "taxesAndFees",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Segment"
+            },
+            "minItems": 1
+          },
+          "duration": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Duration"
+          }
+        },
+        "required": [
+          "offerId",
+          "expiresAt",
+          "price",
+          "segments",
+          "duration"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "searchId",
+    "offers"
+  ],
+  "additionalProperties": true
+}

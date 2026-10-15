@@ -1,0 +1,52 @@
+{
+  "id": "suggest-err-no-ids",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "observed",
+  "source": "phase 0 live check, 2026-10-11",
+  "description": "suggestions request without a visitor ID and client ID: 400 \"Invalid Request\"",
+  "trigger": {
+    "fields": [
+      "browserCookieId",
+      "analyticsData.clientId"
+    ]
+  },
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "MostPopular",
+      "zip5": "94402",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "content-type": "text/plain"
+    },
+    "body": "Invalid Request"
+  }
+}

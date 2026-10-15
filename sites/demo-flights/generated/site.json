@@ -1,0 +1,291 @@
+{
+  "site": {
+    "id": "demo-flights",
+    "name": "Demo Flights (synthetic test site)",
+    "origins": [
+      "https://www.demo-flights.example",
+      "https://api.demo-flights.example"
+    ],
+    "locale": "en-US",
+    "pageTypes": [
+      "home",
+      "results",
+      "trips"
+    ],
+    "requires": {
+      "location": "none",
+      "signIn": "some_tools"
+    }
+  },
+  "entities": {
+    "flight_offer": {
+      "description": "A priced itinerary that can be booked until it expires",
+      "id": {
+        "type": "string",
+        "pattern": "^off_[A-Z0-9]{4}$"
+      },
+      "expires": {
+        "field": "expiresAt"
+      },
+      "fields": {
+        "totalPrice": {
+          "label": "Total price",
+          "type": "money",
+          "from": "totalPrice"
+        },
+        "departs": {
+          "label": "Departs",
+          "type": "datetime",
+          "from": "departs"
+        },
+        "arrives": {
+          "label": "Arrives",
+          "type": "datetime",
+          "from": "arrives"
+        },
+        "stops": {
+          "label": "Stops",
+          "type": "integer",
+          "from": "stops"
+        },
+        "duration": {
+          "label": "Duration",
+          "type": "duration",
+          "from": "duration"
+        },
+        "carrier": {
+          "label": "Airline",
+          "type": "text",
+          "from": "carrier"
+        }
+      },
+      "card": {
+        "title": "{carrier} {flightNumbers}",
+        "subtitle": "{departs} to {arrives}",
+        "fields": [
+          "totalPrice",
+          "stops",
+          "duration"
+        ]
+      },
+      "sections": [
+        "itinerary",
+        "fare_rules"
+      ]
+    },
+    "trip": {
+      "description": "A booked trip, identified by its record locator",
+      "id": {
+        "type": "string",
+        "pattern": "^[A-Z0-9]{6}$"
+      },
+      "requiresSignIn": true,
+      "fields": {
+        "route": {
+          "label": "Route",
+          "type": "text",
+          "from": "route"
+        },
+        "departs": {
+          "label": "Departs",
+          "type": "datetime",
+          "from": "departs"
+        },
+        "status": {
+          "label": "Status",
+          "type": "text",
+          "from": "status"
+        }
+      },
+      "card": {
+        "title": "{route}",
+        "subtitle": "{departs}"
+      }
+    }
+  },
+  "endpoints": {
+    "offers": {
+      "description": "Flight offers for one search",
+      "method": "POST",
+      "url": "https://api.demo-flights.example/v1/offers/search",
+      "request": "endpoints/offers.request.json",
+      "response": "endpoints/offers.response.json",
+      "matchKey": [
+        "origin",
+        "destination",
+        "departDate",
+        "returnDate",
+        "adults",
+        "cabin"
+      ],
+      "ids": [
+        {
+          "kind": "flight_offer",
+          "path": "offers[].offerId",
+          "expiresAt": "offers[].expiresAt"
+        }
+      ],
+      "verified": "synthetic"
+    },
+    "trips": {
+      "description": "The signed-in traveler's trips",
+      "method": "GET",
+      "url": "https://api.demo-flights.example/v1/trips",
+      "request": "endpoints/trips.request.json",
+      "response": "endpoints/trips.response.json",
+      "matchKey": [
+        "status"
+      ],
+      "ids": [
+        {
+          "kind": "trip",
+          "path": "trips[].recordLocator"
+        }
+      ],
+      "signIn": true,
+      "verified": "synthetic"
+    }
+  },
+  "tools": {
+    "search_flights": {
+      "description": "Search flights for a route, dates, travelers and cabin",
+      "input": "tools/search_flights.input.json",
+      "output": "tools/search_flights.output.json",
+      "uses": [
+        "offers"
+      ],
+      "sideEffect": "read",
+      "presentation": "present_items",
+      "ids": {
+        "output": [
+          {
+            "kind": "flight_offer",
+            "path": "offers[].offerId",
+            "expiresAt": "offers[].expiresAt"
+          }
+        ]
+      },
+      "nextStep": "Offers expire; if the user comes back later, search again before showing prices.",
+      "errors": {
+        "unknown_airport": {
+          "code": "invalid_value",
+          "message": "'{value}' isn't an airport code. Use a three-letter code such as JFK.",
+          "retryable": true
+        },
+        "offer_expired": {
+          "code": "expired",
+          "message": "This offer expired. Search again for current prices.",
+          "retryable": true
+        }
+      }
+    },
+    "get_trips": {
+      "description": "The traveler's upcoming or past trips",
+      "input": "tools/get_trips.input.json",
+      "output": "tools/get_trips.output.json",
+      "uses": [
+        "trips"
+      ],
+      "sideEffect": "read",
+      "signIn": true,
+      "presentation": "present_items",
+      "ids": {
+        "output": [
+          {
+            "kind": "trip",
+            "path": "trips[].recordLocator"
+          }
+        ]
+      },
+      "errors": {
+        "signed_out": {
+          "code": "auth_required",
+          "message": "The traveler needs to sign in to see trips. Ask them to sign in on the site.",
+          "retryable": true
+        }
+      }
+    }
+  },
+  "forms": {
+    "flight_search": {
+      "description": "What the agent asks for when a request is missing details",
+      "fields": {
+        "origin": {
+          "label": "From",
+          "type": "code",
+          "required": true,
+          "pattern": "^[A-Z]{3}$"
+        },
+        "destination": {
+          "label": "To",
+          "type": "code",
+          "required": true,
+          "pattern": "^[A-Z]{3}$"
+        },
+        "departDate": {
+          "label": "Depart",
+          "type": "date",
+          "required": true
+        },
+        "returnDate": {
+          "label": "Return",
+          "type": "date"
+        },
+        "adults": {
+          "label": "Travelers",
+          "type": "integer",
+          "min": 1,
+          "max": 9
+        },
+        "cabin": {
+          "label": "Cabin",
+          "type": "select",
+          "options": [
+            "economy",
+            "premium_economy",
+            "business",
+            "first"
+          ]
+        }
+      },
+      "submitTool": "search_flights"
+    }
+  },
+  "notices": {
+    "full_fare_rule": {
+      "text": "Prices include all taxes and fees.",
+      "source": "demo wording, modeled on the US DOT full-fare advertising rule",
+      "version": "2026-10-12",
+      "showWith": [
+        "totalPrice"
+      ]
+    }
+  },
+  "policies": {
+    "hiddenFields": [],
+    "rateLimitPerSecond": 1,
+    "callBudget": {
+      "perTask": 40,
+      "perSession": null,
+      "perDay": null
+    },
+    "priceDisplay": "total_including_taxes",
+    "writes": "none"
+  },
+  "skills": {
+    "trip_planning": {
+      "description": "Turning loose travel plans into a flight search",
+      "load": "on demand"
+    }
+  },
+  "recording": {
+    "scrubFields": [
+      "searchId"
+    ],
+    "scrubHeaders": [],
+    "keepHeaders": [
+      "accept",
+      "content-type"
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "id": "availability-07",
+  "site": "carvana",
+  "endpoint": "availability",
+  "kind": "recorded",
+  "source": "recording 2026-10-08, HAR entry 112",
+  "description": "1 car, search-page shape",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "browsercookieid": "00000000-0000-4000-8000-000000000001",
+      "clientid": "vdp_ui",
+      "content-type": "application/json",
+      "correlationid": "00000000-0000-4000-8000-000000000016"
+    },
+    "body": {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available",
+          "vehicleId": 4812031
+        }
+      ],
+      "zipCode": "94402"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "content": [
+        {
+          "vehicleId": 4812031,
+          "closestLocationId": {
+            "content": 301,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1791677700000,
+              "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+              "drivingMiles": 36,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Saturday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 9850,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1791753300000,
+              "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+              "drivingMiles": 17,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Sunday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 9850,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 301,
+              "locationCity": "Daly City",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        }
+      ],
+      "status": "Succeeded",
+      "errorMessage": ""
+    }
+  }
+}

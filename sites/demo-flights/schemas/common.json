@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/common.json",
+  "title": "Demo Flights definitions",
+  "$defs": {
+    "Airport": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "OfferId": {
+      "type": "string",
+      "pattern": "^off_[A-Z0-9]{4}$"
+    },
+    "RecordLocator": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{6}$"
+    },
+    "Cabin": {
+      "enum": [
+        "economy",
+        "premium_economy",
+        "business",
+        "first"
+      ]
+    },
+    "Duration": {
+      "type": "string",
+      "pattern": "^PT([0-9]+H)?([0-9]+M)?$"
+    },
+    "Segment": {
+      "type": "object",
+      "properties": {
+        "carrier": {
+          "type": "string"
+        },
+        "flightNumber": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{2}[0-9]{1,4}$"
+        },
+        "from": {
+          "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Airport"
+        },
+        "to": {
+          "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Airport"
+        },
+        "departs": {
+          "$ref": "/schemas/common.json#/$defs/DateTime"
+        },
+        "arrives": {
+          "$ref": "/schemas/common.json#/$defs/DateTime"
+        }
+      },
+      "required": [
+        "carrier",
+        "flightNumber",
+        "from",
+        "to",
+        "departs",
+        "arrives"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

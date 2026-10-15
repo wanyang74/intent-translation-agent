@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/tools/get_trips.output.json",
+  "title": "get_trips: output",
+  "type": "object",
+  "properties": {
+    "trips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "recordLocator": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/RecordLocator"
+          },
+          "route": {
+            "type": "string"
+          },
+          "departs": {
+            "$ref": "/schemas/common.json#/$defs/DateTime"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "recordLocator",
+          "route",
+          "departs",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "trips"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "trips": [
+        {
+          "recordLocator": "Q7K2LM",
+          "route": "SFO to SEA",
+          "departs": "2026-12-03T16:00:00Z",
+          "status": "confirmed"
+        }
+      ]
+    }
+  ]
+}

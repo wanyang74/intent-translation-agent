@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/carvana/schemas/endpoints/vehicle-page.response.json",
+  "title": "What Carvana's vehicle page parser extracts (GET /vehicle/{vehicleId})",
+  "description": "Read from the Next.js data embedded in the page's HTML. The format is the site framework's own, so this is validated on every read and watched by the change monitor.",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/VehicleId"
+    },
+    "vin": {
+      "type": "string",
+      "pattern": "^[A-HJ-NPR-Z0-9]{17}$"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "category",
+          "names"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "imperfections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "location"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "highlights": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "vehicleId",
+    "vin",
+    "features",
+    "imperfections",
+    "options",
+    "packages",
+    "highlights"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "vehicleId": 4812031,
+      "vin": "EXAMPLEVN00000000",
+      "features": [
+        {
+          "category": "Safety & Security",
+          "names": [
+            "Blind Spot Monitoring"
+          ]
+        }
+      ],
+      "imperfections": [
+        {
+          "title": "Paint",
+          "description": "Small area of paint damage.",
+          "location": "exterior"
+        }
+      ],
+      "options": [],
+      "packages": [],
+      "highlights": [
+        "Long Range"
+      ]
+    }
+  ]
+}

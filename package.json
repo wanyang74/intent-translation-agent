@@ -2,20 +2,17 @@
   "name": "intent-translation-agent",
   "private": true,
   "type": "module",
-  "description": "Intent Agent: an agent layer for consumer websites and apps. Design doc: intent-agent-mini.html",
+  "description": "Intent Agent: an agent layer for consumer websites and apps. Platform in platform/, one site pack per site in sites/. Design doc: docs/intent-agent-mini.html",
   "workspaces": [
-    "contract",
-    "testkit",
-    "core",
-    "brain",
-    "evals"
+    "platform/*",
+    "sites/*"
   ],
   "scripts": {
-    "check:contract": "npm run check -w @intent/contract",
-    "generate": "npm run generate -w @intent/contract",
-    "fixtures": "npm run fixtures -w @intent/testkit",
-    "test": "npm run check -w @intent/contract && npm test -w @intent/contract && npm test -w @intent/testkit",
-    "typecheck": "tsc -p contract && tsc -p testkit"
+    "check": "node platform/contract/scripts/check.ts",
+    "generate": "node platform/contract/scripts/generate.ts",
+    "fixtures": "node platform/testkit/scripts/build-fixtures.ts",
+    "test": "npm run check && node platform/contract/scripts/generate.ts --check && node --test \"platform/*/test/*.test.ts\" \"sites/*/test/*.test.ts\"",
+    "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && for d in sites/*/; do tsc -p \"$d\" || exit 1; done"
   },
   "devDependencies": {
     "@types/node": "24.19.0",
@@ -23,7 +20,8 @@
     "esbuild": "0.28.2",
     "json-schema-to-typescript": "16.0.0",
     "quickjs-emscripten": "0.32.0",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "yaml": "2.9.1"
   },
   "engines": {
     "node": ">=24"

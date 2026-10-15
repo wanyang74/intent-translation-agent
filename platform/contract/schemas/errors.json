@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/errors.json",
+  "title": "Tool error, as the model receives it",
+  "description": "Errors are instructions the model can act on, never bare codes. Codes are the same for every site; reason carries the site's own detail.",
+  "type": "object",
+  "properties": {
+    "code": {
+      "enum": [
+        "unknown_id",
+        "invalid_value",
+        "no_results",
+        "not_found",
+        "expired",
+        "auth_required",
+        "policy_blocked",
+        "budget_reached",
+        "rate_limited",
+        "tool_disabled",
+        "format_changed",
+        "upstream_error"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+    },
+    "message": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,}$"
+    },
+    "retryable": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "code",
+    "message",
+    "retryable"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "code": "unknown_id",
+      "message": "This ID wasn't returned in this session. Use an ID from the search results.",
+      "retryable": false
+    },
+    {
+      "code": "expired",
+      "reason": "fare_hold_expired",
+      "message": "This fare expired. Search again for current prices.",
+      "retryable": true
+    }
+  ]
+}

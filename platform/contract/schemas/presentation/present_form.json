@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_form.json",
+  "title": "present_form: a form for input the agent needs, such as dates and travelers",
+  "type": "object",
+  "properties": {
+    "form": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,31}$"
+    },
+    "prefill": {
+      "type": "object",
+      "description": "Values for the form's fields; checked against the site pack's form definition at runtime."
+    },
+    "heading": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,80}$"
+    }
+  },
+  "required": [
+    "form"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "form": "flight_search",
+      "prefill": {
+        "origin": "SFO",
+        "destination": "JFK"
+      }
+    }
+  ]
+}

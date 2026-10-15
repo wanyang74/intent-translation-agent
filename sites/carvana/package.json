@@ -1,0 +1,9 @@
+{
+  "name": "@intent/site-carvana",
+  "private": true,
+  "type": "module",
+  "description": "Site pack: Carvana (first real site)",
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}

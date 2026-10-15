@@ -1,0 +1,9 @@
+{
+  "name": "@intent/site-demo-flights",
+  "private": true,
+  "type": "module",
+  "description": "Site pack: Demo Flights, a synthetic airline used only in tests",
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}

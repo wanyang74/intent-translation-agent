@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_items.json",
+  "title": "present_items: an ordered list of items as cards",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "$ref": "/schemas/common.json#/$defs/EntityKind"
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 50,
+      "uniqueItems": true
+    },
+    "heading": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,80}$"
+    },
+    "layout": {
+      "enum": [
+        "list",
+        "cards",
+        "carousel"
+      ]
+    }
+  },
+  "required": [
+    "entity",
+    "ids"
+  ],
+  "additionalProperties": false,
+  "description": "IDs and layout only. The client fills in every displayed field from this session's tool results, using the site pack's card template.",
+  "examples": [
+    {
+      "entity": "flight_offer",
+      "ids": [
+        "off_7GQ2",
+        "off_9KD1"
+      ],
+      "heading": "Nonstop options"
+    }
+  ]
+}

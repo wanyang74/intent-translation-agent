@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/offers.request.json",
+  "title": "Demo Flights offer search request (POST /v1/offers/search)",
+  "type": "object",
+  "properties": {
+    "origin": {
+      "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Airport"
+    },
+    "destination": {
+      "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Airport"
+    },
+    "departDate": {
+      "$ref": "/schemas/common.json#/$defs/Date"
+    },
+    "returnDate": {
+      "$ref": "/schemas/common.json#/$defs/Date"
+    },
+    "adults": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9
+    },
+    "cabin": {
+      "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Cabin"
+    }
+  },
+  "required": [
+    "origin",
+    "destination",
+    "departDate",
+    "adults",
+    "cabin"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "origin": "SFO",
+      "destination": "JFK",
+      "departDate": "2026-11-20",
+      "adults": 1,
+      "cabin": "economy"
+    }
+  ]
+}

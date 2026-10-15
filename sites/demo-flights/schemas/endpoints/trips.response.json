@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/trips.response.json",
+  "title": "Demo Flights trips response",
+  "type": "object",
+  "properties": {
+    "trips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "recordLocator": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/RecordLocator"
+          },
+          "status": {
+            "enum": [
+              "confirmed",
+              "changed",
+              "cancelled",
+              "flown"
+            ]
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Segment"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "recordLocator",
+          "status",
+          "segments"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "trips"
+  ],
+  "additionalProperties": true
+}

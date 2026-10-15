@@ -1,0 +1,105 @@
+{
+  "id": "offers-01",
+  "site": "demo-flights",
+  "endpoint": "offers",
+  "kind": "synthetic",
+  "source": "hand-written for the demo-flights test site",
+  "description": "SFO to JFK, Nov 20, 1 adult, economy: 3 offers",
+  "request": {
+    "method": "POST",
+    "url": "https://api.demo-flights.example/v1/offers/search",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json"
+    },
+    "body": {
+      "origin": "SFO",
+      "destination": "JFK",
+      "departDate": "2026-11-20",
+      "adults": 1,
+      "cabin": "economy"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "searchId": "00000000-0000-4000-8000-000000000001",
+      "offers": [
+        {
+          "offerId": "off_7GQ2",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "price": {
+            "total": 389.4,
+            "base": 321.86,
+            "taxesAndFees": 67.54,
+            "currency": "USD"
+          },
+          "segments": [
+            {
+              "carrier": "Demo Air",
+              "flightNumber": "DA101",
+              "from": "SFO",
+              "to": "JFK",
+              "departs": "2026-11-20T15:05:00Z",
+              "arrives": "2026-11-20T23:40:00Z"
+            }
+          ],
+          "duration": "PT5H35M"
+        },
+        {
+          "offerId": "off_9KD1",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "price": {
+            "total": 412.9,
+            "base": 343.5,
+            "taxesAndFees": 69.4,
+            "currency": "USD"
+          },
+          "segments": [
+            {
+              "carrier": "Demo Air",
+              "flightNumber": "DA107",
+              "from": "SFO",
+              "to": "JFK",
+              "departs": "2026-11-20T21:30:00Z",
+              "arrives": "2026-11-21T05:55:00Z"
+            }
+          ],
+          "duration": "PT5H25M"
+        },
+        {
+          "offerId": "off_3MZ8",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "price": {
+            "total": 301.2,
+            "base": 245.0,
+            "taxesAndFees": 56.2,
+            "currency": "USD"
+          },
+          "segments": [
+            {
+              "carrier": "Demo Air",
+              "flightNumber": "DA215",
+              "from": "SFO",
+              "to": "ORD",
+              "departs": "2026-11-20T13:00:00Z",
+              "arrives": "2026-11-20T17:20:00Z"
+            },
+            {
+              "carrier": "Demo Air",
+              "flightNumber": "DA402",
+              "from": "ORD",
+              "to": "JFK",
+              "departs": "2026-11-20T18:45:00Z",
+              "arrives": "2026-11-20T21:10:00Z"
+            }
+          ],
+          "duration": "PT8H10M"
+        }
+      ]
+    }
+  }
+}

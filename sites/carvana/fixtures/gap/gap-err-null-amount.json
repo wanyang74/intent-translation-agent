@@ -1,0 +1,38 @@
+{
+  "id": "gap-err-null-amount",
+  "site": "carvana",
+  "endpoint": "gap",
+  "kind": "observed",
+  "source": "phase 0 live check, 2026-10-11",
+  "description": "GAP waiver request with amountFinanced=null: 400 validation problem",
+  "trigger": {
+    "fields": [
+      "amountFinanced"
+    ]
+  },
+  "request": {
+    "method": "GET",
+    "url": "https://apimpub.carvana.com/ancillary-products-api/api/v2/GapWaiver/availability?amountFinanced=null&homeState=CA&institutionName=Carvana&paymentType=Financing&vehicleId=4812031",
+    "headers": {
+      "accept": "application/json, text/plain, */*"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/problem+json"
+    },
+    "body": {
+      "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+      "title": "One or more validation errors occurred.",
+      "status": 400,
+      "traceId": "00000000-0000-4000-8000-000000000018",
+      "errors": {
+        "AmountFinanced": [
+          "The value 'null' is not valid for AmountFinanced."
+        ]
+      }
+    }
+  }
+}

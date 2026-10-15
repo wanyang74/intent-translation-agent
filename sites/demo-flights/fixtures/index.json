@@ -1,0 +1,23 @@
+[
+  {
+    "id": "offers-01",
+    "endpoint": "offers",
+    "kind": "synthetic",
+    "description": "SFO to JFK, Nov 20, 1 adult, economy: 3 offers",
+    "file": "offers/offers-01.json"
+  },
+  {
+    "id": "offers-no-results",
+    "endpoint": "offers",
+    "kind": "synthetic",
+    "description": "SFO to JFK, Dec 24, 9 adults, first: no offers",
+    "file": "offers/offers-no-results.json"
+  },
+  {
+    "id": "trips-01",
+    "endpoint": "trips",
+    "kind": "synthetic",
+    "description": "signed-in traveler: 1 upcoming trip",
+    "file": "trips/trips-01.json"
+  }
+]

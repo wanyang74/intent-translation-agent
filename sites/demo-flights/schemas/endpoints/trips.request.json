@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/trips.request.json",
+  "title": "Demo Flights trips request (GET /v1/trips, query string)",
+  "type": "object",
+  "properties": {
+    "status": {
+      "enum": [
+        "upcoming",
+        "past"
+      ]
+    }
+  },
+  "required": [
+    "status"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "status": "upcoming"
+    }
+  ]
+}

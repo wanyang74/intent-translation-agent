@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_comparison.json",
+  "title": "present_comparison: items side by side",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "$ref": "/schemas/common.json#/$defs/EntityKind"
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 4,
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/common.json#/$defs/FieldKey",
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 12,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "entity",
+    "ids",
+    "attributes"
+  ],
+  "additionalProperties": false,
+  "description": "Attributes are field keys the site pack declares for this entity kind.",
+  "examples": [
+    {
+      "entity": "flight_offer",
+      "ids": [
+        "off_7GQ2",
+        "off_9KD1"
+      ],
+      "attributes": [
+        "totalPrice",
+        "departs",
+        "stops"
+      ]
+    }
+  ]
+}

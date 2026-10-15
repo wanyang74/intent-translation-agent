@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_detail.json",
+  "title": "present_detail: one item in full",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "$ref": "/schemas/common.json#/$defs/EntityKind"
+    },
+    "id": {
+      "$ref": "/schemas/common.json#/$defs/EntityId"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,31}$"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "entity",
+    "id"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "entity": "flight_offer",
+      "id": "off_7GQ2",
+      "sections": [
+        "itinerary",
+        "fare_rules"
+      ]
+    }
+  ]
+}

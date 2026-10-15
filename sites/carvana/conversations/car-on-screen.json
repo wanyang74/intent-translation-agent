@@ -1,0 +1,252 @@
+{
+  "id": "car-on-screen",
+  "site": "carvana",
+  "description": "The user is on a car's page and asks what it would cost, how soon it can arrive, and what owners say. The agent knows the car from the page context, runs the quote and the reviews in parallel, and shows the car's detail view.",
+  "now": "2026-10-08T19:15:00Z",
+  "fixtures": [
+    "availability-07",
+    "pricing-01",
+    "gap-01",
+    "reviews-01"
+  ],
+  "notes": [
+    "get_vehicle_quote: availability for this one car gives the delivery route; pricing takes that route; the GAP waiver check takes the estimated total as the amount financed and the state from the route (CA).",
+    "get_owner_reviews needs the year, make, model and long trim name (Long Range Sport Utility 4D). On the car's own page, core.js reads them from the page; elsewhere they come from an earlier search result in the session.",
+    "Review text is fenced by the sanitizer (control and bidirectional characters removed, untrusted tags stripped, at most 1,000 characters)."
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "carvana",
+      "sessionId": "sess_carvana_vdp01",
+      "traceId": "trace_carvana_vdp01",
+      "message": "What would this one cost me all in, and how soon can I get it? Also, what do owners say?",
+      "pageContext": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_vdp01",
+      "call": {
+        "id": "call_1",
+        "name": "get_vehicle_quote",
+        "args": {
+          "vehicleId": 4812031,
+          "zip5": "94402"
+        }
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_vdp01",
+      "call": {
+        "id": "call_2",
+        "name": "get_owner_reviews",
+        "args": {
+          "vehicleId": 4812031
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_carvana_vdp01",
+      "text": "Getting the quote and owner reviews…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_carvana_vdp01",
+      "callIds": [
+        "call_1",
+        "call_2"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_carvana_vdp01",
+      "traceId": "trace_carvana_vdp01",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "vehicleId": 4812031,
+            "price": 35590,
+            "estimatedTaxesAndFees": 3837,
+            "estimatedTotal": 39427,
+            "option": "delivery",
+            "when": "Saturday",
+            "gapWaiver": {
+              "available": true,
+              "price": 1195
+            }
+          }
+        },
+        {
+          "id": "call_2",
+          "ok": true,
+          "output": {
+            "count": 308,
+            "ratingCounts": [
+              {
+                "stars": 5,
+                "count": 727
+              },
+              {
+                "stars": 4,
+                "count": 494
+              },
+              {
+                "stars": 3,
+                "count": 207
+              },
+              {
+                "stars": 2,
+                "count": 78
+              },
+              {
+                "stars": 1,
+                "count": 12
+              }
+            ],
+            "reviews": [
+              {
+                "text": "<untrusted source=\"carvana-reviews\">I was hesitant about owning an EV and especially Tesla since I have heard stories about quality issues. However, my Tesla has been amazing and it's one of the best purchases I have made in the car realm.  Extremely comfortable to drive, amazing safety features. Constant over the air updates. Solid warranty on power train and battery.</untrusted>",
+                "rating": 0,
+                "date": "2025-12-01"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Don't listen to the haters. The Tesla Model Y is safe, reliable, and has all the tech you want but simplified in an easy to understand interface.</untrusted>",
+                "rating": 0,
+                "date": "2025-08-12"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">I use this car to drive rideshare (my retirement job). I drive most of the day 5 days a week everyone loves my car, including me. Completely problem free.</untrusted>",
+                "rating": 0,
+                "date": "2025-05-10"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Love it, don't miss pumping gas, love how quickly it accelerates.</untrusted>",
+                "rating": 0,
+                "date": "2025-05-10"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Don't buy it. AC or heating system is a failure. Air doesn't distribute uniformly. No phone mirroring; Difficult to control using small font screen. Service is aweful; You won't get an appointment in the next 2 months. Navigation system doesn't always find the superchargers;</untrusted>",
+                "rating": 2,
+                "date": "2024-09-03"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Great all around choice. It looks good and drives nicely. It reduces emissions and saves money by charging at home.</untrusted>",
+                "rating": 4,
+                "date": "2024-06-04"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">I love the Tesla. Charging is easy. I love all the technology in the car. It is fun to drive.</untrusted>",
+                "rating": 5,
+                "date": "2024-03-31"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">The cruise control and auto steer features of this vehicle are crap. They constantly brake and slow down for no apparent reason.</untrusted>",
+                "rating": 2,
+                "date": "2024-03-29"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">The Tesla Y has been somewhat of a disappointment. On the downside, the cabin is not airtight. Once the speed reaches over 45 mph, you can hear the wind enter the car. Two, the screen is way too large. This is distracting to the driver and child passengers are drawn to it and want to constantly play around with the games/music etc. The screen does not tilt towards the driver as in the Model X. Third, there is no sunglass holder under the rearview mirror. More importantly, I cannot stream podcasts from my iPhone. I cannot mirror my phone onto the Tesla screen. Only Spotify and calls from my phone work while in the car. Another major downside, the GPS has gotten me lost. It has brought me to the wrong location numerous times. This does not happen with the exact same addresses when inputted onto the Apple map app on my phone. Lastly, the trunk does not close properly. It looks closed but once you begin driving the car will beep and tell you the trunk is not closed. This happens quite ofte…</untrusted>",
+                "rating": 2,
+                "date": "2024-03-25"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">I am very happy with the Tesla Model Y. It handles and performs incredibly. I feel very good about the safety features in the car and the ability to have power when needed for passing. I hope in future models that they design a smoother ride on roads that are not smooth and that Tesla designs the Model Y to have better visibility out the back.</untrusted>",
+                "rating": 0,
+                "date": "2024-03-22"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">If you have daily commutes, golf, tennis, etc. and you enjoy technology, comfy quiet ride, and safety features when buzzing on interstates or just two lanes, try a Tesla.</untrusted>",
+                "rating": 0,
+                "date": "2024-03-22"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">The Tesla Model Y is a very comfortable and smooth ride. As soon as you get used to the feel of driving an electric vehicle and the screen, it is easy to drive and fun.</untrusted>",
+                "rating": 5,
+                "date": "2024-03-21"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Tesla is the safest car available to protect you and your family, it also costs a lot less to operate if you can charge at home.</untrusted>",
+                "rating": 0,
+                "date": "2024-03-21"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Think of the Model Y as a Camry that gets 100mpg but only has a three gallon tank. If you can't charge at home buy a ICE.</untrusted>",
+                "rating": 4,
+                "date": "2024-03-20"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">It is great to drive, it's safe, and you will love not having to go to a gas station. You will fall in love with it.</untrusted>",
+                "rating": 5,
+                "date": "2024-03-12"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Best first ev you can buy if you're wanting to go electric and not sure what to buy. Reliability for ev owners is paramount and Tesla delivers that overall.</untrusted>",
+                "rating": 0,
+                "date": "2024-03-11"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Technology at your hands - true work of art from performance to comfort. Charging infrastructure makes up for lack of customer service from Tesla. Don't believe the catchy articles of “Tesla recalled… millions\" or “I hear the battery dies and costs a lot\". Do your own research, numbers don't lie when you take into consideration short term vs long term upkeep/maintenance costs.</untrusted>",
+                "rating": 0,
+                "date": "2024-03-07"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">It is fun to drive and helps the environment</untrusted>",
+                "rating": 5,
+                "date": "2024-03-04"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Prepare to be wowed. Great experience every time I get in the driver's seat.</untrusted>",
+                "rating": 5,
+                "date": "2024-03-04"
+              },
+              {
+                "text": "<untrusted source=\"carvana-reviews\">Range anxiety is a myth.</untrusted>",
+                "rating": 5,
+                "date": "2024-03-03"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_carvana_vdp01",
+      "text": "The estimated total is $39,427: the $35,590 price plus $3,837 in estimated taxes and fees. Delivery to 94402 can be as soon as Saturday. If you finance, a GAP waiver is available for $1,195.\n\nOwners mostly like it: 1,221 of 1,518 ratings are 4 or 5 stars. Reviewers praise the comfort, safety features and technology, and low running costs if you can charge at home. The complaints: cruise control and autosteer braking for no reason, uneven heating and cooling, wind noise above 45 mph, and long waits for Tesla service.",
+      "present": [
+        {
+          "name": "present_detail",
+          "args": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview",
+              "reviews"
+            ]
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    }
+  ]
+}

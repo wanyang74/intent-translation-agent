@@ -1,0 +1,26 @@
+{
+  "id": "gap-01",
+  "site": "carvana",
+  "endpoint": "gap",
+  "kind": "recorded",
+  "source": "recording 2026-10-08, HAR entry 238",
+  "description": "car 4812031, 39427 financed",
+  "request": {
+    "method": "GET",
+    "url": "https://apimpub.carvana.com/ancillary-products-api/api/v2/GapWaiver/availability?amountFinanced=39427&homeState=CA&institutionName=Carvana&paymentType=Financing&vehicleId=4812031",
+    "headers": {
+      "accept": "application/json, text/plain, */*"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "isGapWaiverAvailable": true,
+      "price": 1195
+    }
+  }
+}

@@ -1,0 +1,1508 @@
+{
+  "id": "refine-with-suggestions",
+  "site": "carvana",
+  "description": "Three turns of narrowing a search. Each turn runs the search and the site's own filter suggestions in parallel, then shows the most popular cars and the suggestions as options. The second turn is the user tapping a suggestion.",
+  "now": "2026-10-08T19:15:00Z",
+  "fixtures": [
+    "search-01",
+    "facets-01",
+    "suggest-01",
+    "search-02",
+    "facets-02",
+    "suggest-02",
+    "search-05",
+    "facets-05",
+    "suggest-05"
+  ],
+  "notes": [
+    "A tapped suggestion is sent as a turn whose message is the suggestion's label (\"2023 or newer\"). That works when labels are unique; Carvana repeats some (\"Long Range\" for both Model Y and Model 3), so the options shown here skip the repeated ones.",
+    "The turns follow the recorded session (searches 01, 02 and 05); the user's third message combines three filters the recording added one at a time."
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "carvana",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine01",
+      "message": "I'm thinking about a Tesla.",
+      "pageContext": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine01",
+      "call": {
+        "id": "call_1",
+        "name": "search_vehicles",
+        "args": {
+          "zip5": "94402",
+          "make": "Tesla"
+        }
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine01",
+      "call": {
+        "id": "call_2",
+        "name": "suggest_refinements",
+        "args": {
+          "zip5": "94402",
+          "current": {
+            "zip5": "94402",
+            "make": "Tesla"
+          }
+        }
+      }
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_carvana_refine01",
+      "callIds": [
+        "call_1",
+        "call_2"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine01",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "vehicles": [
+              {
+                "vehicleId": 4811903,
+                "stockNumber": 3006796550,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 24236,
+                "color": "White",
+                "price": 34990,
+                "estimatedTaxesAndFees": 3776,
+                "estimatedTotal": 38766,
+                "locationId": 356,
+                "deepLink": "https://www.carvana.com/vehicle/4811903"
+              },
+              {
+                "vehicleId": 4793766,
+                "stockNumber": 3006699773,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 47857,
+                "color": "Gray",
+                "price": 34590,
+                "estimatedTaxesAndFees": 3736,
+                "estimatedTotal": 38326,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4793766"
+              },
+              {
+                "vehicleId": 4788650,
+                "stockNumber": 3006696128,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 25668,
+                "color": "Gray",
+                "price": 28590,
+                "estimatedTaxesAndFees": 3133,
+                "estimatedTotal": 31723,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4788650"
+              },
+              {
+                "vehicleId": 4724980,
+                "stockNumber": 3006530631,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 61404,
+                "color": "White",
+                "price": 26990,
+                "estimatedTaxesAndFees": 2973,
+                "estimatedTotal": 29963,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4724980"
+              },
+              {
+                "vehicleId": 4788898,
+                "stockNumber": 3006648283,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 21656,
+                "color": "White",
+                "price": 39590,
+                "estimatedTaxesAndFees": 4239,
+                "estimatedTotal": 43829,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4788898"
+              },
+              {
+                "vehicleId": 4797866,
+                "stockNumber": 3006711913,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 22473,
+                "color": "White",
+                "price": 29990,
+                "estimatedTaxesAndFees": 3274,
+                "estimatedTotal": 33264,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4797866"
+              },
+              {
+                "vehicleId": 4767068,
+                "stockNumber": 3006609690,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 13939,
+                "color": "Blue",
+                "price": 38590,
+                "estimatedTaxesAndFees": 4138,
+                "estimatedTotal": 42728,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4767068"
+              },
+              {
+                "vehicleId": 4715639,
+                "stockNumber": 3006397025,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Long Range",
+                "mileage": 14289,
+                "color": "White",
+                "price": 33590,
+                "estimatedTaxesAndFees": 3636,
+                "estimatedTotal": 37226,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4715639"
+              },
+              {
+                "vehicleId": 4691945,
+                "stockNumber": 3006401105,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 30286,
+                "color": "White",
+                "price": 35990,
+                "estimatedTaxesAndFees": 3877,
+                "estimatedTotal": 39867,
+                "locationId": 356,
+                "deepLink": "https://www.carvana.com/vehicle/4691945"
+              },
+              {
+                "vehicleId": 4782454,
+                "stockNumber": 2004848771,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 49853,
+                "color": "Gray",
+                "price": 26990,
+                "estimatedTaxesAndFees": 2973,
+                "estimatedTotal": 29963,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4782454"
+              },
+              {
+                "vehicleId": 4723810,
+                "stockNumber": 3006494223,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 44888,
+                "color": "White",
+                "price": 31590,
+                "estimatedTaxesAndFees": 3435,
+                "estimatedTotal": 35025,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4723810"
+              },
+              {
+                "vehicleId": 4812031,
+                "stockNumber": 3006794022,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 27689,
+                "color": "Gray",
+                "price": 35590,
+                "estimatedTaxesAndFees": 3837,
+                "estimatedTotal": 39427,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4812031"
+              },
+              {
+                "vehicleId": 4781702,
+                "stockNumber": 3006636352,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Long Range",
+                "mileage": 35495,
+                "color": "White",
+                "price": 30990,
+                "estimatedTaxesAndFees": 3374,
+                "estimatedTotal": 34364,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4781702"
+              },
+              {
+                "vehicleId": 4756196,
+                "stockNumber": 3006655986,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 72901,
+                "color": "White",
+                "price": 28990,
+                "estimatedTaxesAndFees": 3174,
+                "estimatedTotal": 32164,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4756196"
+              },
+              {
+                "vehicleId": 4804666,
+                "stockNumber": 3006729439,
+                "year": 2022,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 37447,
+                "color": "Gray",
+                "price": 33590,
+                "estimatedTaxesAndFees": 3636,
+                "estimatedTotal": 37226,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4804666"
+              },
+              {
+                "vehicleId": 4788806,
+                "stockNumber": 3006699335,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 40808,
+                "color": "White",
+                "price": 27590,
+                "estimatedTaxesAndFees": 3033,
+                "estimatedTotal": 30623,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4788806"
+              },
+              {
+                "vehicleId": 4783256,
+                "stockNumber": 3006654032,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 50264,
+                "color": "Silver",
+                "price": 36990,
+                "estimatedTaxesAndFees": 3977,
+                "estimatedTotal": 40967,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4783256"
+              },
+              {
+                "vehicleId": 4776106,
+                "stockNumber": 3006675923,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 34604,
+                "color": "White",
+                "price": 36590,
+                "estimatedTaxesAndFees": 3937,
+                "estimatedTotal": 40527,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4776106"
+              },
+              {
+                "vehicleId": 4747521,
+                "stockNumber": 3006631184,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 33687,
+                "color": "Red",
+                "price": 34990,
+                "estimatedTaxesAndFees": 3776,
+                "estimatedTotal": 38766,
+                "locationId": 356,
+                "deepLink": "https://www.carvana.com/vehicle/4747521"
+              },
+              {
+                "vehicleId": 4743347,
+                "stockNumber": 3006567783,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 17161,
+                "color": "Black",
+                "price": 37990,
+                "estimatedTaxesAndFees": 4078,
+                "estimatedTotal": 42068,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4743347"
+              },
+              {
+                "vehicleId": 4762928,
+                "stockNumber": 3006623738,
+                "year": 2021,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 77086,
+                "color": "White",
+                "price": 27590,
+                "estimatedTaxesAndFees": 3033,
+                "estimatedTotal": 30623,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4762928"
+              }
+            ],
+            "totalMatches": 1871,
+            "totalPages": 82,
+            "page": 1,
+            "searchLink": "https://www.carvana.com/cars/filters?cvnaid=eyJmaWx0ZXJzIjp7Im1ha2VzIjpbeyJuYW1lIjoiVGVzbGEifV19fQ==",
+            "nextStep": "To check delivery dates, call get_delivery_dates once with all the vehicle IDs."
+          }
+        },
+        {
+          "id": "call_2",
+          "ok": true,
+          "output": {
+            "suggestions": [
+              {
+                "suggestionId": "4ebc7c31-d7a5-4b83-982e-94675481bb37",
+                "label": "2023 or newer",
+                "matches": 780
+              },
+              {
+                "suggestionId": "e7ae549d-9685-4a96-9cd3-d5cc4c099db2",
+                "label": "AWD",
+                "matches": 1276
+              },
+              {
+                "suggestionId": "28ad3426-5437-495e-a0f1-2cbf59bff082",
+                "label": "Great Deals",
+                "matches": 268
+              },
+              {
+                "suggestionId": "d763110d-6e71-4037-8272-7391631e5575",
+                "label": "Long Range",
+                "matches": 492
+              },
+              {
+                "suggestionId": "d09d503f-40ea-40f2-9ead-79a2e8d4ce9c",
+                "label": "Black Interior",
+                "matches": 1329
+              },
+              {
+                "suggestionId": "ee50f362-0162-4d47-86aa-a194d15098aa",
+                "label": "Long Range",
+                "matches": 296
+              },
+              {
+                "suggestionId": "f3085f7d-08b7-4b29-a238-4f8be18aa8b3",
+                "label": "Under 40,000 miles",
+                "matches": 655
+              },
+              {
+                "suggestionId": "8848b77e-2e9e-4235-8d8f-07c24dedbaad",
+                "label": "White Exterior",
+                "matches": 481
+              },
+              {
+                "suggestionId": "07833a0b-13b4-4269-84c7-2dfce51d6a0d",
+                "label": "2022 or newer",
+                "matches": 1157
+              },
+              {
+                "suggestionId": "38b48bf6-d2f2-4427-bd7f-1dee3014e0d6",
+                "label": "Under $30,000",
+                "matches": 1003
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_carvana_refine01",
+      "text": "Carvana has 1,871 Teslas that can come to 94402. These are the most popular. Pick a filter to narrow them down, or tell me what matters to you.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "vehicle",
+            "ids": [
+              4811903,
+              4793766,
+              4788650,
+              4724980,
+              4788898,
+              4797866,
+              4767068,
+              4715639
+            ],
+            "heading": "Most popular Teslas",
+            "layout": "carousel"
+          }
+        },
+        {
+          "name": "present_options",
+          "args": {
+            "entity": "suggestion",
+            "ids": [
+              "4ebc7c31-d7a5-4b83-982e-94675481bb37",
+              "e7ae549d-9685-4a96-9cd3-d5cc4c099db2",
+              "28ad3426-5437-495e-a0f1-2cbf59bff082",
+              "d09d503f-40ea-40f2-9ead-79a2e8d4ce9c",
+              "f3085f7d-08b7-4b29-a238-4f8be18aa8b3",
+              "38b48bf6-d2f2-4427-bd7f-1dee3014e0d6"
+            ],
+            "heading": "Narrow it down"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    },
+    {
+      "type": "turn",
+      "site": "carvana",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine02",
+      "message": "2023 or newer",
+      "pageContext": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine02",
+      "call": {
+        "id": "call_3",
+        "name": "search_vehicles",
+        "args": {
+          "zip5": "94402",
+          "make": "Tesla",
+          "year_min": 2023
+        }
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine02",
+      "call": {
+        "id": "call_4",
+        "name": "suggest_refinements",
+        "args": {
+          "zip5": "94402",
+          "current": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023
+          }
+        }
+      }
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_carvana_refine02",
+      "callIds": [
+        "call_3",
+        "call_4"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine02",
+      "results": [
+        {
+          "id": "call_3",
+          "ok": true,
+          "output": {
+            "vehicles": [
+              {
+                "vehicleId": 4691945,
+                "stockNumber": 3006401105,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 30286,
+                "color": "White",
+                "price": 35990,
+                "estimatedTaxesAndFees": 3877,
+                "estimatedTotal": 39867,
+                "locationId": 356,
+                "deepLink": "https://www.carvana.com/vehicle/4691945"
+              },
+              {
+                "vehicleId": 4793766,
+                "stockNumber": 3006699773,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 47857,
+                "color": "Gray",
+                "price": 34590,
+                "estimatedTaxesAndFees": 3736,
+                "estimatedTotal": 38326,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4793766"
+              },
+              {
+                "vehicleId": 4797866,
+                "stockNumber": 3006711913,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 22473,
+                "color": "White",
+                "price": 29990,
+                "estimatedTaxesAndFees": 3274,
+                "estimatedTotal": 33264,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4797866"
+              },
+              {
+                "vehicleId": 4767068,
+                "stockNumber": 3006609690,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 13939,
+                "color": "Blue",
+                "price": 38590,
+                "estimatedTaxesAndFees": 4138,
+                "estimatedTotal": 42728,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4767068"
+              },
+              {
+                "vehicleId": 4782454,
+                "stockNumber": 2004848771,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 49853,
+                "color": "Gray",
+                "price": 26990,
+                "estimatedTaxesAndFees": 2973,
+                "estimatedTotal": 29963,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4782454"
+              },
+              {
+                "vehicleId": 4724980,
+                "stockNumber": 3006530631,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 61404,
+                "color": "White",
+                "price": 26990,
+                "estimatedTaxesAndFees": 2973,
+                "estimatedTotal": 29963,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4724980"
+              },
+              {
+                "vehicleId": 4776106,
+                "stockNumber": 3006675923,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 34604,
+                "color": "White",
+                "price": 36590,
+                "estimatedTaxesAndFees": 3937,
+                "estimatedTotal": 40527,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4776106"
+              },
+              {
+                "vehicleId": 4755644,
+                "stockNumber": 3006615791,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 34078,
+                "color": "Black",
+                "price": 40590,
+                "estimatedTaxesAndFees": 4339,
+                "estimatedTotal": 44929,
+                "locationId": 413,
+                "deepLink": "https://www.carvana.com/vehicle/4755644"
+              },
+              {
+                "vehicleId": 4788898,
+                "stockNumber": 3006648283,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 21656,
+                "color": "White",
+                "price": 39590,
+                "estimatedTaxesAndFees": 4239,
+                "estimatedTotal": 43829,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4788898"
+              },
+              {
+                "vehicleId": 4747521,
+                "stockNumber": 3006631184,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 33687,
+                "color": "Red",
+                "price": 34990,
+                "estimatedTaxesAndFees": 3776,
+                "estimatedTotal": 38766,
+                "locationId": 356,
+                "deepLink": "https://www.carvana.com/vehicle/4747521"
+              },
+              {
+                "vehicleId": 4756196,
+                "stockNumber": 3006655986,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 72901,
+                "color": "White",
+                "price": 28990,
+                "estimatedTaxesAndFees": 3174,
+                "estimatedTotal": 32164,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4756196"
+              },
+              {
+                "vehicleId": 4709280,
+                "stockNumber": 3006453707,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 95732,
+                "color": "Black",
+                "price": 21990,
+                "estimatedTaxesAndFees": 2470,
+                "estimatedTotal": 24460,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4709280"
+              },
+              {
+                "vehicleId": 4779097,
+                "stockNumber": 3006698277,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 47530,
+                "color": "Black",
+                "price": 34590,
+                "estimatedTaxesAndFees": 3736,
+                "estimatedTotal": 38326,
+                "locationId": 413,
+                "deepLink": "https://www.carvana.com/vehicle/4779097"
+              },
+              {
+                "vehicleId": 4794318,
+                "stockNumber": 3006727519,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Long Range",
+                "mileage": 41806,
+                "color": "White",
+                "price": 31590,
+                "estimatedTaxesAndFees": 3435,
+                "estimatedTotal": 35025,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4794318"
+              },
+              {
+                "vehicleId": 4743347,
+                "stockNumber": 3006567783,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 17161,
+                "color": "Black",
+                "price": 37990,
+                "estimatedTaxesAndFees": 4078,
+                "estimatedTotal": 42068,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4743347"
+              },
+              {
+                "vehicleId": 4783256,
+                "stockNumber": 3006654032,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 50264,
+                "color": "Silver",
+                "price": 36990,
+                "estimatedTaxesAndFees": 3977,
+                "estimatedTotal": 40967,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4783256"
+              },
+              {
+                "vehicleId": 4812031,
+                "stockNumber": 3006794022,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 27689,
+                "color": "Gray",
+                "price": 35590,
+                "estimatedTaxesAndFees": 3837,
+                "estimatedTotal": 39427,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4812031"
+              },
+              {
+                "vehicleId": 4773567,
+                "stockNumber": 3006673661,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 65044,
+                "color": "Gray",
+                "price": 32590,
+                "estimatedTaxesAndFees": 3535,
+                "estimatedTotal": 36125,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4773567"
+              },
+              {
+                "vehicleId": 4788806,
+                "stockNumber": 3006699335,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 40808,
+                "color": "White",
+                "price": 27590,
+                "estimatedTaxesAndFees": 3033,
+                "estimatedTotal": 30623,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4788806"
+              },
+              {
+                "vehicleId": 4769484,
+                "stockNumber": 3006683860,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Long Range",
+                "mileage": 90317,
+                "color": "Gray",
+                "price": 25590,
+                "estimatedTaxesAndFees": 2832,
+                "estimatedTotal": 28422,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4769484"
+              },
+              {
+                "vehicleId": 4782382,
+                "stockNumber": 3006654209,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 35273,
+                "color": "Blue",
+                "price": 34590,
+                "estimatedTaxesAndFees": 3736,
+                "estimatedTotal": 38326,
+                "locationId": 147,
+                "deepLink": "https://www.carvana.com/vehicle/4782382"
+              }
+            ],
+            "totalMatches": 780,
+            "totalPages": 34,
+            "page": 1,
+            "searchLink": "https://www.carvana.com/cars/filters?cvnaid=eyJmaWx0ZXJzIjp7Im1ha2VzIjpbeyJuYW1lIjoiVGVzbGEifV0sInllYXIiOnsibWluIjoyMDIzfX19",
+            "nextStep": "To check delivery dates, call get_delivery_dates once with all the vehicle IDs."
+          }
+        },
+        {
+          "id": "call_4",
+          "ok": true,
+          "output": {
+            "suggestions": [
+              {
+                "suggestionId": "ee9817cc-3110-43a8-a227-309679175bc2",
+                "label": "AWD",
+                "matches": 478
+              },
+              {
+                "suggestionId": "3606e8cf-cce6-41a8-ae18-69719f7281fa",
+                "label": "Long Range",
+                "matches": 306
+              },
+              {
+                "suggestionId": "2f83fa52-9120-4c6d-a8b6-b069fdea1555",
+                "label": "Black Interior",
+                "matches": 581
+              },
+              {
+                "suggestionId": "09fb1793-a455-4b23-9a41-82d4381cbaac",
+                "label": "Under 40,000 miles",
+                "matches": 453
+              },
+              {
+                "suggestionId": "ec0ff45b-7d09-4fc4-a363-4c5f7277a792",
+                "label": "White Exterior",
+                "matches": 168
+              },
+              {
+                "suggestionId": "dde6783e-d06b-498b-bb64-aca3df6dd7dc",
+                "label": "Long Range",
+                "matches": 59
+              },
+              {
+                "suggestionId": "27a57381-8406-4a67-9f5d-5b21f4c98d75",
+                "label": "Under $30,000",
+                "matches": 221
+              },
+              {
+                "suggestionId": "8b9efc87-563c-4f55-a395-64e64c59dd1a",
+                "label": "Under 30,000 miles",
+                "matches": 285
+              },
+              {
+                "suggestionId": "6dbe06d9-9c67-4af2-8b2d-294de41e92d8",
+                "label": "Tesla Model Y",
+                "matches": 461
+              },
+              {
+                "suggestionId": "9f7cd1a0-7aa1-4492-a558-06b68ceaced1",
+                "label": "White Interior",
+                "matches": 125
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_carvana_refine02",
+      "text": "780 Teslas are 2023 or newer. Here are the most popular.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "vehicle",
+            "ids": [
+              4691945,
+              4793766,
+              4797866,
+              4767068,
+              4782454,
+              4724980,
+              4776106,
+              4755644
+            ],
+            "heading": "2023 or newer",
+            "layout": "carousel"
+          }
+        },
+        {
+          "name": "present_options",
+          "args": {
+            "entity": "suggestion",
+            "ids": [
+              "ee9817cc-3110-43a8-a227-309679175bc2",
+              "2f83fa52-9120-4c6d-a8b6-b069fdea1555",
+              "09fb1793-a455-4b23-9a41-82d4381cbaac",
+              "8b9efc87-563c-4f55-a395-64e64c59dd1a",
+              "6dbe06d9-9c67-4af2-8b2d-294de41e92d8",
+              "27a57381-8406-4a67-9f5d-5b21f4c98d75"
+            ],
+            "heading": "Narrow it down"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    },
+    {
+      "type": "turn",
+      "site": "carvana",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine03",
+      "message": "Under 42,100 miles, gray outside, black inside.",
+      "pageContext": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine03",
+      "call": {
+        "id": "call_5",
+        "name": "search_vehicles",
+        "args": {
+          "zip5": "94402",
+          "make": "Tesla",
+          "year_min": 2023,
+          "mileage_max": 42100,
+          "colors": [
+            "Gray"
+          ],
+          "interior_colors": [
+            "Black"
+          ]
+        }
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_refine03",
+      "call": {
+        "id": "call_6",
+        "name": "suggest_refinements",
+        "args": {
+          "zip5": "94402",
+          "current": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100,
+            "colors": [
+              "Gray"
+            ],
+            "interior_colors": [
+              "Black"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_carvana_refine03",
+      "callIds": [
+        "call_5",
+        "call_6"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_carvana_refine01",
+      "traceId": "trace_carvana_refine03",
+      "results": [
+        {
+          "id": "call_5",
+          "ok": true,
+          "output": {
+            "vehicles": [
+              {
+                "vehicleId": 4812031,
+                "stockNumber": 3006794022,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 27689,
+                "color": "Gray",
+                "price": 35590,
+                "estimatedTaxesAndFees": 3837,
+                "estimatedTotal": 39427,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4812031"
+              },
+              {
+                "vehicleId": 4775681,
+                "stockNumber": 3006595293,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Premium",
+                "mileage": 12660,
+                "color": "Gray",
+                "price": 41990,
+                "estimatedTaxesAndFees": 4480,
+                "estimatedTotal": 46470,
+                "locationId": 43,
+                "deepLink": "https://www.carvana.com/vehicle/4775681"
+              },
+              {
+                "vehicleId": 4695181,
+                "stockNumber": 3006423613,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 2520,
+                "color": "Gray",
+                "price": 50990,
+                "estimatedTaxesAndFees": 5384,
+                "estimatedTotal": 56374,
+                "locationId": 413,
+                "deepLink": "https://www.carvana.com/vehicle/4695181"
+              },
+              {
+                "vehicleId": 4688468,
+                "stockNumber": 3006515296,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 32723,
+                "color": "Gray",
+                "price": 33990,
+                "estimatedTaxesAndFees": 3676,
+                "estimatedTotal": 37666,
+                "locationId": 357,
+                "deepLink": "https://www.carvana.com/vehicle/4688468"
+              },
+              {
+                "vehicleId": 4781875,
+                "stockNumber": 3006649362,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 19422,
+                "color": "Gray",
+                "price": 38590,
+                "estimatedTaxesAndFees": 4138,
+                "estimatedTotal": 42728,
+                "locationId": 357,
+                "deepLink": "https://www.carvana.com/vehicle/4781875"
+              },
+              {
+                "vehicleId": 4760129,
+                "stockNumber": 3006632252,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 32448,
+                "color": "Gray",
+                "price": 40590,
+                "estimatedTaxesAndFees": 4339,
+                "estimatedTotal": 44929,
+                "locationId": 43,
+                "deepLink": "https://www.carvana.com/vehicle/4760129"
+              },
+              {
+                "vehicleId": 4795274,
+                "stockNumber": 3006727828,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 24878,
+                "color": "Gray",
+                "price": 35990,
+                "estimatedTaxesAndFees": 3877,
+                "estimatedTotal": 39867,
+                "locationId": 300,
+                "deepLink": "https://www.carvana.com/vehicle/4795274"
+              },
+              {
+                "vehicleId": 4784285,
+                "stockNumber": 3006698164,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 30470,
+                "color": "Gray",
+                "price": 28590,
+                "estimatedTaxesAndFees": 3133,
+                "estimatedTotal": 31723,
+                "locationId": 111,
+                "deepLink": "https://www.carvana.com/vehicle/4784285"
+              },
+              {
+                "vehicleId": 4801398,
+                "stockNumber": 3006513478,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Performance",
+                "mileage": 11434,
+                "color": "Gray",
+                "price": 53990,
+                "estimatedTaxesAndFees": 5685,
+                "estimatedTotal": 59675,
+                "locationId": 13,
+                "deepLink": "https://www.carvana.com/vehicle/4801398"
+              },
+              {
+                "vehicleId": 4782810,
+                "stockNumber": 3006703237,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 14799,
+                "color": "Gray",
+                "price": 40990,
+                "estimatedTaxesAndFees": 4379,
+                "estimatedTotal": 45369,
+                "locationId": 128,
+                "deepLink": "https://www.carvana.com/vehicle/4782810"
+              },
+              {
+                "vehicleId": 4730680,
+                "stockNumber": 3006573539,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Performance",
+                "mileage": 30234,
+                "color": "Gray",
+                "price": 45590,
+                "estimatedTaxesAndFees": 4841,
+                "estimatedTotal": 50431,
+                "locationId": 111,
+                "deepLink": "https://www.carvana.com/vehicle/4730680"
+              },
+              {
+                "vehicleId": 4761249,
+                "stockNumber": 3006611544,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 10774,
+                "color": "Gray",
+                "price": 45990,
+                "estimatedTaxesAndFees": 4882,
+                "estimatedTotal": 50872,
+                "locationId": 43,
+                "deepLink": "https://www.carvana.com/vehicle/4761249"
+              },
+              {
+                "vehicleId": 4768607,
+                "stockNumber": 3006668095,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 15075,
+                "color": "Gray",
+                "price": 45990,
+                "estimatedTaxesAndFees": 4882,
+                "estimatedTotal": 50872,
+                "locationId": 371,
+                "deepLink": "https://www.carvana.com/vehicle/4768607"
+              },
+              {
+                "vehicleId": 4796580,
+                "stockNumber": 3006710983,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Standard",
+                "mileage": 41431,
+                "color": "Gray",
+                "price": 27590,
+                "estimatedTaxesAndFees": 3033,
+                "estimatedTotal": 30623,
+                "locationId": 371,
+                "deepLink": "https://www.carvana.com/vehicle/4796580"
+              },
+              {
+                "vehicleId": 4799447,
+                "stockNumber": 3006760554,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 37592,
+                "color": "Gray",
+                "price": 33990,
+                "estimatedTaxesAndFees": 3676,
+                "estimatedTotal": 37666,
+                "locationId": 111,
+                "deepLink": "https://www.carvana.com/vehicle/4799447"
+              },
+              {
+                "vehicleId": 4744652,
+                "stockNumber": 3006560661,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model 3",
+                "trim": "Premium",
+                "mileage": 4544,
+                "color": "Gray",
+                "price": 46990,
+                "estimatedTaxesAndFees": 4982,
+                "estimatedTotal": 51972,
+                "locationId": 79,
+                "deepLink": "https://www.carvana.com/vehicle/4744652"
+              },
+              {
+                "vehicleId": 4735860,
+                "stockNumber": 3006605481,
+                "year": 2026,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Standard",
+                "mileage": 23346,
+                "color": "Gray",
+                "price": 43990,
+                "estimatedTaxesAndFees": 4681,
+                "estimatedTotal": 48671,
+                "locationId": 224,
+                "deepLink": "https://www.carvana.com/vehicle/4735860"
+              },
+              {
+                "vehicleId": 4795494,
+                "stockNumber": 3006751358,
+                "year": 2024,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 11847,
+                "color": "Gray",
+                "price": 41590,
+                "estimatedTaxesAndFees": 4439,
+                "estimatedTotal": 46029,
+                "locationId": 111,
+                "deepLink": "https://www.carvana.com/vehicle/4795494"
+              },
+              {
+                "vehicleId": 4794078,
+                "stockNumber": 3006742657,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Performance",
+                "mileage": 24825,
+                "color": "Gray",
+                "price": 37590,
+                "estimatedTaxesAndFees": 4038,
+                "estimatedTotal": 41628,
+                "locationId": 224,
+                "deepLink": "https://www.carvana.com/vehicle/4794078"
+              },
+              {
+                "vehicleId": 4759131,
+                "stockNumber": 3006624455,
+                "year": 2025,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 37932,
+                "color": "Gray",
+                "price": 40990,
+                "estimatedTaxesAndFees": 4379,
+                "estimatedTotal": 45369,
+                "locationId": 247,
+                "deepLink": "https://www.carvana.com/vehicle/4759131"
+              },
+              {
+                "vehicleId": 4805089,
+                "stockNumber": 3006651006,
+                "year": 2023,
+                "make": "Tesla",
+                "model": "Model Y",
+                "trim": "Long Range",
+                "mileage": 23555,
+                "color": "Gray",
+                "price": 36590,
+                "estimatedTaxesAndFees": 3937,
+                "estimatedTotal": 40527,
+                "locationId": 247,
+                "deepLink": "https://www.carvana.com/vehicle/4805089"
+              }
+            ],
+            "totalMatches": 131,
+            "totalPages": 6,
+            "page": 1,
+            "searchLink": "https://www.carvana.com/cars/filters?cvnaid=eyJmaWx0ZXJzIjp7Im1ha2VzIjpbeyJuYW1lIjoiVGVzbGEifV0sInllYXIiOnsibWluIjoyMDIzfSwibWlsZWFnZSI6eyJtYXgiOjQyMTAwfSwiY29sb3JzIjpbIkdyYXkiXSwiaW50ZXJpb3JDb2xvcnMiOlsiQmxhY2siXX19",
+            "nextStep": "To check delivery dates, call get_delivery_dates once with all the vehicle IDs."
+          }
+        },
+        {
+          "id": "call_6",
+          "ok": true,
+          "output": {
+            "suggestions": [
+              {
+                "suggestionId": "d2ba049b-b5d1-446d-b562-0a48c0262261",
+                "label": "Long Range",
+                "matches": 50
+              },
+              {
+                "suggestionId": "f0e821ed-e213-44eb-a752-b0214fb63500",
+                "label": "AWD",
+                "matches": 75
+              },
+              {
+                "suggestionId": "611cf4d7-c9dd-4e59-889e-5e9023bd10ff",
+                "label": "Tesla Model X",
+                "matches": 1
+              },
+              {
+                "suggestionId": "4fa1d675-702e-4e9c-9787-76149905bcbc",
+                "label": "Long Range",
+                "matches": 17
+              },
+              {
+                "suggestionId": "2d7bff87-28aa-4679-bb4e-6d842d4cde79",
+                "label": "Under $35,000",
+                "matches": 41
+              },
+              {
+                "suggestionId": "58c6560b-b122-4797-8ea9-0ec9a7541d49",
+                "label": "Free Shipping",
+                "matches": 16
+              },
+              {
+                "suggestionId": "3664ce40-d80b-4074-b992-6f5f53c69fe4",
+                "label": "Great Deals",
+                "matches": 34
+              },
+              {
+                "suggestionId": "9969b34f-268b-44f5-a634-c54b3729d1de",
+                "label": "Under $40,000",
+                "matches": 87
+              },
+              {
+                "suggestionId": "4c431492-2a96-4f00-a144-51cbd16dab8b",
+                "label": "Tesla Model Y",
+                "matches": 78
+              },
+              {
+                "suggestionId": "7d9a5100-85ff-4528-8616-70b2f08c4f6f",
+                "label": "Under $30,000",
+                "matches": 16
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_carvana_refine03",
+      "text": "131 match: 2023 or newer, under 42,100 miles, gray with a black interior. Most popular first. Adding AWD would leave 75.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "vehicle",
+            "ids": [
+              4812031,
+              4775681,
+              4695181,
+              4688468,
+              4781875,
+              4760129,
+              4795274,
+              4784285
+            ],
+            "heading": "Gray, black interior, under 42,100 miles",
+            "layout": "carousel"
+          }
+        },
+        {
+          "name": "present_options",
+          "args": {
+            "entity": "suggestion",
+            "ids": [
+              "f0e821ed-e213-44eb-a752-b0214fb63500",
+              "4c431492-2a96-4f00-a144-51cbd16dab8b",
+              "9969b34f-268b-44f5-a634-c54b3729d1de",
+              "2d7bff87-28aa-4679-bb4e-6d842d4cde79",
+              "3664ce40-d80b-4074-b992-6f5f53c69fe4",
+              "58c6560b-b122-4797-8ea9-0ec9a7541d49"
+            ],
+            "heading": "Narrow it down"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+# Site pack: Carvana
+# The platform reads this file; it never names a site itself. Validated against platform/contract/schemas/site-pack.json.
+# History: inferred from one HAR recording (2026-10-08, signed out, read-only); reviewed against Anthropic's
+# "The anatomy of effective commerce agents" (2026-10-10); updated after the phase 0 live checks (2026-10-11);
+# converted to the site-pack format (2026-10-12). Nothing here has been reviewed by Carvana.
+
+site:
+  id: carvana
+  name: Carvana
+  origins: [https://www.carvana.com, https://apik.carvana.io, https://apimpub.carvana.com]
+  locale: en-US
+  pageTypes: [search, vehicle, other]
+  requires:
+    location: postal_code   # every call passes the zip code explicitly: page context or asked; never the browser's location
+    signIn: never           # the mini version is signed out
+
+entities:
+  vehicle:
+    description: A car for sale
+    id: { type: integer }
+    fields:
+      price: { label: Price, type: money, from: price }
+      estimatedTaxesAndFees: { label: Est. taxes and fees, type: money, estimate: true, from: estimatedTaxesAndFees }
+      estimatedTotal: { label: Estimated total, type: money, estimate: true, from: derived }
+      year: { label: Year, type: integer, from: year }
+      trim: { label: Trim, type: text, from: trim }
+      mileage: { label: Mileage, type: integer, unit: mi, from: mileage }
+      color: { label: Color, type: text, from: color }
+      delivery: { label: Delivery, type: text, from: get_delivery_dates.delivery.text }
+      gapWaiver: { label: GAP waiver, type: money, from: get_vehicle_quote.gapWaiver.price }
+      ownerRating: { label: Owner rating, type: number, from: get_owner_reviews }
+    card:
+      title: "{year} {make} {model}"
+      subtitle: "{trim} · {mileage} mi"
+      fields: [price, estimatedTotal, delivery]
+      link: vehicle
+    sections: [overview, features, imperfections, reviews]
+  route:
+    description: Carvana's delivery or pickup route token (gzip + base64url JSON of servicing location and zip code)
+    id: { type: string, pattern: "^H4sI" }
+    internal: true
+  suggestion:
+    description: A filter Carvana suggests for narrowing the current results
+    id: { type: string }
+    card: { title: "{label}", subtitle: "{matches} cars" }
+
+endpoints:
+  search:
+    description: Vehicle search. Also carries price and estimated taxes and fees for every car.
+    method: POST
+    url: https://apik.carvana.io/merch/search/api/v2/search
+    request: endpoints/search.request.json
+    response: endpoints/search.response.json
+    headers: { x-cvna-ncc-disabled: "false", x-cvna-sebs-srp: "true" }
+    matchKey: [filters, pagination.page, sortBy, zip5]
+    ids: [{ kind: vehicle, path: "inventory.vehicles[].vehicleId" }]
+    verified: phase 0 live check, 2026-10-11
+  facets:
+    description: Valid values and counts for each filter
+    method: POST
+    url: https://apik.carvana.io/merch/search/api/v2/search/facets
+    request: endpoints/facets.request.json
+    response: endpoints/facets.response.json
+    matchKey: [filters, zip5]
+    verified: phase 0 live check, 2026-10-11
+  suggest:
+    description: Filters Carvana suggests for the current search
+    method: POST
+    url: https://apik.carvana.io/merch/search/api/v1/suggest/filters
+    request: endpoints/suggest.request.json
+    response: endpoints/suggest.response.json
+    tracking: { fields: [browserCookieId, analyticsData.clientId] }
+    matchKey: [filters, zip5]
+    ids: [{ kind: suggestion, path: "suggestedFilters[].suggestionId" }]
+    verified: phase 0 live check, 2026-10-11
+  availability:
+    description: Earliest delivery and pickup for a list of cars; one call covers a results page
+    method: POST
+    url: https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk
+    request: endpoints/availability.request.json
+    response: endpoints/availability.response.json
+    tracking: { headers: [clientid, browsercookieid, correlationid] }
+    matchKey: ["vehicles[].vehicleId:sorted", zipCode]
+    ids:
+      - { kind: route, path: "content[].soonestDelivery.content.routeId" }
+      - { kind: route, path: "content[].soonestPickup.content.routeId" }
+    verified: phase 0 live check, 2026-10-11
+  pricing:
+    description: Quote for one car on one delivery or pickup route
+    method: POST
+    url: https://apik.carvana.io/merch/search/api/v2/pricing/vehicle
+    request: endpoints/pricing.request.json
+    response: endpoints/pricing.response.json
+    tracking: { fields: [analyticsData.clientId] }
+    matchKey: [vehicleId, routeId, zip5]
+    verified: phase 0 live check, 2026-10-11
+  gap:
+    description: Whether a GAP waiver is offered for a financed amount, and its price
+    method: GET
+    url: https://apimpub.carvana.com/ancillary-products-api/api/v2/GapWaiver/availability
+    request: endpoints/gap.request.json
+    response: endpoints/gap.response.json
+    matchKey: [vehicleId, amountFinanced, homeState]
+    verified: phase 0 live check, 2026-10-11
+  reviews:
+    description: Owner reviews for a make, model, trim and year (third-party text)
+    method: POST
+    url: https://apik.carvana.io/merch/reviews/api/review/sv
+    request: endpoints/reviews.request.json
+    response: endpoints/reviews.response.json
+    matchKey: [make, model, trim, year, from, size]
+    verified: phase 0 live check, 2026-10-11
+  vehicle_page:
+    description: The vehicle page's HTML; details come from the Next.js data embedded in it
+    method: GET
+    url: "https://www.carvana.com/vehicle/{vehicleId}"
+    responseFormat: html
+    request: endpoints/vehicle-page.request.json
+    response: endpoints/vehicle-page.response.json
+    matchKey: [vehicleId]
+    verified: phase 0 live check, 2026-10-11 (two cars)
+
+tools:
+  search_vehicles:
+    description: Search cars for sale with structured filters; returns a trimmed list and the valid values for each filter
+    input: tools/search_vehicles.input.json
+    output: tools/search_vehicles.output.json
+    uses: [search, facets]
+    sideEffect: read
+    presentation: present_items
+    ids: { output: [{ kind: vehicle, path: "vehicles[].vehicleId" }] }
+    nextStep: To check delivery dates, call get_delivery_dates once with all the vehicle IDs.
+    errors:
+      invalid_filter_value: { code: invalid_value, message: "'{value}' isn't a valid {filter} here. Valid options: {options}.", retryable: true }
+      no_results: { code: no_results, message: No cars match. Suggest removing one filter; the facet counts show what each option would return., retryable: true }
+  get_delivery_dates:
+    description: Earliest delivery and pickup dates for a list of cars, in one call
+    input: tools/get_delivery_dates.input.json
+    output: tools/get_delivery_dates.output.json
+    uses: [availability]
+    sideEffect: read
+    ids:
+      input: [{ kind: vehicle, path: "vehicleIds[]" }]
+      output:
+        - { kind: vehicle, path: "dates[].vehicleId" }
+        - { kind: route, path: "dates[].delivery.routeId" }
+        - { kind: route, path: "dates[].pickup.routeId" }
+    nextStep: Quote only cars the user opens, with get_vehicle_quote and the option (delivery or pickup) they're considering.
+  suggest_refinements:
+    description: Filter suggestions that narrow the current results
+    input: tools/suggest_refinements.input.json
+    output: tools/suggest_refinements.output.json
+    uses: [suggest]
+    sideEffect: read
+    presentation: present_options
+    ids: { output: [{ kind: suggestion, path: "suggestions[].suggestionId" }] }
+  get_vehicle_quote:
+    description: Quote card for one car the user opened - price, estimated taxes and fees, estimated total, delivery date, GAP waiver
+    input: tools/get_vehicle_quote.input.json
+    output: tools/get_vehicle_quote.output.json
+    uses: [availability, pricing, gap]
+    sideEffect: read
+    presentation: present_detail
+    ids: { input: [{ kind: vehicle, path: vehicleId }], output: [{ kind: vehicle, path: vehicleId }] }
+    errors:
+      route_other_zip: { code: invalid_value, message: "This route is for a different zip code. Call get_delivery_dates for this car at {zip5}, then quote again.", retryable: true }
+      pricing_error: { code: upstream_error, message: "Carvana couldn't price this car for zip {zip5}. Tell the user and offer the car's page link.", retryable: false }
+  compare_vehicles:
+    description: Two to four cars side by side
+    input: tools/compare_vehicles.input.json
+    output: tools/compare_vehicles.output.json
+    uses: [availability, pricing, gap, reviews]
+    sideEffect: read
+    presentation: present_comparison
+    ids: { input: [{ kind: vehicle, path: "vehicleIds[]" }], output: [{ kind: vehicle, path: "cars[].vehicleId" }] }
+  get_owner_reviews:
+    description: Owner reviews for one car's make, model, trim and year; the text is fenced by the sanitizer
+    input: tools/get_owner_reviews.input.json
+    output: tools/get_owner_reviews.output.json
+    uses: [reviews]
+    sideEffect: read
+    ids: { input: [{ kind: vehicle, path: vehicleId }] }
+  vehicle_details:
+    description: Details for one car from its vehicle page - VIN, features, imperfections, options, packages, highlights
+    input: tools/vehicle_details.input.json
+    output: tools/vehicle_details.output.json
+    uses: [vehicle_page]
+    sideEffect: read
+    presentation: present_detail
+    ids: { input: [{ kind: vehicle, path: vehicleId }] }
+    errors:
+      not_found: { code: not_found, message: "This car's page isn't available anymore. It may have sold; tell the user and offer similar cars.", retryable: false }
+      format_changed: { code: format_changed, message: Car details are unavailable right now. Answer without them and say so., retryable: false }
+
+notices:
+  estimated_total:
+    text: Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.
+    source: our wording, pending review; not Carvana's approved copy
+    version: "2026-10-12"
+    showWith: [estimatedTotal]
+
+policies:
+  hiddenFields: [price.monthlyPayment, price.apr, price.term, price.downPayment]   # until counsel reviews the disclosure rules (Regulation Z)
+  derivedFields:
+    estimatedTotal: { formula: price.total + price.estimatedTaxesAndFees, label: Estimated total, estimate: true, appliesTo: vehicle }
+  allowedValues:
+    search_vehicles.colors: "facets.colors.buckets[].key"
+    search_vehicles.interior_colors: "facets.interiorColors.buckets[].key"
+    search_vehicles.drive_types: "facets.driveTypes.buckets[].key"
+    search_vehicles.body_styles: "facets.bodyStyles.buckets[].key"
+    search_vehicles.tag_ids: "facets.tagIds.buckets[].key"
+  pageSize: 24
+  rateLimitPerSecond: 1
+  callBudget: { perTask: 60, perSession: null, perDay: null }
+  priceDisplay: as_returned
+  writes: none
+
+deepLinks:
+  search: { template: "https://www.carvana.com/cars/filters?cvnaid={base64json:filters}", description: The same search results page on the site }
+  vehicle: { template: "https://www.carvana.com/vehicle/{vehicleId}" }
+
+skills:
+  vehicle_research:
+    description: Comparing cars, reading specs and owner reviews
+    load: on demand; preloaded when the page is a vehicle page
+    pageTypes: [vehicle]
+  batch_search:
+    description: Exhaustive and multi-condition searches written as scripts
+    load: when a request needs many calls
+  delivery_and_pickup:
+    description: Delivery and pickup dates, locations, and which route to quote
+    load: on demand
+  financing_questions:
+    description: What the agent can and can't say about financing, and when to send the user to Carvana's own pages
+    load: when financing comes up
+
+recording:
+  har: recordings/www.carvana.com.har
+  scrubFields: [browserCookieId, searchSessionId, searchRequestId, previousSearchRequestId, correlationId, suggestedFiltersRequestId, traceId]
+  scrubHeaders: [browsercookieid, correlationid]
+  keepHeaders: [accept, content-type, clientid, browsercookieid, correlationid, x-cvna-ncc-disabled, x-cvna-sebs-srp]
+
+notes:
+  route_id:
+    format: gzip-compressed, base64url-encoded JSON
+    example: '{"geo":209644,"loc":335,"act":2,"vdt":2,"prc":{"cli":301,"pym":1},"drm":36,"ver":2,"cst":"CA","czp":"94402"}'
+    fields: "loc servicing location; drm driving miles; act 2 delivery, 5 pickup; prc.cli closest location; cst/czp state and zip; geo, vdt, pym, ver unknown"
+    lifetime: no timestamp; a 3-day-old routeId returned the identical quote
+    scope: one per route (servicing location to zip code), not per car
+    rule: server-issued only; never built by us, even though the format is readable
+  tracking_fields: "Decision D4. Search, facets and reviews need none; quote needs analyticsData.clientId (vdp_ui); suggest needs browserCookieId and analyticsData.clientId (srp_ui). Fresh random IDs per session; never a real visitor's ID."
+  inventory_type: "Search returns vehicleInventoryType 1 or 2; availability requests send 1 as Core and 2 as Unknown (seen on an on-demand car)."
+  availability_shapes: "The vehicle page sends a different availability body (no userId or sale status, clientid vdp_ui, once a capitalized VehicleLocationId). Documented in the contract; never sent by us."
+  zip_code: "The built-in browser's default location was 94087 instead of 94402; always pass the zip explicitly."
+  access: "Cloudflare returned 403 to curl for HTML pages but not for the .well-known files; plain server-side scripts are likely to be blocked."
+  deep_links_in_apps: "Carvana's apps take over only a few post-purchase pages (iOS apple-app-site-association: order pages and a Plaid redirect; Android: one order page). Vehicle and search links open in the browser."
+  candidate_endpoints:
+    similar: "POST /merch/search/api/v1/recommendations/personalized-recs (similar cars); recorded but no schema yet; its filters use keys outside our Filters definition"
+    delivery_zones: "GET /merch/search/api/v1/Delivery?Zip5="
+    distances: "GET /merch/carvanamerchcontextapi/api/v3/distance?zip5="
+  gaps:
+    - vehicle page HTML fixture, to capture in phase 3 for the vehicle_details parser
+    - financing pre-qualification (softpull module loaded but not triggered)
+    - trade-in valuation
+    - favorites (needs sign-in; the first write that's safe to record)
+    - reserving or buying a car (write; record only up to the confirmation page)

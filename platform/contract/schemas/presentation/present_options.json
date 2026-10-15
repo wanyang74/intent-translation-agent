@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_options.json",
+  "title": "present_options: choices the user can pick, such as filter suggestions",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "$ref": "/schemas/common.json#/$defs/EntityKind"
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "integer"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "heading": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,80}$"
+    }
+  },
+  "required": [
+    "entity",
+    "ids"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "entity": "suggestion",
+      "ids": [
+        "sug_1",
+        "sug_2"
+      ],
+      "heading": "Narrow it down"
+    }
+  ]
+}

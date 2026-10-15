@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/carvana/schemas/tools/vehicle_details.input.json",
+  "title": "vehicle_details: input",
+  "type": "object",
+  "properties": {
+    "vehicleId": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/VehicleId"
+    }
+  },
+  "required": [
+    "vehicleId"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "vehicleId": 4812031
+    }
+  ]
+}

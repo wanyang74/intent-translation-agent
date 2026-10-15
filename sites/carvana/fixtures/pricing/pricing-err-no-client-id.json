@@ -1,0 +1,36 @@
+{
+  "id": "pricing-err-no-client-id",
+  "site": "carvana",
+  "endpoint": "pricing",
+  "kind": "observed",
+  "source": "phase 0 live check, 2026-10-11",
+  "description": "quote request without analyticsData.clientId: 400 \"ClientId cannot be null\"",
+  "trigger": {
+    "fields": [
+      "analyticsData.clientId"
+    ]
+  },
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v2/pricing/vehicle",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "applyVerboseLogging": false,
+      "applyTradeIn": true,
+      "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA",
+      "vehicleId": 4812031,
+      "zip5": "94402",
+      "preferredAcquisitionName": ""
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "content-type": "text/plain"
+    },
+    "body": "ClientId cannot be null"
+  }
+}

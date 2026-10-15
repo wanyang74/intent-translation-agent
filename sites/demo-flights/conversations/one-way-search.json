@@ -1,0 +1,123 @@
+{
+  "id": "one-way-search",
+  "site": "demo-flights",
+  "description": "A one-way search: the agent searches, shows the offers as cards, and adds the site's full-fare notice.",
+  "fixtures": [
+    "offers-01"
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "demo-flights",
+      "sessionId": "sess_demo0001",
+      "traceId": "trace_demo0001",
+      "message": "Flights from SFO to New York (JFK) on Nov 20, just me, economy",
+      "pageContext": {
+        "url": "https://www.demo-flights.example/",
+        "pageType": "home",
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_demo0001",
+      "call": {
+        "id": "call_1",
+        "name": "search_flights",
+        "args": {
+          "origin": "SFO",
+          "destination": "JFK",
+          "departDate": "2026-11-20",
+          "adults": 1,
+          "cabin": "economy"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_demo0001",
+      "text": "Searching flights for Nov 20…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_demo0001",
+      "callIds": [
+        "call_1"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_demo0001",
+      "traceId": "trace_demo0001",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "offers": [
+              {
+                "offerId": "off_7GQ2",
+                "expiresAt": "2026-10-12T18:30:00Z",
+                "totalPrice": 389.4,
+                "carrier": "Demo Air",
+                "flightNumbers": "DA101",
+                "departs": "2026-11-20T15:05:00Z",
+                "arrives": "2026-11-20T23:40:00Z",
+                "stops": 0,
+                "duration": "PT5H35M"
+              },
+              {
+                "offerId": "off_9KD1",
+                "expiresAt": "2026-10-12T18:30:00Z",
+                "totalPrice": 412.9,
+                "carrier": "Demo Air",
+                "flightNumbers": "DA107",
+                "departs": "2026-11-20T21:30:00Z",
+                "arrives": "2026-11-21T05:55:00Z",
+                "stops": 0,
+                "duration": "PT5H25M"
+              },
+              {
+                "offerId": "off_3MZ8",
+                "expiresAt": "2026-10-12T18:30:00Z",
+                "totalPrice": 301.2,
+                "carrier": "Demo Air",
+                "flightNumbers": "DA215 / DA402",
+                "departs": "2026-11-20T13:00:00Z",
+                "arrives": "2026-11-20T21:10:00Z",
+                "stops": 1,
+                "duration": "PT8H10M"
+              }
+            ],
+            "nextStep": "Offers expire; if the user comes back later, search again before showing prices."
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_demo0001",
+      "text": "Three options. The two nonstops are $389.40 and $412.90; the cheapest, $301.20, stops in Chicago.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "flight_offer",
+            "ids": [
+              "off_3MZ8",
+              "off_7GQ2",
+              "off_9KD1"
+            ],
+            "heading": "SFO to JFK, Nov 20"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "full_fare_rule"
+          }
+        }
+      ]
+    }
+  ]
+}

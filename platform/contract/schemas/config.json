@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/config.json",
+  "title": "Remote config for one site: off switches and budgets",
+  "description": "Signed; core.js checks the signature before using it (signing scheme to be decided in phase 9). Tool and skill names are checked against the site pack.",
+  "type": "object",
+  "properties": {
+    "site": {
+      "$ref": "/schemas/common.json#/$defs/SiteId"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,64}$"
+    },
+    "issuedAt": {
+      "$ref": "/schemas/common.json#/$defs/DateTime"
+    },
+    "disabledTools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "uniqueItems": true
+    },
+    "disabledSkills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "uniqueItems": true
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {
+        "perTask": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "perSession": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "perDay": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [
+        "perTask",
+        "perSession",
+        "perDay"
+      ],
+      "additionalProperties": false
+    },
+    "rateLimitPerSecond": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,}$"
+    }
+  },
+  "required": [
+    "site",
+    "version",
+    "issuedAt",
+    "disabledTools",
+    "disabledSkills",
+    "budgets",
+    "rateLimitPerSecond",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "site": "example-site",
+      "version": "2026-10-12.1",
+      "issuedAt": "2026-10-12T00:00:00Z",
+      "disabledTools": [],
+      "disabledSkills": [],
+      "budgets": {
+        "perTask": 40,
+        "perSession": null,
+        "perDay": null
+      },
+      "rateLimitPerSecond": 1,
+      "signature": "unsigned-example"
+    }
+  ]
+}

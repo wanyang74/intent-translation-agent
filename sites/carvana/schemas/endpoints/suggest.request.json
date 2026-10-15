@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/carvana/schemas/endpoints/suggest.request.json",
+  "title": "Carvana filter suggestions request (POST /merch/search/api/v1/suggest/filters)",
+  "description": "Fails with 'Invalid Request' without browserCookieId and analyticsData.clientId (phase 0).",
+  "type": "object",
+  "properties": {
+    "dealershipId": {
+      "type": "null"
+    },
+    "filters": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/Filters"
+    },
+    "pagination": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pageSize": {
+          "const": 24
+        }
+      },
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "additionalProperties": false
+    },
+    "requestedFeatures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "sortBy": {
+      "type": "string",
+      "examples": [
+        "MostPopular"
+      ]
+    },
+    "zip5": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/Zip5"
+    },
+    "browserCookieId": {
+      "type": "string"
+    },
+    "analyticsData": {
+      "allOf": [
+        {
+          "$ref": "/sites/carvana/schemas/common.json#/$defs/AnalyticsData"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "clientId"
+      ],
+      "properties": {
+        "clientId": {
+          "const": "srp_ui"
+        }
+      }
+    },
+    "numberOfSuggestedFilters": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    }
+  },
+  "required": [
+    "filters",
+    "pagination",
+    "requestedFeatures",
+    "sortBy",
+    "zip5",
+    "browserCookieId",
+    "analyticsData"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla",
+            "parentModels": [
+              {
+                "name": "Model Y"
+              }
+            ]
+          }
+        ],
+        "driveTypes": [
+          "Awd"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "MostPopular",
+      "zip5": "94402",
+      "numberOfSuggestedFilters": 10,
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "analyticsData": {
+        "clientId": "srp_ui"
+      }
+    }
+  ]
+}

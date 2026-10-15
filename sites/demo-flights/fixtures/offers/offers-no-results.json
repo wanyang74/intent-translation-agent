@@ -1,0 +1,33 @@
+{
+  "id": "offers-no-results",
+  "site": "demo-flights",
+  "endpoint": "offers",
+  "kind": "synthetic",
+  "source": "hand-written for the demo-flights test site",
+  "description": "SFO to JFK, Dec 24, 9 adults, first: no offers",
+  "request": {
+    "method": "POST",
+    "url": "https://api.demo-flights.example/v1/offers/search",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json"
+    },
+    "body": {
+      "origin": "SFO",
+      "destination": "JFK",
+      "departDate": "2026-12-24",
+      "adults": 9,
+      "cabin": "first"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "searchId": "00000000-0000-4000-8000-000000000002",
+      "offers": []
+    }
+  }
+}

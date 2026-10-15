@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/carvana/schemas/endpoints/gap.request.json",
+  "title": "Carvana GAP waiver request (GET /ancillary-products-api/api/v2/GapWaiver/availability, query string)",
+  "description": "amountFinanced is price + estimated taxes and fees, as the frontend computes it.",
+  "type": "object",
+  "properties": {
+    "amountFinanced": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "homeState": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/UsState"
+    },
+    "institutionName": {
+      "const": "Carvana"
+    },
+    "paymentType": {
+      "const": "Financing"
+    },
+    "vehicleId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    }
+  },
+  "required": [
+    "amountFinanced",
+    "homeState",
+    "institutionName",
+    "paymentType",
+    "vehicleId"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "amountFinanced": "39427",
+      "homeState": "CA",
+      "institutionName": "Carvana",
+      "paymentType": "Financing",
+      "vehicleId": "4812031"
+    }
+  ]
+}

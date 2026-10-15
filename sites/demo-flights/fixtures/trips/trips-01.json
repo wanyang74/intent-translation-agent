@@ -1,0 +1,40 @@
+{
+  "id": "trips-01",
+  "site": "demo-flights",
+  "endpoint": "trips",
+  "kind": "synthetic",
+  "source": "hand-written for the demo-flights test site",
+  "description": "signed-in traveler: 1 upcoming trip",
+  "request": {
+    "method": "GET",
+    "url": "https://api.demo-flights.example/v1/trips?status=upcoming",
+    "headers": {
+      "accept": "application/json"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "trips": [
+        {
+          "recordLocator": "Q7K2LM",
+          "status": "confirmed",
+          "segments": [
+            {
+              "carrier": "Demo Air",
+              "flightNumber": "DA330",
+              "from": "SFO",
+              "to": "SEA",
+              "departs": "2026-12-03T16:00:00Z",
+              "arrives": "2026-12-03T18:10:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

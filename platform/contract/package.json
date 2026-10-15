@@ -1,0 +1,11 @@
+{
+  "name": "@intent/contract",
+  "private": true,
+  "type": "module",
+  "description": "The platform contract: protocol, generic presentation tools, errors, remote config and the site-pack format; plus the loader, checks and code generator that work across every site pack",
+  "scripts": {
+    "check": "node scripts/check.ts",
+    "generate": "node scripts/generate.ts",
+    "test": "node --test test/*.test.ts"
+  }
+}

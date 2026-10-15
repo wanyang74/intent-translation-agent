@@ -1,0 +1,737 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/site-pack.json",
+  "title": "Site pack manifest (sites/<id>/site.yaml)",
+  "description": "Everything the platform needs to know about one site: its entities, endpoints, tools, forms, notices, policies, deep links, skills and how recordings are scrubbed. The platform never names a site; it reads this.",
+  "type": "object",
+  "properties": {
+    "site": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "/schemas/common.json#/$defs/SiteId"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,64}$"
+        },
+        "origins": {
+          "type": "array",
+          "items": {
+            "$ref": "/schemas/common.json#/$defs/Url"
+          },
+          "minItems": 1
+        },
+        "locale": {
+          "$ref": "/schemas/common.json#/$defs/Locale"
+        },
+        "pageTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "/schemas/common.json#/$defs/PageType",
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "requires": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "enum": [
+                "none",
+                "postal_code"
+              ]
+            },
+            "signIn": {
+              "enum": [
+                "never",
+                "some_tools",
+                "always"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "origins"
+      ],
+      "additionalProperties": false
+    },
+    "entities": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "/schemas/common.json#/$defs/EntityKind"
+      },
+      "additionalProperties": {
+        "$ref": "/schemas/site-pack.json#/$defs/Entity"
+      }
+    },
+    "endpoints": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "$ref": "/schemas/site-pack.json#/$defs/Endpoint"
+      }
+    },
+    "tools": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "/schemas/common.json#/$defs/ToolName"
+      },
+      "additionalProperties": {
+        "$ref": "/schemas/site-pack.json#/$defs/Tool"
+      }
+    },
+    "forms": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,31}$"
+      },
+      "additionalProperties": {
+        "$ref": "/schemas/site-pack.json#/$defs/Form"
+      }
+    },
+    "notices": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "$ref": "/schemas/site-pack.json#/$defs/Notice"
+      }
+    },
+    "policies": {
+      "$ref": "/schemas/site-pack.json#/$defs/Policies"
+    },
+    "deepLinks": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,31}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "template": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "template"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "skills": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "load": {
+            "type": "string"
+          },
+          "pageTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "/schemas/common.json#/$defs/PageType"
+            }
+          }
+        },
+        "required": [
+          "description",
+          "load"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "recording": {
+      "$ref": "/schemas/site-pack.json#/$defs/Recording"
+    },
+    "notes": {
+      "type": "object",
+      "description": "Free-form research notes: findings, open gaps, candidate endpoints."
+    }
+  },
+  "required": [
+    "site",
+    "entities",
+    "endpoints",
+    "tools",
+    "policies",
+    "recording"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Path": {
+      "type": "string",
+      "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*(\\[\\])?(\\.[A-Za-z_$][A-Za-z0-9_$]*(\\[\\])?)*(:sorted)?$",
+      "description": "Dotted path into a JSON value. [] maps over an array; :sorted sorts the result (for match keys)."
+    },
+    "SchemaRef": {
+      "type": "string",
+      "pattern": "^[a-z0-9_/.-]+\\.json$",
+      "description": "A schema file, relative to the site's schemas folder."
+    },
+    "IdPath": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "/schemas/common.json#/$defs/EntityKind"
+        },
+        "path": {
+          "$ref": "/schemas/site-pack.json#/$defs/Path"
+        },
+        "expiresAt": {
+          "$ref": "/schemas/site-pack.json#/$defs/Path"
+        }
+      },
+      "required": [
+        "kind",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,64}$"
+        },
+        "type": {
+          "enum": [
+            "money",
+            "number",
+            "integer",
+            "text",
+            "date",
+            "datetime",
+            "boolean",
+            "duration"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "estimate": {
+          "type": "boolean"
+        },
+        "from": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "Entity": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "integer",
+                "string"
+              ]
+            },
+            "pattern": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        "internal": {
+          "type": "boolean",
+          "description": "Never shown to the user (e.g. routing tokens)."
+        },
+        "expires": {
+          "type": "object",
+          "properties": {
+            "afterSeconds": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "field": {
+              "$ref": "/schemas/site-pack.json#/$defs/Path"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        },
+        "requiresSignIn": {
+          "type": "boolean"
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "/schemas/site-pack.json#/$defs/Field"
+          }
+        },
+        "card": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "link": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "Endpoint": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://",
+          "description": "Exact URL, or a template with {param} path segments."
+        },
+        "responseFormat": {
+          "enum": [
+            "json",
+            "html"
+          ],
+          "default": "json",
+          "description": "html: the response schema applies to what the site's parser extracts."
+        },
+        "request": {
+          "$ref": "/schemas/site-pack.json#/$defs/SchemaRef"
+        },
+        "response": {
+          "$ref": "/schemas/site-pack.json#/$defs/SchemaRef"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tracking": {
+          "type": "object",
+          "properties": {
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "/schemas/site-pack.json#/$defs/Path"
+              }
+            },
+            "headers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "description": "Tracking fields the endpoint requires, sent with fresh random IDs (decision D4)."
+        },
+        "matchKey": {
+          "type": "array",
+          "items": {
+            "$ref": "/schemas/site-pack.json#/$defs/Path"
+          },
+          "minItems": 1,
+          "description": "The request fields that decide the response. FakeHost matches fixtures on these."
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "$ref": "/schemas/site-pack.json#/$defs/IdPath"
+          }
+        },
+        "signIn": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "url",
+        "request",
+        "response",
+        "matchKey"
+      ],
+      "additionalProperties": false
+    },
+    "Tool": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "input": {
+          "$ref": "/schemas/site-pack.json#/$defs/SchemaRef"
+        },
+        "output": {
+          "$ref": "/schemas/site-pack.json#/$defs/SchemaRef"
+        },
+        "uses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "minItems": 1
+        },
+        "sideEffect": {
+          "enum": [
+            "read",
+            "write"
+          ]
+        },
+        "signIn": {
+          "type": "boolean"
+        },
+        "presentation": {
+          "enum": [
+            "present_items",
+            "present_comparison",
+            "present_detail",
+            "present_options",
+            "present_form",
+            "present_notice"
+          ]
+        },
+        "ids": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "array",
+              "items": {
+                "$ref": "/schemas/site-pack.json#/$defs/IdPath"
+              }
+            },
+            "output": {
+              "type": "array",
+              "items": {
+                "$ref": "/schemas/site-pack.json#/$defs/IdPath"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "nextStep": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "$ref": "/schemas/errors.json#/properties/code"
+              },
+              "message": {
+                "type": "string",
+                "pattern": "^[\\s\\S]{1,}$"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "description",
+        "input",
+        "output",
+        "uses",
+        "sideEffect"
+      ],
+      "additionalProperties": false
+    },
+    "Form": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "pattern": "^[\\s\\S]{1,64}$"
+              },
+              "type": {
+                "enum": [
+                  "text",
+                  "date",
+                  "integer",
+                  "select",
+                  "code"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "pattern": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "submitTool": {
+          "$ref": "/schemas/common.json#/$defs/ToolName"
+        }
+      },
+      "required": [
+        "fields"
+      ],
+      "additionalProperties": false
+    },
+    "Notice": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,}$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "showWith": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "text",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "Approved text, shown verbatim. The model only chooses which notice applies."
+    },
+    "Policies": {
+      "type": "object",
+      "properties": {
+        "hiddenFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Never shown to the user, never used to filter or rank."
+        },
+        "derivedFields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "formula": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string",
+                "pattern": "^[\\s\\S]{1,64}$"
+              },
+              "estimate": {
+                "type": "boolean"
+              },
+              "appliesTo": {
+                "$ref": "/schemas/common.json#/$defs/EntityKind"
+              }
+            },
+            "required": [
+              "formula",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "allowedValues": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Tool argument path -> where its valid values come from (an endpoint response path)."
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rateLimitPerSecond": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "callBudget": {
+          "type": "object",
+          "properties": {
+            "perTask": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "perSession": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "perDay": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            }
+          },
+          "required": [
+            "perTask",
+            "perSession",
+            "perDay"
+          ],
+          "additionalProperties": false
+        },
+        "priceDisplay": {
+          "enum": [
+            "as_returned",
+            "total_including_taxes"
+          ]
+        },
+        "writes": {
+          "enum": [
+            "none",
+            "with_approval"
+          ]
+        }
+      },
+      "required": [
+        "rateLimitPerSecond",
+        "callBudget",
+        "writes"
+      ],
+      "additionalProperties": false
+    },
+    "Recording": {
+      "type": "object",
+      "properties": {
+        "har": {
+          "type": "string",
+          "description": "Path from the repository root to the site's recording (kept out of git)."
+        },
+        "scrubFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scrubHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keepHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "scrubFields",
+        "scrubHeaders",
+        "keepHeaders"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

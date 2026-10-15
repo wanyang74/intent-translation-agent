@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/common.json",
+  "title": "Platform definitions shared by every site",
+  "$defs": {
+    "TraceId": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{8,}$"
+    },
+    "SessionId": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{8,}$"
+    },
+    "SiteId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$",
+      "description": "A site pack's id, e.g. the folder name under sites/."
+    },
+    "CallId": {
+      "type": "string",
+      "pattern": "^call_[A-Za-z0-9_-]+$"
+    },
+    "ToolName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,63}$",
+      "description": "A site tool or a platform presentation tool. Checked against the active site pack at runtime."
+    },
+    "EntityKind": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,31}$",
+      "description": "An entity kind declared by the site pack, such as a product, an offer or an account."
+    },
+    "EntityId": {
+      "type": [
+        "string",
+        "integer"
+      ],
+      "description": "An ID that a tool returned in this session. Its kind comes from the site pack."
+    },
+    "EntityRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "/schemas/common.json#/$defs/EntityKind"
+        },
+        "id": {
+          "$ref": "/schemas/common.json#/$defs/EntityId"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "FieldKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.]{0,63}$",
+      "description": "A field declared for an entity kind in the site pack."
+    },
+    "PageType": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,31}$"
+    },
+    "Money": {
+      "type": "number",
+      "minimum": 0
+    },
+    "Date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "DateTime": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "ISO 8601 date and time with a time zone. A pattern rather than format: date-time, so validators need no format library at runtime."
+    },
+    "Url": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "Locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "postalCode": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9 -]{3,10}$"
+        },
+        "region": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,64}$"
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "Fenced": {
+      "type": "string",
+      "pattern": "^<untrusted source=\"[a-z-]+\">[\\s\\S]*</untrusted>$",
+      "description": "Third-party text after the sanitizer: control characters removed, length capped, wrapped in a labeled fence."
+    }
+  }
+}

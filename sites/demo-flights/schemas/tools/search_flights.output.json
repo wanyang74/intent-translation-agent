@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/tools/search_flights.output.json",
+  "title": "search_flights: output",
+  "type": "object",
+  "properties": {
+    "offers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/OfferId"
+          },
+          "expiresAt": {
+            "$ref": "/schemas/common.json#/$defs/DateTime"
+          },
+          "totalPrice": {
+            "$ref": "/schemas/common.json#/$defs/Money"
+          },
+          "carrier": {
+            "type": "string"
+          },
+          "flightNumbers": {
+            "type": "string"
+          },
+          "departs": {
+            "$ref": "/schemas/common.json#/$defs/DateTime"
+          },
+          "arrives": {
+            "$ref": "/schemas/common.json#/$defs/DateTime"
+          },
+          "stops": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration": {
+            "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Duration"
+          }
+        },
+        "required": [
+          "offerId",
+          "expiresAt",
+          "totalPrice",
+          "carrier",
+          "flightNumbers",
+          "departs",
+          "arrives",
+          "stops",
+          "duration"
+        ],
+        "additionalProperties": false,
+        "description": "totalPrice includes all taxes and fees (site policy priceDisplay: total_including_taxes)."
+      }
+    },
+    "nextStep": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "offers"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "offers": [
+        {
+          "offerId": "off_7GQ2",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "totalPrice": 389.4,
+          "carrier": "Demo Air",
+          "flightNumbers": "DA101",
+          "departs": "2026-11-20T15:05:00Z",
+          "arrives": "2026-11-20T23:40:00Z",
+          "stops": 0,
+          "duration": "PT5H35M"
+        },
+        {
+          "offerId": "off_9KD1",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "totalPrice": 412.9,
+          "carrier": "Demo Air",
+          "flightNumbers": "DA107",
+          "departs": "2026-11-20T21:30:00Z",
+          "arrives": "2026-11-21T05:55:00Z",
+          "stops": 0,
+          "duration": "PT5H25M"
+        },
+        {
+          "offerId": "off_3MZ8",
+          "expiresAt": "2026-10-12T18:30:00Z",
+          "totalPrice": 301.2,
+          "carrier": "Demo Air",
+          "flightNumbers": "DA215 / DA402",
+          "departs": "2026-11-20T13:00:00Z",
+          "arrives": "2026-11-20T21:10:00Z",
+          "stops": 1,
+          "duration": "PT8H10M"
+        }
+      ],
+      "nextStep": "Offers expire; if the user comes back later, search again before showing prices."
+    }
+  ]
+}

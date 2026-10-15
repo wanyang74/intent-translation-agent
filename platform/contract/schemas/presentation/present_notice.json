@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_notice.json",
+  "title": "present_notice: approved text the site requires, such as a disclosure",
+  "type": "object",
+  "properties": {
+    "notice": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+    },
+    "entity": {
+      "$ref": "/schemas/common.json#/$defs/EntityRef"
+    }
+  },
+  "required": [
+    "notice"
+  ],
+  "additionalProperties": false,
+  "description": "The model picks the notice; its text comes verbatim from the site pack.",
+  "examples": [
+    {
+      "notice": "full_fare_rule"
+    }
+  ]
+}

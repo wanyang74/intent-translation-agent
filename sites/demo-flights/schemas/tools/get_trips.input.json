@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/tools/get_trips.input.json",
+  "title": "get_trips: input",
+  "type": "object",
+  "properties": {
+    "status": {
+      "enum": [
+        "upcoming",
+        "past"
+      ],
+      "default": "upcoming"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "status": "upcoming"
+    }
+  ]
+}
