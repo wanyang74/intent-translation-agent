@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/platform-tools/load_skill.json",
+  "title": "load_skill: guidance for a topic",
+  "description": "Loads the guidance for one of this site's skills, listed in your instructions under Skills. Load a skill as soon as its topic comes up, before you answer about it. A skill stays loaded for the rest of the conversation.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,63}$",
+      "description": "The skill's name, as listed."
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "name": "product_research"
+    }
+  ]
+}

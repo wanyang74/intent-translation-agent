@@ -86,7 +86,7 @@
     "zip5"
   ],
   "additionalProperties": false,
-  "description": "Filter values must come from the facets response; the boundary checks refuse anything else.",
+  "description": "Filter values are Carvana's own spellings, such as Gray and Awd. A value Carvana doesn't offer is refused, with the valid options listed.",
   "examples": [
     {
       "zip5": "94402",

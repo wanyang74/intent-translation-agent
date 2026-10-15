@@ -18,6 +18,8 @@ export interface Conversation {
   now?: string;
   /** The fixtures that answer the tool calls. */
   fixtures: string[];
+  /** What the page the user is on carries about the item on screen, as the host's page reader would return it. */
+  pageData?: unknown;
   notes?: string[];
   messages: Message[];
 }

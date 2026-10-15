@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_options.json",
-  "title": "present_options: choices the user can pick, such as filter suggestions",
+  "title": "present_options: choices the user can tap",
+  "description": "Shows choices such as filter suggestions. Tapping one sends its label as the user's next message.",
   "type": "object",
   "properties": {
     "entity": {

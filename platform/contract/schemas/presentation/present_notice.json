@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_notice.json",
-  "title": "present_notice: approved text the site requires, such as a disclosure",
+  "title": "present_notice: required wording",
+  "description": "Shows a notice, such as a disclosure, in the site's approved wording. Notices that must go with fields on screen are added automatically; use this for other notices that apply.",
   "type": "object",
   "properties": {
     "notice": {
@@ -16,7 +17,6 @@
     "notice"
   ],
   "additionalProperties": false,
-  "description": "The model picks the notice; its text comes verbatim from the site pack.",
   "examples": [
     {
       "notice": "full_fare_rule"

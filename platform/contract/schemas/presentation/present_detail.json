@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_detail.json",
   "title": "present_detail: one item in full",
+  "description": "Shows one item with the detail sections you choose, as listed in your instructions for that kind of item. Without sections, it shows all of them.",
   "type": "object",
   "properties": {
     "entity": {

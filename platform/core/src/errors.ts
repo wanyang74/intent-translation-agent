@@ -8,9 +8,9 @@ type Code = ToolError['code'];
 interface Template { code: Code; message: string; retryable: boolean }
 
 /**
- * Platform reasons and their messages. The values each one is filled with are the standard names a site's own
- * message can use too: tool, details, value, field, options, kind, id, idType, what, scope, limit, section,
- * sections, fields, notice, form.
+ * Platform reasons and their messages, for core.js and the brain alike. The values each one is filled with are the
+ * standard names a site's own message can use too: tool, details, value, field, options, kind, id, idType, what,
+ * scope, limit, section, sections, fields, notice, form, status, skill, skills.
  */
 export const PLATFORM_ERRORS = {
   unknown_tool: { code: 'invalid_value', message: "{tool} isn't a tool on this site. Use one of the tools you were given.", retryable: false },
@@ -30,6 +30,27 @@ export const PLATFORM_ERRORS = {
   unknown_notice: { code: 'invalid_value', message: "{notice} isn't a notice on this site.", retryable: false },
   unknown_form: { code: 'invalid_value', message: "{form} isn't a form on this site.", retryable: false },
   bad_prefill: { code: 'invalid_value', message: "{field} in {form} can't be prefilled with '{value}': {details}.", retryable: true },
+  // Problems reaching the site or reading its answer.
+  network_error: { code: 'upstream_error', message: "The site didn't respond to {tool}. Try again in a moment, or answer without it.", retryable: true },
+  site_unavailable: { code: 'upstream_error', message: 'The site had a problem answering {tool} (status {status}). Try again in a moment, or answer without it.', retryable: true },
+  site_refused: { code: 'upstream_error', message: 'The site refused the request from {tool} (status {status}). Answer without it and say so.', retryable: false },
+  site_not_found: { code: 'not_found', message: "The site doesn't have what {tool} asked for. It may be gone.", retryable: false },
+  site_rate_limited: { code: 'rate_limited', message: 'The site asked us to slow down. Wait before calling {tool} again.', retryable: true },
+  response_changed: { code: 'format_changed', message: "{tool} got an answer from the site in a format it doesn't recognize. Answer without it and say so.", retryable: false },
+  // Problems in our own code or setup, never the model's.
+  not_built: { code: 'tool_disabled', message: "{tool} isn't available yet. Answer without it and say so.", retryable: false },
+  site_code_error: { code: 'upstream_error', message: '{tool} failed: {details}. Answer without it and say so.', retryable: false },
+  // Scripts.
+  bad_script: { code: 'invalid_value', message: 'The script failed: {details}. Fix it, or call the tools one at a time.', retryable: true },
+  scripts_off: { code: 'tool_disabled', message: "Scripts can't run here. Call the tools one at a time instead.", retryable: false },
+  // Problems the brain finds in the model's calls, before anything reaches the client.
+  unknown_skill: { code: 'invalid_value', message: "{skill} isn't a skill here. Skills: {skills}.", retryable: true },
+  skill_disabled: { code: 'tool_disabled', message: 'The {skill} skill is unavailable right now. Answer without it.', retryable: false },
+  present_too_early: { code: 'invalid_value', message: "{tool} goes with your final answer, after the results you're waiting for. Call it again then.", retryable: true },
+  not_shown: { code: 'invalid_value', message: 'Nothing was shown, because another presentation call in this step was refused. Fix that call and send your whole answer again.', retryable: true },
+  out_of_steps: { code: 'budget_reached', message: "{tool} didn't run: this request is out of steps. Answer with what you have.", retryable: false },
+  // A call whose result never came back from the client.
+  no_result: { code: 'upstream_error', message: "{tool} didn't return a result: {details}.", retryable: true },
 } satisfies Record<string, Template>;
 
 export type PlatformReason = keyof typeof PLATFORM_ERRORS;

@@ -33,15 +33,21 @@ export const examplePack: SitePack = {
     token: { description: 'A routing token', id: { type: 'string' }, internal: true },
   },
   endpoints: {
-    search: { method: 'POST', url: 'https://api.example.com/search', request: 'endpoints/search.request.json', response: 'endpoints/search.response.json', matchKey: ['query'], ids: [{ kind: 'product', path: 'items[].id' }] },
+    search: {
+      method: 'POST', url: 'https://api.example.com/search', request: 'endpoints/search.request.json', response: 'endpoints/search.response.json',
+      headers: { 'x-shop-client': 'web' }, tracking: { fields: ['visitorId', 'analytics.clientRef'], headers: ['visitorid'] },
+      matchKey: ['query', 'colors'], ids: [{ kind: 'product', path: 'items[].id' }],
+    },
     filters: { method: 'GET', url: 'https://api.example.com/filters', request: 'endpoints/filters.request.json', response: 'endpoints/filters.response.json', matchKey: ['query'] },
     orders: { method: 'GET', url: 'https://api.example.com/orders', request: 'endpoints/orders.request.json', response: 'endpoints/orders.response.json', matchKey: ['status'], signIn: true },
     checkout: { method: 'POST', url: 'https://api.example.com/checkout', request: 'endpoints/checkout.request.json', response: 'endpoints/checkout.response.json', matchKey: ['offerId'] },
+    page: { method: 'GET', url: 'https://www.example.com/p/{productId}', responseFormat: 'html', request: 'endpoints/page.request.json', response: 'endpoints/page.response.json', matchKey: ['productId'] },
   },
   tools: {
     search_products: {
       description: 'Search products', input: 'tools/search_products.input.json', output: 'tools/search_products.output.json',
       uses: ['search', 'filters'], sideEffect: 'read', presentation: 'present_items',
+      nextStep: 'To see an offer, call get_offer with its ID.',
       ids: { output: [
         { kind: 'product', path: 'products[].id' },
         { kind: 'offer', path: 'offers[].id', expiresAt: 'offers[].expiresAt' },
@@ -66,6 +72,10 @@ export const examplePack: SitePack = {
       uses: ['orders'], sideEffect: 'read', signIn: true,
       ids: { output: [{ kind: 'order', path: 'orders[].id' }] },
       errors: { signed_out: { code: 'auth_required', message: 'Ask the shopper to sign in first.', retryable: true } },
+    },
+    read_product_page: {
+      description: "A product's details from its page", input: 'tools/read_product_page.input.json', output: 'tools/read_product_page.output.json',
+      uses: ['page'], sideEffect: 'read', presentation: 'present_detail', ids: { input: [{ kind: 'product', path: 'productId' }] },
     },
     place_order: {
       description: 'Buy an offer', input: 'tools/place_order.input.json', output: 'tools/place_order.output.json',
@@ -95,7 +105,7 @@ export const examplePack: SitePack = {
     writes: 'none',
   },
   deepLinks: {
-    product: { template: 'https://www.example.com/p/{productId}' },
+    product: { template: 'https://www.example.com/p/{id}' },
     search: { template: 'https://www.example.com/s?q={query}&state={base64json:state}' },
   },
   recording: { scrubFields: [], scrubHeaders: [], keepHeaders: [] },

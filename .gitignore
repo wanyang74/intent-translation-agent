@@ -4,3 +4,8 @@ dist/
 
 # Raw recordings contain a real visitor's IDs; commit the scrubbed fixtures made from them instead
 recordings/*.har
+
+# Secrets, such as the model API key for live checks; never committed
+.env
+.env.*
+!.env.example

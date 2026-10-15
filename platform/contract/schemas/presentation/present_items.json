@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_items.json",
-  "title": "present_items: an ordered list of items as cards",
+  "title": "present_items: items as cards, in order",
+  "description": "Shows items as cards in the order you give. Pass IDs exactly as this conversation's tool results gave them; every field on a card is filled in from those results. The layout is cards unless you choose list or carousel.",
   "type": "object",
   "properties": {
     "entity": {
@@ -36,7 +37,6 @@
     "ids"
   ],
   "additionalProperties": false,
-  "description": "IDs and layout only. The client fills in every displayed field from this session's tool results, using the site pack's card template.",
   "examples": [
     {
       "entity": "flight_offer",

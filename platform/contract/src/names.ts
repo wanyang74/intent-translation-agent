@@ -5,13 +5,16 @@ const SPECIAL: Record<string, string> = { 'messages.json': 'Message', 'errors.js
 /** Files whose shared definitions keep their own names; definitions elsewhere get the file's type name as a prefix. */
 const UNPREFIXED = new Set(['common.json', 'messages.json', 'site-pack.json']);
 
+/** Folders whose schemas are a tool's arguments: their types are named "...Args". */
+const TOOL_ARGS = new Set(['presentation', 'platform-tools']);
+
 /** "endpoints/search.request.json" -> "SearchRequest", "presentation/present_items.json" -> "PresentItemsArgs". */
 export function typeName(rel: string): string {
   const special = SPECIAL[rel];
   if (special) return special;
   const parts = rel.split('/');
   const base = parts[parts.length - 1]!.replace(/\.json$/, '');
-  return pascal(base) + (parts[0] === 'presentation' ? 'Args' : '');
+  return pascal(base) + (TOOL_ARGS.has(parts[0]!) ? 'Args' : '');
 }
 
 /** Name of a shared definition ($defs entry) in a file. */

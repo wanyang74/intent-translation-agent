@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_comparison.json",
   "title": "present_comparison: items side by side",
+  "description": "Shows two to four items side by side on the attributes you choose: field names of that kind of item, as listed in your instructions.",
   "type": "object",
   "properties": {
     "entity": {
@@ -36,7 +37,6 @@
     "attributes"
   ],
   "additionalProperties": false,
-  "description": "Attributes are field keys the site pack declares for this entity kind.",
   "examples": [
     {
       "entity": "flight_offer",

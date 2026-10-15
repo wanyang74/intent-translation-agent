@@ -5,18 +5,17 @@
   "now": "2026-10-08T19:15:00Z",
   "fixtures": [
     "search-01",
-    "facets-01",
     "suggest-01",
     "search-02",
-    "facets-02",
     "suggest-02",
+    "facets-03",
     "search-05",
-    "facets-05",
     "suggest-05"
   ],
   "notes": [
     "A tapped suggestion is sent as a turn whose message is the suggestion's label (\"2023 or newer\"). That works when labels are unique; Carvana repeats some (\"Long Range\" for both Model Y and Model 3), so the options shown here skip the repeated ones.",
-    "The turns follow the recorded session (searches 01, 02 and 05); the user's third message combines three filters the recording added one at a time."
+    "The turns follow the recorded session (searches 01, 02 and 05); the user's third message combines three filters the recording added one at a time.",
+    "The third turn's colors are checked against facets for the user's other filters (facets-03) before the search; the first two turns have nothing to check."
   ],
   "messages": [
     {

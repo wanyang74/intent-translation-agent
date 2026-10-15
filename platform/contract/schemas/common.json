@@ -28,14 +28,14 @@
     "EntityKind": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]{0,31}$",
-      "description": "An entity kind declared by the site pack, such as a product, an offer or an account."
+      "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
     },
     "EntityId": {
       "type": [
         "string",
         "integer"
       ],
-      "description": "An ID that a tool returned in this session. Its kind comes from the site pack."
+      "description": "An ID a tool returned in this conversation, or the item on screen. Its kind comes from the site pack."
     },
     "EntityRef": {
       "type": "object",
@@ -56,7 +56,7 @@
     "FieldKey": {
       "type": "string",
       "pattern": "^[A-Za-z][A-Za-z0-9_.]{0,63}$",
-      "description": "A field declared for an entity kind in the site pack."
+      "description": "A field of that kind of item, as the site pack declares it."
     },
     "PageType": {
       "type": "string",

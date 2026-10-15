@@ -83,6 +83,10 @@ export function idsIn(value: unknown, idPaths: { kind: string; path: string }[] 
 // ---------------------------------------------------------------- cross-checks the schema can't express
 
 export const PRESENTATION_TOOLS = ['present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice'];
+/** The platform's own tools: scripts (run on the client) and skills (loaded by the brain). */
+export const PLATFORM_TOOLS = ['run_script', 'load_skill'];
+/** Tool names the platform keeps for itself. */
+export const RESERVED_TOOLS = [...PRESENTATION_TOOLS, ...PLATFORM_TOOLS];
 
 /** Problems with a site pack beyond its schema: references to things that don't exist. */
 export function crossCheck(site: Site): string[] {
@@ -99,7 +103,7 @@ export function crossCheck(site: Site): string[] {
     if (!pack.site.origins.some((o) => e.url.startsWith(o))) add(`endpoints.${name}.url`, 'not under any of site.origins');
   }
   for (const [name, t] of entriesOf(pack.tools)) {
-    if (PRESENTATION_TOOLS.includes(name)) add(`tools.${name}`, 'name is reserved for a platform presentation tool');
+    if (RESERVED_TOOLS.includes(name)) add(`tools.${name}`, 'name is reserved for a platform tool');
     for (const rel of [t.input, t.output]) if (!schemaExists(rel)) add(`tools.${name}`, `schema ${rel} not found`);
     for (const u of t.uses) if (!pack.endpoints[u]) add(`tools.${name}.uses`, `unknown endpoint ${u}`);
     for (const id of [...(t.ids?.input ?? []), ...(t.ids?.output ?? [])]) if (!kinds.has(id.kind)) add(`tools.${name}.ids`, `unknown entity kind ${id.kind}`);
@@ -121,5 +125,14 @@ export function crossCheck(site: Site): string[] {
   for (const [name, d] of entriesOf(pack.policies.derivedFields)) {
     if (d.appliesTo && !kinds.has(d.appliesTo)) add(`policies.derivedFields.${name}`, `unknown entity kind ${d.appliesTo}`);
   }
+  // Each skill's guidance is a Markdown file the brain loads: sites/<id>/skills/<name>.md.
+  const skillFiles = existsSync(path.join(site.dir, 'skills'))
+    ? readdirSync(path.join(site.dir, 'skills')).filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3))
+    : [];
+  for (const [name, skill] of entriesOf(pack.skills)) {
+    if (!skillFiles.includes(name)) add(`skills.${name}`, `no guidance file skills/${name}.md`);
+    for (const t of skill.pageTypes ?? []) if (!pack.site.pageTypes?.includes(t)) add(`skills.${name}.pageTypes`, `unknown page type ${t}`);
+  }
+  for (const name of skillFiles) if (!pack.skills?.[name]) add(`skills/${name}.md`, 'not declared under skills in site.yaml');
   return problems;
 }

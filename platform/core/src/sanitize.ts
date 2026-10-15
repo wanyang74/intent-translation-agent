@@ -39,3 +39,9 @@ export function fence(text: unknown, source: string, maxLength: number = DEFAULT
   if (!SOURCE.test(source)) throw new RangeError(`fence source must be lowercase letters and dashes, not ${JSON.stringify(source)}`);
   return `<untrusted source="${source}">${cleanText(text, maxLength)}</untrusted>`;
 }
+
+/** The text inside a fence, for showing to the user: the fence is for the model only. */
+export function unfence(text: string): string {
+  const m = /^<untrusted source="[a-z-]+">([\s\S]*)<\/untrusted>$/.exec(text);
+  return m ? m[1]! : text;
+}

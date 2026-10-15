@@ -57,12 +57,12 @@ test('deep links URL-encode text and base64-encode JSON', () => {
   const url = new URL(r.url);
   assert.equal(url.searchParams.get('q'), 'red shoes & socks');
   assert.deepEqual(JSON.parse(Buffer.from(url.searchParams.get('state')!.replace(/ /g, '+'), 'base64').toString('utf8')), { page: 2, tags: ['é'] });
-  assert.deepEqual(deepLink(examplePack, 'product', { productId: 7 }), { ok: true, url: 'https://www.example.com/p/7' });
+  assert.deepEqual(deepLink(examplePack, 'product', { id: 7 }), { ok: true, url: 'https://www.example.com/p/7' });
 });
 
 test('a deep link with a missing or unusable value, or an unknown name, is refused with the reason', () => {
-  assert.deepEqual(deepLink(examplePack, 'product', {}), { ok: false, problems: ['productId is missing'] });
-  assert.deepEqual(deepLink(examplePack, 'product', { productId: { id: 7 } }), { ok: false, problems: ['productId must be text or a number'] });
+  assert.deepEqual(deepLink(examplePack, 'product', {}), { ok: false, problems: ['id is missing'] });
+  assert.deepEqual(deepLink(examplePack, 'product', { id: { id: 7 } }), { ok: false, problems: ['id must be text or a number'] });
   assert.deepEqual(deepLink(examplePack, 'checkout', {}), { ok: false, problems: ['the site has no deep link named checkout'] });
   assert.deepEqual(buildLink('https://x.example/{a', {}), { ok: false, problems: ['the template has a malformed placeholder'] });
 });

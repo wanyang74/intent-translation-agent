@@ -1,0 +1,256 @@
+[
+  {
+    "name": "present_items",
+    "description": "Shows items as cards in the order you give. Pass IDs exactly as this conversation's tool results gave them; every field on a card is filled in from those results. The layout is cards unless you choose list or carousel.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,31}$",
+          "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true
+        },
+        "heading": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,80}$"
+        },
+        "layout": {
+          "enum": [
+            "list",
+            "cards",
+            "carousel"
+          ]
+        }
+      },
+      "required": [
+        "entity",
+        "ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "present_comparison",
+    "description": "Shows two to four items side by side on the attributes you choose: field names of that kind of item, as listed in your instructions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,31}$",
+          "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_.]{0,63}$",
+            "description": "A field of that kind of item, as the site pack declares it."
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "entity",
+        "ids",
+        "attributes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "present_detail",
+    "description": "Shows one item with the detail sections you choose, as listed in your instructions for that kind of item. Without sections, it shows all of them.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,31}$",
+          "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ],
+          "description": "An ID a tool returned in this conversation, or the item on screen. Its kind comes from the site pack."
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,31}$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "entity",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "present_options",
+    "description": "Shows choices such as filter suggestions. Tapping one sends its label as the user's next message.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,31}$",
+          "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "heading": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,80}$"
+        }
+      },
+      "required": [
+        "entity",
+        "ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "present_form",
+    "description": "Asks the user for several details at once, such as dates and travelers, with one of the site's forms. Prefill what you already know.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "form": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,31}$"
+        },
+        "prefill": {
+          "type": "object",
+          "description": "Values for the form's fields; checked against the site pack's form definition at runtime."
+        },
+        "heading": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,80}$"
+        }
+      },
+      "required": [
+        "form"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "present_notice",
+    "description": "Shows a notice, such as a disclosure, in the site's approved wording. Notices that must go with fields on screen are added automatically; use this for other notices that apply.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "notice": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "entity": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,31}$",
+              "description": "A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares."
+            },
+            "id": {
+              "type": [
+                "string",
+                "integer"
+              ],
+              "description": "An ID a tool returned in this conversation, or the item on screen. Its kind comes from the site pack."
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "notice"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "run_script",
+    "description": "Runs a short JavaScript program on the user's device, for work that needs many tool calls, such as checking every page of a search. The program is the body of an async function. It calls this site's tools as `await tools.<name>(arguments)`, which returns the tool's result or throws an Error whose message says what went wrong. It has no network, timers or modules, and its tool calls count toward the same limits as yours. It must return a small object, at most 10,000 characters as JSON: the IDs to show and a short summary of what it checked, never copies of whole results. IDs it returns can be shown with the presentation tools.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,20000}$",
+          "description": "The body of an async function: await each tool call, and return an object."
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "load_skill",
+    "description": "Loads the guidance for one of this site's skills, listed in your instructions under Skills. Load a skill as soon as its topic comes up, before you answer about it. A skill stays loaded for the rest of the conversation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "description": "The skill's name, as listed."
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

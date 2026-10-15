@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/schemas/presentation/present_form.json",
-  "title": "present_form: a form for input the agent needs, such as dates and travelers",
+  "title": "present_form: a form for details you need",
+  "description": "Asks the user for several details at once, such as dates and travelers, with one of the site's forms. Prefill what you already know.",
   "type": "object",
   "properties": {
     "form": {

@@ -1,8 +1,11 @@
-// Generates TypeScript types and precompiled validators:
-//   platform/contract/generated/  types.ts, validators.js, validators.d.ts for the platform schemas
-//   sites/<id>/generated/         the same for each site pack's schemas, plus site.json (the site pack as JSON, for core.js)
+// Generates TypeScript types, precompiled validators and tool definitions:
+//   platform/contract/generated/  types.ts, validators.js, validators.d.ts for the platform schemas, and tools.json
+//                                 (the presentation tools and the platform's own tools)
+//   sites/<id>/generated/         the same for each site pack's schemas, plus site.json (the site pack as JSON, for
+//                                 core.js) and tools.json (the site's tools)
 // Validators are Ajv standalone code with no imports, eval or new Function, so they run in web pages,
-// JavaScriptCore and QuickJS. The output is deterministic, so it's committed and checked.
+// JavaScriptCore and QuickJS. A tool definition is what a model is shown: name, description, and an input schema
+// with every $ref inlined. The output is deterministic, so it's committed and checked.
 // Usage: node platform/contract/scripts/generate.ts [--check]
 //   --check  exit 1 if any committed file differs from a fresh generation
 import { compile } from 'json-schema-to-typescript';
@@ -12,7 +15,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AJV_OPTIONS, listSchemas, platformSchemaDir, type SchemaFile } from '../src/load.ts';
-import { listSites, readSite } from '../src/site-pack.ts';
+import { PLATFORM_TOOLS, PRESENTATION_TOOLS, entriesOf, listSites, readSite } from '../src/site-pack.ts';
 import { defName, typeName, validatorName } from '../src/names.ts';
 
 const check = process.argv.includes('--check');
@@ -110,6 +113,63 @@ function generateValidators(scope: SchemaFile[], all: SchemaFile[], validatorTyp
   return { js: BANNER + js + '\n', dts: BANNER + dts };
 }
 
+// ---------------------------------------------------------------- tool definitions
+// The input schema as one self-contained document: each $ref replaced by what it points to (keywords next to a $ref
+// are kept and may only add a description), titles, examples and ids dropped, descriptions kept. The root's own
+// description goes in the definition's description, not in the schema.
+interface ToolDefinition {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+}
+
+const DROPPED = new Set(['$schema', '$id', '$defs', 'title', 'examples']);
+
+function inlined(node: unknown, prefix: string, rel: string, chain: string[]): unknown {
+  if (Array.isArray(node)) return node.map((n) => inlined(n, prefix, rel, chain));
+  if (!node || typeof node !== 'object') return node;
+  const out: Record<string, unknown> = {};
+  let target: Record<string, unknown> | null = null;
+  for (const [k, v] of Object.entries(node)) {
+    if (DROPPED.has(k)) continue;
+    if (k === '$ref' && typeof v === 'string') {
+      const { refPrefix, target: file, pointer } = splitRef(v, prefix, rel);
+      const where = `${refPrefix}${file}#${pointer}`;
+      if (chain.includes(where)) throw new Error(`${prefix}${rel}: the $ref ${v} is recursive, so it can't be inlined`);
+      target = inlined(resolvePointer(refPrefix, file, pointer), refPrefix, file, [...chain, where]) as Record<string, unknown>;
+      continue;
+    }
+    out[k] = inlined(v, prefix, rel, chain);
+  }
+  if (!target) return out;
+  for (const [k, v] of Object.entries(out)) {
+    if (k !== 'description' && k in target && JSON.stringify(target[k]) !== JSON.stringify(v)) {
+      throw new Error(`${prefix}${rel}: "${k}" next to a $ref differs from what the $ref points to; keep one of them`);
+    }
+  }
+  return { ...target, ...out };
+}
+
+function toolDefinition(name: string, description: string, prefix: string, rel: string): ToolDefinition {
+  const schema = inlined(resolvePointer(prefix, rel, ''), prefix, rel, [`${prefix}${rel}#`]) as Record<string, unknown>;
+  const { description: _rootDescription, ...inputSchema } = schema;
+  if (inputSchema.type !== 'object') throw new Error(`${prefix}${rel}: a tool's input schema must be an object`);
+  return { name, description, inputSchema };
+}
+
+function platformToolDefinitions(): ToolDefinition[] {
+  return [
+    ...PRESENTATION_TOOLS.map((name) => ({ name, rel: `presentation/${name}.json` })),
+    ...PLATFORM_TOOLS.map((name) => ({ name, rel: `platform-tools/${name}.json` })),
+  ].map(({ name, rel }) => {
+    const doc = platform.find((s) => s.rel === rel)?.doc;
+    if (!doc) throw new Error(`No schema for the platform tool ${name}: expected schemas/${rel}`);
+    return toolDefinition(name, String(doc.description ?? ''), 'schemas/', rel);
+  });
+}
+
+const toolsJson = (defs: ToolDefinition[]) => JSON.stringify(defs, null, 2) + '\n';
+
 // ---------------------------------------------------------------- everything to write
 const outputs: { file: string; text: string }[] = [];
 {
@@ -118,6 +178,7 @@ const outputs: { file: string; text: string }[] = [];
     { file: path.join(platformOut, 'types.ts'), text: await generateTypes('schemas/', platform) },
     { file: path.join(platformOut, 'validators.js'), text: v.js },
     { file: path.join(platformOut, 'validators.d.ts'), text: v.dts },
+    { file: path.join(platformOut, 'tools.json'), text: toolsJson(platformToolDefinitions()) },
   );
 }
 for (const id of listSites()) {
@@ -132,6 +193,7 @@ for (const id of listSites()) {
     { file: path.join(out, 'validators.js'), text: v.js },
     { file: path.join(out, 'validators.d.ts'), text: v.dts },
     { file: path.join(out, 'site.json'), text: JSON.stringify(site.pack, null, 2) + '\n' },
+    { file: path.join(out, 'tools.json'), text: toolsJson(entriesOf(site.pack.tools).map(([name, t]) => toolDefinition(name, t.description, prefix, t.input))) },
   );
 }
 

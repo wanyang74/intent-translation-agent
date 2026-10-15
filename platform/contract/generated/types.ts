@@ -29,21 +29,21 @@ export type CallId = string;
  */
 export type ToolName = string;
 /**
- * An entity kind declared by the site pack, such as a product, an offer or an account.
+ * A kind of item the site shows, such as a product, an offer or an account: an entity kind the site pack declares.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "EntityKind".
  */
 export type EntityKind = string;
 /**
- * An ID that a tool returned in this session. Its kind comes from the site pack.
+ * An ID a tool returned in this conversation, or the item on screen. Its kind comes from the site pack.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "EntityId".
  */
 export type EntityId = string | number;
 /**
- * A field declared for an entity kind in the site pack.
+ * A field of that kind of item, as the site pack declares it.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "FieldKey".
@@ -133,7 +133,7 @@ export type PresentationCall =
       args: PresentNoticeArgs;
     };
 /**
- * A field declared for an entity kind in the site pack.
+ * A field of that kind of item, as the site pack declares it.
  */
 export type FieldKey1 = string;
 /**
@@ -281,7 +281,7 @@ export interface ClientResults {
   results: [ToolResult, ...ToolResult[]];
 }
 /**
- * present_items: an ordered list of items as cards. IDs and layout only. The client fills in every displayed field from this session's tool results, using the site pack's card template.
+ * present_items: items as cards, in order. Shows items as cards in the order you give. Pass IDs exactly as this conversation's tool results gave them; every field on a card is filled in from those results. The layout is cards unless you choose list or carousel.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentItemsArgs".
@@ -297,7 +297,7 @@ export interface PresentItemsArgs {
   layout?: 'list' | 'cards' | 'carousel';
 }
 /**
- * present_comparison: items side by side. Attributes are field keys the site pack declares for this entity kind.
+ * present_comparison: items side by side. Shows two to four items side by side on the attributes you choose: field names of that kind of item, as listed in your instructions.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentComparisonArgs".
@@ -356,7 +356,7 @@ export interface PresentComparisonArgs {
       ];
 }
 /**
- * present_detail: one item in full
+ * present_detail: one item in full. Shows one item with the detail sections you choose, as listed in your instructions for that kind of item. Without sections, it shows all of them.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentDetailArgs".
@@ -367,7 +367,7 @@ export interface PresentDetailArgs {
   sections?: string[];
 }
 /**
- * present_options: choices the user can pick, such as filter suggestions
+ * present_options: choices the user can tap. Shows choices such as filter suggestions. Tapping one sends its label as the user's next message.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentOptionsArgs".
@@ -430,7 +430,7 @@ export interface PresentOptionsArgs {
   heading?: string;
 }
 /**
- * present_form: a form for input the agent needs, such as dates and travelers
+ * present_form: a form for details you need. Asks the user for several details at once, such as dates and travelers, with one of the site's forms. Prefill what you already know.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentFormArgs".
@@ -444,7 +444,7 @@ export interface PresentFormArgs {
   heading?: string;
 }
 /**
- * present_notice: approved text the site requires, such as a disclosure. The model picks the notice; its text comes verbatim from the site pack.
+ * present_notice: required wording. Shows a notice, such as a disclosure, in the site's approved wording. Notices that must go with fields on screen are added automatically; use this for other notices that apply.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "PresentNoticeArgs".
@@ -503,6 +503,30 @@ export interface ErrorEvent {
   traceId: TraceId;
   code: 'timeout' | 'budget_reached' | 'unauthorized' | 'internal';
   message: string;
+}
+/**
+ * load_skill: guidance for a topic. Loads the guidance for one of this site's skills, listed in your instructions under Skills. Load a skill as soon as its topic comes up, before you answer about it. A skill stays loaded for the rest of the conversation.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "LoadSkillArgs".
+ */
+export interface LoadSkillArgs {
+  /**
+   * The skill's name, as listed.
+   */
+  name: string;
+}
+/**
+ * run_script: many tool calls in one step. Runs a short JavaScript program on the user's device, for work that needs many tool calls, such as checking every page of a search. The program is the body of an async function. It calls this site's tools as `await tools.<name>(arguments)`, which returns the tool's result or throws an Error whose message says what went wrong. It has no network, timers or modules, and its tool calls count toward the same limits as yours. It must return a small object, at most 10,000 characters as JSON: the IDs to show and a short summary of what it checked, never copies of whole results. IDs it returns can be shown with the presentation tools.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "RunScriptArgs".
+ */
+export interface RunScriptArgs {
+  /**
+   * The body of an async function: await each tool call, and return an object.
+   */
+  source: string;
 }
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema

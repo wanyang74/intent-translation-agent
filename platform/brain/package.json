@@ -2,5 +2,13 @@
   "name": "@intent/brain",
   "private": true,
   "type": "module",
-  "description": "The agentic brain: the server-side agent loop, prompt and skills, model calls and quotas. Built from phase 4."
+  "description": "The agentic brain: the agent loop, prompt and skills, server checks and quotas, and model calls through AI SDK Core. Serves core.js over HTTP with newline-delimited JSON.",
+  "dependencies": {
+    "ai": "7.0.122",
+    "@ai-sdk/anthropic": "4.0.68"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "start": "node src/main.ts"
+  }
 }

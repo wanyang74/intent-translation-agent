@@ -3,16 +3,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
 import { gzipSync } from 'node:zlib';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { ValidateFunction } from 'ajv/dist/2020.js';
+import Ajv2020, { type ValidateFunction } from 'ajv/dist/2020.js';
 import { build } from 'esbuild';
 import { getQuickJS } from 'quickjs-emscripten';
-import { loadContract, type SchemaFile } from '../src/load.ts';
+import { AJV_OPTIONS, loadContract, type SchemaFile } from '../src/load.ts';
 import { mustReject as platformCases, type MustReject } from '../src/cases.ts';
 import { validatorName } from '../src/names.ts';
 
@@ -69,6 +69,20 @@ for (const scope of scopes) {
     assert.ok(cases.some((c) => c.expected), 'no valid examples');
     if (scope.cases.length) assert.ok(cases.some((c) => !c.expected), 'must-reject cases were accepted');
     for (const c of cases) assert.equal(generated[c.fn]!(c.data), c.expected, `${c.rel}: ${JSON.stringify(c.data).slice(0, 80)}`);
+  });
+
+  test(`${scope.label}: each tool definition stands alone and accepts and refuses what its schema does`, () => {
+    const defs = JSON.parse(readFileSync(path.join(scope.generatedDir, 'tools.json'), 'utf8')) as { name: string; inputSchema: object }[];
+    const site = Object.values(contract.sites).find((s) => scope.generatedDir === path.join(s.dir, 'generated'));
+    assert.ok(defs.length > 0);
+    for (const def of defs) {
+      const rel = site ? site.pack.tools[def.name]!.input : scope.schemas.find((s) => s.rel.endsWith(`/${def.name}.json`))!.rel;
+      assert.doesNotMatch(JSON.stringify(def.inputSchema), /\$ref|\$id|"examples"/, def.name);
+      const alone = new Ajv2020({ ...AJV_OPTIONS, allErrors: false }).compile(def.inputSchema);
+      const own = cases.filter((c) => c.rel === rel);
+      assert.ok(own.some((c) => c.expected), `${def.name}: no example to check against`);
+      for (const c of own) assert.equal(alone(c.data), c.expected, `${def.name}: ${JSON.stringify(c.data).slice(0, 80)}`);
+    }
   });
 
   const bundle = await bundleOf(scope.generatedDir, `import * as v from './validators.js';\nglobalThis.__run = (cases) => JSON.stringify(cases.map((c) => v[c.fn](c.data)));`);

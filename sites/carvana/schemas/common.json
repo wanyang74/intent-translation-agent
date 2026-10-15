@@ -24,7 +24,7 @@
     "Zip5": {
       "type": "string",
       "pattern": "^[0-9]{5}$",
-      "description": "Always passed explicitly: from the page context or the user, never the browser's location."
+      "description": "The user's 5-digit zip code, from the context block or from the user; never the browser's location."
     },
     "UsState": {
       "type": "string",

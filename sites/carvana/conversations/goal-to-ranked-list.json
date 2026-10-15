@@ -4,13 +4,13 @@
   "description": "One message with six filters and a deadline. The agent searches with all the filters at once, checks delivery dates for the whole page in one call, and shows the cars that arrive by Saturday, cheapest first, saying how much it checked.",
   "now": "2026-10-08T19:15:00Z",
   "fixtures": [
+    "facets-03",
     "search-06",
-    "facets-06",
     "availability-06"
   ],
   "notes": [
     "A complete answer also checks pages 2 to 4 (54 more cars). Those pages aren't recorded yet, so the agent says what it checked and offers to continue. Recording them would let this conversation go further.",
-    "search_vehicles calls search and facets with the same filters; the facets response is where the boundary checks find the valid colors, interior colors and drive types.",
+    "Before searching, the boundary check needs the valid colors, interior colors and drive types. core.js fetches facets with the user's other filters (Tesla, 2023 or newer, under 42,100 miles), which is facets-03, then searches.",
     "By Saturday means by the end of Saturday, Oct 10, in the user's time zone (America/Los_Angeles here): delivery or pickup at or before 2026-10-11T06:59:59Z."
   ],
   "messages": [

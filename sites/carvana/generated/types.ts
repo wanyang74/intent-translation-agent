@@ -26,7 +26,7 @@ export type RouteId = string;
  */
 export type SuggestionId = string;
 /**
- * Always passed explicitly: from the page context or the user, never the browser's location.
+ * The user's 5-digit zip code, from the context block or from the user; never the browser's location.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "Zip5".
@@ -1854,7 +1854,7 @@ export interface GetVehicleQuoteInput {
   option?: 'delivery' | 'pickup';
 }
 /**
- * search_vehicles: input. Filter values must come from the facets response; the boundary checks refuse anything else.
+ * search_vehicles: input. Filter values are Carvana's own spellings, such as Gray and Awd. A value Carvana doesn't offer is refused, with the valid options listed.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "SearchVehiclesInput".

@@ -9,10 +9,23 @@
     "gap-01",
     "reviews-01"
   ],
+  "pageData": {
+    "vehicleId": 4812031,
+    "year": 2023,
+    "make": "Tesla",
+    "model": "Model Y",
+    "trim": "Long Range",
+    "kbbTrim": "Long Range Sport Utility 4D",
+    "mileage": 27689,
+    "color": "Gray",
+    "vehicleInventoryType": 1,
+    "locationId": 300
+  },
   "notes": [
     "get_vehicle_quote: availability for this one car gives the delivery route; pricing takes that route; the GAP waiver check takes the estimated total as the amount financed and the state from the route (CA).",
-    "get_owner_reviews needs the year, make, model and long trim name (Long Range Sport Utility 4D). On the car's own page, core.js reads them from the page; elsewhere they come from an earlier search result in the session.",
-    "Review text is fenced by the sanitizer (control and bidirectional characters removed, untrusted tags stripped, at most 1,000 characters)."
+    "Review text is fenced by the sanitizer (control and bidirectional characters removed, untrusted tags stripped, at most 1,000 characters).",
+    "pageData is what the car's own page carries: the details the quote and the reviews need (inventory type, location, year, make, model and the long trim name). It's built from the same car's search record until a vehicle page is recorded; on the web, the site's page reader will read it from the page.",
+    "The page context gives the state (CA) along with the zip code; the GAP waiver check needs it."
   ],
   "messages": [
     {
@@ -29,7 +42,8 @@
           "id": 4812031
         },
         "location": {
-          "postalCode": "94402"
+          "postalCode": "94402",
+          "region": "CA"
         },
         "locale": "en-US"
       }
