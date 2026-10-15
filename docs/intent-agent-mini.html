@@ -48,24 +48,41 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15.5px;line-height:1.65}
 .layout{max-width:1220px;margin:0 auto;padding-inline:20px;padding-block:32px 80px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:48px;align-items:start}
 .col{max-width:72ch}
-h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.2;margin:0}
+h1,h2,h3,h4,h5{font-family:var(--font-display);text-wrap:balance;line-height:1.2;margin:0}
 h1{font-size:clamp(30px,5vw,44px);font-weight:700;letter-spacing:-.01em}
 h2{font-size:24px;font-weight:600;margin-bottom:14px}
-h3{font-size:17px;font-weight:600;margin-bottom:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:8px}
+h4{font-size:16px;font-weight:600;margin-bottom:8px}
+h5{font-size:15px;font-weight:600;margin-bottom:8px}
 p{margin:0 0 12px}
 code,.mono{font-family:var(--font-mono);font-size:.86em}
 code{background:var(--code-bg);padding:1px 5px;border-radius:4px}
 a{color:var(--accent)}
 .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
-/* outline rail */
-.outline{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);max-height:calc(100vh - 48px);overflow-y:auto;padding-top:6px}
-.outline .eyebrow{margin-bottom:10px;display:block}
-.outline ol{list-style:none;margin:0;padding:0;display:grid;gap:1px;border-left:1px solid var(--line)}
-.outline a{display:block;text-decoration:none;color:var(--muted);font-size:14px;line-height:1.35;padding:6px 10px 6px 14px;margin-left:-1px;border-left:2px solid transparent;border-radius:0 6px 6px 0}
-.outline a:hover{color:var(--fg);background:var(--sunk)}
-.outline a[aria-current="true"]{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500}
-.outline .sub-a{padding-left:28px;font-size:13px}
+/* outline rail: main tabs, each with a foldable list of its sections */
+.outline{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);max-height:calc(100vh - 48px);overflow-y:auto;padding-top:6px;padding-right:4px}
+.outline-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.outline .eyebrow{display:block}
+.fold-all{display:flex;gap:6px;margin-bottom:12px}
+.fold-all button,.toc-menu{font:500 11.5px var(--font-mono);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 8px;cursor:pointer}
+.fold-all button:hover,.toc-menu:hover{color:var(--fg);background:var(--sunk)}
+.toc-menu{display:none}
+.toc,.toc ol{list-style:none;margin:0;padding:0}
+.toc{display:grid;gap:2px}
+.toc-row{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:start}
+.toc-tog,.toc-spacer{width:20px;height:27px}
+.toc-tog{border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:4px;padding:0}
+.toc-tog::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+.toc-tog[aria-expanded="true"]::before{transform:rotate(45deg)}
+.toc-tog:hover{color:var(--fg);background:var(--sunk)}
+.toc a{display:block;text-decoration:none;color:var(--muted);font-size:13px;line-height:1.35;padding:5px 8px;border-radius:6px}
+.toc-main > .toc-row > a{color:var(--fg);font-size:14px;font-weight:500}
+.toc-num{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-right:7px}
+.toc a:hover{color:var(--fg);background:var(--sunk)}
+.toc a[aria-current="true"]{color:var(--accent);background:var(--accent-soft)}
+.toc li > ol{display:none;margin:1px 0 4px 9px;padding-left:2px;border-left:1px solid var(--line)}
+.toc li.expanded > ol{display:grid;gap:1px}
 
 main{min-width:0}
 header.top{display:grid;gap:14px;padding-bottom:28px;border-bottom:1px solid var(--line)}
@@ -75,19 +92,22 @@ header.top{display:grid;gap:14px;padding-bottom:28px;border-bottom:1px solid var
 .chip b{color:var(--fg);font-weight:500}
 section{padding-block:36px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
 section:last-of-type{border-bottom:0}
-h3[id]{scroll-margin-top:16px}
+details.fold{scroll-margin-top:16px}
 .sub{color:var(--muted);margin-bottom:18px;max-width:72ch}
 
 @media (max-width:900px){
   .layout{grid-template-columns:1fr;gap:0;padding-block:20px 64px}
-  .outline{position:static;max-height:none;overflow:visible;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px;margin-bottom:24px}
-  .outline .sub-a{display:none}
+  .outline{position:static;max-height:none;overflow:visible;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:24px}
+  .outline-head{margin-bottom:0}
+  .outline.menu-open .outline-head{margin-bottom:10px}
+  .toc-menu{display:inline-block}
+  .outline:not(.menu-open) .toc,.outline:not(.menu-open) .fold-all{display:none}
 }
 
 /* scope */
 .scope{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-block:8px 18px}
 .scope > div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
-.scope h3{display:flex;align-items:center;gap:8px}
+.scope :is(h3,h4,h5){display:flex;align-items:center;gap:8px}
 .dot{width:9px;height:9px;border-radius:50%;flex:none}
 .dot.ok{background:var(--ok)} .dot.no{background:var(--guard)}
 .scope ul{margin:0;padding-left:18px}
@@ -209,6 +229,7 @@ ul.plain li{margin-bottom:8px}
 /* decision log */
 .dec{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;scroll-margin-top:16px}
 .dec-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-bottom:12px}
+.dec:not([open]) > .dec-head{margin-bottom:0}
 .dec-head h3{margin:0;flex:1 1 320px;min-width:0}
 .dec-id{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
 .dec dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px 18px;margin:0}
@@ -248,54 +269,112 @@ ul.plain li{margin-bottom:8px}
 .dec + .dec{margin-top:16px}
 
 .phase-tbl td:first-child{white-space:nowrap}
+
+/* folding sections: every main tab and section folds from its heading */
+details.fold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:6px}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary::before{content:"";flex:none;width:7px;height:7px;margin:0 3px 0 2px;border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);transform:rotate(-45deg);transition:transform .15s}
+details.fold[open] > summary::before{transform:rotate(45deg)}
+details.fold > summary:hover::before{border-color:var(--accent)}
+details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
+.lvl2 > summary::before{width:9px;height:9px}
+.lvl2 > .fold-body{padding-top:16px}
+.lvl3{margin-top:26px}
+.lvl3 > .fold-body{padding-top:10px}
+.lvl4{margin-top:18px}
+.lvl4 > .fold-body{padding-top:8px}
+.fold-body > .lvl3:first-child,.fold-body > .lvl4:first-child{margin-top:0}
+.tab-num{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--muted);margin-right:10px}
+@media (prefers-reduced-motion:reduce){details.fold > summary::before,.toc-tog::before{transition:none}}
 </style>
 </head>
 <body>
 <div class="layout">
-  <nav class="outline" aria-label="Outline">
-    <span class="eyebrow">Outline</span>
-    <ol>
-      <li><a href="#scope">Scope and boundaries</a></li>
-      <li><a href="#arch">Tech design</a></li>
-      <li><a class="sub-a" href="#arch-flow">Flow chart</a></li>
-      <li><a class="sub-a" href="#arch-lang">Languages by part</a></li>
-      <li><a class="sub-a" href="#arch-future">Later: external agents</a></li>
-      <li><a class="sub-a" href="#arch-modes">MCP vs A2A</a></li>
-      <li><a class="sub-a" href="#arch-decisions">Key decisions</a></li>
-      <li><a class="sub-a" href="#arch-spike">Validation spike</a></li>
-      <li><a href="#sites">Platform and site packs</a></li>
-      <li><a class="sub-a" href="#sites-pack">What a site pack holds</a></li>
-      <li><a class="sub-a" href="#sites-generic">What the platform makes generic</a></li>
-      <li><a class="sub-a" href="#sites-next">Airlines and brokerages</a></li>
-      <li><a href="#core">Core module</a></li>
-      <li><a class="sub-a" href="#core-tools">Endpoints and tools</a></li>
-      <li><a class="sub-a" href="#core-flow">Data flow</a></li>
-      <li><a class="sub-a" href="#core-present">Presentation tools</a></li>
-      <li><a class="sub-a" href="#core-results">Tool results and errors</a></li>
-      <li><a class="sub-a" href="#core-scripts">Script layer</a></li>
-      <li><a class="sub-a" href="#core-links">Deep links</a></li>
-      <li><a href="#safety">Safety and grounding</a></li>
-      <li><a href="#latency">Latency and caching</a></li>
-      <li><a href="#brain">Agentic brain</a></li>
-      <li><a href="#web">Web</a></li>
-      <li><a href="#ios">iOS</a></li>
-      <li><a href="#test">Evals and testing</a></li>
-      <li><a href="#ops">Operations</a></li>
-      <li><a href="#verify">Verification plan</a></li>
-      <li><a href="#plan">Build order and gates</a></li>
-      <li><a href="#open">Open questions</a></li>
-      <li><a href="#decisions">Design decisions</a></li>
-      <li><a class="sub-a" href="#d1">D1 · Client calls the site</a></li>
-      <li><a class="sub-a" href="#d2">D2 · Combining calls on the client</a></li>
-      <li><a class="sub-a" href="#d3">D3 · Who enforces what</a></li>
-      <li><a class="sub-a" href="#d4">D4 · Tracking fields</a></li>
-      <li><a class="sub-a" href="#d5">D5 · Platform and site packs</a></li>
-    </ol>
-  </nav>
+<nav class="outline" aria-label="Outline">
+<div class="outline-head"><span class="eyebrow">Outline</span><button type="button" class="toc-menu" aria-expanded="false">Show</button></div>
+<div class="fold-all"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<ol class="toc">
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Problem and north star"></button><a href="#problem"><span class="toc-num">1</span>Problem and north star</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#problem-what">What we're building</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#north-star">North star</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#scope">The mini version</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Architecture"></button><a href="#arch"><span class="toc-num">2</span>Architecture</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-split">Platform and site packs</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-flow">Flow chart</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-lang">What runs where</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-journey">Request journey</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-principles">Design principles</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Modules"></button><a href="#modules"><span class="toc-num">3</span>Modules</a></div><ol>
+<li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Client"></button><a href="#client">Client</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#web">Web</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#ios">iOS</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#android">Android</a></div></li>
+</ol></li>
+<li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Tool runtime (core.js)"></button><a href="#runtime">Tool runtime (core.js)</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#runtime-parts">Its parts</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-results">Tools: results and errors</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-present">Presentation tools</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-scripts">Script sandbox</a></div></li>
+</ol></li>
+<li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Agentic brain"></button><a href="#brain">Agentic brain</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#brain-skills">Prompt and skills</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-cache">Prompt caching</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#brain-memory">Memory</a></div></li>
+</ol></li>
+<li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Site packs and build time"></button><a href="#sites">Site packs and build time</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#sites-pack">What a site pack holds</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#sites-generic">What the platform makes generic</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-tools">Carvana's endpoints and tools</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-flow">Carvana's data flow</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-links">Deep links</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#sites-next">Airlines and brokerages</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#sites-build">Build time</a></div></li>
+</ol></li>
+<li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Later: gateway"></button><a href="#gateway">Later: gateway</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-modes">MCP vs A2A</a></div></li>
+</ol></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Safety and boundary"></button><a href="#safety"><span class="toc-num">4</span>Safety and boundary</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-rules">Boundary rules</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-ids">Only known IDs</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-finance">Required wording</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-text">Untrusted text</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-caps">Caps</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#safety-trust">Who enforces what</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Latency"></button><a href="#latency"><span class="toc-num">5</span>Latency</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-steps">Fewer, faster steps</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-feel">Feeling fast</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Evaluation"></button><a href="#test"><span class="toc-num">6</span>Evaluation</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-fakes">Fakes</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-levels">Test levels</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-daily">From day one</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-functional">Functional tests</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-evals">Snapshot evals</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-ci">CI gates and model choice</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-tasks">Fixed end-to-end tasks</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Build plan"></button><a href="#plan"><span class="toc-num">7</span>Build plan</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-phases">Phases and gates</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-spike">Phase 0 checks</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Decisions and open questions"></button><a href="#decisions"><span class="toc-num">8</span>Decisions and open questions</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d1">D1 · Client calls the site</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d2">D2 · Combining calls on the client</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d3">D3 · Client and server checks</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d4">D4 · Tracking fields</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d5">D5 · Platform and site packs</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#open">Open questions</a></div></li>
+</ol></li>
+</ol>
+</nav>
 
-  <main>
+<main>
     <header class="top">
-      <div class="eyebrow">Intent Translation Agent · Design draft v0.5 · updated 2026-10-12</div>
+      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-14</div>
       <h1>Intent Agent Mini</h1>
       <p class="lede">The smallest first version: take what a person can already do on a consumer site's frontend and turn it into a conversational agent flow that can loop and compare at scale. It only sends requests the frontend already sends. It doesn't touch the backend and doesn't place orders. The platform is general: everything it knows about a site comes from that site's pack, and Carvana is the first.</p>
       <div class="chips">
@@ -307,12 +386,35 @@ ul.plain li{margin-bottom:8px}
       </div>
     </header>
 
-    <section id="scope">
-      <h2>Scope and boundaries</h2>
-      <p class="sub">The ceiling is what a person can do on the site's frontend. The agent adds scale and automation: on Carvana, a person checks one car's quote at a time, while the agent can pull 50 and compare them. Every call is still one the frontend would send.</p>
+<section id="problem">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">1</span>Problem and north star</h2></summary>
+<div class="fold-body">
+<details class="fold lvl3" id="problem-what" open>
+<summary><h3>What we're building <span class="pill warn">Draft</span></h3></summary>
+<div class="fold-body">
+<p>An agent layer for consumer websites and apps. A person states a goal in their own words. The agent asks only the follow-up questions it needs, calls the site's existing APIs, and shows the results as cards, comparisons, forms and confirmations. The person only confirms, rejects or changes what they see.</p>
+<p>It helps people get things done on the site. It isn't a customer-service or call-center agent.</p>
+</div>
+</details>
+<details class="fold lvl3" id="north-star" open>
+<summary><h3>North star <span class="pill warn">Draft</span></h3></summary>
+<div class="fold-body">
+<p>On any consumer site or app, a person says what they want, by typing or speaking, and ends with a result they confirmed, without clicking through dozens of pages to get there.</p>
+<ul class="plain">
+  <li><b>Any site.</b> Adding a site means writing its site pack, not changing the platform. Carvana comes first, then airlines and brokerages.</li>
+  <li><b>Any surface.</b> The same agent gives the same answers on the web, iOS and Android.</li>
+  <li><b>Any agent.</b> The site's own agent and outside agents, through MCP or A2A, get the same actions and the same data for the same request.</li>
+</ul>
+</div>
+</details>
+<details class="fold lvl3" id="scope" open>
+<summary><h3>The mini version</h3></summary>
+<div class="fold-body">
+<p class="sub">The ceiling is what a person can do on the site's frontend. The agent adds scale and automation: on Carvana, a person checks one car's quote at a time, while the agent can pull 50 and compare them. Every call is still one the frontend would send.</p>
       <div class="scope">
         <div>
-          <h3><span class="dot ok"></span>In this version, on Carvana first</h3>
+          <h4><span class="dot ok"></span>In this version, on Carvana first</h4>
           <ul>
             <li>Turn a natural-language goal into structured search filters</li>
             <li>Exhaustive search across filter combinations</li>
@@ -322,7 +424,7 @@ ul.plain li{margin-bottom:8px}
           </ul>
         </div>
         <div>
-          <h3><span class="dot no"></span>Not in this version</h3>
+          <h4><span class="dot no"></span>Not in this version</h4>
           <ul>
             <li>Any write action: favorites, holds, orders, bookings, trades, payment</li>
             <li>Parameters or endpoints the frontend never uses</li>
@@ -333,24 +435,38 @@ ul.plain li{margin-bottom:8px}
           </ul>
         </div>
       </div>
-      <div class="rules">
-        <h3>Boundary rules, enforced in code</h3>
-        <ol>
-          <li><b>Parameters only take values the frontend can produce.</b> Allowed values come from the site's own responses, and page sizes stay at the site's own. On Carvana, filter values come from the facets response, <code>pageSize</code> stays at 24 and <code>requestedFeatures</code> is copied from the frontend.</li>
-          <li><b>Only the tracking fields an endpoint requires,</b> as the site pack lists them, with fresh random IDs per session, never a real visitor's ID. On Carvana, quote and suggest need a client ID, and suggest also needs a visitor ID. See D4.</li>
-          <li><b>Usage is capped.</b> One shared budget per task, per session and per day, drawn on by direct, parallel and script calls alike, and one rate limit. The site pack sets both; Carvana's are 60 calls per task and 1 call per second. Repeated requests are served from cache.</li>
-          <li><b>Only read tools are registered.</b> The site pack marks each tool as a read or a write, and its policy says whether writes are allowed at all: none in the mini version.</li>
-          <li><b>Only known IDs.</b> Tools and the UI accept only IDs of the right kind that a tool returned in this session, or the item on screen, and that haven't expired.</li>
-          <li><b>The person takes the last step.</b> When an action is needed, the agent gives a deep link and the user clicks through on the site.</li>
-        </ol>
-      </div>
-    </section>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-    <section id="arch">
-      <h2>Tech design</h2>
-      <p class="sub">The harness is split by where each part runs. The client runs the tools and the server runs the agent loop, so API keys never reach a device. A language-neutral contract, produced at build time, connects them. Each dashed block below is a separately owned part, labeled with its language.</p>
+<section id="arch">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">2</span>Architecture</h2></summary>
+<div class="fold-body">
+<p class="sub">How the parts fit together: the platform and its site packs, where each part runs, and the path one request takes.</p>
+<details class="fold lvl3" id="arch-split" open>
+<summary><h3>Platform and site packs</h3></summary>
+<div class="fold-body">
+<p class="sub">The platform knows nothing about any one site. What it needs to know about a site is data in that site's pack: the kinds of things the site shows, the requests its frontend sends, the tools the model gets and the site's rules. Carvana is site pack #1. See D5.</p>
 
-      <h3 id="arch-flow">Flow chart</h3>
+<pre>platform/                    <span class="c">// never names a site; a test fails if it does</span>
+  contract/                  <span class="c">// protocol, presentation tools, errors, config, site-pack format; checks and code generator</span>
+  testkit/                   <span class="c">// fixture builder, FakeHost, conversation checker; later the other fakes</span>
+  core/  brain/  evals/      <span class="c">// phases 2 to 6</span>
+sites/
+  carvana/                   <span class="c">// site pack #1</span>
+    site.yaml  schemas/  fixtures/  conversations/  cases.ts  fixture-hooks.ts  research/
+  demo-flights/              <span class="c">// a made-up airline, used only in tests</span></pre>
+<p class="note">The details, with Carvana's as the example, are in <a href="#sites">Site packs and build time</a>.</p>
+</div>
+</details>
+<details class="fold lvl3" id="arch-flow" open>
+<summary><h3>Flow chart</h3></summary>
+<div class="fold-body">
+<p class="sub">The harness is split by where each part runs. The client runs the tools and the server runs the agent loop, so API keys never reach a device. A language-neutral contract, produced at build time, connects them. Each dashed block below is a separately owned part, labeled with its language.</p>
+
       <div class="diagram flow">
         <svg viewBox="0 0 1000 1032" role="img" aria-labelledby="flowTitle flowDesc">
           <title id="flowTitle">Intent Agent Mini request flow</title>
@@ -517,38 +633,12 @@ ul.plain li{margin-bottom:8px}
         <span><i class="lg lg-bnd"></i>Client / server boundary</span>
         <span><i class="lg lg-opt"></i>Optional call</span>
       </div>
-
-      <h3>Inside the tool runtime</h3>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Phase</th><th>Module</th><th>Talks to</th><th>Job</th></tr></thead>
-          <tbody>
-            <tr><td>—</td><td>Bridge channel</td><td>Web, iOS or Android bridge</td><td>Each platform's message passing: carries requests in and responses out</td></tr>
-            <tr><td>1 · Intake</td><td>Surface adapter (in)</td><td>Bridge channel</td><td>Takes the goal and page context in from any surface</td></tr>
-            <tr><td>2 · Brain link</td><td>Brain link</td><td>Agentic brain (server)</td><td>The only module that crosses the network to our server: steps ②, ④, ⑦ and ⑧</td></tr>
-            <tr><td>3 · Execute</td><td>Tool registry + script sandbox</td><td>Brain link, Respond, Fetch (optional)</td><td>Runs tool calls and scripts, including the presentation calls that carry the answer. Calls Fetch only when it needs data</td></tr>
-            <tr><td>4 · Respond</td><td>Surface adapter (out)</td><td>Bridge channel</td><td>Sends the answer and UI components back to the surface. Only Execute feeds it: the agentic brain's answer after step 8, or a tool result directly on the fast path</td></tr>
-            <tr><td>5 · Fetch</td><td>Host interface</td><td>The site's APIs</td><td>Sends the requests the site pack declares, with the page's or app's session: steps ⑤ and ⑥</td></tr>
-            <tr><td>Always on</td><td>Boundary checks</td><td>Every phase</td><td>Allowed values, known IDs only, shared call budget and rate limit, read-only, sanitizer for third-party text; checks and logs every message and call</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>One request, step by step</h3>
-      <ol class="steps">
-        <li><div><b>The user states a goal</b><div class="who">overlay, SwiftUI sheet or Compose sheet</div></div></li>
-        <li><div><b>The client sends the conversation and page context to the agentic brain</b><div class="who">client → server</div></div></li>
-        <li><div><b>The agentic brain calls the model</b><div class="who">server → LLM provider</div></div></li>
-        <li><div><b>The agentic brain returns tool calls or a script</b><div class="who">server → client</div>Each tool call goes out as soon as the model finishes writing it, without waiting for the rest of the response.</div></li>
-        <li><div><b>The tool runtime checks boundaries and calls the site's API</b><div class="who">core.js → the site's APIs</div>The request goes out with the page's or app's own session. Scripts run in the platform's sandbox and can only call registered tools.</div></li>
-        <li><div><b>The site's API responds to the tool runtime</b><div class="who">the site's APIs → core.js</div>Steps 5 and 6 are one request and its response. A script can repeat them many times without involving the agentic brain. If the agentic brain marked the call for direct rendering in step 4, Execute hands the result straight to Respond, which shows it right away; steps 7 and 8 then run in the background.</div></li>
-        <li><div><b>The tool runtime sends the results, or a script's summary, to the agentic brain</b><div class="who">client → server</div>The model needs the results to decide the next step or write the answer. Steps 3–7 repeat until the step budget runs out or the model has an answer.</div></li>
-        <li><div><b>The agentic brain returns the answer and UI components; each platform renders them natively</b><div class="who">server → client</div>They arrive as presentation tool calls. Brain link hands them to Execute, which validates them like any other tool call and passes them to Respond. Presentation tools carry only IDs and a layout; Execute fills in every displayed field from this session's tool results.</div></li>
-        <li><div><b>The user finishes on the site's own page or screen</b><div class="who">deep link (web) or app action (iOS, Android)</div></div></li>
-      </ol>
-
-      <h3 id="arch-lang">Languages by part</h3>
-      <div class="tbl">
+</div>
+</details>
+<details class="fold lvl3" id="arch-lang" open>
+<summary><h3>What runs where, in which language</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
           <thead><tr><th>Part</th><th>Runs on</th><th>Language</th><th>Why</th></tr></thead>
           <tbody>
@@ -562,9 +652,442 @@ ul.plain li{margin-bottom:8px}
           </tbody>
         </table>
       </div>
+</div>
+</details>
+<details class="fold lvl3" id="arch-journey" open>
+<summary><h3>Request journey, step by step</h3></summary>
+<div class="fold-body">
+<ol class="steps">
+        <li><div><b>The user states a goal</b><div class="who">overlay, SwiftUI sheet or Compose sheet</div></div></li>
+        <li><div><b>The client sends the conversation and page context to the agentic brain</b><div class="who">client → server</div></div></li>
+        <li><div><b>The agentic brain calls the model</b><div class="who">server → LLM provider</div></div></li>
+        <li><div><b>The agentic brain returns tool calls or a script</b><div class="who">server → client</div>Each tool call goes out as soon as the model finishes writing it, without waiting for the rest of the response.</div></li>
+        <li><div><b>The tool runtime checks boundaries and calls the site's API</b><div class="who">core.js → the site's APIs</div>The request goes out with the page's or app's own session. Scripts run in the platform's sandbox and can only call registered tools.</div></li>
+        <li><div><b>The site's API responds to the tool runtime</b><div class="who">the site's APIs → core.js</div>Steps 5 and 6 are one request and its response. A script can repeat them many times without involving the agentic brain. If the agentic brain marked the call for direct rendering in step 4, Execute hands the result straight to Respond, which shows it right away; steps 7 and 8 then run in the background.</div></li>
+        <li><div><b>The tool runtime sends the results, or a script's summary, to the agentic brain</b><div class="who">client → server</div>The model needs the results to decide the next step or write the answer. Steps 3–7 repeat until the step budget runs out or the model has an answer.</div></li>
+        <li><div><b>The agentic brain returns the answer and UI components; each platform renders them natively</b><div class="who">server → client</div>They arrive as presentation tool calls. Brain link hands them to Execute, which validates them like any other tool call and passes them to Respond. Presentation tools carry only IDs and a layout; Execute fills in every displayed field from this session's tool results.</div></li>
+        <li><div><b>The user finishes on the site's own page or screen</b><div class="who">deep link (web) or app action (iOS, Android)</div></div></li>
+      </ol>
+</div>
+</details>
+<details class="fold lvl3" id="arch-principles" open>
+<summary><h3>Design principles</h3></summary>
+<div class="fold-body">
+<div class="col">
+        <ul class="plain">
+          <li><b>The server drives the loop; the client runs the tools.</b> Prompts and skills stay on the server, and the same agentic brain can later serve external agents.</li>
+          <li><b>We own the loop and the tool runtime.</b> AI SDK Core is used only for model calls. Full frameworks such as Mastra or LangGraph wait until we need durable tasks, memory or multiple agents, and stay behind our own interfaces.</li>
+          <li><b>core.js has no Node dependencies.</b> It touches the outside world only through the Host interface, so the same bundle runs in a page, in JavaScriptCore, in QuickJS, and on the gateway.</li>
+          <li><b>Scripts run in a real sandbox on each platform.</b> A plain Web Worker isn't enough, because it can call any URL.</li>
+          <li><b>The contract is the source of truth.</b> Types and validators for every language are generated from it, never written by hand.</li>
+          <li><b>Presentation tools take IDs, not content.</b> Execute fills every displayed field from tool results, so the model can't put a made-up price on screen.</li>
+          <li><b>Client checks guard against the model; servers guard money and state.</b> See D3.</li>
+          <li><b>The platform never names a site.</b> Everything site-specific is data in a site pack, checked against one format, and a second, synthetic site pack runs through every test. See D5.</li>
+        </ul>
+      </div>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-      <h3 id="arch-future">Later: external agents through the gateway</h3>
-      <p class="sub">The same flow chart, redrawn for when most requests come from someone else's personal agent. Purple blocks are exchanged and show what they replace (before → after). Gray blocks stay the same or need only a minor change. The gateway and today's LLM proxy become one server: the agentic brain plus a server copy of core.js.</p>
+<section id="modules">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">3</span>Modules</h2></summary>
+<div class="fold-body">
+<p class="sub">One part for each box in the flow chart. Each is built and tested on its own against the shared contract before it's connected to the others.</p>
+<details class="fold lvl3" id="client" open>
+<summary><h3>Client</h3></summary>
+<div class="fold-body">
+<p>Each platform brings its own surface, where the user types or speaks and sees the results, and a bridge that runs the shared core.js. Everything behind the bridge is the same on every platform.</p>
+<details class="fold lvl4" id="web" open>
+<summary><h4>Web</h4></summary>
+<div class="fold-body">
+<p class="sub">Two steps: first prove the core logic in the built-in browser in an afternoon, then package it as a Chrome extension for the first demo you can show people.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th></th><th>Stage B: built-in browser</th><th>Stage A: Chrome extension</th></tr></thead>
+          <tbody>
+            <tr><td>Purpose</td><td>Confirm the endpoints work from the page and scripts run</td><td>A demoable product shape</td></tr>
+            <tr><td>Injection</td><td>Claude runs JS in the page</td><td>Content script that loads on the site's pages (carvana.com first)</td></tr>
+            <tr><td>UI</td><td>Results shown in the chat</td><td>Right-side overlay: chat, vehicle cards, comparison table</td></tr>
+            <tr><td>LLM</td><td>Claude itself</td><td>Through the agentic brain</td></tr>
+            <tr><td>Build effort</td><td>Close to none</td><td>A few days</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h5>One request, end to end (extension)</h5>
+      <ol class="steps">
+        <li><div><b>The user types a goal in the overlay</b><div class="who">overlay UI</div>"An AWD Model Y in the Bay Area under $40k that I can get before the weekend"</div></li>
+        <li><div><b>Sent to the agentic brain</b><div class="who">content script → agentic brain</div>With page context, such as the car the user is viewing.</div></li>
+        <li><div><b>The model returns tool calls or a script</b><div class="who">agentic brain → content script</div></div></li>
+        <li><div><b>Boundary checks, then execution in the page</b><div class="who">core.js</div>Validate parameters, enforce call count and rate limits, then call the site's endpoints with same-origin fetch.</div></li>
+        <li><div><b>Results go back to the model, which writes the answer and picks what to show by vehicle ID</b><div class="who">content script ↔ agentic brain</div></div></li>
+        <li><div><b>Execute fills the cards from tool results, and the overlay streams them in</b><div class="who">core.js → overlay UI</div>Progress lines show while tools run. Each card has a deep link so the user continues on the original site.</div></li>
+      </ol>
+</div>
+</details>
+<details class="fold lvl4" id="ios" open>
+<summary><h4>iOS</h4></summary>
+<div class="fold-body">
+<div class="split">
+        <div style="min-width:0">
+          <p class="sub">A test-only SwiftUI shell app: a WKWebView opens the site (carvana.com first), the same core.js is injected, and the agent's conversation and results appear in native UI. This is an early form of the future native SDK: native UI plus tools that run in the page context.</p>
+          <h5>Parts</h5>
+          <div class="tbl">
+            <table style="min-width:480px">
+              <thead><tr><th>Part</th><th>Role</th></tr></thead>
+              <tbody>
+                <tr><td><code>WKWebView</code></td><td>Loads the site and provides the same-origin context and session</td></tr>
+                <tr><td><code>WKUserScript</code></td><td>Injects core.js when the page finishes loading</td></tr>
+                <tr><td><code>WKScriptMessageHandler</code></td><td>Page → native: returns tool results</td></tr>
+                <tr><td><code>callAsyncJavaScript</code></td><td>Native → page: runs a tool call or script</td></tr>
+                <tr><td>SwiftUI sheet</td><td>Chat, vehicle cards, comparison table, deep links</td></tr>
+                <tr><td><code>URLSession</code></td><td>Native code talks to the agentic brain directly</td></tr>
+              </tbody>
+            </table>
+          </div>
+<pre><span class="c">// Inject the core module and set up the page → native channel</span>
+let config = WKWebViewConfiguration()
+let core = WKUserScript(source: coreJS,
+                        injectionTime: .atDocumentEnd,
+                        forMainFrameOnly: true)
+config.userContentController.addUserScript(core)
+config.userContentController.add(bridge, name: "agent")
+
+<span class="c">// Native → page: run one tool call</span>
+let result = try await webView.callAsyncJavaScript(
+  "return await window.__agent.run(call)",
+  arguments: ["call": toolCall], contentWorld: .page)</pre>
+          <h5>Alternative: Safari Web Extension</h5>
+          <div class="col">
+            <p>Safari has supported Web Extensions on iOS since iOS 15, and the desktop Chrome extension can be converted. It can be tested in Safari on the Simulator and on a device. It is closer to using the real site, but the UI can only be a web overlay. The shell app is closer to the future native SDK, so it comes first.</p>
+          </div>
+          <p class="note">The shell app is for your own testing only. Wrapping someone else's site in your own app and shipping it would break App Store rules and the site's terms of service.</p>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone" role="img" aria-label="iOS shell app mockup: carvana.com web page on top, native sheet below showing the conversation and two vehicle cards">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+              <div class="site"><b>CARVANA</b><span>Tesla · Model Y</span></div>
+              <div class="site-body"><div class="ghost"></div><div class="ghost"></div><div class="ghost"></div></div>
+              <div class="sheet">
+                <div class="grab"></div>
+                <div class="bubble u">AWD Model Y in the Bay Area, under $40k, before the weekend</div>
+                <div class="bubble a">I checked 24 cars. 5 match. Sorted by estimated total:</div>
+                <div class="vcard"><span class="t">2022 Model Y Performance</span><span class="p">$34,990</span><span class="m">est. $38,766 total · tomorrow</span><span class="l">Open ↗</span></div>
+                <div class="vcard"><span class="t">2023 Model Y Long Range</span><span class="p">$35,590</span><span class="m">est. $39,427 total · Saturday</span><span class="l">Open ↗</span></div>
+                <div class="input">Ask a follow-up…</div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Mockup with sample data from the HAR recording. Prices come from Carvana; the estimated total adds Carvana's estimated taxes and fees. Monthly payments aren't shown in the mini version.</div>
+        </div>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="android" open>
+<summary><h4>Android <span class="pill warn">Draft</span></h4></summary>
+<div class="fold-body">
+<p class="sub">The same shape as iOS: a test-only Kotlin shell app. An Android WebView opens the site, the same core.js is injected, and the conversation and results appear in a native Compose sheet.</p>
+<div class="tbl">
+  <table style="min-width:480px">
+    <thead><tr><th>Part</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>WebView</code></td><td>Loads the site and provides the same-origin context and session</td></tr>
+      <tr><td><code>evaluateJavascript</code></td><td>Native → page: runs a tool call or script</td></tr>
+      <tr><td><code>addJavascriptInterface</code> or <code>WebMessagePort</code></td><td>Page → native: returns tool results</td></tr>
+      <tr><td>Compose bottom sheet</td><td>Chat, cards, comparison table, deep links</td></tr>
+      <tr><td>QuickJS</td><td>Runs core.js outside a page, first for the engine tests (L4)</td></tr>
+      <tr><td>OkHttp</td><td>Native code talks to the agentic brain directly</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note">Tested on the Android emulator in phase 8. As with iOS, the shell app is for our own testing only: shipping someone else's site inside our app would break Google Play's rules and the site's terms.</p>
+</div>
+</details>
+</div>
+</details>
+<details class="fold lvl3" id="runtime" open>
+<summary><h3>Tool runtime (core.js)</h3></summary>
+<div class="fold-body">
+<p>One TypeScript bundle that runs on every client, and later on the gateway. It's the only part that calls the site.</p>
+<details class="fold lvl4" id="runtime-parts" open>
+<summary><h4>Its parts</h4></summary>
+<div class="fold-body">
+<div class="tbl">
+        <table>
+          <thead><tr><th>Phase</th><th>Module</th><th>Talks to</th><th>Job</th></tr></thead>
+          <tbody>
+            <tr><td>—</td><td>Bridge channel</td><td>Web, iOS or Android bridge</td><td>Each platform's message passing: carries requests in and responses out</td></tr>
+            <tr><td>1 · Intake</td><td>Surface adapter (in)</td><td>Bridge channel</td><td>Takes the goal and page context in from any surface</td></tr>
+            <tr><td>2 · Brain link</td><td>Brain link</td><td>Agentic brain (server)</td><td>The only module that crosses the network to our server: steps ②, ④, ⑦ and ⑧</td></tr>
+            <tr><td>3 · Execute</td><td>Tool registry + script sandbox</td><td>Brain link, Respond, Fetch (optional)</td><td>Runs tool calls and scripts, including the presentation calls that carry the answer. Calls Fetch only when it needs data</td></tr>
+            <tr><td>4 · Respond</td><td>Surface adapter (out)</td><td>Bridge channel</td><td>Sends the answer and UI components back to the surface. Only Execute feeds it: the agentic brain's answer after step 8, or a tool result directly on the fast path</td></tr>
+            <tr><td>5 · Fetch</td><td>Host interface</td><td>The site's APIs</td><td>Sends the requests the site pack declares, with the page's or app's session: steps ⑤ and ⑥</td></tr>
+            <tr><td>Always on</td><td>Boundary checks</td><td>Every phase</td><td>Allowed values, known IDs only, shared call budget and rate limit, read-only, sanitizer for third-party text; checks and logs every message and call. See <a href="#safety">Safety and boundary</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="core-results" open>
+<summary><h4>Tools: results and errors</h4></summary>
+<div class="fold-body">
+<div class="col">
+        <p>Each tool returns only the fields the model reasons with (its output schema in the site pack, with no image URLs), adds a next-step hint when the next move isn't obvious, and turns failures into instructions the model can act on. Error codes are the platform's; the site pack adds a reason and the message.</p>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Situation</th><th>Code · reason</th><th>What the model receives</th></tr></thead>
+          <tbody>
+            <tr><td>Search returned cars</td><td>—</td><td>Next step: "To check delivery dates, call <code>get_delivery_dates</code> once with all the vehicle IDs."</td></tr>
+            <tr><td>Filter value not offered</td><td><code>invalid_value</code></td><td>"'Grey' isn't a valid color here. Valid options: Gray, Silver, White…"</td></tr>
+            <tr><td>Unknown ID</td><td><code>unknown_id</code></td><td>"This ID wasn't returned in this session. Use an ID from the search results."</td></tr>
+            <tr><td>Route for a different zip code</td><td><code>invalid_value</code> · <code>route_other_zip</code></td><td>"This route is for a different zip code. Call <code>get_delivery_dates</code> for this car at 94402, then quote again."</td></tr>
+            <tr><td>Carvana couldn't price a car</td><td><code>upstream_error</code> · <code>pricing_error</code></td><td>"Carvana couldn't price this car for zip 94402. Tell the user and offer the car's page link."</td></tr>
+            <tr><td>An offer expired (Demo Flights)</td><td><code>expired</code> · <code>offer_expired</code></td><td>"This offer expired. Search again for current prices."</td></tr>
+            <tr><td>Not signed in (Demo Flights)</td><td><code>auth_required</code> · <code>signed_out</code></td><td>"The traveler needs to sign in to see trips. Ask them to sign in on the site."</td></tr>
+            <tr><td>Call budget reached</td><td><code>budget_reached</code></td><td>"This task reached its call limit. Summarize what you have and offer to continue."</td></tr>
+            <tr><td>Tool turned off</td><td><code>tool_disabled</code></td><td>"Delivery dates are unavailable right now. Answer without them and say so."</td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="core-present" open>
+<summary><h4>Presentation tools: IDs in, filled cards out</h4></summary>
+<div class="fold-body">
+<p class="sub">The model shows results by calling a presentation tool with an entity kind, IDs and a layout. Execute fills in every displayed field from this session's tool results, using the site pack's templates, so the model never types a price, date or spec into the UI. Arguments follow the on-screen order, so "the third one" resolves from history. The six tools are the same for every site.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Tool</th><th>Model sends</th><th>Execute fills in</th><th>On Carvana</th></tr></thead>
+          <tbody>
+            <tr><td><code>present_items</code></td><td>Entity kind, up to 50 IDs in order, a heading and a layout</td><td>One card per item, from the site's card template</td><td>Vehicle cards: year, make and model; trim and mileage; price, estimated total and delivery date; link</td></tr>
+            <tr><td><code>present_comparison</code></td><td>2–4 IDs and the fields to compare</td><td>Each field's value for each item, with gaps shown as "not available"</td><td>Cars side by side</td></tr>
+            <tr><td><code>present_detail</code></td><td>One ID and the sections to show</td><td>The item's detail view, section by section</td><td>The quote card: price, estimated taxes and fees, estimated total, delivery date, GAP waiver price; owner reviews</td></tr>
+            <tr><td><code>present_options</code></td><td>Up to 10 IDs the user can pick from</td><td>Labels and counts</td><td>Filter suggestions as chips</td></tr>
+            <tr><td><code>present_form</code></td><td>A form's name and values to prefill</td><td>The site's form, with the prefilled values</td><td>None yet; Demo Flights has a flight search form</td></tr>
+            <tr><td><code>present_notice</code></td><td>A notice's name</td><td>The stored wording, exactly</td><td>The estimated-total notice</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Derived numbers come from named formulas in the site pack, computed by core.js. Carvana's <code>estimatedTotal</code> is the price plus Carvana's estimated taxes and fees, and it is always labeled as an estimate. A notice must appear whenever a field it explains is on screen.</p>
+</div>
+</details>
+<details class="fold lvl4" id="core-scripts" open>
+<summary><h4>Script sandbox</h4></summary>
+<div class="fold-body">
+<div class="col">
+        <p>For batch tasks, the LLM doesn't call tools one at a time. It writes a short script that runs in a sandbox, calls the tools, and returns only IDs and a short summary. Scripts use what search already returns and the bulk availability call first, and quote individual cars only for finalists.</p>
+      </div>
+<pre><span class="c">// Generated by the LLM and run in a sandbox. It can only call the site pack's tools, and the boundary checks still apply.</span>
+const { vehicles } = await tools.search_vehicles({ make:"Tesla", model:"Model Y", drive_types:["Awd"], zip5:"94402" });
+const { dates } = await tools.get_delivery_dates({ vehicleIds: vehicles.map(v =&gt; v.vehicleId), zip5:"94402" });  <span class="c">// one bulk call</span>
+const deadline = "2026-10-11T06:59:59Z";                                          <span class="c">// end of Saturday, from the brain's clock</span>
+const soon = new Set(dates.filter(d =&gt; d.delivery &amp;&amp; d.delivery.date &lt;= deadline).map(d =&gt; d.vehicleId));
+const picks = vehicles
+  .filter(v =&gt; soon.has(v.vehicleId))
+  .filter(v =&gt; v.estimatedTotal &lt;= 40000)                                 <span class="c">// derived field, the site pack's formula</span>
+  .sort((a, b) =&gt; a.estimatedTotal - b.estimatedTotal)
+  .slice(0, 5);
+return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <span class="c">// IDs, not content</span></pre>
+      <p class="note">The model then calls <code>present_items</code> with the returned IDs, and Execute fills in each card. Scripts can read the session's ID set but can't add to it.</p>
+</div>
+</details>
+</div>
+</details>
+<details class="fold lvl3" id="brain" open>
+<summary><h3>Agentic brain</h3></summary>
+<div class="fold-body">
+<div class="col">
+        <p>Neither page scripts nor the app can hold an API key, or anyone could extract it. So the agentic brain runs on our server: it receives the conversation and page context, runs the agent loop, calls the model, and sends tool calls to the client to run. It never calls the site directly (D1).</p>
+        <p>All three platforms share it. It is also where the gateway starts later: logging, audit, quotas and external-agent access will live here.</p>
+      </div>
+<details class="fold lvl4" id="brain-skills" open>
+<summary><h4>Prompt and skills</h4></summary>
+<div class="fold-body">
+<p class="sub">One agent with skills: no router and no subagents. What goes in the prompt depends on how often it's needed. Anything about a third or more of conversations use goes in the system prompt, and the rest becomes a skill that loads on demand. Evals confirm the split. Skills come with the site pack; Carvana's are below.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Where</th><th>What</th><th>Loaded</th></tr></thead>
+          <tbody>
+            <tr><td>System prompt</td><td>The platform's rules (grounding by ID, presentation tools, safety, read-only scope, deep-link handoff) plus the site pack's tools, notices and brand rules, and basic search</td><td>Always</td></tr>
+            <tr><td>Skill: vehicle research</td><td>Comparing cars, reading specs and owner reviews, finding similar cars</td><td>On demand; preloaded when step ② comes from a vehicle page</td></tr>
+            <tr><td>Skill: batch search</td><td>Exhaustive and multi-condition searches written as scripts</td><td>When a request needs many calls</td></tr>
+            <tr><td>Skill: delivery and pickup</td><td>Delivery and pickup dates, locations, and when to refresh a route</td><td>On demand</td></tr>
+            <tr><td>Skill: financing questions</td><td>What the agent can and can't say, and when to send the user to Carvana's own financing pages</td><td>When financing comes up</td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="latency-cache" open>
+<summary><h4>Prompt layout and caching</h4></summary>
+<div class="fold-body">
+<p class="sub">Prompt caching works on the beginning of the request, so the prompt is ordered from most stable to least stable. The target is a 90–99% cache hit rate; on Claude, cached input costs about a tenth of the fresh price.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Segment</th><th>Contents</th><th>Changes</th><th>Caching</th></tr></thead>
+          <tbody>
+            <tr><td>1 · Global</td><td>System prompt (grounding, presentation, safety and brand rules) and all tool and presentation-tool definitions</td><td>Only when we release</td><td>Identical for every session; cache breakpoint at its end</td></tr>
+            <tr><td>2 · Session</td><td>Conversation so far, tool results, and skills, which load as tool results</td><td>Grows during the session</td><td>Breakpoint moves to the end of each new user turn</td></tr>
+            <tr><td>3 · Volatile</td><td>Page context and current time</td><td>Every turn</td><td>Not cached; a tagged block at the end of the newest user turn</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">A timestamp or the current page at the top of the system prompt would break the cache on every request. AI SDK Core passes Claude's cache breakpoints through provider options; most other providers cache matching prefixes automatically. Cache hit rate is tracked per step and gated in CI.</p>
+</div>
+</details>
+<details class="fold lvl4" id="brain-memory" open>
+<summary><h4>Memory</h4></summary>
+<div class="fold-body">
+<div class="col">
+        <p><b>Out of scope for the mini version.</b> Users are anonymous, and nothing is kept after the session ends. When we add it, it follows the guide:</p>
+        <ul class="plain">
+          <li>Facts are typed records in our own database (key, short value, category, source session), not a text profile.</li>
+          <li>A separate background step extracts them after a turn. It reads only what the user and the agent said, never tool results, so listing text can't become "facts" about the user. There is no save-memory tool.</li>
+          <li>Reading has three layers: a small set always in context, facts prefetched per turn from the same signals that load skills, and a lookup tool for the rest.</li>
+          <li>A validator limits what can be stored. Users can view, correct and delete facts, facts expire, and memory can be turned off per deployment.</li>
+        </ul>
+      </div>
+</div>
+</details>
+</div>
+</details>
+<details class="fold lvl3" id="sites" open>
+<summary><h3>Site packs and build time</h3></summary>
+<div class="fold-body">
+<p class="sub">What a site pack holds, with Carvana's as the example, and how site packs are made.</p>
+<details class="fold lvl4" id="sites-pack" open>
+<summary><h4>What a site pack holds</h4></summary>
+<div class="fold-body">
+<div class="tbl">
+        <table>
+          <thead><tr><th>Part</th><th>What it declares</th><th>Carvana's</th></tr></thead>
+          <tbody>
+            <tr><td>Site</td><td>Origins, page types, locale, and what the site requires: a location, signing in</td><td>3 origins; search, vehicle and other pages; a zip code; no sign-in</td></tr>
+            <tr><td>Entities</td><td>The kinds of things the site shows: ID format, whether IDs expire, fields, card template, detail sections. Internal kinds are never shown</td><td>Vehicle and suggestion; route is internal</td></tr>
+            <tr><td>Endpoints</td><td>Each request the frontend sends: URL, request and response schemas, required tracking fields (D4), the fields that decide the response, and where the IDs are</td><td>8, including the vehicle page's HTML</td></tr>
+            <tr><td>Tools</td><td>What the model can call: input and output schemas, the endpoints each uses, read or write, sign-in, the presentation tool that shows the result, a next-step hint, and errors</td><td>7 read-only tools, such as <code>search_vehicles</code> and <code>get_vehicle_quote</code></td></tr>
+            <tr><td>Forms and notices</td><td>Forms the agent can show to collect details; required wording, versioned, with the fields it must appear next to</td><td>The estimated-total notice</td></tr>
+            <tr><td>Policies</td><td>Hidden fields, derived fields and their formulas, allowed values, page size, rate limit, call budget, how prices are shown, whether writes are allowed</td><td>No monthly payment or APR; estimated total = price + estimated taxes and fees; 1 call per second; 60 calls per task; no writes</td></tr>
+            <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; the 2026-10-08 HAR</td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="sites-generic" open>
+<summary><h4>What the platform makes generic</h4></summary>
+<div class="fold-body">
+<div class="tbl">
+        <table>
+          <thead><tr><th>Piece</th><th>How it works for any site</th></tr></thead>
+          <tbody>
+            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location, locale and whether the user is signed in</td></tr>
+            <tr><td>Presentation tools</td><td>Six tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
+            <tr><td>Typed IDs</td><td>Every ID has a kind from the site pack, and an expiry where the site's IDs expire. Tools and presentation calls accept only IDs of the right kind that this session saw and that haven't expired</td></tr>
+            <tr><td>Errors</td><td>One set of codes for every site: <code>invalid_value</code>, <code>no_results</code>, <code>not_found</code>, <code>expired</code>, <code>auth_required</code>, <code>rate_limited</code>, <code>budget_reached</code> and a few more. The site adds a reason and a message the model can act on</td></tr>
+            <tr><td>Tests</td><td>Every platform test runs on every site pack. A second site pack, Demo Flights, is a made-up airline with sign-in, offers that expire, a search form and a full-fare rule, so a Carvana-only assumption fails a test</td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="core-tools" open>
+<summary><h4>Carvana's endpoints and tools</h4></summary>
+<div class="fold-body">
+<p class="sub">A site pack lists the requests its frontend sends (endpoints) and the tools the model calls, which combine them (D2). Carvana's endpoints come from the 2026-10-08 HAR recording and were checked live in phase 0, which also added the vehicle page. None of them require signing in.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Frontend request</th><th>Main data returned</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td><code>search</code></td><td><code>POST /merch/search/api/v2/search</code></td><td>Vehicle list: price, estimated taxes and fees, mileage (plus monthly payment and APR, which the mini version doesn't show)</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>facets</code></td><td><code>POST …/search/facets</code></td><td>Valid values and counts for each filter</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>suggest</code></td><td><code>POST …/suggest/filters</code></td><td>Suggested next filters. Needs a visitor ID and a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>availability</code></td><td><code>POST /merch/buffering/…/soonestavailabilitybulk</code></td><td>Earliest delivery and pickup times, <code>routeId</code></td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>pricing</code></td><td><code>POST /merch/search/api/v2/pricing/vehicle</code></td><td>Full quote with estimated taxes and fees. Needs a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>gap</code></td><td><code>GET /ancillary-products-api/…/GapWaiver/availability</code></td><td>Whether a GAP waiver is offered, and its price</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>reviews</code></td><td><code>POST /merch/reviews/api/review/sv</code></td><td>Owner reviews (third-party text, must be sanitized)</td><td><span class="pill warn">Read · sanitize</span></td></tr>
+            <tr><td><code>vehicle_page</code></td><td><code>GET /vehicle/{vehicleId}</code> (the vehicle page's HTML)</td><td>VIN, features, imperfections, options, packages and highlights, read from the page's embedded data. Validated against the contract and watched by the change monitor from day one, because the format is the site framework's own</td><td><span class="pill warn">Read · sanitize</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl mt">
+        <table>
+          <thead><tr><th>Tool (what the model calls)</th><th>Endpoints it uses</th><th>Shown with</th></tr></thead>
+          <tbody>
+            <tr><td><code>search_vehicles</code></td><td>search, facets</td><td><code>present_items</code></td></tr>
+            <tr><td><code>get_delivery_dates</code></td><td>availability, for up to 24 cars in one call</td><td>The delivery date on vehicle cards</td></tr>
+            <tr><td><code>suggest_refinements</code></td><td>suggest</td><td><code>present_options</code></td></tr>
+            <tr><td><code>get_vehicle_quote</code></td><td>availability, pricing, gap</td><td><code>present_detail</code></td></tr>
+            <tr><td><code>compare_vehicles</code></td><td>availability, pricing, gap, reviews</td><td><code>present_comparison</code></td></tr>
+            <tr><td><code>get_owner_reviews</code></td><td>reviews</td><td>The reviews section of the detail view</td></tr>
+            <tr><td><code>vehicle_details</code></td><td>vehicle_page</td><td><code>present_detail</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Every Carvana call passes the zip code explicitly, taken from the page context or asked from the user. The browser's own location can differ: in phase 0 it was 94087 instead of 94402.</p>
+</div>
+</details>
+<details class="fold lvl4" id="core-flow" open>
+<summary><h4>Carvana's verified data flow</h4></summary>
+<div class="fold-body">
+<div class="chain" aria-label="Data flow">
+        <span class="n">search</span><span class="e">— vehicleId, locationId →</span>
+        <span class="n">availability</span><span class="e">— routeId →</span>
+        <span class="n">pricing</span><span class="e">— total + taxes →</span>
+        <span class="n">gap</span>
+      </div>
+      <p class="note">Checked: the $35,590 quote plus $3,837 in estimated taxes and fees equals the GAP request's <code>amountFinanced</code> of $39,427.</p>
+</div>
+</details>
+<details class="fold lvl4" id="core-links" open>
+<summary><h4>Deep links</h4></summary>
+<div class="fold-body">
+<div class="col">
+        <p>Each site pack declares link templates for the site's own pages. Carvana's search results pages are <code>/cars/filters?cvnaid=…</code>, where <code>cvnaid</code> is the filters as base64 JSON, and its vehicle pages are <code>/vehicle/{vehicleId}</code>. Every result the agent returns carries a link that opens the same results page or that item's page on the site.</p>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="sites-next" open>
+<summary><h4>What airlines and brokerages need</h4></summary>
+<div class="fold-body">
+<p class="sub">The next targets are airlines such as United and American Airlines, and brokerages such as Fidelity and Vanguard. None of them is recorded yet, so this is what we expect from their sites; each gets its own phase 0 to check it.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Need</th><th>Example</th><th>How the site pack covers it</th></tr></thead>
+          <tbody>
+            <tr><td>Signing in</td><td>Trips, seats and miles; positions, balances and orders</td><td>Tools and entities marked as needing sign-in. Requests use the user's own session on the device (D1). Signed out, a tool returns <code>auth_required</code> and the agent asks the user to sign in on the site</td></tr>
+            <tr><td>Prices that expire</td><td>A fare held for a few minutes; a quote that moves with the market</td><td>The entity says where each ID's expiry is. Expired IDs are refused with <code>expired</code>, and the agent searches again before showing a price</td></tr>
+            <tr><td>Forms with required details</td><td>Origin, destination, dates, travelers and cabin; account and order type</td><td><code>present_form</code> shows the site's own form. The agent prefills what it knows and asks only for the rest</td></tr>
+            <tr><td>Required wording</td><td>US airfares are shown with all taxes and fees included; brokerages disclose risks, fees and delayed data</td><td>Notices are stored, versioned and shown with the fields they explain. The price-display policy requires totals with taxes. The model can't reword either</td></tr>
+            <tr><td>Advice limits</td><td>Brokerages limit what can be said about specific investments</td><td>Open: each firm's compliance team decides. The site pack can hide fields, turn off tools and skills, and add notices; the agent sticks to facts the site shows</td></tr>
+            <tr><td>Actions with money</td><td>Booking a flight, placing a trade, moving cash</td><td>Out of scope for the mini version. Later, with writes allowed only with approval: staged changes and the final confirmation in the site's own UI (D3)</td></tr>
+            <tr><td>Personal data</td><td>Traveler names, frequent-flyer and account numbers</td><td>Hidden fields keep them from the model, and recordings are scrubbed before fixtures are built from them</td></tr>
+          </tbody>
+        </table>
+      </div>
+</div>
+</details>
+<details class="fold lvl4" id="sites-build" open>
+<summary><h4>Build time: discovery, contract and generated code</h4></summary>
+<div class="fold-body">
+<p>Three steps run for each site before anything ships:</p>
+<ul class="plain">
+  <li><b>Discovery.</b> A person drafts the site pack from a HAR recording of the site, then checks the risky assumptions live (phase 0). Carvana's was drafted this way. A tool that drafts a site pack from a recording, for a person to review, is future work.</li>
+  <li><b>Contract.</b> JSON Schemas for the platform's formats and for each site's requests, responses and tools. A check runs every site pack against the site-pack format, every example against its schema, and every recorded request and response against its endpoint's schemas.</li>
+  <li><b>Generated code.</b> Types and validators produced from the contract, so every part checks messages the same way. The validators run unchanged in a web page, QuickJS and JavaScriptCore. TypeScript comes first; Swift and Kotlin types follow when those platforms start.</li>
+</ul>
+</div>
+</details>
+</div>
+</details>
+<details class="fold lvl3" id="gateway" open>
+<summary><h3>Later: gateway</h3></summary>
+<div class="fold-body">
+<p class="sub">The same flow chart, redrawn for when most requests come from someone else's personal agent. Purple blocks are exchanged and show what they replace (before → after). Gray blocks stay the same or need only a minor change. The gateway and today's LLM proxy become one server: the agentic brain plus a server copy of core.js.</p>
       <div class="diagram flow">
         <svg viewBox="0 0 1000 1062" role="img" aria-labelledby="futTitle futDesc">
           <title id="futTitle">The same flow when an external agent calls us</title>
@@ -721,9 +1244,10 @@ ul.plain li{margin-bottom:8px}
           <li><b>Our own surfaces keep running</b> next to the gateway, on the same contract and the same core.</li>
         </ul>
       </div>
-
-      <h3 id="arch-modes" class="mt">MCP vs A2A: what we can keep consistent</h3>
-      <p class="sub">A2A keeps our decisions consistent, MCP keeps our data consistent, and neither controls what the user finally sees. Widgets and approval handoff are how we protect that last step in both modes.</p>
+<details class="fold lvl4" id="arch-modes" open>
+<summary><h4>MCP vs A2A: what we can keep consistent</h4></summary>
+<div class="fold-body">
+<p class="sub">A2A keeps our decisions consistent, MCP keeps our data consistent, and neither controls what the user finally sees. Widgets and approval handoff are how we protect that last step in both modes.</p>
       <div class="tbl">
         <table>
           <thead><tr><th></th><th>Tool mode (MCP)</th><th>Intent mode (A2A)</th></tr></thead>
@@ -743,7 +1267,7 @@ ul.plain li{margin-bottom:8px}
 
       <div class="split2 mt">
         <div>
-          <h3>Where A2A's consistency stops</h3>
+          <h5>Where A2A's consistency stops</h5>
           <ul class="plain">
             <li><b>Input:</b> the agent rewrites the user's request before sending the goal. It may drop details, add things from its own memory, or split one question into several tasks.</li>
             <li><b>Follow-ups:</b> when we ask a question such as the zip code, the agent may answer from its own memory instead of asking the user.</li>
@@ -751,7 +1275,7 @@ ul.plain li{margin-bottom:8px}
           </ul>
         </div>
         <div>
-          <h3>What stays the same in both modes</h3>
+          <h5>What stays the same in both modes</h5>
           <ul class="plain">
             <li><b>Data:</b> the same Execute, Fetch and boundary checks run either way, so prices and availability match our own app.</li>
             <li><b>Writes:</b> anything that changes state, such as holding a car, booking a flight or placing a trade, finishes with approval in the enterprise's own trusted UI.</li>
@@ -759,7 +1283,7 @@ ul.plain li{margin-bottom:8px}
         </div>
       </div>
 
-      <h3 class="mt">Levers we still have in MCP</h3>
+      <h5 class="mt">Levers we still have in MCP</h5>
       <div class="tbl">
         <table>
           <thead><tr><th>Lever</th><th>What it controls</th></tr></thead>
@@ -772,7 +1296,7 @@ ul.plain li{margin-bottom:8px}
         </table>
       </div>
 
-      <h3 class="mt">Recommended approach</h3>
+      <h5 class="mt">Recommended approach</h5>
       <div class="col">
         <ul class="plain">
           <li><b>MCP as the default,</b> with task-level tools and widgets. Agent platforms often prefer it because they orchestrate across brands, for example comparing several dealers.</li>
@@ -780,202 +1304,38 @@ ul.plain li{margin-bottom:8px}
           <li><b>In both modes,</b> protect the final experience with widgets for what the user sees and approval handoff for anything that changes state.</li>
         </ul>
       </div>
+</div>
+</details>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-      <h3 id="arch-decisions">Key decisions</h3>
-      <div class="col">
-        <ul class="plain">
-          <li><b>The server drives the loop; the client runs the tools.</b> Prompts and skills stay on the server, and the same agentic brain can later serve external agents.</li>
-          <li><b>We own the loop and the tool runtime.</b> AI SDK Core is used only for model calls. Full frameworks such as Mastra or LangGraph wait until we need durable tasks, memory or multiple agents, and stay behind our own interfaces.</li>
-          <li><b>core.js has no Node dependencies.</b> It touches the outside world only through the Host interface, so the same bundle runs in a page, in JavaScriptCore, in QuickJS, and on the gateway.</li>
-          <li><b>Scripts run in a real sandbox on each platform.</b> A plain Web Worker isn't enough, because it can call any URL.</li>
-          <li><b>The contract is the source of truth.</b> Types and validators for every language are generated from it, never written by hand.</li>
-          <li><b>Presentation tools take IDs, not content.</b> Execute fills every displayed field from tool results, so the model can't put a made-up price on screen.</li>
-          <li><b>Client checks guard against the model; servers guard money and state.</b> See D3.</li>
-          <li><b>The platform never names a site.</b> Everything site-specific is data in a site pack, checked against one format, and a second, synthetic site pack runs through every test. See D5.</li>
-        </ul>
+<section id="safety">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">4</span>Safety and boundary</h2></summary>
+<div class="fold-body">
+<p class="sub">Rules that keep answers true and safe. They're enforced in code, not in the prompt, because prompt rules can be skipped through injection or a bad model output.</p>
+<details class="fold lvl3" id="safety-rules" open>
+<summary><h3>Boundary rules, enforced in code</h3></summary>
+<div class="fold-body">
+<div class="rules">
+        <ol>
+          <li><b>Parameters only take values the frontend can produce.</b> Allowed values come from the site's own responses, and page sizes stay at the site's own. On Carvana, filter values come from the facets response, <code>pageSize</code> stays at 24 and <code>requestedFeatures</code> is copied from the frontend.</li>
+          <li><b>Only the tracking fields an endpoint requires,</b> as the site pack lists them, with fresh random IDs per session, never a real visitor's ID. On Carvana, quote and suggest need a client ID, and suggest also needs a visitor ID. See D4.</li>
+          <li><b>Usage is capped.</b> One shared budget per task, per session and per day, drawn on by direct, parallel and script calls alike, and one rate limit. The site pack sets both; Carvana's are 60 calls per task and 1 call per second. Repeated requests are served from cache.</li>
+          <li><b>Only read tools are registered.</b> The site pack marks each tool as a read or a write, and its policy says whether writes are allowed at all: none in the mini version.</li>
+          <li><b>Only known IDs.</b> Tools and the UI accept only IDs of the right kind that a tool returned in this session, or the item on screen, and that haven't expired.</li>
+          <li><b>The person takes the last step.</b> When an action is needed, the agent gives a deep link and the user clicks through on the site.</li>
+        </ol>
       </div>
-
-      <h3 id="arch-spike">Validation spike before committing</h3>
-      <p class="sub">These checks are part of phase 0 in <a href="#plan">Build order and gates</a>. All of them passed on 2026-10-11.</p>
-      <div class="qs">
-        <div class="q"><b>Portability</b> · The same core.js bundle runs unchanged in a Chrome page, under QuickJS in CI, and in JavaScriptCore in the iOS Simulator.</div>
-        <div class="q"><b>Split loop</b> · A server step sends a tool call to the client, the client returns the result, and the server continues, with step budgets and timeouts working.</div>
-        <div class="q"><b>Sandbox</b> · A model-written script can call only registered tools, has no fetch, and is killed if it loops forever.</div>
-        <div class="q"><b>Grounding</b> · A presentation call with an unknown ID is refused, and every price on screen traces to a tool result.</div>
-      </div>
-    </section>
-
-    <section id="sites">
-      <h2>Platform and site packs</h2>
-      <p class="sub">The platform knows nothing about any one site. What it needs to know about a site is data in that site's pack: the kinds of things the site shows, the requests its frontend sends, the tools the model gets and the site's rules. Carvana is site pack #1. See D5.</p>
-
-      <h3 id="sites-pack">What a site pack holds</h3>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Part</th><th>What it declares</th><th>Carvana's</th></tr></thead>
-          <tbody>
-            <tr><td>Site</td><td>Origins, page types, locale, and what the site requires: a location, signing in</td><td>3 origins; search, vehicle and other pages; a zip code; no sign-in</td></tr>
-            <tr><td>Entities</td><td>The kinds of things the site shows: ID format, whether IDs expire, fields, card template, detail sections. Internal kinds are never shown</td><td>Vehicle and suggestion; route is internal</td></tr>
-            <tr><td>Endpoints</td><td>Each request the frontend sends: URL, request and response schemas, required tracking fields (D4), the fields that decide the response, and where the IDs are</td><td>8, including the vehicle page's HTML</td></tr>
-            <tr><td>Tools</td><td>What the model can call: input and output schemas, the endpoints each uses, read or write, sign-in, the presentation tool that shows the result, a next-step hint, and errors</td><td>7 read-only tools, such as <code>search_vehicles</code> and <code>get_vehicle_quote</code></td></tr>
-            <tr><td>Forms and notices</td><td>Forms the agent can show to collect details; required wording, versioned, with the fields it must appear next to</td><td>The estimated-total notice</td></tr>
-            <tr><td>Policies</td><td>Hidden fields, derived fields and their formulas, allowed values, page size, rate limit, call budget, how prices are shown, whether writes are allowed</td><td>No monthly payment or APR; estimated total = price + estimated taxes and fees; 1 call per second; 60 calls per task; no writes</td></tr>
-            <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; the 2026-10-08 HAR</td></tr>
-          </tbody>
-        </table>
-      </div>
-<pre>platform/                    <span class="c">// never names a site; a test fails if it does</span>
-  contract/                  <span class="c">// protocol, presentation tools, errors, config, site-pack format; checks and code generator</span>
-  testkit/                   <span class="c">// fixture builder, FakeHost, conversation checker; later the other fakes</span>
-  core/  brain/  evals/      <span class="c">// phases 2 to 6</span>
-sites/
-  carvana/                   <span class="c">// site pack #1</span>
-    site.yaml  schemas/  fixtures/  conversations/  cases.ts  fixture-hooks.ts  research/
-  demo-flights/              <span class="c">// a made-up airline, used only in tests</span></pre>
-
-      <h3 id="sites-generic" class="mt">What the platform makes generic</h3>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Piece</th><th>How it works for any site</th></tr></thead>
-          <tbody>
-            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location, locale and whether the user is signed in</td></tr>
-            <tr><td>Presentation tools</td><td>Six tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
-            <tr><td>Typed IDs</td><td>Every ID has a kind from the site pack, and an expiry where the site's IDs expire. Tools and presentation calls accept only IDs of the right kind that this session saw and that haven't expired</td></tr>
-            <tr><td>Errors</td><td>One set of codes for every site: <code>invalid_value</code>, <code>no_results</code>, <code>not_found</code>, <code>expired</code>, <code>auth_required</code>, <code>rate_limited</code>, <code>budget_reached</code> and a few more. The site adds a reason and a message the model can act on</td></tr>
-            <tr><td>Tests</td><td>Every platform test runs on every site pack. A second site pack, Demo Flights, is a made-up airline with sign-in, offers that expire, a search form and a full-fare rule, so a Carvana-only assumption fails a test</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 id="sites-next" class="mt">What airlines and brokerages need</h3>
-      <p class="sub">The next targets are airlines such as United and American Airlines, and brokerages such as Fidelity and Vanguard. None of them is recorded yet, so this is what we expect from their sites; each gets its own phase 0 to check it.</p>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Need</th><th>Example</th><th>How the site pack covers it</th></tr></thead>
-          <tbody>
-            <tr><td>Signing in</td><td>Trips, seats and miles; positions, balances and orders</td><td>Tools and entities marked as needing sign-in. Requests use the user's own session on the device (D1). Signed out, a tool returns <code>auth_required</code> and the agent asks the user to sign in on the site</td></tr>
-            <tr><td>Prices that expire</td><td>A fare held for a few minutes; a quote that moves with the market</td><td>The entity says where each ID's expiry is. Expired IDs are refused with <code>expired</code>, and the agent searches again before showing a price</td></tr>
-            <tr><td>Forms with required details</td><td>Origin, destination, dates, travelers and cabin; account and order type</td><td><code>present_form</code> shows the site's own form. The agent prefills what it knows and asks only for the rest</td></tr>
-            <tr><td>Required wording</td><td>US airfares are shown with all taxes and fees included; brokerages disclose risks, fees and delayed data</td><td>Notices are stored, versioned and shown with the fields they explain. The price-display policy requires totals with taxes. The model can't reword either</td></tr>
-            <tr><td>Advice limits</td><td>Brokerages limit what can be said about specific investments</td><td>Open: each firm's compliance team decides. The site pack can hide fields, turn off tools and skills, and add notices; the agent sticks to facts the site shows</td></tr>
-            <tr><td>Actions with money</td><td>Booking a flight, placing a trade, moving cash</td><td>Out of scope for the mini version. Later, with writes allowed only with approval: staged changes and the final confirmation in the site's own UI (D3)</td></tr>
-            <tr><td>Personal data</td><td>Traveler names, frequent-flyer and account numbers</td><td>Hidden fields keep them from the model, and recordings are scrubbed before fixtures are built from them</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="core">
-      <h2>Core module</h2>
-      <h3 id="core-tools">Endpoints and tools</h3>
-      <p class="sub">A site pack lists the requests its frontend sends (endpoints) and the tools the model calls, which combine them (D2). Carvana's endpoints come from the 2026-10-08 HAR recording and were checked live in phase 0, which also added the vehicle page. None of them require signing in.</p>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Endpoint</th><th>Frontend request</th><th>Main data returned</th><th>Type</th></tr></thead>
-          <tbody>
-            <tr><td><code>search</code></td><td><code>POST /merch/search/api/v2/search</code></td><td>Vehicle list: price, estimated taxes and fees, mileage (plus monthly payment and APR, which the mini version doesn't show)</td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>facets</code></td><td><code>POST …/search/facets</code></td><td>Valid values and counts for each filter</td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>suggest</code></td><td><code>POST …/suggest/filters</code></td><td>Suggested next filters. Needs a visitor ID and a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>availability</code></td><td><code>POST /merch/buffering/…/soonestavailabilitybulk</code></td><td>Earliest delivery and pickup times, <code>routeId</code></td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>pricing</code></td><td><code>POST /merch/search/api/v2/pricing/vehicle</code></td><td>Full quote with estimated taxes and fees. Needs a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>gap</code></td><td><code>GET /ancillary-products-api/…/GapWaiver/availability</code></td><td>Whether a GAP waiver is offered, and its price</td><td><span class="pill">Read</span></td></tr>
-            <tr><td><code>reviews</code></td><td><code>POST /merch/reviews/api/review/sv</code></td><td>Owner reviews (third-party text, must be sanitized)</td><td><span class="pill warn">Read · sanitize</span></td></tr>
-            <tr><td><code>vehicle_page</code></td><td><code>GET /vehicle/{vehicleId}</code> (the vehicle page's HTML)</td><td>VIN, features, imperfections, options, packages and highlights, read from the page's embedded data. Validated against the contract and watched by the change monitor from day one, because the format is the site framework's own</td><td><span class="pill warn">Read · sanitize</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="tbl mt">
-        <table>
-          <thead><tr><th>Tool (what the model calls)</th><th>Endpoints it uses</th><th>Shown with</th></tr></thead>
-          <tbody>
-            <tr><td><code>search_vehicles</code></td><td>search, facets</td><td><code>present_items</code></td></tr>
-            <tr><td><code>get_delivery_dates</code></td><td>availability, for up to 24 cars in one call</td><td>The delivery date on vehicle cards</td></tr>
-            <tr><td><code>suggest_refinements</code></td><td>suggest</td><td><code>present_options</code></td></tr>
-            <tr><td><code>get_vehicle_quote</code></td><td>availability, pricing, gap</td><td><code>present_detail</code></td></tr>
-            <tr><td><code>compare_vehicles</code></td><td>availability, pricing, gap, reviews</td><td><code>present_comparison</code></td></tr>
-            <tr><td><code>get_owner_reviews</code></td><td>reviews</td><td>The reviews section of the detail view</td></tr>
-            <tr><td><code>vehicle_details</code></td><td>vehicle_page</td><td><code>present_detail</code></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">Every Carvana call passes the zip code explicitly, taken from the page context or asked from the user. The browser's own location can differ: in phase 0 it was 94087 instead of 94402.</p>
-
-      <h3 id="core-flow">Verified data flow</h3>
-      <div class="chain" aria-label="Data flow">
-        <span class="n">search</span><span class="e">— vehicleId, locationId →</span>
-        <span class="n">availability</span><span class="e">— routeId →</span>
-        <span class="n">pricing</span><span class="e">— total + taxes →</span>
-        <span class="n">gap</span>
-      </div>
-      <p class="note">Checked: the $35,590 quote plus $3,837 in estimated taxes and fees equals the GAP request's <code>amountFinanced</code> of $39,427.</p>
-
-      <h3 id="core-present">Presentation tools: IDs in, filled cards out</h3>
-      <p class="sub">The model shows results by calling a presentation tool with an entity kind, IDs and a layout. Execute fills in every displayed field from this session's tool results, using the site pack's templates, so the model never types a price, date or spec into the UI. Arguments follow the on-screen order, so "the third one" resolves from history. The six tools are the same for every site.</p>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Tool</th><th>Model sends</th><th>Execute fills in</th><th>On Carvana</th></tr></thead>
-          <tbody>
-            <tr><td><code>present_items</code></td><td>Entity kind, up to 50 IDs in order, a heading and a layout</td><td>One card per item, from the site's card template</td><td>Vehicle cards: year, make and model; trim and mileage; price, estimated total and delivery date; link</td></tr>
-            <tr><td><code>present_comparison</code></td><td>2–4 IDs and the fields to compare</td><td>Each field's value for each item, with gaps shown as "not available"</td><td>Cars side by side</td></tr>
-            <tr><td><code>present_detail</code></td><td>One ID and the sections to show</td><td>The item's detail view, section by section</td><td>The quote card: price, estimated taxes and fees, estimated total, delivery date, GAP waiver price; owner reviews</td></tr>
-            <tr><td><code>present_options</code></td><td>Up to 10 IDs the user can pick from</td><td>Labels and counts</td><td>Filter suggestions as chips</td></tr>
-            <tr><td><code>present_form</code></td><td>A form's name and values to prefill</td><td>The site's form, with the prefilled values</td><td>None yet; Demo Flights has a flight search form</td></tr>
-            <tr><td><code>present_notice</code></td><td>A notice's name</td><td>The stored wording, exactly</td><td>The estimated-total notice</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">Derived numbers come from named formulas in the site pack, computed by core.js. Carvana's <code>estimatedTotal</code> is the price plus Carvana's estimated taxes and fees, and it is always labeled as an estimate. A notice must appear whenever a field it explains is on screen.</p>
-
-      <h3 id="core-results">Tool results and errors</h3>
-      <div class="col">
-        <p>Each tool returns only the fields the model reasons with (its output schema in the site pack, with no image URLs), adds a next-step hint when the next move isn't obvious, and turns failures into instructions the model can act on. Error codes are the platform's; the site pack adds a reason and the message.</p>
-      </div>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Situation</th><th>Code · reason</th><th>What the model receives</th></tr></thead>
-          <tbody>
-            <tr><td>Search returned cars</td><td>—</td><td>Next step: "To check delivery dates, call <code>get_delivery_dates</code> once with all the vehicle IDs."</td></tr>
-            <tr><td>Filter value not offered</td><td><code>invalid_value</code></td><td>"'Grey' isn't a valid color here. Valid options: Gray, Silver, White…"</td></tr>
-            <tr><td>Unknown ID</td><td><code>unknown_id</code></td><td>"This ID wasn't returned in this session. Use an ID from the search results."</td></tr>
-            <tr><td>Route for a different zip code</td><td><code>invalid_value</code> · <code>route_other_zip</code></td><td>"This route is for a different zip code. Call <code>get_delivery_dates</code> for this car at 94402, then quote again."</td></tr>
-            <tr><td>Carvana couldn't price a car</td><td><code>upstream_error</code> · <code>pricing_error</code></td><td>"Carvana couldn't price this car for zip 94402. Tell the user and offer the car's page link."</td></tr>
-            <tr><td>An offer expired (Demo Flights)</td><td><code>expired</code> · <code>offer_expired</code></td><td>"This offer expired. Search again for current prices."</td></tr>
-            <tr><td>Not signed in (Demo Flights)</td><td><code>auth_required</code> · <code>signed_out</code></td><td>"The traveler needs to sign in to see trips. Ask them to sign in on the site."</td></tr>
-            <tr><td>Call budget reached</td><td><code>budget_reached</code></td><td>"This task reached its call limit. Summarize what you have and offer to continue."</td></tr>
-            <tr><td>Tool turned off</td><td><code>tool_disabled</code></td><td>"Delivery dates are unavailable right now. Answer without them and say so."</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 id="core-scripts">Script layer</h3>
-      <div class="col">
-        <p>For batch tasks, the LLM doesn't call tools one at a time. It writes a short script that runs in a sandbox, calls the tools, and returns only IDs and a short summary. Scripts use what search already returns and the bulk availability call first, and quote individual cars only for finalists.</p>
-      </div>
-<pre><span class="c">// Generated by the LLM and run in a sandbox. It can only call the site pack's tools, and the boundary checks still apply.</span>
-const { vehicles } = await tools.search_vehicles({ make:"Tesla", model:"Model Y", drive_types:["Awd"], zip5:"94402" });
-const { dates } = await tools.get_delivery_dates({ vehicleIds: vehicles.map(v =&gt; v.vehicleId), zip5:"94402" });  <span class="c">// one bulk call</span>
-const deadline = "2026-10-11T06:59:59Z";                                          <span class="c">// end of Saturday, from the brain's clock</span>
-const soon = new Set(dates.filter(d =&gt; d.delivery &amp;&amp; d.delivery.date &lt;= deadline).map(d =&gt; d.vehicleId));
-const picks = vehicles
-  .filter(v =&gt; soon.has(v.vehicleId))
-  .filter(v =&gt; v.estimatedTotal &lt;= 40000)                                 <span class="c">// derived field, the site pack's formula</span>
-  .sort((a, b) =&gt; a.estimatedTotal - b.estimatedTotal)
-  .slice(0, 5);
-return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <span class="c">// IDs, not content</span></pre>
-      <p class="note">The model then calls <code>present_items</code> with the returned IDs, and Execute fills in each card. Scripts can read the session's ID set but can't add to it.</p>
-
-      <h3 id="core-links">Deep links</h3>
-      <div class="col">
-        <p>Each site pack declares link templates for the site's own pages. Carvana's search results pages are <code>/cars/filters?cvnaid=…</code>, where <code>cvnaid</code> is the filters as base64 JSON, and its vehicle pages are <code>/vehicle/{vehicleId}</code>. Every result the agent returns carries a link that opens the same results page or that item's page on the site.</p>
-      </div>
-    </section>
-
-    <section id="safety">
-      <h2>Safety and grounding</h2>
-      <p class="sub">Rules that keep answers true and safe. They're enforced in code, not in the prompt, because prompt rules can be skipped through injection or a bad model output.</p>
-
-      <h3 id="safety-ids">Grounded answers: only known IDs</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="safety-ids" open>
+<summary><h3>Grounded answers: only known IDs</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
           <li><b>Every ID a tool returns is recorded</b> for the session with its kind and, where the site's IDs expire, its expiry. The site pack says where the IDs are in each result; Carvana's are vehicles, routes and suggestions.</li>
           <li><b>Tool calls and presentation calls may only use recorded IDs</b> of the right kind that haven't expired. Made-up IDs, IDs pasted by the user and IDs planted in review text are refused with an error that says where valid IDs come from.</li>
@@ -983,9 +1343,12 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <li><b>Both sides check.</b> The agentic brain refuses presentation calls with unknown IDs before sending them, and core.js checks again. Scripts can read the ID set but can't add to it.</li>
         </ul>
       </div>
-
-      <h3 id="safety-finance">Required wording and regulated figures</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="safety-finance" open>
+<summary><h3>Required wording and regulated figures</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
           <li><b>Notices are data.</b> The site pack stores each notice's approved wording, versioned, with the fields it must appear next to. core.js shows it exactly whenever one of those fields is on screen; the model only picks which notice applies.</li>
           <li><b>On Carvana, the mini version doesn't show monthly payments or APR,</b> and doesn't filter or rank by them; they are hidden fields in the site pack. It shows prices, estimated taxes and fees, delivery dates and GAP waiver prices.</li>
@@ -994,14 +1357,20 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <li><b>Other sites:</b> US airfares are shown with all taxes and fees (the price-display policy), and brokerages bring their own disclosures as notices.</li>
         </ul>
       </div>
-
-      <h3 id="safety-text">Untrusted text</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="safety-text" open>
+<summary><h3>Untrusted text</h3></summary>
+<div class="fold-body">
+<div class="col">
         <p>One sanitizer in core.js handles all text we don't write: reviews and other free text from the site (on Carvana, owner reviews and free-text vehicle fields), the page context sent in step ②, and goals from external agents. It removes control and bidirectional characters, fake conversation turns, fake tool calls and fence lookalikes, caps the length, and wraps the result in a fence with a fixed label. The system prompt says fenced text is material to report on, never instructions to follow.</p>
       </div>
-
-      <h3 id="safety-caps">Caps that hold under retries and parallel calls</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="safety-caps" open>
+<summary><h3>Caps that hold under retries and parallel calls</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
           <li><b>One shared budget</b> per task, per session and per day, set by the site pack (Carvana: 60 calls per task). Direct calls, parallel calls and calls from scripts all draw from it, so retries and parallel steps can't stack past a limit.</li>
           <li><b>One rate limit</b> for the whole session, from the site pack (Carvana: 1 call per second), so parallel calls queue instead of bursting.</li>
@@ -1009,9 +1378,12 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <li><b>For future writes:</b> caps apply to the resulting state, writes in a session run one at a time, and limits are checked again when a change is applied.</li>
         </ul>
       </div>
-
-      <h3 id="safety-trust">Who enforces what</h3>
-      <div class="tbl">
+</div>
+</details>
+<details class="fold lvl3" id="safety-trust" open>
+<summary><h3>Who enforces what</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
           <thead><tr><th>Check</th><th>Enforced by</th><th>Protects against</th></tr></thead>
           <tbody>
@@ -1023,14 +1395,21 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         </table>
       </div>
       <p class="note">core.js runs on the user's device, where the user can change it. That's acceptable for read-only calls made with their own session, which they could make by hand. Anything that protects us or the enterprise runs on a server. See D3.</p>
-    </section>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-    <section id="latency">
-      <h2>Latency and caching</h2>
-      <p class="sub">Task time is the sum over steps of model time plus tool time. Our design adds one client round trip per step (D1) and the site's rate limit (Carvana: 1 call per second), so we cut the number of steps and calls, overlap what we can, and show progress.</p>
-
-      <h3>Fewer, faster steps</h3>
-      <div class="tbl">
+<section id="latency">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">5</span>Latency</h2></summary>
+<div class="fold-body">
+<p class="sub">Task time is the sum over steps of model time plus tool time. Our design adds one client round trip per step (D1) and the site's rate limit (Carvana: 1 call per second), so we cut the number of steps and calls, overlap what we can, and show progress.</p>
+<details class="fold lvl3" id="latency-steps" open>
+<summary><h3>Fewer, faster steps</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
           <thead><tr><th>Technique</th><th>How</th></tr></thead>
           <tbody>
@@ -1044,154 +1423,85 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         </table>
       </div>
       <p class="note">Example: "AWD Model Y under $40k by Saturday." Quoting 30 cars one by one would take 15–30 seconds at the rate limit. With search-result prices and one bulk availability call, the same answer needs 2 calls. Exact quotes come later, only for the cars the user opens.</p>
-
-      <h3>Feeling fast</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="latency-feel" open>
+<summary><h3>Feeling fast</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
           <li><b>Progress lines</b> while tools run, built from the tool arguments: "Checking delivery dates for 24 cars…"</li>
           <li><b>Cards stream in</b> as Execute fills them, instead of appearing all at once at the end.</li>
         </ul>
       </div>
+</div>
+</details>
+<p class="note mt">Prompt caching cuts both time and cost. It's described with the agentic brain, in <a href="#latency-cache">Prompt layout and caching</a>.</p>
+</div>
+</details>
+</section>
 
-      <h3 id="latency-cache">Prompt layout and caching</h3>
-      <p class="sub">Prompt caching works on the beginning of the request, so the prompt is ordered from most stable to least stable. The target is a 90–99% cache hit rate; on Claude, cached input costs about a tenth of the fresh price.</p>
-      <div class="tbl">
+<section id="test">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">6</span>Evaluation</h2></summary>
+<div class="fold-body">
+<p class="sub">Two kinds of checks: functional tests that the code works, and evals that the agent's answers are right. Each site's recorded fixtures make both repeatable without touching the site's servers.</p>
+
+      <p class="sub">The goal is to catch a module's bugs while it's still on its own, before other modules depend on it. Every module is tested against the shared contract, not against its neighbors. Every dependency has a fake, so each module can be tested alone and deterministically. Each integration step swaps exactly one fake for the real thing, so when something breaks there's only one suspect.</p>
+<details class="fold lvl3" id="verify-fakes" open>
+<summary><h3>Fakes, built before the modules that need them</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
-          <thead><tr><th>Segment</th><th>Contents</th><th>Changes</th><th>Caching</th></tr></thead>
+          <thead><tr><th>Fake</th><th>Stands in for</th><th>Built from</th><th>Lets us test</th></tr></thead>
           <tbody>
-            <tr><td>1 · Global</td><td>System prompt (grounding, presentation, safety and brand rules) and all tool and presentation-tool definitions</td><td>Only when we release</td><td>Identical for every session; cache breakpoint at its end</td></tr>
-            <tr><td>2 · Session</td><td>Conversation so far, tool results, and skills, which load as tool results</td><td>Grows during the session</td><td>Breakpoint moves to the end of each new user turn</td></tr>
-            <tr><td>3 · Volatile</td><td>Page context and current time</td><td>Every turn</td><td>Not cached; a tagged block at the end of the newest user turn</td></tr>
+            <tr><td>FakeHost</td><td>A site's network</td><td>The site's fixtures: recorded traffic, errors seen live, and edited copies for failures not seen yet</td><td>Tools, Execute, scripts and evals, for any site, without touching it</td></tr>
+            <tr><td>FakeModel</td><td>The LLM</td><td>Scripted output: text, tool calls, and deliberately bad output such as unknown IDs, wrong arguments and made-up tool names</td><td>The brain's loop and checks, without randomness or cost</td></tr>
+            <tr><td>FakeBrain</td><td>Our server, seen from the client</td><td>Scripted tool calls, scripts and presentation calls</td><td>Brain link, Execute and Respond, with no model</td></tr>
+            <tr><td>FakeClient</td><td>core.js, seen from the server</td><td>Scripted tool results, delays and disconnects</td><td>Timeouts, call-ID matching and budgets</td></tr>
+            <tr><td>FakeSurface</td><td>The UI</td><td>A headless bridge that sends goals and records what Respond outputs</td><td>Intake and Respond, with no UI</td></tr>
+            <tr><td>UI fixtures</td><td>The whole agent, seen from the UI</td><td>Saved Respond outputs</td><td>Overlay, SwiftUI and Compose screens, built before the agent works</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="note">A timestamp or the current page at the top of the system prompt would break the cache on every request. AI SDK Core passes Claude's cache breakpoints through provider options; most other providers cache matching prefixes automatically. Cache hit rate is tracked per step and gated in CI.</p>
-    </section>
-
-    <section id="brain">
-      <h2>Agentic brain</h2>
-      <div class="col">
-        <p>Neither page scripts nor the app can hold an API key, or anyone could extract it. So the agentic brain runs on our server: it receives the conversation and page context, runs the agent loop, calls the model, and sends tool calls to the client to run. It never calls the site directly (D1).</p>
-        <p>All three platforms share it. It is also where the gateway starts later: logging, audit, quotas and external-agent access will live here.</p>
-      </div>
-
-      <h3 id="brain-skills">Prompt and skills</h3>
-      <p class="sub">One agent with skills: no router and no subagents. What goes in the prompt depends on how often it's needed. Anything about a third or more of conversations use goes in the system prompt, and the rest becomes a skill that loads on demand. Evals confirm the split. Skills come with the site pack; Carvana's are below.</p>
-      <div class="tbl">
+</div>
+</details>
+<details class="fold lvl3" id="verify-levels" open>
+<summary><h3>How each module is checked</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
-          <thead><tr><th>Where</th><th>What</th><th>Loaded</th></tr></thead>
+          <thead><tr><th>Level</th><th>What it checks</th><th>Applies to</th></tr></thead>
           <tbody>
-            <tr><td>System prompt</td><td>The platform's rules (grounding by ID, presentation tools, safety, read-only scope, deep-link handoff) plus the site pack's tools, notices and brand rules, and basic search</td><td>Always</td></tr>
-            <tr><td>Skill: vehicle research</td><td>Comparing cars, reading specs and owner reviews, finding similar cars</td><td>On demand; preloaded when step ② comes from a vehicle page</td></tr>
-            <tr><td>Skill: batch search</td><td>Exhaustive and multi-condition searches written as scripts</td><td>When a request needs many calls</td></tr>
-            <tr><td>Skill: delivery and pickup</td><td>Delivery and pickup dates, locations, and when to refresh a route</td><td>On demand</td></tr>
-            <tr><td>Skill: financing questions</td><td>What the agent can and can't say, and when to send the user to Carvana's own financing pages</td><td>When financing comes up</td></tr>
+            <tr><td>L1 · Unit and property tests</td><td>Pure logic, including randomized inputs</td><td>Estimated-total formula, deep links, sanitizer (fuzzed with hostile strings), ID set, call budget under concurrent calls</td></tr>
+            <tr><td>L2 · Contract tests</td><td>Every input and output matches the JSON Schema, and every recorded fixture validates, for every site pack. Both ends of the brain link replay the same saved example conversations</td><td>Every module with I/O</td></tr>
+            <tr><td>L3 · Component tests with fakes</td><td>The module plus its fakes, with failures injected: 403, timeout, empty results, a changed response shape, an expired route, bad model output</td><td>Tools, Execute, sandbox, Brain link, the brain's loop</td></tr>
+            <tr><td>L4 · Engine tests</td><td>The whole core.js test suite on Node, QuickJS and JavaScriptCore, which also proves there are no Node-only dependencies</td><td>core.js</td></tr>
+            <tr><td>L5 · Pairwise integration</td><td>One real neighbor at a time</td><td>Core with the brain, then the real model, then a surface</td></tr>
+            <tr><td>L6 · System</td><td>A few live end-to-end tasks on each site, plus snapshot evals for answer quality</td><td>The whole flow</td></tr>
           </tbody>
         </table>
       </div>
-
-      <h3 id="brain-memory">Memory</h3>
-      <div class="col">
-        <p><b>Out of scope for the mini version.</b> Users are anonymous, and nothing is kept after the session ends. When we add it, it follows the guide:</p>
+      <p class="note">Code bugs and model behavior are kept apart. Code paths are tested with FakeModel, deterministically, and answer quality is judged only by evals. A flaky model answer never hides a code bug, and the reverse.</p>
+</div>
+</details>
+<details class="fold lvl3" id="verify-daily" open>
+<summary><h3>From day one</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
-          <li>Facts are typed records in our own database (key, short value, category, source session), not a text profile.</li>
-          <li>A separate background step extracts them after a turn. It reads only what the user and the agent said, never tool results, so listing text can't become "facts" about the user. There is no save-memory tool.</li>
-          <li>Reading has three layers: a small set always in context, facts prefetched per turn from the same signals that load skills, and a lookup tool for the rest.</li>
-          <li>A validator limits what can be stored. Users can view, correct and delete facts, facts expire, and memory can be turned off per deployment.</li>
+          <li><b>A trace ID on every message and call</b> (steps ② to ⑧), plus a development log of inputs and outputs at every module boundary. When a bug appears late, the trace shows which module first produced the bad value.</li>
+          <li><b>Every bug becomes a test</b> at the lowest level that could have caught it, and an eval case if it's agent behavior.</li>
+          <li><b>A weekly live check</b> runs a few real calls per site and compares them with the fixtures, so outdated fixtures are caught early instead of passing silently.</li>
+          <li><b>Three things to avoid:</b> building the UI first, testing core.js only in Node, and using the live LLM in unit tests.</li>
         </ul>
       </div>
-    </section>
-
-    <section id="web">
-      <h2>Web</h2>
-      <p class="sub">Two steps: first prove the core logic in the built-in browser in an afternoon, then package it as a Chrome extension for the first demo you can show people.</p>
-      <div class="tbl">
-        <table>
-          <thead><tr><th></th><th>Stage B: built-in browser</th><th>Stage A: Chrome extension</th></tr></thead>
-          <tbody>
-            <tr><td>Purpose</td><td>Confirm the endpoints work from the page and scripts run</td><td>A demoable product shape</td></tr>
-            <tr><td>Injection</td><td>Claude runs JS in the page</td><td>Content script that loads on the site's pages (carvana.com first)</td></tr>
-            <tr><td>UI</td><td>Results shown in the chat</td><td>Right-side overlay: chat, vehicle cards, comparison table</td></tr>
-            <tr><td>LLM</td><td>Claude itself</td><td>Through the agentic brain</td></tr>
-            <tr><td>Build effort</td><td>Close to none</td><td>A few days</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <h3>One request, end to end (extension)</h3>
-      <ol class="steps">
-        <li><div><b>The user types a goal in the overlay</b><div class="who">overlay UI</div>"An AWD Model Y in the Bay Area under $40k that I can get before the weekend"</div></li>
-        <li><div><b>Sent to the agentic brain</b><div class="who">content script → agentic brain</div>With page context, such as the car the user is viewing.</div></li>
-        <li><div><b>The model returns tool calls or a script</b><div class="who">agentic brain → content script</div></div></li>
-        <li><div><b>Boundary checks, then execution in the page</b><div class="who">core.js</div>Validate parameters, enforce call count and rate limits, then call the site's endpoints with same-origin fetch.</div></li>
-        <li><div><b>Results go back to the model, which writes the answer and picks what to show by vehicle ID</b><div class="who">content script ↔ agentic brain</div></div></li>
-        <li><div><b>Execute fills the cards from tool results, and the overlay streams them in</b><div class="who">core.js → overlay UI</div>Progress lines show while tools run. Each card has a deep link so the user continues on the original site.</div></li>
-      </ol>
-    </section>
-
-    <section id="ios">
-      <h2>iOS</h2>
-      <div class="split">
-        <div style="min-width:0">
-          <p class="sub">A test-only SwiftUI shell app: a WKWebView opens the site (carvana.com first), the same core.js is injected, and the agent's conversation and results appear in native UI. This is an early form of the future native SDK: native UI plus tools that run in the page context.</p>
-          <h3>Parts</h3>
-          <div class="tbl">
-            <table style="min-width:480px">
-              <thead><tr><th>Part</th><th>Role</th></tr></thead>
-              <tbody>
-                <tr><td><code>WKWebView</code></td><td>Loads the site and provides the same-origin context and session</td></tr>
-                <tr><td><code>WKUserScript</code></td><td>Injects core.js when the page finishes loading</td></tr>
-                <tr><td><code>WKScriptMessageHandler</code></td><td>Page → native: returns tool results</td></tr>
-                <tr><td><code>callAsyncJavaScript</code></td><td>Native → page: runs a tool call or script</td></tr>
-                <tr><td>SwiftUI sheet</td><td>Chat, vehicle cards, comparison table, deep links</td></tr>
-                <tr><td><code>URLSession</code></td><td>Native code talks to the agentic brain directly</td></tr>
-              </tbody>
-            </table>
-          </div>
-<pre><span class="c">// Inject the core module and set up the page → native channel</span>
-let config = WKWebViewConfiguration()
-let core = WKUserScript(source: coreJS,
-                        injectionTime: .atDocumentEnd,
-                        forMainFrameOnly: true)
-config.userContentController.addUserScript(core)
-config.userContentController.add(bridge, name: "agent")
-
-<span class="c">// Native → page: run one tool call</span>
-let result = try await webView.callAsyncJavaScript(
-  "return await window.__agent.run(call)",
-  arguments: ["call": toolCall], contentWorld: .page)</pre>
-          <h3>Alternative: Safari Web Extension</h3>
-          <div class="col">
-            <p>Safari has supported Web Extensions on iOS since iOS 15, and the desktop Chrome extension can be converted. It can be tested in Safari on the Simulator and on a device. It is closer to using the real site, but the UI can only be a web overlay. The shell app is closer to the future native SDK, so it comes first.</p>
-          </div>
-          <p class="note">The shell app is for your own testing only. Wrapping someone else's site in your own app and shipping it would break App Store rules and the site's terms of service.</p>
-        </div>
-        <div class="phone-wrap">
-          <div class="phone" role="img" aria-label="iOS shell app mockup: carvana.com web page on top, native sheet below showing the conversation and two vehicle cards">
-            <div class="screen">
-              <div class="status"><span>9:41</span><span>●●● ▮</span></div>
-              <div class="site"><b>CARVANA</b><span>Tesla · Model Y</span></div>
-              <div class="site-body"><div class="ghost"></div><div class="ghost"></div><div class="ghost"></div></div>
-              <div class="sheet">
-                <div class="grab"></div>
-                <div class="bubble u">AWD Model Y in the Bay Area, under $40k, before the weekend</div>
-                <div class="bubble a">I checked 24 cars. 5 match. Sorted by estimated total:</div>
-                <div class="vcard"><span class="t">2022 Model Y Performance</span><span class="p">$34,990</span><span class="m">est. $38,766 total · tomorrow</span><span class="l">Open ↗</span></div>
-                <div class="vcard"><span class="t">2023 Model Y Long Range</span><span class="p">$35,590</span><span class="m">est. $39,427 total · Saturday</span><span class="l">Open ↗</span></div>
-                <div class="input">Ask a follow-up…</div>
-              </div>
-            </div>
-          </div>
-          <div class="caption">Mockup with sample data from the HAR recording. Prices come from Carvana; the estimated total adds Carvana's estimated taxes and fees. Monthly payments aren't shown in the mini version.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="test">
-      <h2>Evals and testing</h2>
-      <p class="sub">Two kinds of checks: functional tests that the code works, and evals that the agent's answers are right. Each site's recorded fixtures make both repeatable without touching the site's servers. The Verification plan describes how each module is checked on its own before it's integrated.</p>
-
-      <h3>Functional tests</h3>
-      <div class="tbl">
+</div>
+</details>
+<details class="fold lvl3" id="test-functional" open>
+<summary><h3>Functional tests</h3></summary>
+<div class="fold-body">
+<div class="tbl">
         <table>
           <thead><tr><th>Layer</th><th>What it tests</th><th>Where</th><th>Network</th></tr></thead>
           <tbody>
@@ -1201,9 +1511,12 @@ let result = try await webView.callAsyncJavaScript(
           </tbody>
         </table>
       </div>
-
-      <h3 id="test-evals" class="mt">Snapshot evals</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="test-evals" open>
+<summary><h3>Snapshot evals</h3></summary>
+<div class="fold-body">
+<div class="col">
         <p>Each case builds a state directly: the conversation so far and recorded tool results. It adds the user's next message, runs the agent, and grades the result: the final state, the rendered answer and the last tool call's arguments. It doesn't grade the exact path the agent took, which would make cases brittle.</p>
         <p>Every case also checks that each price, date and fact on screen traces to a tool result in the snapshot, that missing data is stated rather than invented, and that no internal IDs appear in the text. Each site pack brings its own cases; the examples below are Carvana's.</p>
       </div>
@@ -1227,93 +1540,44 @@ let result = try await webView.callAsyncJavaScript(
           <li><b>Start with about 50 cases</b> for search-and-compare, then 50–100 per flow, written with product and legal reviewers. Once there's real traffic, tricky sessions become new cases.</li>
         </ul>
       </div>
-
-      <h3 id="test-ci" class="mt">CI gates and model choice</h3>
-      <div class="col">
+</div>
+</details>
+<details class="fold lvl3" id="test-ci" open>
+<summary><h3>CI gates and model choice</h3></summary>
+<div class="fold-body">
+<div class="col">
         <ul class="plain">
           <li><b>Every change</b> runs the high-traffic cases and all safety cases, plus cases for whatever changed: a skill's cases and its neighbors', and every case that calls a changed tool. The full suite runs nightly and before each release.</li>
           <li><b>Gates:</b> pass rate over several trials, cache hit rate, and cost per completed task.</li>
           <li><b>Model and effort level</b> are chosen by running the suite across candidates against set budgets for quality, p50 and p99 latency, and cost per completed task. Prompts are tuned for each candidate before ruling it out. Start with a Sonnet-class model for this consumer flow; if tasks take more than about five steps, try a smarter one.</li>
         </ul>
       </div>
-
-      <h3 class="mt">Fixed end-to-end tasks (Carvana)</h3>
-      <div class="qs">
+</div>
+</details>
+<details class="fold lvl3" id="test-tasks" open>
+<summary><h3>Fixed end-to-end tasks (Carvana)</h3></summary>
+<div class="fold-body">
+<div class="qs">
         <div class="q"><b>Work back from a goal</b> · AWD Model Y in the Bay Area under $40k, available before the weekend, top 5 by estimated total</div>
         <div class="q"><b>Exhaustive search</b> · For each model year of the Model 3 from 2021 to 2024, the car with the lowest price per mile</div>
         <div class="q"><b>Full comparison</b> · Compare the car I'm viewing with the 3 most similar cars, including GAP waiver price</div>
       </div>
       <p class="note">Example conversations for three Carvana flows are in <code>sites/carvana/conversations</code>, built from the fixtures: one message to a ranked list, refining a search with the site's suggestions, and the car on screen. The exhaustive Model 3 task and the comparison with similar cars need more recordings: every results page of those searches, and the similar-cars request, which needs a schema and a tool first.</p>
-    </section>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-    <section id="ops">
-      <h2>Operations</h2>
-      <p class="sub">Our tools depend on frontend endpoints a site can change without notice, so we need to switch things off quickly and roll changes out carefully.</p>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Practice</th><th>How</th></tr></thead>
-          <tbody>
-            <tr><td>Off switches</td><td>Each site's tools and skills can be turned off one by one, remotely. core.js reads a signed config at session start; a turned-off tool returns the "unavailable" error, so the agent answers without it. No app release needed.</td></tr>
-            <tr><td>Endpoint change monitor</td><td>Responses are validated against the site pack's schemas. Repeated mismatches or new errors turn the tool off automatically and alert its owner.</td></tr>
-            <tr><td>Gradual rollout</td><td>Prompt, skill and core.js changes go to a small share of sessions first, per customer. We compare task completion, errors, cache hit rate and cost per task before widening.</td></tr>
-            <tr><td>Freezes</td><td>No agent changes right before a customer's peak periods, such as holiday sales.</td></tr>
-            <tr><td>Ownership</td><td>One owner per tool and per skill. Shared prompt sections have a platform owner. Every change ships with its own eval cases, including negatives and cases at the boundary with neighboring skills.</td></tr>
-            <tr><td>Signed bundles</td><td>core.js updates are signed and checked before loading, because they run inside the user's page or app.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="verify">
-      <h2>Verification plan</h2>
-      <p class="sub">The goal is to catch a module's bugs while it's still on its own, before other modules depend on it. Every module is tested against the shared contract, not against its neighbors. Every dependency has a fake, so each module can be tested alone and deterministically. Each integration step swaps exactly one fake for the real thing, so when something breaks there's only one suspect.</p>
-
-      <h3 id="verify-fakes">Fakes, built before the modules that need them</h3>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Fake</th><th>Stands in for</th><th>Built from</th><th>Lets us test</th></tr></thead>
-          <tbody>
-            <tr><td>FakeHost</td><td>A site's network</td><td>The site's fixtures: recorded traffic, errors seen live, and edited copies for failures not seen yet</td><td>Tools, Execute, scripts and evals, for any site, without touching it</td></tr>
-            <tr><td>FakeModel</td><td>The LLM</td><td>Scripted output: text, tool calls, and deliberately bad output such as unknown IDs, wrong arguments and made-up tool names</td><td>The brain's loop and checks, without randomness or cost</td></tr>
-            <tr><td>FakeBrain</td><td>Our server, seen from the client</td><td>Scripted tool calls, scripts and presentation calls</td><td>Brain link, Execute and Respond, with no model</td></tr>
-            <tr><td>FakeClient</td><td>core.js, seen from the server</td><td>Scripted tool results, delays and disconnects</td><td>Timeouts, call-ID matching and budgets</td></tr>
-            <tr><td>FakeSurface</td><td>The UI</td><td>A headless bridge that sends goals and records what Respond outputs</td><td>Intake and Respond, with no UI</td></tr>
-            <tr><td>UI fixtures</td><td>The whole agent, seen from the UI</td><td>Saved Respond outputs</td><td>Overlay, SwiftUI and Compose screens, built before the agent works</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3 id="verify-levels" class="mt">How each module is checked</h3>
-      <div class="tbl">
-        <table>
-          <thead><tr><th>Level</th><th>What it checks</th><th>Applies to</th></tr></thead>
-          <tbody>
-            <tr><td>L1 · Unit and property tests</td><td>Pure logic, including randomized inputs</td><td>Estimated-total formula, deep links, sanitizer (fuzzed with hostile strings), ID set, call budget under concurrent calls</td></tr>
-            <tr><td>L2 · Contract tests</td><td>Every input and output matches the JSON Schema, and every recorded fixture validates, for every site pack. Both ends of the brain link replay the same saved example conversations</td><td>Every module with I/O</td></tr>
-            <tr><td>L3 · Component tests with fakes</td><td>The module plus its fakes, with failures injected: 403, timeout, empty results, a changed response shape, an expired route, bad model output</td><td>Tools, Execute, sandbox, Brain link, the brain's loop</td></tr>
-            <tr><td>L4 · Engine tests</td><td>The whole core.js test suite on Node, QuickJS and JavaScriptCore, which also proves there are no Node-only dependencies</td><td>core.js</td></tr>
-            <tr><td>L5 · Pairwise integration</td><td>One real neighbor at a time</td><td>Core with the brain, then the real model, then a surface</td></tr>
-            <tr><td>L6 · System</td><td>A few live end-to-end tasks on each site, plus snapshot evals for answer quality</td><td>The whole flow</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">Code bugs and model behavior are kept apart. Code paths are tested with FakeModel, deterministically, and answer quality is judged only by evals. A flaky model answer never hides a code bug, and the reverse.</p>
-
-      <h3 id="verify-daily" class="mt">From day one</h3>
-      <div class="col">
-        <ul class="plain">
-          <li><b>A trace ID on every message and call</b> (steps ② to ⑧), plus a development log of inputs and outputs at every module boundary. When a bug appears late, the trace shows which module first produced the bad value.</li>
-          <li><b>Every bug becomes a test</b> at the lowest level that could have caught it, and an eval case if it's agent behavior.</li>
-          <li><b>A weekly live check</b> runs a few real calls per site and compares them with the fixtures, so outdated fixtures are caught early instead of passing silently.</li>
-          <li><b>Three things to avoid:</b> building the UI first, testing core.js only in Node, and using the live LLM in unit tests.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="plan">
-      <h2>Build order and gates</h2>
-      <p class="sub">Each phase has a gate. Nothing that depends on a phase starts until its gate passes.</p>
-      <div class="tbl phase-tbl">
+<section id="plan">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">7</span>Build plan</h2></summary>
+<div class="fold-body">
+<p class="sub">Each phase has a gate. Nothing that depends on a phase starts until its gate passes.</p>
+<details class="fold lvl3" id="plan-phases" open>
+<summary><h3>Phases and gates</h3></summary>
+<div class="fold-body">
+<div class="tbl phase-tbl">
         <table>
           <thead><tr><th>Phase</th><th>Modules, in order</th><th>Done when</th></tr></thead>
           <tbody>
@@ -1331,28 +1595,35 @@ let result = try await webView.callAsyncJavaScript(
         </table>
       </div>
       <p class="note">Optional at any point after phase 0: capture the official Carvana app's traffic on a device to confirm the app and the website use the same backend endpoints.</p>
-    </section>
-
-    <section id="open">
-      <h2>Open questions</h2>
+</div>
+</details>
+<details class="fold lvl3" id="arch-spike" open>
+<summary><h3>Phase 0: the assumptions we checked first</h3></summary>
+<div class="fold-body">
+<p class="sub">The riskiest assumptions, checked live before building on them. All of them passed on 2026-10-11.</p>
       <div class="qs">
-        <div class="q"><b>How are UI components sent to each platform?</b> · The model-facing side is decided: typed presentation tools. Still open: whether Respond sends them to the surfaces as A2UI or as our own JSON.</div>
-        <div class="q"><b>Can the agent ever show financing figures?</b> · Needs counsel's review of the Regulation Z wording, and a way to capture and version Carvana's disclosure text.</div>
-        <div class="q"><b>What should the per-session and per-day call budgets be?</b> · Set them from real usage in the first rollout.</div>
+        <div class="q"><b>Portability</b> · The same core.js bundle runs unchanged in a Chrome page, under QuickJS in CI, and in JavaScriptCore in the iOS Simulator.</div>
+        <div class="q"><b>Split loop</b> · A server step sends a tool call to the client, the client returns the result, and the server continues, with step budgets and timeouts working.</div>
+        <div class="q"><b>Sandbox</b> · A model-written script can call only registered tools, has no fetch, and is killed if it loops forever.</div>
+        <div class="q"><b>Grounding</b> · A presentation call with an unknown ID is refused, and every price on screen traces to a tool result.</div>
       </div>
-      <p class="note">Answered in phase 0: Cloudflare didn't block calls at about one per second (faster rates weren't tested), and the vehicle page's data is embedded in its HTML.</p>
-    </section>
+</div>
+</details>
+</div>
+</details>
+</section>
 
-    <section id="decisions">
-      <h2>Technical design decisions</h2>
-      <p class="sub">A log of questions we've settled, with the reasoning and what would make us revisit them.</p>
-
-      <article class="dec" id="d1">
-        <header class="dec-head">
+<section id="decisions">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">8</span>Decisions and open questions</h2></summary>
+<div class="fold-body">
+<p class="sub">A log of questions we've settled, with the reasoning and what would make us revisit them.</p>
+<details class="fold lvl3 dec" id="d1" open>
+<summary class="dec-head">
           <span class="dec-id">D1</span>
           <h3>Why does the client call the site's APIs instead of the agentic brain?</h3>
           <span class="chip">Decided <b>2026-10-09</b></span>
-        </header>
+        </summary>
         <dl>
           <dt>Decision</dt>
           <dd>The tool runtime on the client sends requests to the site (steps ⑤ ⑥). The agentic brain never calls the site directly in the mini version.</dd>
@@ -1379,14 +1650,13 @@ let result = try await webView.callAsyncJavaScript(
             Then the same core.js runs on the gateway with <code>Host.request</code> pointed at the enterprise backend. Likely end state: a per-tool choice in the site pack, with public cacheable reads (search, facets) on the server and session-bound tools and app actions on the client.
           </dd>
         </dl>
-      </article>
-
-      <article class="dec" id="d2">
-        <header class="dec-head">
+</details>
+<details class="fold lvl3 dec" id="d2" open>
+<summary class="dec-head">
           <span class="dec-id">D2</span>
           <h3>Why do tools combine several of the site's calls on the client instead of one backend endpoint?</h3>
           <span class="chip">Decided <b>2026-10-10</b></span>
-        </header>
+        </summary>
         <dl>
           <dt>Decision</dt>
           <dd>In the mini version, task-level tools and scripts combine several frontend calls inside core.js, for example Carvana's availability, then pricing, then GAP waiver.</dd>
@@ -1399,14 +1669,13 @@ let result = try await webView.callAsyncJavaScript(
           <dt>Revisit when</dt>
           <dd>An enterprise grants server access. Then we ask for combined endpoints for the top tasks, such as "price and delivery date for these 20 cars at this zip code."</dd>
         </dl>
-      </article>
-
-      <article class="dec" id="d3">
-        <header class="dec-head">
+</details>
+<details class="fold lvl3 dec" id="d3" open>
+<summary class="dec-head">
           <span class="dec-id">D3</span>
           <h3>What do client-side checks protect against, and what must a server enforce?</h3>
           <span class="chip">Decided <b>2026-10-10</b></span>
-        </header>
+        </summary>
         <dl>
           <dt>Decision</dt>
           <dd>Checks in core.js protect against model mistakes and prompt injection. Anything that protects us or the enterprise is enforced on a server that we or the enterprise control.</dd>
@@ -1425,14 +1694,13 @@ let result = try await webView.callAsyncJavaScript(
           <dt>Revisit when</dt>
           <dd>We add any write action, or the gateway starts serving external agents. Then every check also runs on the server.</dd>
         </dl>
-      </article>
-
-      <article class="dec" id="d4">
-        <header class="dec-head">
+</details>
+<details class="fold lvl3 dec" id="d4" open>
+<summary class="dec-head">
           <span class="dec-id">D4</span>
           <h3>Which of the frontend's tracking fields do our requests send?</h3>
           <span class="chip">Decided <b>2026-10-12</b></span>
-        </header>
+        </summary>
         <dl>
           <dt>Decision</dt>
           <dd>Only the fields an endpoint requires, as its site pack lists them, with fresh random IDs per session. On Carvana, phase 0 found that search, facets and reviews need none, quote needs a client ID, and suggest needs a client ID and a visitor ID. Where we haven't tested without them (the availability headers), we send the frontend's set, with fresh IDs.</dd>
@@ -1445,14 +1713,13 @@ let result = try await webView.callAsyncJavaScript(
           <dt>Revisit when</dt>
           <dd>An enterprise integrates with us officially. Then we agree with them how agent traffic identifies itself, for example a dedicated client ID.</dd>
         </dl>
-      </article>
-
-      <article class="dec" id="d5">
-        <header class="dec-head">
+</details>
+<details class="fold lvl3 dec" id="d5" open>
+<summary class="dec-head">
           <span class="dec-id">D5</span>
           <h3>Why is everything about a site kept in its site pack, apart from the platform?</h3>
           <span class="chip">Decided <b>2026-10-12</b></span>
-        </header>
+        </summary>
         <dl>
           <dt>Decision</dt>
           <dd>The platform never names a site: the protocol, presentation tools, errors, config, the site-pack format, the checks and code generator, the testkit, and later core.js and the agentic brain. Everything site-specific is a site pack in <code>sites/&lt;id&gt;/</code>: entities, endpoints, tools, forms, notices, policies, deep links, skills, schemas, fixtures, example conversations and research. A test fails if a platform file names a site.</dd>
@@ -1472,25 +1739,119 @@ let result = try await webView.callAsyncJavaScript(
           <dt>Revisit when</dt>
           <dd>A real site needs something the site-pack format can't express: then we extend the format rather than special-case the platform. Or the code in site packs grows beyond small adapters: then it gets its own interface and tests.</dd>
         </dl>
-      </article>
-    </section>
+</details>
+<details class="fold lvl3" id="open" open>
+<summary><h3>Open questions</h3></summary>
+<div class="fold-body">
+<div class="qs">
+        <div class="q"><b>How are UI components sent to each platform?</b> · The model-facing side is decided: typed presentation tools. Still open: whether Respond sends them to the surfaces as A2UI or as our own JSON.</div>
+        <div class="q"><b>Can the agent ever show financing figures?</b> · Needs counsel's review of the Regulation Z wording, and a way to capture and version Carvana's disclosure text.</div>
+        <div class="q"><b>What should the per-session and per-day call budgets be?</b> · Set them from real usage in the first rollout.</div>
+      </div>
+      <p class="note">Answered in phase 0: Cloudflare didn't block calls at about one per second (faster rates weren't tested), and the vehicle page's data is embedded in its HTML.</p>
+</div>
+</details>
+</div>
+</details>
+</section>
 
     <footer>Based on the 2026-10-08 Carvana HAR recording (signed out, read-only) and the design discussions since. Reviewed on 2026-10-10 against Anthropic's guide <a href="https://claude.com/resources/articles/the-anatomy-of-effective-commerce-agents">The anatomy of effective commerce agents</a>. The platform is in <code>platform/</code>, and Carvana's site pack is <code>sites/carvana/site.yaml</code>, in the project folder.</footer>
-  </main>
+</main>
 </div>
 
 <script>
 (function(){
-  var links = Array.prototype.slice.call(document.querySelectorAll('.outline a'));
-  var targets = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
-  function update(){
-    var y = window.scrollY + 120, current = 0;
-    for (var i = 0; i < targets.length; i++){ if (targets[i] && targets[i].offsetTop <= y) current = i; }
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = targets.length - 1;
-    links.forEach(function(a, i){ if (i === current) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
+  var KEY = 'intent-agent-mini.folded';
+  var nav = document.querySelector('.outline');
+  var menuBtn = nav.querySelector('.toc-menu');
+  var folds = Array.prototype.slice.call(document.querySelectorAll('details.fold'));
+  var keyOf = function(d){ return d.id || d.parentElement.id; };
+
+  // Folds start open; restore what this reader folded before.
+  var folded = [];
+  try { folded = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+  folds.forEach(function(d){ if (folded.indexOf(keyOf(d)) >= 0) d.open = false; });
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(folds.filter(function(d){ return !d.open; }).map(keyOf))); } catch (e) {}
   }
-  window.addEventListener('scroll', update, {passive:true});
+  folds.forEach(function(d){ d.addEventListener('toggle', function(){ save(); update(); }); });
+
+  // Going to a section opens every fold around it, and the section itself.
+  function reveal(el){
+    var d = el.tagName === 'SECTION' ? el.querySelector('details.fold') : el;
+    for (var n = d; n; n = n.parentElement) if (n.tagName === 'DETAILS') n.open = true;
+  }
+  function go(id, setHash){
+    var el = document.getElementById(id);
+    if (!el) return;
+    reveal(el);
+    el.scrollIntoView({ block: 'start' });
+    if (setHash) { try { history.replaceState(null, '', '#' + id); } catch (e) {} }
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    if (!document.getElementById(id)) return;
+    e.preventDefault();
+    go(id, true);
+    if (nav.contains(a)) setMenu(false);
+  });
+  window.addEventListener('hashchange', function(){ go(location.hash.slice(1), false); });
+
+  document.querySelectorAll('.fold-all button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.getAttribute('data-act') === 'expand';
+      folds.forEach(function(d){ d.open = open; });
+      save(); update();
+    });
+  });
+
+  // Outline: a branch opens when the reader toggles it, or while it holds the section being read.
+  nav.querySelectorAll('.toc-tog').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var li = btn.closest('li');
+      li.setAttribute('data-manual', li.classList.contains('expanded') ? 'closed' : 'open');
+      update();
+    });
+  });
+  function setMenu(on){ nav.classList.toggle('menu-open', on); menuBtn.setAttribute('aria-expanded', String(on)); menuBtn.textContent = on ? 'Hide' : 'Show'; }
+  menuBtn.addEventListener('click', function(){ setMenu(!nav.classList.contains('menu-open')); });
+
+  var links = Array.prototype.slice.call(nav.querySelectorAll('.toc a'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  function shown(el){
+    for (var p = el.parentElement; p; p = p.parentElement) if (p.tagName === 'DETAILS' && !p.open) return false;
+    return true;
+  }
+  function update(){
+    var idx = 0;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i] && shown(targets[i]) && targets[i].getBoundingClientRect().top <= 110) idx = i;
+    }
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+      for (var j = targets.length - 1; j >= 0; j--) if (targets[j] && shown(targets[j])) { idx = j; break; }
+    }
+    links.forEach(function(a, i){ if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    var path = [];
+    for (var li = links[idx].closest('li'); li; li = li.parentElement.closest('li')) path.push(li);
+    nav.querySelectorAll('.toc li').forEach(function(li){
+      var btn = li.querySelector('.toc-row > .toc-tog');
+      if (!btn) return;
+      var manual = li.getAttribute('data-manual');
+      var on = manual === 'open' || (manual !== 'closed' && path.indexOf(li) >= 0);
+      li.classList.toggle('expanded', on);
+      btn.setAttribute('aria-expanded', String(on));
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ ticking = false; update(); });
+  }, { passive: true });
   window.addEventListener('resize', update);
+  if (location.hash.length > 1) go(location.hash.slice(1), false);
   update();
 })();
 </script>
