@@ -1,5 +1,5 @@
 // The prompt assembler. A request is laid out from most stable to least, so prompt caching works:
-//   1 · Global: the system prompt (the platform's rules, then the site's section) and every tool definition. Built
+//   1 · Prefix: the system prompt (the platform's rules, then the site's section) and every tool definition. Built
 //       once per site from the site pack, with no time, page or session in it, so it is byte-identical for every
 //       session; the adapter puts a cache breakpoint at its end.
 //   2 · Session: the conversation so far, tool results, and skills (which load as tool results).
@@ -10,7 +10,7 @@ import { fence } from '../../../core/src/boundary/sanitize.ts';
 import type { ToolSpec } from '../model/model.ts';
 import type { SiteBundle } from './site.ts';
 
-export interface GlobalSegment {
+export interface PromptPrefix {
   system: string;
   tools: ToolSpec[];
 }
@@ -159,7 +159,7 @@ export function toolSpecs(bundle: SiteBundle): ToolSpec[] {
   return tools;
 }
 
-export function globalSegment(bundle: SiteBundle): GlobalSegment {
+export function buildPromptPrefix(bundle: SiteBundle): PromptPrefix {
   return { system: `${platformRules(bundle.pack.site.name)}\n\n${siteSection(bundle)}\n`, tools: toolSpecs(bundle) };
 }
 

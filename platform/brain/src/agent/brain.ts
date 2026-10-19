@@ -1,5 +1,5 @@
 // The brain at service level: one per site, always on. It holds what every conversation shares (the site with its
-// cached prompt segment and policy, the model, limits and quotas) and the conversations themselves, as AgentSessions
+// cached prompt prefix and policy, the model, limits and quotas) and the conversations themselves, as AgentSessions
 // kept in order of last use. It checks each message against the protocol, finds or opens the session the message
 // belongs to, and hands the message over; everything about turns happens in the session and its turn.
 //   POST /v1/turn     the user's message and page context → the first steps' events
@@ -11,11 +11,11 @@ import type { ClientAmend, ClientResults, ClientTurn, RemoteConfig } from '../..
 import { effectivePolicy } from '../../../core/src/boundary/limits.ts';
 import { describeProblems, validatorFor } from '../../../core/src/shared/validate.ts';
 import type { ChatMessage, ModelAdapter } from '../model/model.ts';
-import { globalSegment, type GlobalSegment } from '../prompt/prompt.ts';
+import { buildPromptPrefix, type PromptPrefix } from '../prompt/prompt.ts';
 import type { SiteBundle } from '../prompt/site.ts';
 import { DEFAULT_QUOTAS, Quotas, type QuotaLimits } from '../system/quotas.ts';
 import { AgentSession } from './session.ts';
-import { DEFAULT_LIMITS, isObject, MESSAGES, once, type Accepted, type BrainLimits, type BrainLogEntry, type BrainServices } from './shared.ts';
+import { DEFAULT_LIMITS, isObject, MESSAGES, once, type ServerResponse, type BrainLimits, type BrainLogEntry, type BrainServices } from './types.ts';
 
 export interface BrainOptions {
   site: SiteBundle;
@@ -43,7 +43,7 @@ export class Brain {
     const now = options.now ?? Date.now;
     const logger = options.log;
     this.services = {
-      site: { id: siteId, bundle, global: globalSegment(bundle), policy: effectivePolicy(bundle.pack, options.config ?? null).policy },
+      site: { id: siteId, bundle, promptPrefix: buildPromptPrefix(bundle), policy: effectivePolicy(bundle.pack, options.config ?? null).policy },
       model: options.model,
       limits: this.limits,
       quotas: new Quotas({ ...DEFAULT_QUOTAS, ...options.quotas }, now),
@@ -53,9 +53,9 @@ export class Brain {
     this.validateMessage = validatorFor(bundle.validators.platform, 'messages.json');
   }
 
-  /** The site's global prompt segment: the same object for every session, so every request shares its bytes. */
-  get global(): GlobalSegment {
-    return this.services.site.global;
+  /** The site's prompt prefix: the same object for every session, so every request shares its bytes. */
+  get promptPrefix(): PromptPrefix {
+    return this.services.site.promptPrefix;
   }
 
   /** How many sessions the brain is holding. */
@@ -74,7 +74,7 @@ export class Brain {
    * events. `endpoint` is the path it arrived on, when there is one, and must match the message's type. `signal`
    * aborts when the client goes away: a step still running is stopped, and the turn ends.
    */
-  accept(message: unknown, options: { endpoint?: 'turn' | 'results' | 'amend'; signal?: AbortSignal } = {}): Accepted {
+  accept(message: unknown, options: { endpoint?: 'turn' | 'results' | 'amend'; signal?: AbortSignal } = {}): ServerResponse {
     // 1. The protocol: a known message type, on its own endpoint, valid against the contract.
     const type = isObject(message) ? message.type : undefined;
     if (type !== 'turn' && type !== 'results' && type !== 'amend') return { ok: false, status: 400, error: 'expected a turn, results or amend message' };
@@ -95,7 +95,7 @@ export class Brain {
    *   3. Find the conversation, or open it on its first message.
    *   4. The session starts the turn, replacing one still running.
    */
-  private startTurn(turnMessage: ClientTurn, signal: AbortSignal | undefined): Accepted {
+  private startTurn(turnMessage: ClientTurn, signal: AbortSignal | undefined): ServerResponse {
     const { site } = this.services;
     if (turnMessage.site !== site.id) return { ok: false, status: 400, error: `this brain serves ${site.id}, not ${turnMessage.site}` };
     this.evict();
@@ -109,14 +109,14 @@ export class Brain {
   }
 
   /** Results for the turn the client was running tools for. With no session, the turn is long gone. */
-  private takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): Accepted {
+  private takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): ServerResponse {
     const session = this.sessions.get(resultsMessage.sessionId);
     if (!session) return { ok: true, events: once({ type: 'error', traceId: resultsMessage.traceId, code: 'timeout', message: MESSAGES.expired }) };
     return session.takeResults(resultsMessage, signal);
   }
 
   /** A message for a running turn. With no session, there's no turn to add it to. */
-  private amend(amendMessage: ClientAmend): Accepted {
+  private amend(amendMessage: ClientAmend): ServerResponse {
     const session = this.sessions.get(amendMessage.sessionId);
     if (!session) return { ok: true, events: once({ type: 'amended', traceId: amendMessage.traceId, status: 'too_late' }) };
     return session.amend(amendMessage);

@@ -2,7 +2,7 @@
 // site, the first user message of its first example conversation goes through the real brain with Claude; the client
 // side runs the tools with core.js against the site's recorded fixtures, so no site is called. This checks the
 // plumbing, not the quality of the answer (evals judge that): the turn ends in an answer, every event follows the
-// protocol, and steps after the first read the global segment from the prompt cache.
+// protocol, and steps after the first read the prompt prefix from the prompt cache.
 //   LIVE=1 node --test platform/brain/test/live.test.ts
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +19,7 @@ import { testHost } from '../../testkit/src/test-host.ts';
 import { anthropicModel } from '../src/model/anthropic.ts';
 import { setting } from '../src/server/env.ts';
 import { Brain } from '../src/agent/brain.ts';
-import type { BrainLogEntry } from '../src/agent/shared.ts';
+import type { BrainLogEntry } from '../src/agent/types.ts';
 import { loadSite } from '../src/prompt/site.ts';
 
 const live = process.env.LIVE === '1';

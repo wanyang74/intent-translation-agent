@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { anthropicModel, toModelMessages } from '../src/model/anthropic.ts';
 import type { ChatMessage, ModelEvent } from '../src/model/model.ts';
-import { globalSegment } from '../src/prompt/prompt.ts';
+import { buildPromptPrefix } from '../src/prompt/prompt.ts';
 import { shopSite } from './example-brain.ts';
 
 const sse = (events: object[]) => events.map((event) => `event: ${(event as { type: string }).type}\ndata: ${JSON.stringify(event)}\n\n`).join('');
@@ -56,8 +56,8 @@ async function collect(stream: AsyncIterable<ModelEvent>): Promise<ModelEvent[]>
 test('the request: cached system prompt, tools as defined, the history paired by call IDs, the last message cached', async () => {
   const { fakeFetch, requests } = recordingFetch(STREAM);
   const model = anthropicModel({ apiKey: 'test-key-not-real', fetch: fakeFetch, maxRetries: 0 });
-  const segment = globalSegment(shopSite());
-  const events = await collect(model.stream({ system: segment.system, tools: segment.tools, messages: HISTORY, maxOutputTokens: 4096, signal: new AbortController().signal }));
+  const prefix = buildPromptPrefix(shopSite());
+  const events = await collect(model.stream({ system: prefix.system, tools: prefix.tools, messages: HISTORY, maxOutputTokens: 4096, signal: new AbortController().signal }));
   assert.equal(requests.length, 1);
   const { url, headers, body } = requests[0]!;
   assert.match(url, /\/messages$/);
@@ -66,9 +66,9 @@ test('the request: cached system prompt, tools as defined, the history paired by
   assert.equal(body.max_tokens, 4096);
   assert.equal(body.stream, true);
   assert.deepEqual(body.output_config, { effort: 'low' }, 'low effort by default, so answers come with their text');
-  assert.deepEqual(body.system, [{ type: 'text', text: segment.system, cache_control: { type: 'ephemeral' } }]);
-  assert.deepEqual(body.tools.map((tool: { name: string }) => tool.name), segment.tools.map((tool) => tool.name));
-  assert.deepEqual(body.tools[0].input_schema, segment.tools[0]!.inputSchema);
+  assert.deepEqual(body.system, [{ type: 'text', text: prefix.system, cache_control: { type: 'ephemeral' } }]);
+  assert.deepEqual(body.tools.map((tool: { name: string }) => tool.name), prefix.tools.map((tool) => tool.name));
+  assert.deepEqual(body.tools[0].input_schema, prefix.tools[0]!.inputSchema);
   assert.ok(body.tools.every((tool: object) => !('cache_control' in tool)), 'the system breakpoint covers the tools, which come first');
   assert.deepEqual(body.messages.map((message: { role: string }) => message.role), ['user', 'assistant', 'user', 'assistant', 'user']);
   const [, assistant, results, , last] = body.messages;

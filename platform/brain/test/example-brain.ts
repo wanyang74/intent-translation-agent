@@ -10,7 +10,7 @@ import { exampleValidators } from '../../core/test/example-site.ts';
 import { FakeClient, inProcess, type ResultBody, type ResultFor } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeScript } from '../../testkit/src/fake-model.ts';
 import { Brain } from '../src/agent/brain.ts';
-import type { BrainLimits, BrainLogEntry } from '../src/agent/shared.ts';
+import type { BrainLimits, BrainLogEntry } from '../src/agent/types.ts';
 import type { ChatMessage, ToolSpec } from '../src/model/model.ts';
 import type { QuotaLimits } from '../src/system/quotas.ts';
 import type { SiteBundle } from '../src/prompt/site.ts';

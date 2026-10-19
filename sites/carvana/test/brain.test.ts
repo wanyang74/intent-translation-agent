@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validatorFor } from '../../../platform/core/src/shared/validate.ts';
 import { Brain } from '../../../platform/brain/src/agent/brain.ts';
-import { globalSegment } from '../../../platform/brain/src/prompt/prompt.ts';
+import { buildPromptPrefix } from '../../../platform/brain/src/prompt/prompt.ts';
 import { loadSite } from '../../../platform/brain/src/prompt/site.ts';
 import { loadConversations } from '../../../platform/testkit/src/conversations.ts';
 import { FakeClient, inProcess, replayConversation } from '../../../platform/testkit/src/fake-client.ts';
@@ -16,7 +16,7 @@ const validate = validatorFor(bundle.validators.platform, 'messages.json');
 const HOME = { url: 'https://www.carvana.com/', pageType: 'other', location: { postalCode: '94402' }, locale: 'en-US' };
 
 test("the model is told Carvana's rules: hidden payment figures, the zip code, the estimated-total notice, and the four skills", () => {
-  const { system, tools } = globalSegment(bundle);
+  const { system, tools } = buildPromptPrefix(bundle);
   for (const line of [
     "You're the assistant inside Carvana's website and apps.",
     '- Carvana sells used cars online.',

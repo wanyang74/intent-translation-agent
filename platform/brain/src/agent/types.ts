@@ -7,7 +7,7 @@
 import type { ServerEvent } from '../../../contract/generated/types.ts';
 import type { Policy } from '../../../core/src/boundary/limits.ts';
 import type { ModelAdapter } from '../model/model.ts';
-import type { GlobalSegment } from '../prompt/prompt.ts';
+import type { PromptPrefix } from '../prompt/prompt.ts';
 import type { SiteBundle } from '../prompt/site.ts';
 import type { Quotas } from '../system/quotas.ts';
 
@@ -43,11 +43,11 @@ export interface BrainLogEntry {
   detail: unknown;
 }
 
-/** The site as this brain serves it: the site pack's ID, its bundle, its cached prompt segment, and its policy. */
+/** The site as this brain serves it: the site pack's ID, its bundle, its cached prompt prefix, and its policy. */
 export interface ServedSite {
   id: string;
   bundle: SiteBundle;
-  global: GlobalSegment;
+  promptPrefix: PromptPrefix;
   policy: Policy;
 }
 
@@ -65,7 +65,7 @@ export interface BrainServices {
 }
 
 /** What the brain does with a message: stream events back, or refuse it as the HTTP layer should (400, 409). */
-export type Accepted = { ok: true; events: AsyncIterable<ServerEvent> } | { ok: false; status: number; error: string };
+export type ServerResponse = { ok: true; events: AsyncIterable<ServerEvent> } | { ok: false; status: number; error: string };
 
 // What the user sees when a turn ends early. Plain, with no internals.
 export const MESSAGES = {

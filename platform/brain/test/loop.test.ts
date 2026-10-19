@@ -77,7 +77,7 @@ test('call IDs count up through the session; each session starts at call_1; no t
   assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
 });
 
-test('every request starts with the same global segment, and the newest user turn ends with its context block', async () => {
+test('every request starts with the same prompt prefix, and the newest user turn ends with its context block', async () => {
   const { client, model } = setup([{ calls: [search('red')] }, { text: 'One.', calls: [items([1])] }, { text: 'Hello again.' }]);
   await client.turn('red shoes', HOME);
   await client.turn('thanks', { ...HOME, url: 'https://www.example.com/cart', pageType: 'home' });

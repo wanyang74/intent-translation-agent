@@ -36,7 +36,7 @@ export type ChatMessage =
   | { role: 'tool'; content: ToolResultPart[] };
 
 /**
- * One model call, laid out for prompt caching: the global segment first (system prompt and tools, the same for every
+ * One model call, laid out for prompt caching: the prompt prefix first (system prompt and tools, the same for every
  * session of a site), then the session (the conversation so far), ending with the newest turn's volatile context or
  * the latest tool results. The adapter puts cache breakpoints at the end of the system prompt and at the end of the
  * messages.

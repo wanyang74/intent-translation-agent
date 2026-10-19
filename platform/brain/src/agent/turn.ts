@@ -18,7 +18,7 @@ import { SKILL_TOOL } from '../prompt/prompt.ts';
 import { loadSkill } from '../prompt/skills.ts';
 import { checkClientCall, checkPresentationCall, isPresentation, learnIds, outputProblem, type ServerContext } from '../system/checks.ts';
 import type { AgentSession } from './session.ts';
-import { isObject, MESSAGES, once, type Accepted, type BrainServices } from './shared.ts';
+import { isObject, MESSAGES, once, type ServerResponse, type BrainServices } from './types.ts';
 
 /** One tool call the model made, and what became of it. */
 export interface CallRecord {
@@ -116,13 +116,13 @@ export class Turn {
   private readonly started: number;
   /** Model calls made so far, for the step budget. */
   private steps = 0;
-  /** running: making model calls. awaiting: the client is running tools. done: answered, failed or replaced. */
-  state: 'running' | 'awaiting' | 'done' = 'running';
+  /** running: making model calls. awaiting_client_calls: the client is running tools. done: answered, failed or replaced. */
+  state: 'running' | 'awaiting_client_calls' | 'done' = 'running';
   /** The off switch of the model call in flight; replaced for each call. */
   private modelCall = new AbortController();
-  /** While awaiting: the step whose client calls are out, and those calls by the brain's call ID. */
-  private awaiting: { step: ModelStep; byCallId: Map<string, CallRecord> } | null = null;
-  /** While awaiting: ends the turn if the client's results don't come in time. */
+  /** While awaiting_client_calls: the step whose client calls are out, and those calls by the brain's call ID. */
+  private awaitingClientCalls: { step: ModelStep; byCallId: Map<string, CallRecord> } | null = null;
+  /** While awaiting_client_calls: ends the turn if the client's results don't come in time. */
   private timer: ReturnType<typeof setTimeout> | null = null;
   /** Presentation calls accepted in an earlier step of this turn, shown with the answer. */
   private kept: PresentationCall[] = [];
@@ -142,7 +142,7 @@ export class Turn {
   }
 
   /** Streams the turn's next steps; a model call stops if the client of this request goes away. */
-  stream(signal: AbortSignal | undefined): Accepted {
+  stream(signal: AbortSignal | undefined): ServerResponse {
     this.signal = signal;
     return { ok: true, events: this.run() };
   }
@@ -155,7 +155,7 @@ export class Turn {
 
   /** A new message replaced this turn: stop the model call, close the calls it was waiting on, and end it. */
   supersede(): void {
-    if (this.state === 'awaiting') this.closeAwaited('the user sent a new message first');
+    if (this.state === 'awaiting_client_calls') this.closeAwaitedClientCalls('the user sent a new message first');
     this.modelCall.abort(new Error('superseded'));
     this.end('superseded by a new message');
   }
@@ -179,15 +179,15 @@ export class Turn {
    *   4. Add the step's results to the history, in the order the model made the calls.
    *   5. Mark the turn running again and stream its next steps (run).
    */
-  takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): Accepted {
+  takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): ServerResponse {
     const { history } = this.session;
-    const waiting = this.awaiting!;
+    const waiting = this.awaitingClientCalls!;
     // 1. Results only for the calls the brain issued and is waiting for: each one exactly once.
     const ids = resultsMessage.results.map((result) => result.id);
     const exact = ids.length === waiting.byCallId.size && new Set(ids).size === ids.length && ids.every((id) => waiting.byCallId.has(id));
     if (!exact) {
       this.log('results_refused', { got: ids, awaited: [...waiting.byCallId.keys()] });
-      this.closeAwaited('the client sent results that did not match');
+      this.closeAwaitedClientCalls('the client sent results that did not match');
       this.end('results did not match');
       return { ok: true, events: once({ type: 'error', traceId: this.traceId, code: 'internal', message: MESSAGES.mismatch }) };
     }
@@ -215,7 +215,7 @@ export class Turn {
     // 4. One tool message with every call of the step, including those the brain answered itself, in model order.
     history.push({ role: 'tool', content: waiting.step.calls.map((call) => call.result!) });
     // 5. Back to running: the next model call starts when the caller reads the stream.
-    this.awaiting = null;
+    this.awaitingClientCalls = null;
     this.state = 'running';
     this.log('results', { calls: ids.length, failed: resultsMessage.results.filter((result) => !result.ok).length });
     return this.stream(signal);
@@ -232,18 +232,18 @@ export class Turn {
   }
 
   /** Gives every awaited call that has no result yet an error result, so the history stays valid. */
-  private closeAwaited(details: string): void {
-    const waiting = this.awaiting;
+  private closeAwaitedClientCalls(details: string): void {
+    const waiting = this.awaitingClientCalls;
     if (!waiting) return;
     for (const call of waiting.step.calls) call.result ??= errorResult(call, platformError('no_result', { tool: call.name, details }));
     this.session.history.push({ role: 'tool', content: waiting.step.calls.map((call) => call.result!) });
-    this.awaiting = null;
+    this.awaitingClientCalls = null;
   }
 
   /** The client stopped sending results: the waiting calls get error results and the turn ends. */
   private expire(): void {
-    if (this.session.turn !== this || this.state !== 'awaiting') return;
-    this.closeAwaited("the user's device didn't send it in time");
+    if (this.session.turn !== this || this.state !== 'awaiting_client_calls') return;
+    this.closeAwaitedClientCalls("the user's device didn't send it in time");
     this.end('results timed out');
   }
 
@@ -295,7 +295,7 @@ export class Turn {
         }
         // 2. Prepare the request. Amendments queued so far go in now, next to the latest tool results; ones that arrive
         //    later wait for the next step. The last allowed step runs like any other: the model isn't rushed.
-        const final = this.steps + 1 >= limits.stepsPerTurn;
+        const isFinalStep = this.steps + 1 >= limits.stepsPerTurn;
         const delivered = this.amendments.splice(0);
         if (delivered.length) {
           history.push({ role: 'user', content: [{ type: 'text', text: amendmentReminder(delivered, this.kept) }] });
@@ -308,20 +308,20 @@ export class Turn {
         // 3. Call the model and stream its step. Text is collected; each tool call is decided as soon as it's complete
         //    (onToolCall), and a call for the client is sent right away, while the model may still be writing.
         const step: ModelStep = { text: '', calls: [] };
-        let usage: Usage = NO_USAGE;
+        let stepUsage: Usage = NO_USAGE;
         let reason = 'other';
         const started = performance.now();
         try {
-          for await (const ev of this.callModel()) {
+          for await (const event of this.callModel()) {
             if (session.turn !== this) return;
-            if (ev.type === 'text') step.text += ev.text;
-            else if (ev.type === 'tool-call') {
+            if (event.type === 'text') step.text += event.text;
+            else if (event.type === 'tool-call') {
               // Eager dispatch: a call that passed the checks goes to the client now, while the model keeps writing.
-              const sent = this.onToolCall(step, ev, final);
+              const sent = this.onToolCall(step, event, isFinalStep);
               if (sent) yield sent;
             } else {
-              usage = ev.usage;
-              reason = ev.reason;
+              stepUsage = event.usage;
+              reason = event.reason;
             }
           }
         } catch (error) {
@@ -339,11 +339,11 @@ export class Turn {
         }
         // 5. Record the step: tokens toward the quotas, and timing and cache figures in the log.
         if (session.turn !== this) return;
-        quotas.endModelCall(sessionUsage, usage.inputTokens + usage.outputTokens);
+        quotas.endModelCall(sessionUsage, stepUsage.inputTokens + stepUsage.outputTokens);
         this.log('model_step', {
           step: this.steps, finish: reason, ms: Math.round(performance.now() - started), calls: step.calls.map((call) => call.name),
-          inputTokens: usage.inputTokens, outputTokens: usage.outputTokens, cacheReadTokens: usage.cacheReadTokens, cacheWriteTokens: usage.cacheWriteTokens,
-          cacheHitRate: usage.inputTokens ? usage.cacheReadTokens / usage.inputTokens : null,
+          inputTokens: stepUsage.inputTokens, outputTokens: stepUsage.outputTokens, cacheReadTokens: stepUsage.cacheReadTokens, cacheWriteTokens: stepUsage.cacheWriteTokens,
+          cacheHitRate: stepUsage.inputTokens ? stepUsage.cacheReadTokens / stepUsage.inputTokens : null,
         });
 
         // The step is complete. Everything from here to the next yield runs at once, so the history is never half-updated.
@@ -364,8 +364,8 @@ export class Turn {
         //     and this stream ends; takeResults picks the turn up again.
         if (client.length) {
           for (const call of presents) call.result = errorResult(call, platformError('present_too_early', { tool: call.name }));
-          this.state = 'awaiting';
-          this.awaiting = { step, byCallId: new Map(client.map((call) => [call.callId!, call])) };
+          this.state = 'awaiting_client_calls';
+          this.awaitingClientCalls = { step, byCallId: new Map(client.map((call) => [call.callId!, call])) };
           this.timer = unref(setTimeout(() => this.expire(), limits.resultsTimeoutMs));
           const line = progressLine(step.text);
           if (line) yield { type: 'progress', traceId: this.traceId, text: line };
@@ -374,7 +374,7 @@ export class Turn {
         }
 
         // 6b. The step presented, wrote only text, or is the last allowed one: this may be the answer.
-        if (presents.length || !step.calls.length || final) {
+        if (presents.length || !step.calls.length || isFinalStep) {
           //   Check every card (known IDs, valid arguments, declared fields).
           const ctx = this.checks();
           const checked = presents.map((call) => ({ call, problem: checkPresentationCall(ctx, call.name, call.input) }));
@@ -382,7 +382,7 @@ export class Turn {
           // On the last allowed step there is no step left to finish with: if the model still needed site tools, or a
           // card was refused, or there's no answer at all, the turn ends with an error rather than a rushed answer.
           const needsMore = step.calls.some((call) => call.kind === 'server' && (call.result?.output as ToolError | undefined)?.reason === 'out_of_steps');
-          if (final && (needsMore || refused.length || (!presents.length && !step.text.trim() && !this.kept.length))) {
+          if (isFinalStep && (needsMore || refused.length || (!presents.length && !step.text.trim() && !this.kept.length))) {
             for (const check of checked) check.call.result = errorResult(check.call, check.problem ?? platformError('not_shown'));
             history.push({ role: 'tool', content: step.calls.map((call) => call.result!) });
             this.log('out_of_steps', { needsMore, refused: refused.length });
@@ -402,7 +402,7 @@ export class Turn {
             this.kept = [];
             this.keptUnderReview = false;
           }
-          if (accepted.length && !step.text.trim() && !final) {
+          if (accepted.length && !step.text.trim() && !isFinalStep) {
             // Cards with no words yet: they're kept for the answer, and the model's next step writes the text.
             this.kept.push(...accepted);
             for (const check of checked) check.call.result = { type: 'tool-result', id: check.call.modelId, name: check.call.name, output: KEPT_NOTE, isError: false };
@@ -454,7 +454,7 @@ export class Turn {
    * the client hanging up, and a new turn (supersede aborts this.modelCall). Whichever way it ends, `finally` cleans up.
    */
   private async *callModel(): AsyncGenerator<ModelEvent> {
-    const { global } = this.services.site;
+    const { promptPrefix } = this.services.site;
     // The call's single off switch. Kept on the turn so supersede can abort it from outside ('superseded').
     const controller = new AbortController();
     this.modelCall = controller;
@@ -473,7 +473,7 @@ export class Turn {
     }, this.services.limits.modelTimeoutMs));
     // A copy of the history: run() keeps adding to the session's history while this call streams.
     const iterator = this.services.model.stream({
-      system: global.system, tools: global.tools, messages: [...this.session.history], maxOutputTokens: this.services.limits.maxOutputTokens, signal: controller.signal,
+      system: promptPrefix.system, tools: promptPrefix.tools, messages: [...this.session.history], maxOutputTokens: this.services.limits.maxOutputTokens, signal: controller.signal,
     })[Symbol.asyncIterator]();
     let finished = false;
     try {
@@ -516,25 +516,25 @@ export class Turn {
    * A refused call is answered with an error result here and never reaches the client; the model reads the error at
    * its next step and can correct itself.
    */
-  private onToolCall(step: ModelStep, ev: Extract<ModelEvent, { type: 'tool-call' }>, final: boolean): ToolCallEvent | null {
+  private onToolCall(step: ModelStep, event: Extract<ModelEvent, { type: 'tool-call' }>, isFinalStep: boolean): ToolCallEvent | null {
     const { session } = this;
     const { site } = this.services;
-    const call: CallRecord = { modelId: ev.id, name: ev.name, input: isObject(ev.input) ? ev.input : {}, kind: 'server' };
+    const call: CallRecord = { modelId: event.id, name: event.name, input: isObject(event.input) ? event.input : {}, kind: 'server' };
     step.calls.push(call);
     const refuse = (error: ToolError) => {
       call.result = errorResult(call, error);
-      this.log('call_refused', { tool: ev.name, reason: error.reason });
+      this.log('call_refused', { tool: event.name, reason: error.reason });
       return null;
     };
     // 1. Malformed arguments.
-    if (!isObject(ev.input)) return refuse(platformError('bad_arguments', { tool: ev.name, details: 'the arguments must be an object' }));
+    if (!isObject(event.input)) return refuse(platformError('bad_arguments', { tool: event.name, details: 'the arguments must be an object' }));
     // 2. Part of the answer: nothing to run now.
-    if (isPresentation(ev.name)) {
+    if (isPresentation(event.name)) {
       call.kind = 'present';
       return null;
     }
     // 3. Skills are text the brain already has: no round trip to the client.
-    if (ev.name === SKILL_TOOL) {
+    if (event.name === SKILL_TOOL) {
       const loaded = loadSkill(site.bundle, call.input.name, session.skills, site.policy.disabledSkills);
       if (!loaded.ok) return refuse(loaded.error);
       call.result = { type: 'tool-result', id: call.modelId, name: call.name, output: loaded.text, isError: false };
@@ -542,13 +542,13 @@ export class Turn {
       return null;
     }
     // 4. No step left to read a result.
-    if (final) return refuse(platformError('out_of_steps', { tool: ev.name }));
+    if (isFinalStep) return refuse(platformError('out_of_steps', { tool: event.name }));
     // 5. The same checks core.js runs, here before anything is sent.
-    const problem = checkClientCall(this.checks(), ev.name, call.input);
+    const problem = checkClientCall(this.checks(), event.name, call.input);
     if (problem) return refuse(problem);
     call.kind = 'client';
     call.callId = session.issueCallId();
-    this.log('tool_call', { id: call.callId, tool: ev.name });
-    return { type: 'tool_call', traceId: this.traceId, call: { id: call.callId, name: ev.name, args: call.input } };
+    this.log('tool_call', { id: call.callId, tool: event.name });
+    return { type: 'tool_call', traceId: this.traceId, call: { id: call.callId, name: event.name, args: call.input } };
   }
 }

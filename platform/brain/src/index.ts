@@ -4,12 +4,12 @@
 export type { ChatMessage, FinishReason, ModelAdapter, ModelEvent, ModelRequest, TextPart, ToolCallPart, ToolResultPart, ToolSpec, Usage } from './model/model.ts';
 export { NO_USAGE } from './model/model.ts';
 export { forModel, loadSite, siteProblems, type SiteBundle } from './prompt/site.ts';
-export { contextBlock, globalSegment, SCRIPT_TOOL, siteSection, SKILL_TOOL, toolSpecs, type GlobalSegment } from './prompt/prompt.ts';
+export { contextBlock, buildPromptPrefix, SCRIPT_TOOL, siteSection, SKILL_TOOL, toolSpecs, type PromptPrefix } from './prompt/prompt.ts';
 export { loadSkill, skillsForPage, type SkillOutcome } from './prompt/skills.ts';
 export { checkClientCall, checkPresentationCall, learnIds, MAX_RESULT_CHARS, outputProblem, type ServerContext } from './system/checks.ts';
 export { DEFAULT_QUOTAS, Quotas, type QuotaLimits, type QuotaRefusal, type SessionUsage } from './system/quotas.ts';
 export { Brain, type BrainOptions } from './agent/brain.ts';
 export { AgentSession } from './agent/session.ts';
 export { amendmentReminder, progressLine, Turn, type CallRecord, type ModelStep } from './agent/turn.ts';
-export { DEFAULT_LIMITS, type Accepted, type BrainLimits, type BrainLogEntry, type BrainServices, type ServedSite } from './agent/shared.ts';
+export { DEFAULT_LIMITS, type ServerResponse, type BrainLimits, type BrainLogEntry, type BrainServices, type ServedSite } from './agent/types.ts';
 export { createBrainServer, type ServerOptions } from './server/server.ts';

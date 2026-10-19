@@ -79,8 +79,8 @@ export class Quotas {
     return null;
   }
 
-  startModelCall(site: string, usage: SessionUsage): void {
-    usage.modelCalls++;
+  startModelCall(site: string, sessionUsage: SessionUsage): void {
+    sessionUsage.modelCalls++;
     this.today(site).calls++;
   }
 

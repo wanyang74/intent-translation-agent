@@ -1,7 +1,7 @@
 // The model adapter for Claude, through AI SDK Core, which keeps models swappable: another provider is another
 // adapter of the same shape. One streamText call per step, with no tool execution (the client runs the tools), so
 // text and each finished tool call stream straight back. Two prompt-cache breakpoints: the end of the system prompt,
-// which covers the global segment (tools, then system), and the end of the messages, which covers the session so far.
+// which covers the prompt prefix (tools, then system), and the end of the messages, which covers the session so far.
 // Effort is low by default, for latency: a thinking model often sends tool calls with no text before them (seen live,
 // 2026-10-14), which costs time and leaves steps without a progress line. Evals settle the level (phase 6).
 import { createAnthropic } from '@ai-sdk/anthropic';
@@ -76,7 +76,7 @@ export function anthropicModel(options: AnthropicOptions): ModelAdapter {
   const provider = createAnthropic({ apiKey: options.apiKey, ...(options.fetch ? { fetch: options.fetch } : {}), ...(options.baseURL ? { baseURL: options.baseURL } : {}) });
   const model = provider(modelId);
   const cache: CacheOptions = { anthropic: { cacheControl: { type: 'ephemeral', ...(options.cacheTtl === '1h' ? { ttl: '1h' as const } : {}) } } };
-  // The global segment's tools are one array per site; convert each array once.
+  // The prompt prefix's tools are one array per site; convert each array once.
   const toolSets = new WeakMap<readonly ToolSpec[], ToolSet>();
   return {
     name: `anthropic:${modelId}`,

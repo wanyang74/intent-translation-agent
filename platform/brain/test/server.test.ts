@@ -9,7 +9,7 @@ import { webHost } from '../../core/hosts/web.ts';
 import { FakeClient } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeScript } from '../../testkit/src/fake-model.ts';
 import { Brain } from '../src/agent/brain.ts';
-import type { BrainLogEntry } from '../src/agent/shared.ts';
+import type { BrainLogEntry } from '../src/agent/types.ts';
 import { createBrainServer } from '../src/server/server.ts';
 import { HOME, NOW, shopResults, shopSite, validateMessage } from './example-brain.ts';
 

@@ -9,7 +9,7 @@ import type { ChatMessage } from '../model/model.ts';
 import { contextBlock, SKILL_TOOL } from '../prompt/prompt.ts';
 import { loadSkill, skillsForPage } from '../prompt/skills.ts';
 import type { SessionUsage } from '../system/quotas.ts';
-import { MESSAGES, once, type Accepted, type BrainServices } from './shared.ts';
+import { MESSAGES, once, type ServerResponse, type BrainServices } from './types.ts';
 import { Turn } from './turn.ts';
 
 export class AgentSession {
@@ -53,7 +53,7 @@ export class AgentSession {
    *   4. A skill for this kind of page loads before the first model call, as if the model had asked for it.
    *   5. The turn's steps stream back to the client.
    */
-  startTurn(turnMessage: ClientTurn, signal: AbortSignal | undefined): Accepted {
+  startTurn(turnMessage: ClientTurn, signal: AbortSignal | undefined): ServerResponse {
     this.touch();
     // 1. One turn at a time: the new message wins.
     this.turn?.supersede();
@@ -90,7 +90,7 @@ export class AgentSession {
    * POST /v1/results: results for the calls the turn is waiting on. They must be for the current turn; while that
    * turn is still running (not yet waiting), they're refused with 409. The turn checks the results themselves.
    */
-  takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): Accepted {
+  takeResults(resultsMessage: ClientResults, signal: AbortSignal | undefined): ServerResponse {
     const { turn } = this;
     if (!turn || turn.traceId !== resultsMessage.traceId) {
       return { ok: true, events: once({ type: 'error', traceId: resultsMessage.traceId, code: 'timeout', message: MESSAGES.expired }) };
@@ -101,9 +101,9 @@ export class AgentSession {
   }
 
   /** POST /v1/amend: queues the message on the turn it names, while that turn is still running or waiting. */
-  amend(amendMessage: ClientAmend): Accepted {
+  amend(amendMessage: ClientAmend): ServerResponse {
     const { turn } = this;
-    const reply = (status: 'queued' | 'too_late'): Accepted => ({ ok: true, events: once({ type: 'amended', traceId: amendMessage.traceId, status }) });
+    const reply = (status: 'queued' | 'too_late'): ServerResponse => ({ ok: true, events: once({ type: 'amended', traceId: amendMessage.traceId, status }) });
     if (!turn || turn.traceId !== amendMessage.traceId || turn.state === 'done') return reply('too_late');
     turn.amend(amendMessage.message);
     this.touch();
