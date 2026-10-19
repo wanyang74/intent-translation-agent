@@ -1,7 +1,7 @@
 // Usage caps: one shared call budget per task, session and day, and one rate limit, drawn on by direct, parallel and
 // script calls alike, so retries and parallel steps can't stack past a limit. The site pack sets them; the remote
 // config can only make them stricter. Time comes from the caller, so this runs anywhere and tests are exact.
-import type { RemoteConfig, SitePack } from '../../contract/generated/types.ts';
+import type { RemoteConfig, SitePack } from '../../../contract/generated/types.ts';
 
 export interface Budgets {
   perTask: number;
@@ -17,17 +17,17 @@ export interface Policy {
   writes: 'none' | 'with_approval';
 }
 
-const stricter = (a: number | null, b: number | null): number | null => (a === null ? b : b === null ? a : Math.min(a, b));
+const stricter = (first: number | null, second: number | null): number | null => (first === null ? second : second === null ? first : Math.min(first, second));
 
 /** The site pack's policy, tightened by the remote config if one is given for this site. */
 export function effectivePolicy(pack: SitePack, config?: RemoteConfig | null): { policy: Policy; warnings: string[] } {
-  const p = pack.policies;
+  const policies = pack.policies;
   const policy: Policy = {
-    budgets: { perTask: p.callBudget.perTask, perSession: p.callBudget.perSession, perDay: p.callBudget.perDay },
-    rateLimitPerSecond: p.rateLimitPerSecond,
+    budgets: { perTask: policies.callBudget.perTask, perSession: policies.callBudget.perSession, perDay: policies.callBudget.perDay },
+    rateLimitPerSecond: policies.rateLimitPerSecond,
     disabledTools: [],
     disabledSkills: [],
-    writes: p.writes,
+    writes: policies.writes,
   };
   const warnings: string[] = [];
   if (!config) return { policy, warnings };
@@ -36,11 +36,11 @@ export function effectivePolicy(pack: SitePack, config?: RemoteConfig | null): {
     return { policy, warnings };
   }
   policy.budgets = {
-    perTask: Math.min(p.callBudget.perTask, config.budgets.perTask),
-    perSession: stricter(p.callBudget.perSession, config.budgets.perSession),
-    perDay: stricter(p.callBudget.perDay, config.budgets.perDay),
+    perTask: Math.min(policies.callBudget.perTask, config.budgets.perTask),
+    perSession: stricter(policies.callBudget.perSession, config.budgets.perSession),
+    perDay: stricter(policies.callBudget.perDay, config.budgets.perDay),
   };
-  policy.rateLimitPerSecond = Math.min(p.rateLimitPerSecond, config.rateLimitPerSecond);
+  policy.rateLimitPerSecond = Math.min(policies.rateLimitPerSecond, config.rateLimitPerSecond);
   policy.disabledTools = [...config.disabledTools];
   policy.disabledSkills = [...config.disabledSkills];
   return { policy, warnings };
@@ -69,7 +69,7 @@ export class CallBudget {
   }
 
   /** Takes n calls from every budget at once, or none if any budget would go over. */
-  tryAcquire(n = 1): Acquired {
+  tryAcquire(count = 1): Acquired {
     const today = Math.floor(this.clock() / DAY);
     if (today !== this.dayKey) {
       this.dayKey = today;
@@ -81,11 +81,11 @@ export class CallBudget {
       ['day', this.budgets.perDay, this.day],
     ];
     for (const [scope, limit, used] of checks) {
-      if (limit !== null && used + n > limit) return { ok: false, scope, limit, used };
+      if (limit !== null && used + count > limit) return { ok: false, scope, limit, used };
     }
-    this.task += n;
-    this.session += n;
-    this.day += n;
+    this.task += count;
+    this.session += count;
+    this.day += count;
     return { ok: true };
   }
 

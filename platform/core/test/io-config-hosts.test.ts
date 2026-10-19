@@ -12,7 +12,7 @@ const config = (over: Record<string, unknown> = {}) => ({
   site: 'example-shop', version: '3', issuedAt: '2026-10-14T00:00:00Z', disabledTools: ['search_products'], disabledSkills: [],
   budgets: { perTask: 2, perSession: null, perDay: null }, rateLimitPerSecond: 5, signature: 'sig', ...over,
 });
-const signedBy = (good: string) => ({ verifyConfig: async (c: unknown) => (c as { signature: string }).signature === good });
+const signedBy = (good: string) => ({ verifyConfig: async (remoteConfig: unknown) => (remoteConfig as { signature: string }).signature === good });
 
 test('a remote config is ignored unless it is valid, for this site, and signed', async () => {
   const base = { pack: examplePack, validators: exampleValidators() };
@@ -25,12 +25,12 @@ test('a remote config is ignored unless it is valid, for this site, and signed',
   ];
   for (const [raw, hostExtra, warning] of cases) {
     const { host } = exampleHost(shopNetwork, hostExtra);
-    const r = await acceptConfig({ ...base, host, config: raw });
+    const accepted = await acceptConfig({ ...base, host, config: raw });
     if (warning) {
-      assert.equal(r.config, null);
-      assert.match(r.warnings[0]!, warning);
+      assert.equal(accepted.config, null);
+      assert.match(accepted.warnings[0]!, warning);
     } else {
-      assert.deepEqual([r.config?.version, r.warnings], ['3', []]);
+      assert.deepEqual([accepted.config?.version, accepted.warnings], ['3', []]);
     }
   }
 });
@@ -70,9 +70,9 @@ function chunked(text: string, sizes: number[]): ReadableStream<Uint8Array> {
   return new ReadableStream({
     pull(controller) {
       if (at >= bytes.length) return controller.close();
-      const n = sizes[0] ? sizes.shift()! : bytes.length;
-      controller.enqueue(bytes.slice(at, at + n));
-      at += n;
+      const size = sizes[0] ? sizes.shift()! : bytes.length;
+      controller.enqueue(bytes.slice(at, at + size));
+      at += size;
     },
   });
 }
@@ -82,7 +82,7 @@ test("the brain's events are read one per line, however the network splits them"
   const text = lines.join('\n');
   for (const sizes of [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 50, 3], [7, 33, 2], [1000]]) {
     const events = [];
-    for await (const e of ndjsonEvents(chunked(text, [...sizes]))) events.push(e);
+    for await (const event of ndjsonEvents(chunked(text, [...sizes]))) events.push(event);
     assert.deepEqual(events, [
       { type: 'progress', traceId: 'trace_1', text: 'Señor ✓' },
       { type: 'answer', traceId: 'trace_1', text: 'done' },
@@ -100,7 +100,7 @@ test('the web host posts turns and results to the brain, and fails loudly on a b
   const host = webHost({ brainUrl: 'https://agent.example.com/', fetch: fakeFetch });
   const events = [];
   const turn = { type: 'turn', site: 'example-shop', sessionId: 'sess_12345678', traceId: 'trace_1', message: 'hi', pageContext: { url: 'https://www.example.com/', pageType: 'home' } } as const;
-  for await (const e of host.brain!(turn)) events.push(e);
+  for await (const event of host.brain!(turn)) events.push(event);
   assert.deepEqual(events, [{ type: 'answer', traceId: 'trace_1', text: 'hi' }]);
   await assert.rejects(async () => {
     for await (const _ of host.brain!({ type: 'results', sessionId: 'sess_12345678', traceId: 'trace_1', results: [{ id: 'call_1', ok: true, output: {} }] })) { /* drain */ }

@@ -12,11 +12,11 @@ const INVISIBLE = /[\u0000-\u0008\u000B-\u001F\u007F-\u009F\u200B\u200E\u200F\u2
 const body = (fenced: string) => fenced.slice(fenced.indexOf('>') + 1, -'</untrusted>'.length);
 
 test('text cannot close the fence, open a new one, or pass for a tool call', () => {
-  for (const s of HOSTILE.slice(0, 4)) {
-    const f = fence(s, 'review');
-    assert.equal(f.indexOf('</untrusted>'), f.length - '</untrusted>'.length, s);
-    assert.equal(f.split('<untrusted').length, 2, s);
-    assert.doesNotMatch(body(f), /<\s*[A-Za-z/!?]/, s);
+  for (const hostile of HOSTILE.slice(0, 4)) {
+    const fenced = fence(hostile, 'review');
+    assert.equal(fenced.indexOf('</untrusted>'), fenced.length - '</untrusted>'.length, hostile);
+    assert.equal(fenced.split('<untrusted').length, 2, hostile);
+    assert.doesNotMatch(body(fenced), /<\s*[A-Za-z/!?]/, hostile);
   }
   assert.equal(cleanText('<tool_use>x</tool_use>'), '\u2039tool_use>x\u2039/tool_use>');
 });
@@ -54,20 +54,20 @@ test('the source label is checked', () => {
 test('properties hold for 5,000 random risky strings', () => {
   const next = random(2026);
   for (let i = 0; i < 5000; i++) {
-    const s = riskyString(next, 24);
+    const text = riskyString(next, 24);
     const max = 1 + Math.floor(next() * 60);
-    const f = fence(s, 'review', max);
-    const inner = body(f);
-    const where = JSON.stringify(s);
-    assert.match(f, FENCED, where);
-    assert.equal(f.indexOf('</untrusted>'), f.length - '</untrusted>'.length, where);
+    const fenced = fence(text, 'review', max);
+    const inner = body(fenced);
+    const where = JSON.stringify(text);
+    assert.match(fenced, FENCED, where);
+    assert.equal(fenced.indexOf('</untrusted>'), fenced.length - '</untrusted>'.length, where);
     assert.doesNotMatch(inner, INVISIBLE, where);
     assert.doesNotMatch(inner, /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/, `no unpaired surrogates: ${where}`);
     assert.doesNotMatch(inner, /[<\uFF1C][ \t\n]*[A-Za-z/!?]/, where);
     assert.doesNotMatch(inner, /\n\n\n/, where);
     assert.doesNotMatch(inner, /^[ \t]*(system|assistant|user|human|developer|tool)[ \t]*:/im, where);
     assert.ok(Array.from(inner).length <= max + 1, where);
-    const once = cleanText(s, 100_000);
+    const once = cleanText(text, 100_000);
     assert.equal(cleanText(once, 100_000), once, `cleaning twice changes nothing: ${where}`);
   }
 });

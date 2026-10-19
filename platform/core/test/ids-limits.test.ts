@@ -36,13 +36,13 @@ test('IDs expire at their time, a while after they were shown, or at once if the
 
 test('learnFrom reads each ID with the expiry beside it, and skips IDs of the wrong shape', () => {
   const ids = new IdSet(examplePack.entities);
-  const n = ids.learnFrom({
+  const learned = ids.learnFrom({
     products: [{ id: 1 }, { id: 'x' }],
     offers: [{ id: 'of_cd34', expiresAt: '2026-10-14T13:00:00Z' }, { id: 'of_ef56' }],
     coupons: ['ABCDE'],
     token: 'tok',
   }, examplePack.tools.search_products!.ids!.output, NOW);
-  assert.equal(n, 5);
+  assert.equal(learned, 5);
   assert.equal(ids.status('offer', 'of_cd34', NOW), 'known');
   assert.equal(ids.status('offer', 'of_ef56', NOW), 'expired', 'an offer whose expiry is missing fails safe');
   assert.equal(ids.status('coupon', 'ABCDE', NOW + 11 * MIN), 'expired');
@@ -70,8 +70,8 @@ test('random sequences of learning and checking agree with a simple model', () =
       assert.equal(ok, typeof id === 'string' && id.startsWith('of_'));
       if (ok) model.set(String(id), expiresAt);
     } else {
-      const m = model.get(String(id));
-      const expected = m === undefined ? 'unknown' : m !== null && m <= at ? 'expired' : 'known';
+      const recorded = model.get(String(id));
+      const expected = recorded === undefined ? 'unknown' : recorded !== null && recorded <= at ? 'expired' : 'known';
       assert.equal(ids.status('offer', id, at), expected, `step ${i}`);
     }
   }
@@ -94,18 +94,18 @@ test('the remote config can only make the site pack stricter, and only for its o
 });
 
 test('the call budget stops at the first limit reached: task, then day, then session', () => {
-  let t = Date.UTC(2026, 9, 14, 23, 59, 58);
-  const budget = new CallBudget({ perTask: 3, perSession: 10, perDay: 6 }, () => t, { day: 2, dayKey: Math.floor(t / 86_400_000) });
+  let time = Date.UTC(2026, 9, 14, 23, 59, 58);
+  const budget = new CallBudget({ perTask: 3, perSession: 10, perDay: 6 }, () => time, { day: 2, dayKey: Math.floor(time / 86_400_000) });
   assert.deepEqual([1, 2, 3, 4].map(() => budget.tryAcquire().ok), [true, true, true, false]);
   assert.deepEqual(budget.tryAcquire(), { ok: false, scope: 'task', limit: 3, used: 3 });
   budget.startTask();
   assert.deepEqual(budget.tryAcquire(), { ok: true });
   assert.deepEqual(budget.tryAcquire(), { ok: false, scope: 'day', limit: 6, used: 6 }, 'two calls were used earlier today');
-  t += 5000;
+  time += 5000;
   assert.deepEqual(budget.tryAcquire(), { ok: true }, 'a new day resets the day budget');
-  assert.deepEqual(budget.used(), { task: 2, session: 5, day: 1, dayKey: Math.floor(t / 86_400_000) });
+  assert.deepEqual(budget.used(), { task: 2, session: 5, day: 1, dayKey: Math.floor(time / 86_400_000) });
 
-  const session = new CallBudget({ perTask: 10, perSession: 2, perDay: null }, () => t);
+  const session = new CallBudget({ perTask: 10, perSession: 2, perDay: null }, () => time);
   assert.deepEqual([1, 2, 3].map(() => session.tryAcquire()), [{ ok: true }, { ok: true }, { ok: false, scope: 'session', limit: 2, used: 2 }]);
   session.startTask();
   assert.equal(session.tryAcquire().ok, false, 'a new task does not reset the session budget');
@@ -127,7 +127,7 @@ test('concurrent callers never take more than the budget allows', async () => {
     let granted = 0;
     const worker = async () => {
       for (;;) {
-        for (let k = Math.floor(next() * 3); k > 0; k--) await Promise.resolve();
+        for (let spins = Math.floor(next() * 3); spins > 0; spins--) await Promise.resolve();
         if (!budget.tryAcquire().ok) return;
         granted++;
       }
@@ -142,6 +142,6 @@ test('the rate limiter spaces parallel calls evenly and lets a call start at onc
   assert.deepEqual([0, 0, 0, 100, 2000, 5000].map((now) => limiter.reserve(now)), [0, 500, 1000, 1500, 2000, 5000]);
   const thirds = new RateLimiter(3);
   const starts = [0, 0, 0, 0].map(() => thirds.reserve(0));
-  starts.slice(1).forEach((s, i) => assert.ok(Math.abs(s - starts[i]! - 1000 / 3) < 1e-9));
+  starts.slice(1).forEach((start, i) => assert.ok(Math.abs(start - starts[i]! - 1000 / 3) < 1e-9));
   for (const bad of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) assert.throws(() => new RateLimiter(bad), RangeError);
 });

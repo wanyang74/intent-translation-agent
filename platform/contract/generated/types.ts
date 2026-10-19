@@ -140,12 +140,12 @@ export type FieldKey1 = string;
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "ClientMessage".
  */
-export type ClientMessage = ClientTurn | ClientResults;
+export type ClientMessage = ClientTurn | ClientResults | ClientAmend;
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "ServerEvent".
  */
-export type ServerEvent = ToolCallEvent | ProgressEvent | AwaitResultsEvent | AnswerEvent | ErrorEvent;
+export type ServerEvent = ToolCallEvent | ProgressEvent | AwaitResultsEvent | AnswerEvent | ErrorEvent | AmendedEvent;
 /**
  * Messages between the client (core.js) and the agentic brain. Client messages are POSTed; server events stream back as newline-delimited JSON. Every message carries a trace ID.
  *
@@ -279,6 +279,18 @@ export interface ClientResults {
    * @minItems 1
    */
   results: [ToolResult, ...ToolResult[]];
+}
+/**
+ * A message the user sent while the turn is still running. The brain adds it to that turn, after the next tool results, instead of starting over.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "ClientAmend".
+ */
+export interface ClientAmend {
+  type: 'amend';
+  sessionId: SessionId;
+  traceId: TraceId;
+  message: string;
 }
 /**
  * present_items: items as cards, in order. Shows items as cards in the order you give. Pass IDs exactly as this conversation's tool results gave them; every field on a card is filled in from those results. The layout is cards unless you choose list or carousel.
@@ -493,6 +505,12 @@ export interface AnswerEvent {
   text: string;
   present?: PresentationCall[];
   budgetReached?: boolean;
+  /**
+   * Messages the user sent during this turn that arrived after its last model call. The client sends them as the next turn.
+   *
+   * @minItems 1
+   */
+  followUps?: [string, ...string[]];
 }
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -503,6 +521,17 @@ export interface ErrorEvent {
   traceId: TraceId;
   code: 'timeout' | 'budget_reached' | 'unauthorized' | 'internal';
   message: string;
+}
+/**
+ * The reply to an amend. queued: the turn will see the message at its next step. too_late: the turn has ended; send the message as a new turn.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "AmendedEvent".
+ */
+export interface AmendedEvent {
+  type: 'amended';
+  traceId: TraceId;
+  status: 'queued' | 'too_late';
 }
 /**
  * load_skill: guidance for a topic. Loads the guidance for one of this site's skills, listed in your instructions under Skills. Load a skill as soon as its topic comes up, before you answer about it. A skill stays loaded for the rest of the conversation.

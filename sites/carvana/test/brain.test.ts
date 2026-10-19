@@ -3,20 +3,20 @@
 // client.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validatorFor } from '../../../platform/core/src/validate.ts';
-import { Brain } from '../../../platform/brain/src/loop.ts';
-import { globalSegment } from '../../../platform/brain/src/prompt.ts';
-import { loadSite } from '../../../platform/brain/src/site.ts';
+import { validatorFor } from '../../../platform/core/src/shared/validate.ts';
+import { Brain } from '../../../platform/brain/src/agent/loop.ts';
+import { globalSegment } from '../../../platform/brain/src/prompt/prompt.ts';
+import { loadSite } from '../../../platform/brain/src/prompt/site.ts';
 import { loadConversations } from '../../../platform/testkit/src/conversations.ts';
 import { FakeClient, inProcess, replayConversation } from '../../../platform/testkit/src/fake-client.ts';
 import { FakeModel, fakeModelFor } from '../../../platform/testkit/src/fake-model.ts';
 
-const site = await loadSite('carvana');
-const validate = validatorFor(site.validators.platform, 'messages.json');
+const bundle = await loadSite('carvana');
+const validate = validatorFor(bundle.validators.platform, 'messages.json');
 const HOME = { url: 'https://www.carvana.com/', pageType: 'other', location: { postalCode: '94402' }, locale: 'en-US' };
 
 test("the model is told Carvana's rules: hidden payment figures, the zip code, the estimated-total notice, and the four skills", () => {
-  const { system, tools } = globalSegment(site);
+  const { system, tools } = globalSegment(bundle);
   for (const line of [
     "You're the assistant inside Carvana's website and apps.",
     '- Carvana sells used cars online.',
@@ -27,17 +27,17 @@ test("the model is told Carvana's rules: hidden payment figures, the zip code, t
     '- Each request can make at most 60 calls to the site, 1 per second.',
   ]) assert.ok(system.includes(line), `missing: ${line}`);
   assert.ok(!system.includes('<!--'), 'authoring notes stay out');
-  assert.deepEqual(tools.map((t) => t.name).slice(0, 7), ['search_vehicles', 'get_delivery_dates', 'suggest_refinements', 'get_vehicle_quote', 'compare_vehicles', 'get_owner_reviews', 'vehicle_details']);
-  const loadSkill = tools.find((t) => t.name === 'load_skill')!;
+  assert.deepEqual(tools.map((tool) => tool.name).slice(0, 7), ['search_vehicles', 'get_delivery_dates', 'suggest_refinements', 'get_vehicle_quote', 'compare_vehicles', 'get_owner_reviews', 'vehicle_details']);
+  const loadSkill = tools.find((tool) => tool.name === 'load_skill')!;
   assert.deepEqual((loadSkill.inputSchema as { properties: { name: { enum: string[] } } }).properties.name.enum, ['vehicle_research', 'batch_search', 'delivery_and_pickup', 'financing_questions']);
-  assert.match(tools.find((t) => t.name === 'search_vehicles')!.description, /Show its results with present_items\.$/);
+  assert.match(tools.find((tool) => tool.name === 'search_vehicles')!.description, /Show its results with present_items\.$/);
 });
 
 test("on a car's page, vehicle research loads before the first model call, and the conversation replays exactly", async () => {
-  const c = loadConversations('carvana').find((x) => x.id === 'car-on-screen')!;
-  const model = fakeModelFor(c);
-  const brain = new Brain({ sites: [site], model, now: () => Date.parse(c.now!) });
-  const { differences } = await replayConversation(inProcess(brain), c);
+  const conversation = loadConversations('carvana').find((candidate) => candidate.id === 'car-on-screen')!;
+  const model = fakeModelFor(conversation);
+  const brain = new Brain({ sites: [bundle], model, now: () => Date.parse(conversation.now!) });
+  const { differences } = await replayConversation(inProcess(brain), conversation);
   assert.deepEqual(differences, []);
   const [, preload, skill] = model.requests[0]!.messages;
   assert.deepEqual(preload, { role: 'assistant', content: [{ type: 'tool-call', id: 'preload_vehicle_research', name: 'load_skill', input: { name: 'vehicle_research' } }] });
@@ -56,12 +56,12 @@ test("the brain refuses what Carvana's schemas and the session's IDs don't allow
     { text: 'Which car?', calls: [{ name: 'present_items', input: { entity: 'vehicle', ids: ['4812031'] } }] },
     { text: 'Which car do you mean?' },
   ]);
-  const brain = new Brain({ sites: [site], model, now: () => Date.parse('2026-10-08T19:15:00Z') });
+  const brain = new Brain({ sites: [bundle], model, now: () => Date.parse('2026-10-08T19:15:00Z') });
   const client = new FakeClient(inProcess(brain), { site: 'carvana', validate });
-  const t = await client.turn('quote car 4812031', HOME);
-  assert.deepEqual(t.calls, []);
-  const reasons = (i: number) => (model.requests[i]!.messages.at(-1)!.content as { output: { reason: string } }[]).map((p) => p.output.reason);
+  const turn = await client.turn('quote car 4812031', HOME);
+  assert.deepEqual(turn.calls, []);
+  const reasons = (i: number) => (model.requests[i]!.messages.at(-1)!.content as { output: { reason: string } }[]).map((part) => part.output.reason);
   assert.deepEqual(reasons(1), ['bad_arguments', 'unknown_id', 'bad_arguments'], 'a 4-digit zip, a car never returned, more than 24 cars');
   assert.deepEqual(reasons(2), ['bad_id'], 'vehicle IDs are numbers');
-  assert.equal(t.answer?.text, 'Which car do you mean?');
+  assert.equal(turn.answer?.text, 'Which car do you mean?');
 });

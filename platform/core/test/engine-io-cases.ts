@@ -18,19 +18,19 @@ export interface IoCase {
 
 export async function runIoCases(cases: IoCase[], platformValidators: Record<string, unknown>): Promise<unknown[]> {
   const out: unknown[] = [];
-  for (const c of cases) {
-    const brain = new FakeBrain(c.conversation);
-    const host = recordedHost(c.pack, c.recorded, Date.parse(c.conversation.now!), c.conversation.pageData);
-    host.brain = brain.brain;
-    const { session } = await startSession({ pack: c.pack, site: c.code, validators: { platform: platformValidators, site: c.siteValidators }, host });
+  for (const ioCase of cases) {
+    const fakeBrain = new FakeBrain(ioCase.conversation);
+    const host = recordedHost(ioCase.pack, ioCase.recorded, Date.parse(ioCase.conversation.now!), ioCase.conversation.pageData);
+    host.brain = fakeBrain.brain;
+    const { session } = await startSession({ pack: ioCase.pack, site: ioCase.code, validators: { platform: platformValidators, site: ioCase.siteValidators }, host });
     const surface = new FakeSurface();
     const outcomes: unknown[] = [];
-    for (const m of c.conversation.messages) {
-      if (m.type !== 'turn') continue;
-      session.setPage(m.pageContext);
-      outcomes.push(await runTurn(session, m.message, surface));
+    for (const entry of ioCase.conversation.messages) {
+      if (entry.type !== 'turn') continue;
+      session.setPage(entry.pageContext);
+      outcomes.push(await runTurn(session, entry.message, surface));
     }
-    out.push({ conversation: c.conversation.id, outcomes, differences: brain.differences, finished: brain.finished, events: surface.events, calls: host.calls });
+    out.push({ conversation: ioCase.conversation.id, outcomes, differences: fakeBrain.differences, finished: fakeBrain.finished, events: surface.events, calls: host.calls });
   }
   return out;
 }

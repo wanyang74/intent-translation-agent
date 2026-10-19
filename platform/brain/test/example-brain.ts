@@ -4,15 +4,15 @@
 import { readFileSync } from 'node:fs';
 import type { PageContext, RemoteConfig, SitePack } from '../../contract/generated/types.ts';
 import * as platformValidators from '../../contract/generated/validators.js';
-import { validatorFor } from '../../core/src/validate.ts';
+import { validatorFor } from '../../core/src/shared/validate.ts';
 import { examplePack } from '../../core/test/example-pack.ts';
 import { exampleValidators } from '../../core/test/example-site.ts';
 import { FakeClient, inProcess, type ResultBody, type ResultFor } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeScript } from '../../testkit/src/fake-model.ts';
-import { Brain, type BrainLimits, type BrainLogEntry } from '../src/loop.ts';
-import type { ChatMessage, ToolSpec } from '../src/model.ts';
-import type { QuotaLimits } from '../src/quotas.ts';
-import type { SiteBrain } from '../src/site.ts';
+import { Brain, type BrainLimits, type BrainLogEntry } from '../src/agent/loop.ts';
+import type { ChatMessage, ToolSpec } from '../src/model/model.ts';
+import type { QuotaLimits } from '../src/system/quotas.ts';
+import type { SiteBundle } from '../src/prompt/site.ts';
 
 export { inProcess } from '../../testkit/src/fake-client.ts';
 export { historyProblems } from '../../testkit/src/fake-model.ts';
@@ -31,12 +31,12 @@ export const SHOP_TOOLS: ToolSpec[] = [
 ];
 
 /** The shop's validators: inputs and the search output are checked; everything else accepts any object. */
-const RULES: Record<string, (d: any) => boolean> = {
-  'tools/search_products.input.json': (d) => typeof d.query === 'string' && Object.keys(d).every((k) => ['query', 'colors', 'page'].includes(k)),
-  'tools/get_offer.input.json': (d) => typeof d.offerId === 'string',
-  'tools/compare_products.input.json': (d) => Array.isArray(d.productIds),
-  'tools/read_product_page.input.json': (d) => Number.isInteger(d.productId),
-  'tools/search_products.output.json': (d) => Array.isArray(d.products),
+const RULES: Record<string, (data: any) => boolean> = {
+  'tools/search_products.input.json': (data) => typeof data.query === 'string' && Object.keys(data).every((key) => ['query', 'colors', 'page'].includes(key)),
+  'tools/get_offer.input.json': (data) => typeof data.offerId === 'string',
+  'tools/compare_products.input.json': (data) => Array.isArray(data.productIds),
+  'tools/read_product_page.input.json': (data) => Number.isInteger(data.productId),
+  'tools/search_products.output.json': (data) => Array.isArray(data.products),
 };
 
 export const SHOP_SKILLS: Record<string, string> = {
@@ -52,7 +52,7 @@ export const shopPack: SitePack = {
   },
 };
 
-export function shopSite(over: Partial<SiteBrain> = {}): SiteBrain {
+export function shopSite(over: Partial<SiteBundle> = {}): SiteBundle {
   return {
     pack: shopPack,
     siteTools: SHOP_TOOLS,
@@ -88,20 +88,20 @@ export interface SetupOptions {
   configs?: RemoteConfig[];
   now?: () => number;
   results?: ResultFor;
-  site?: SiteBrain;
+  bundle?: SiteBundle;
   sessionId?: string;
 }
 
 export const NOW = Date.UTC(2026, 9, 14, 12);
 
-export function setup(script: FakeScript[], o: SetupOptions = {}) {
+export function setup(script: FakeScript[], options: SetupOptions = {}) {
   const model = new FakeModel(script);
   const log: BrainLogEntry[] = [];
   const brain = new Brain({
-    sites: [o.site ?? shopSite()], model, limits: o.limits, quotas: o.quotas, configs: o.configs, now: o.now ?? (() => NOW), log: (e) => log.push(e),
+    sites: [options.bundle ?? shopSite()], model, limits: options.limits, quotas: options.quotas, configs: options.configs, now: options.now ?? (() => NOW), log: (entry) => log.push(entry),
   });
   const client = new FakeClient(inProcess(brain), {
-    site: 'example-shop', validate: validateMessage, results: o.results ?? shopResults, ...(o.sessionId ? { sessionId: o.sessionId } : {}),
+    site: 'example-shop', validate: validateMessage, results: options.results ?? shopResults, ...(options.sessionId ? { sessionId: options.sessionId } : {}),
   });
   return { brain, model, client, log, send: inProcess(brain) };
 }

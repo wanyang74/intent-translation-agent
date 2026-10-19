@@ -1,8 +1,8 @@
 // The IDs this session has seen, typed by the entity kinds in the site pack. Tool calls and presentation calls may
 // only use IDs from here, of the right kind, that haven't expired. IDs come from tool results (the paths each tool
 // declares) and from the item on screen. Scripts get a read-only view.
-import type { SitePack } from '../../contract/generated/types.ts';
-import { valuesAt } from '../../contract/src/paths.ts';
+import type { SitePack } from '../../../contract/generated/types.ts';
+import { valuesAt } from '../../../contract/src/paths.ts';
 
 type Entity = NonNullable<SitePack['entities'][string]>;
 export type IdValue = string | number;
@@ -32,8 +32,8 @@ const key = (kind: string, id: IdValue) => `${kind}\u0000${id}`;
 /** Milliseconds since the epoch; a date that can't be read counts as already expired, so a format change fails safe. */
 function toTime(value: string | number): number {
   if (typeof value === 'number') return value;
-  const t = Date.parse(value);
-  return Number.isNaN(t) ? -Infinity : t;
+  const time = Date.parse(value);
+  return Number.isNaN(time) ? -Infinity : time;
 }
 
 export class IdSet {
@@ -57,17 +57,17 @@ export class IdSet {
 
   /** Records every ID found at the given paths; an expiresAt path is read in step with its ID path. Returns how many. */
   learnFrom(value: unknown, paths: readonly IdPathSpec[] | undefined, now: number): number {
-    let n = 0;
-    for (const p of paths ?? []) {
-      const ids = valuesAt(value, p.path);
-      const expiries = p.expiresAt ? valuesAt(value, p.expiresAt) : [];
+    let count = 0;
+    for (const idPath of paths ?? []) {
+      const ids = valuesAt(value, idPath.path);
+      const expiries = idPath.expiresAt ? valuesAt(value, idPath.expiresAt) : [];
       ids.forEach((id, i) => {
-        const e = expiries[i];
-        const expiresAt = p.expiresAt ? (typeof e === 'string' || typeof e === 'number' ? e : 'missing') : undefined;
-        if (this.learn(p.kind, id, expiresAt === undefined ? { now } : { expiresAt, now })) n++;
+        const expiry = expiries[i];
+        const expiresAt = idPath.expiresAt ? (typeof expiry === 'string' || typeof expiry === 'number' ? expiry : 'missing') : undefined;
+        if (this.learn(idPath.kind, id, expiresAt === undefined ? { now } : { expiresAt, now })) count++;
       });
     }
-    return n;
+    return count;
   }
 
   status(kind: string, id: unknown, now: number): IdStatus {
@@ -85,7 +85,7 @@ export class IdSet {
   view(): IdView {
     return {
       has: (kind, id, now) => this.status(kind, id, now) === 'known',
-      list: (kind) => [...this.known.values()].filter((e) => e.kind === kind).map((e) => e.id),
+      list: (kind) => [...this.known.values()].filter((entry) => entry.kind === kind).map((entry) => entry.id),
     };
   }
 }

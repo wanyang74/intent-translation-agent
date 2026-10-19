@@ -1,8 +1,8 @@
 // What a site pack's code provides: one implementation per tool the site pack declares, plus a few optional helpers.
 // Site code reaches the site only through the ToolContext the platform hands it, so every request still goes through
 // the boundary checks, the shared budget, the rate limit, the cache and the response checks (decision D5).
-import type { PageContext, ToolError } from '../../contract/generated/types.ts';
-import type { IdView } from './ids.ts';
+import type { PageContext, ToolError } from '../../../contract/generated/types.ts';
+import type { IdView } from '../boundary/ids.ts';
 
 export interface EndpointRequest {
   /** POST: the JSON body. Tracking fields the site pack lists are added if missing. */

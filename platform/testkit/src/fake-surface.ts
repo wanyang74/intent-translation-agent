@@ -1,7 +1,7 @@
 // FakeSurface: a headless surface that records what the user would see: progress lines, early results, answers and
 // errors. It stands in for the overlay and the native sheets, so Intake and Respond can be tested with no UI.
-import type { Surface } from '../../core/src/link.ts';
-import type { UiComponent } from '../../core/src/present.ts';
+import type { Surface } from '../../core/src/link/link.ts';
+import type { UiComponent } from '../../core/src/present/present.ts';
 
 export type SurfaceEvent =
   | { type: 'progress'; text: string }
@@ -29,10 +29,10 @@ export class FakeSurface implements Surface {
   }
 
   get answers() {
-    return this.events.filter((e): e is Extract<SurfaceEvent, { type: 'answer' }> => e.type === 'answer');
+    return this.events.filter((event): event is Extract<SurfaceEvent, { type: 'answer' }> => event.type === 'answer');
   }
 
   get errors() {
-    return this.events.filter((e): e is Extract<SurfaceEvent, { type: 'error' }> => e.type === 'error');
+    return this.events.filter((event): event is Extract<SurfaceEvent, { type: 'error' }> => event.type === 'error');
   }
 }

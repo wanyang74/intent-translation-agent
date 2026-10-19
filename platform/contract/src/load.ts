@@ -22,8 +22,8 @@ export interface SchemaFile {
 /** Every schema under dir; idPrefix is "schemas/" for the platform and "sites/<id>/schemas/" for a site. */
 export function listSchemas(dir: string, idPrefix: string): SchemaFile[] {
   if (!existsSync(dir)) return [];
-  const walk = (d: string): string[] => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(path.join(d, e.name)) : e.name.endsWith('.json') ? [path.join(d, e.name)] : []);
+  const walk = (folder: string): string[] => readdirSync(folder, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory() ? walk(path.join(folder, entry.name)) : entry.name.endsWith('.json') ? [path.join(folder, entry.name)] : []);
   return walk(dir).sort().map((file) => {
     const rel = path.relative(dir, file).split(path.sep).join('/');
     return { file, rel, id: BASE + idPrefix + rel, doc: JSON.parse(readFileSync(file, 'utf8')) };
@@ -54,12 +54,12 @@ export interface Contract {
 export function loadContract(options: { sites?: string[] } = {}): Contract {
   const ajv = new Ajv2020({ ...AJV_OPTIONS, allErrors: true });
   const platform = listSchemas(platformSchemaDir, 'schemas/');
-  for (const s of platform) ajv.addSchema(s.doc);
+  for (const schema of platform) ajv.addSchema(schema.doc);
 
   const get = (id: string) => {
-    const v = ajv.getSchema(id);
-    if (!v) throw new Error(`No contract schema ${id}`);
-    return v;
+    const validate = ajv.getSchema(id);
+    if (!validate) throw new Error(`No contract schema ${id}`);
+    return validate;
   };
   const validatePack = get(BASE + 'schemas/site-pack.json');
 
@@ -68,7 +68,7 @@ export function loadContract(options: { sites?: string[] } = {}): Contract {
     const site = readSite(id);
     if (!validatePack(site.pack)) throw new Error(`sites/${id}/site.yaml doesn't match the site-pack format: ${describeErrors(validatePack.errors)}`);
     const schemas = listSchemas(site.schemasDir, `sites/${id}/schemas/`);
-    for (const s of schemas) ajv.addSchema(s.doc);
+    for (const schema of schemas) ajv.addSchema(schema.doc);
     sites[id] = { ...site, schemas };
   }
 
@@ -83,5 +83,5 @@ export function loadContract(options: { sites?: string[] } = {}): Contract {
 
 /** Short, readable summary of Ajv errors. */
 export function describeErrors(errors: ValidateFunction['errors']): string {
-  return (errors ?? []).slice(0, 3).map((e) => `${e.instancePath || '/'} ${e.message ?? ''}`).join('; ');
+  return (errors ?? []).slice(0, 3).map((problem) => `${problem.instancePath || '/'} ${problem.message ?? ''}`).join('; ');
 }

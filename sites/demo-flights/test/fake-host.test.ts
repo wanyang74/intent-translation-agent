@@ -6,13 +6,13 @@ import { FakeHost } from '../../../platform/testkit/src/fake-host.ts';
 import { loadFixtures, toHostRequest } from '../../../platform/testkit/src/fixtures.ts';
 
 const fixtures = loadFixtures('demo-flights');
-const byId = (id: string) => structuredClone(fixtures.find((x) => x.id === id)!);
-const json = (s: string) => JSON.parse(s);
+const byId = (id: string) => structuredClone(fixtures.find((fixture) => fixture.id === id)!);
+const json = (text: string) => JSON.parse(text);
 
 test('a search returns the offers for that route, date, travelers and cabin', async () => {
   const host = new FakeHost('demo-flights', fixtures);
   const res = await host.request(toHostRequest(byId('offers-01')));
-  assert.deepEqual(json(res.body).offers.map((o: { offerId: string }) => o.offerId), ['off_7GQ2', 'off_9KD1', 'off_3MZ8']);
+  assert.deepEqual(json(res.body).offers.map((offer: { offerId: string }) => offer.offerId), ['off_7GQ2', 'off_9KD1', 'off_3MZ8']);
 
   const none = await host.request(toHostRequest(byId('offers-no-results')));
   assert.deepEqual(json(none.body).offers, []);
@@ -20,8 +20,8 @@ test('a search returns the offers for that route, date, travelers and cabin', as
 
 test('a lowercase airport code breaks the contract and gets a 400 naming the field', async () => {
   const host = new FakeHost('demo-flights', fixtures);
-  const f = byId('offers-01');
-  const res = await host.request(toHostRequest(f, { ...(f.request.body as object), origin: 'sfo' }));
+  const fixture = byId('offers-01');
+  const res = await host.request(toHostRequest(fixture, { ...(fixture.request.body as object), origin: 'sfo' }));
   assert.equal(res.status, 400);
   assert.match(json(res.body).details, /origin/);
 });

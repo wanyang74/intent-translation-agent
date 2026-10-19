@@ -3,7 +3,7 @@
 // unknown IDs), a failure, a hang, or a pause at a chosen point. It keeps every request, so tests can check exactly
 // what the brain sent, and like a real model API it refuses a request whose history is broken. fakeModelFor builds
 // one from an example conversation.
-import type { ChatMessage, FinishReason, ModelAdapter, ModelEvent, ModelRequest, Usage } from '../../brain/src/model.ts';
+import type { ChatMessage, FinishReason, ModelAdapter, ModelEvent, ModelRequest, Usage } from '../../brain/src/model/model.ts';
 import type { Conversation } from './conversations.ts';
 
 export interface FakeCall {
@@ -41,23 +41,23 @@ export function historyProblems(messages: readonly ChatMessage[]): string[] {
   const problems: string[] = [];
   const ids = new Set<string>();
   if (messages[0]?.role !== 'user') problems.push(`starts with ${messages[0]?.role ?? 'nothing'}`);
-  messages.forEach((m, i) => {
+  messages.forEach((message, i) => {
     const prev = messages[i - 1];
-    if (!m.content.length) problems.push(`message ${i}: empty`);
-    if (m.role === 'assistant') {
+    if (!message.content.length) problems.push(`message ${i}: empty`);
+    if (message.role === 'assistant') {
       if (prev?.role === 'assistant') problems.push(`message ${i}: two assistant messages in a row`);
-      const calls = m.content.filter((p) => p.type === 'tool-call').map((p) => p.id);
+      const calls = message.content.filter((part) => part.type === 'tool-call').map((part) => part.id);
       for (const id of calls) {
         if (ids.has(id)) problems.push(`message ${i}: call ID ${id} used twice`);
         ids.add(id);
       }
       if (calls.length) {
         const next = messages[i + 1];
-        const answered = next?.role === 'tool' ? next.content.map((p) => p.id) : [];
+        const answered = next?.role === 'tool' ? next.content.map((result) => result.id) : [];
         if ([...answered].sort().join() !== [...calls].sort().join()) problems.push(`message ${i}: calls [${calls}] answered by [${answered}]`);
       }
     }
-    if (m.role === 'tool' && (prev?.role !== 'assistant' || !prev.content.some((p) => p.type === 'tool-call'))) {
+    if (message.role === 'tool' && (prev?.role !== 'assistant' || !prev.content.some((part) => part.type === 'tool-call'))) {
       problems.push(`message ${i}: tool results with no tool calls before them`);
     }
   });
@@ -86,7 +86,7 @@ export class FakeModel implements ModelAdapter {
     this.requests.push(request);
     const broken = historyProblems(request.messages);
     if (broken.length) {
-      this.problems.push(...broken.map((p) => `request ${index + 1}: ${p}`));
+      this.problems.push(...broken.map((problem) => `request ${index + 1}: ${problem}`));
       throw new Error(`the model API would refuse this request: ${broken.join('; ')}`);
     }
     const entry = this.script[index];
@@ -119,25 +119,25 @@ export class FakeModel implements ModelAdapter {
  * The model's side of an example conversation, step by step: each step's progress line as the text it wrote before
  * its tool calls, then the calls; the last step of a turn is the answer text with its presentation calls.
  */
-export function scriptFromConversation(c: Conversation): FakeStep[] {
+export function scriptFromConversation(conversation: Conversation): FakeStep[] {
   const steps: FakeStep[] = [];
   let current: FakeStep | null = null;
-  for (const m of c.messages) {
-    if (m.type === 'turn' || m.type === 'results') {
+  for (const message of conversation.messages) {
+    if (message.type === 'turn' || message.type === 'results') {
       current = { text: '', calls: [] };
-    } else if (m.type === 'tool_call') {
-      current?.calls!.push({ name: m.call.name, input: m.call.args });
-    } else if (m.type === 'progress') {
-      if (current) current.text += m.text;
-    } else if (m.type === 'await_results') {
+    } else if (message.type === 'tool_call') {
+      current?.calls!.push({ name: message.call.name, input: message.call.args });
+    } else if (message.type === 'progress') {
+      if (current) current.text += message.text;
+    } else if (message.type === 'await_results') {
       if (current) steps.push(current);
       current = null;
-    } else if (m.type === 'answer') {
-      steps.push({ text: m.text, calls: (m.present ?? []).map((p) => ({ name: p.name, input: p.args })) });
+    } else if (message.type === 'answer') {
+      steps.push({ text: message.text, calls: (message.present ?? []).map((presentation) => ({ name: presentation.name, input: presentation.args })) });
       current = null;
     }
   }
   return steps;
 }
 
-export const fakeModelFor = (c: Conversation) => new FakeModel(scriptFromConversation(c));
+export const fakeModelFor = (conversation: Conversation) => new FakeModel(scriptFromConversation(conversation));

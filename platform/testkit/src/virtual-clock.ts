@@ -23,7 +23,7 @@ export class VirtualClock {
   sleep(ms: number): Promise<void> {
     return new Promise((wake) => {
       this.sleepers.push({ at: this.time + Math.max(0, ms), seq: this.seq++, wake });
-      this.sleepers.sort((a, b) => a.at - b.at || a.seq - b.seq);
+      this.sleepers.sort((left, right) => left.at - right.at || left.seq - right.seq);
       this.schedule();
     });
   }

@@ -1,7 +1,7 @@
 // The Host interface: everything core.js needs from the platform it runs on. core.js reaches the outside world only
 // through it, so the same bundle runs in a web page, in JavaScriptCore on iOS, in QuickJS on Android and later on the
 // gateway. Each platform supplies one Host; tests use a fake one.
-import type { ClientMessage } from '../../contract/generated/types.ts';
+import type { ClientMessage } from '../../../contract/generated/types.ts';
 
 export interface HostRequest {
   method: 'GET' | 'POST';

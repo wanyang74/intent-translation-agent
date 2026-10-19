@@ -2,7 +2,7 @@
 // page with its own cookies and origin (decision D1). The brain is reached over HTTP, and its events stream back as
 // newline-delimited JSON, one event per line, so each tool call can start the moment it arrives.
 import type { ClientMessage } from '../../contract/generated/types.ts';
-import type { Host, ScriptRunner } from '../src/host.ts';
+import type { Host, ScriptRunner } from '../src/runtime/host.ts';
 
 export interface WebHostOptions {
   /** The agentic brain, such as https://agent.example.com */
@@ -40,15 +40,15 @@ export async function* ndjsonEvents(body: ReadableStream<Uint8Array>): AsyncGene
   }
 }
 
-export function webHost(o: WebHostOptions): Host {
-  const f = o.fetch ?? fetch.bind(globalThis);
-  const brainBase = o.brainUrl.replace(/\/+$/, '');
+export function webHost(options: WebHostOptions): Host {
+  const fetcher = options.fetch ?? fetch.bind(globalThis);
+  const brainBase = options.brainUrl.replace(/\/+$/, '');
   const host: Host = {
     async request(req) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), o.requestTimeoutMs ?? 15_000);
+      const timer = setTimeout(() => controller.abort(), options.requestTimeoutMs ?? 15_000);
       try {
-        const res = await f(req.url, { method: req.method, headers: req.headers, body: req.body, credentials: 'include', signal: controller.signal });
+        const res = await fetcher(req.url, { method: req.method, headers: req.headers, body: req.body, credentials: 'include', signal: controller.signal });
         const headers: Record<string, string> = {};
         res.headers.forEach((value, key) => { headers[key] = value; });
         return { status: res.status, headers, body: await res.text() };
@@ -60,7 +60,7 @@ export function webHost(o: WebHostOptions): Host {
     sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
     randomId: () => crypto.randomUUID(),
     async *brain(message: ClientMessage) {
-      const res = await f(`${brainBase}/v1/${message.type === 'turn' ? 'turn' : 'results'}`, {
+      const res = await fetcher(`${brainBase}/v1/${message.type}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', accept: 'application/x-ndjson' },
         body: JSON.stringify(message),
@@ -68,10 +68,10 @@ export function webHost(o: WebHostOptions): Host {
       if (!res.ok || !res.body) throw new Error(`the brain answered ${res.status}`);
       yield* ndjsonEvents(res.body);
     },
-    pageData: () => o.readPage?.() ?? null,
+    pageData: () => options.readPage?.() ?? null,
   };
-  if (o.scripts) host.scripts = o.scripts;
-  if (o.verifyConfig) host.verifyConfig = o.verifyConfig;
-  if (o.log) host.log = o.log;
+  if (options.scripts) host.scripts = options.scripts;
+  if (options.verifyConfig) host.verifyConfig = options.verifyConfig;
+  if (options.log) host.log = options.log;
   return host;
 }

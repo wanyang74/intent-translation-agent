@@ -16,12 +16,12 @@ for (const site of Object.keys(contract.sites).filter(hasFixtures)) {
 
   test(`${site}: generated and runtime validators agree on every fixture request and 200 response`, () => {
     let compared = 0;
-    for (const f of loadFixtures(site)) {
-      const endpoint = pack.endpoints[f.endpoint]!;
-      const pairs: [string, unknown][] = [[endpoint.request, requestValue(pack, f.request)]];
-      if (f.response.status === 200 && (endpoint.responseFormat ?? 'json') === 'json') pairs.push([endpoint.response, f.response.body]);
+    for (const fixture of loadFixtures(site)) {
+      const endpoint = pack.endpoints[fixture.endpoint]!;
+      const pairs: [string, unknown][] = [[endpoint.request, requestValue(pack, fixture.request)]];
+      if (fixture.response.status === 200 && (endpoint.responseFormat ?? 'json') === 'json') pairs.push([endpoint.response, fixture.response.body]);
       for (const [rel, data] of pairs) {
-        assert.equal(generated[validatorName(rel)]!(data), contract.siteValidator(site, rel)(data), `${f.id} ${rel}`);
+        assert.equal(generated[validatorName(rel)]!(data), contract.siteValidator(site, rel)(data), `${fixture.id} ${rel}`);
         compared++;
       }
     }

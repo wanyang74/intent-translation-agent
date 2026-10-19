@@ -7,12 +7,12 @@ import type { Conversation } from './conversations.ts';
 
 /** JSON with object keys sorted, so two values compare equal whatever their key order. */
 export function stableJson(value: unknown): string {
-  return JSON.stringify(value, (_key, v) => (v && typeof v === 'object' && !Array.isArray(v)
-    ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, (v as Record<string, unknown>)[k]]))
-    : v));
+  return JSON.stringify(value, (_key, node) => (node && typeof node === 'object' && !Array.isArray(node)
+    ? Object.fromEntries(Object.keys(node).sort().map((key) => [key, (node as Record<string, unknown>)[key]]))
+    : node));
 }
 
-const isClient = (m: Message) => m.type === 'turn' || m.type === 'results';
+const isClient = (message: Message) => message.type === 'turn' || message.type === 'results' || message.type === 'amend';
 
 export class FakeBrain {
   readonly received: ClientMessage[] = [];
@@ -42,14 +42,14 @@ export class FakeBrain {
         if (stableJson(expected[field]) !== stableJson(got[field])) this.differences.push(`${where}: turn ${field} differs: ${stableJson(got[field]).slice(0, 200)}`);
       }
     } else if (expected.type === 'results' && got.type === 'results') {
-      const want = new Map(expected.results.map((r) => [r.id, r]));
-      if (stableJson([...want.keys()].sort()) !== stableJson(got.results.map((r) => r.id).sort())) {
-        this.differences.push(`${where}: results for [${got.results.map((r) => r.id)}], expected [${[...want.keys()]}]`);
+      const want = new Map(expected.results.map((result) => [result.id, result]));
+      if (stableJson([...want.keys()].sort()) !== stableJson(got.results.map((result) => result.id).sort())) {
+        this.differences.push(`${where}: results for [${got.results.map((result) => result.id)}], expected [${[...want.keys()]}]`);
       }
-      for (const r of got.results) {
-        const w = want.get(r.id);
-        if (w && stableJson(w) !== stableJson(r)) {
-          this.differences.push(`${where}: result ${r.id} differs.\n  expected ${stableJson(w).slice(0, 400)}\n  got      ${stableJson(r).slice(0, 400)}`);
+      for (const gotResult of got.results) {
+        const wantedResult = want.get(gotResult.id);
+        if (wantedResult && stableJson(wantedResult) !== stableJson(gotResult)) {
+          this.differences.push(`${where}: result ${gotResult.id} differs.\n  expected ${stableJson(wantedResult).slice(0, 400)}\n  got      ${stableJson(gotResult).slice(0, 400)}`);
         }
       }
     }

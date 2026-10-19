@@ -22,8 +22,8 @@ for (let page = 2; page <= Math.min(first.totalPages, 3); page++) {
 }
 const ready = [];
 for (let i = 0; i < cars.length; i += 24) {
-  const { dates } = await tools.get_delivery_dates({ vehicleIds: cars.slice(i, i + 24).map((c) => c.vehicleId), zip5: filters.zip5 });
-  for (const d of dates) if (d.delivery && d.delivery.date <= '2026-10-11T06:59:59Z') ready.push(d.vehicleId);
+  const { dates } = await tools.get_delivery_dates({ vehicleIds: cars.slice(i, i + 24).map((car) => car.vehicleId), zip5: filters.zip5 });
+  for (const date of dates) if (date.delivery && date.delivery.date <= '2026-10-11T06:59:59Z') ready.push(date.vehicleId);
 }
 return { ids: ready, checked: cars.length, matches: first.totalMatches };
 ```

@@ -4,15 +4,15 @@
 // not time waiting for tool calls, so a batch on a slow rate limit isn't cut short; a longer overall limit still
 // applies. Memory and stack are capped.
 import { getQuickJS, type QuickJSHandle, type QuickJSWASMModule } from 'quickjs-emscripten';
-import type { ScriptResult, ScriptRunner } from '../src/host.ts';
+import type { ScriptResult, ScriptRunner } from '../src/runtime/host.ts';
 
 /** How long a script may take overall, waiting for tool calls included. */
 export const SCRIPT_WALL_LIMIT_MS = 180_000;
 
 function describe(dumped: unknown): string {
   if (typeof dumped === 'string') return dumped;
-  const e = dumped as { name?: string; message?: string } | null;
-  if (e && typeof e === 'object' && (e.name || e.message)) return [e.name, e.message].filter(Boolean).join(': ');
+  const error = dumped as { name?: string; message?: string } | null;
+  if (error && typeof error === 'object' && (error.name || error.message)) return [error.name, error.message].filter(Boolean).join(': ');
   return JSON.stringify(dumped);
 }
 
@@ -51,15 +51,15 @@ export function quickJsRunner(options: { wallLimitMs?: number } = {}): ScriptRun
             .then(
               (out) => {
                 if (disposed) return;
-                const h = vm.newString(JSON.stringify(out));
-                deferred.resolve(h);
-                h.dispose();
+                const handle = vm.newString(JSON.stringify(out));
+                deferred.resolve(handle);
+                handle.dispose();
               },
               (err: unknown) => {
                 if (disposed) return;
-                const h = vm.newError(err instanceof Error ? err.message : String(err));
-                deferred.reject(h);
-                h.dispose();
+                const handle = vm.newError(err instanceof Error ? err.message : String(err));
+                deferred.reject(handle);
+                handle.dispose();
               },
             );
           void deferred.settled.then(() => {
@@ -95,12 +95,12 @@ export function quickJsRunner(options: { wallLimitMs?: number } = {}): ScriptRun
         const value = vm.dump(settled.value);
         settled.value.dispose();
         return { ok: true, value };
-      } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         return { ok: false, error: /memory/i.test(message) ? 'the script ran out of memory' : message };
       } finally {
         disposed = true;
-        for (const d of pending) d.dispose();
+        for (const deferred of pending) deferred.dispose();
         vm.dispose();
         runtime.dispose();
       }

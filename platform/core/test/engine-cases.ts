@@ -33,9 +33,9 @@ const STANDARD_VALUES: Record<string, unknown> = {
 function setPath(obj: Record<string, unknown>, path: string, value: unknown): void {
   const parts = path.split('.');
   let cur: Record<string, unknown> = obj;
-  parts.slice(0, -1).forEach((p) => {
-    if (typeof cur[p] !== 'object' || cur[p] === null) cur[p] = {};
-    cur = cur[p] as Record<string, unknown>;
+  parts.slice(0, -1).forEach((part) => {
+    if (typeof cur[part] !== 'object' || cur[part] === null) cur[part] = {};
+    cur = cur[part] as Record<string, unknown>;
   });
   cur[parts[parts.length - 1]!] = value;
 }
@@ -43,14 +43,14 @@ function setPath(obj: Record<string, unknown>, path: string, value: unknown): vo
 /** An item with a number at every path the kind's derived formulas read. */
 function syntheticItem(pack: SitePack, kind: string): Record<string, unknown> {
   const item: Record<string, unknown> = {};
-  core.derivedFields(pack, kind).forEach((f, i) => f.formula.paths.forEach((p, j) => setPath(item, p, 1000.1 * (i + 1) + 0.2 * (j + 1))));
+  core.derivedFields(pack, kind).forEach((derived, i) => derived.formula.paths.forEach((fieldPath, j) => setPath(item, fieldPath, 1000.1 * (i + 1) + 0.2 * (j + 1))));
   return item;
 }
 
 /** A value for every placeholder in a deep-link template. */
 function paramsFor(template: string): Record<string, unknown> {
   const params: Record<string, unknown> = {};
-  for (const p of core.linkPlaceholders(template)) params[p.name] = p.encoding === 'base64json' ? { k: ['x y', 1, 'ü'] } : 'a b/ü?';
+  for (const placeholder of core.linkPlaceholders(template)) params[placeholder.name] = placeholder.encoding === 'base64json' ? { k: ['x y', 1, 'ü'] } : 'a b/ü?';
   return params;
 }
 
@@ -80,13 +80,13 @@ const CONFIG: RemoteConfig = {
 function limitCases() {
   const merged = core.effectivePolicy(examplePack, CONFIG);
   const otherSite = core.effectivePolicy(examplePack, { ...CONFIG, site: 'other-shop' });
-  let t = Date.UTC(2026, 9, 14, 23, 59, 58);
-  const budget = new core.CallBudget({ perTask: 3, perSession: 5, perDay: 6 }, () => t, { day: 1, dayKey: Math.floor(t / 86_400_000) });
+  let time = Date.UTC(2026, 9, 14, 23, 59, 58);
+  const budget = new core.CallBudget({ perTask: 3, perSession: 5, perDay: 6 }, () => time, { day: 1, dayKey: Math.floor(time / 86_400_000) });
   const acquired: unknown[] = [];
   for (let i = 0; i < 4; i++) acquired.push(budget.tryAcquire());
   budget.startTask();
   acquired.push(budget.tryAcquire(2), budget.tryAcquire(), budget.used());
-  t += 5000;
+  time += 5000;
   acquired.push(budget.tryAcquire(), budget.used());
   const limiter = new core.RateLimiter(2);
   const starts = [0, 0, 0, 100, 2000, 2000, 5000].map((now) => limiter.reserve(now));
@@ -139,7 +139,7 @@ function checkCases() {
     { name: 'present_form', args: { form: 'shipping', prefill: { color: 'red' } } },
     { name: 'present_form', args: { form: 'gift_wrap' } },
   ];
-  const presentation = shown.map((c) => core.checkPresentation(ctx, c));
+  const presentation = shown.map((shownCall) => core.checkPresentation(ctx, shownCall));
   const notices = [
     core.missingNotices(pack, [shown[0]!]),
     core.missingNotices(pack, [shown[0]!, shown[8]!]),
@@ -162,17 +162,17 @@ export function runCases(packs: SitePack[]): Record<string, unknown> {
     formulas: formulas.map((src) => {
       try {
         return [src, core.parseFormula(src).evaluate({ a: 3, b: 4, s: 'x', price: { total: 35590, estimatedTaxesAndFees: 3837 } }) ?? null];
-      } catch (e) {
-        return [src, `error: ${(e as Error).message}`];
+      } catch (error) {
+        return [src, `error: ${(error as Error).message}`];
       }
     }),
     packs: [examplePack, ...packs].map((pack) => ({
       site: pack.site.id,
       derived: Object.keys(pack.entities).map((kind) => [kind, core.computeDerived(pack, kind, syntheticItem(pack, kind))]),
       links: Object.entries(pack.deepLinks ?? {}).map(([name, link]) => [name, core.deepLink(pack, name, paramsFor(link!.template))]),
-      errors: Object.entries(pack.tools).flatMap(([tool, t]) => Object.keys(t?.errors ?? {}).map((reason) => core.siteError(pack, tool, reason, STANDARD_VALUES))),
+      errors: Object.entries(pack.tools).flatMap(([tool, definition]) => Object.keys(definition?.errors ?? {}).map((reason) => core.siteError(pack, tool, reason, STANDARD_VALUES))),
     })),
-    sanitizer: [...HOSTILE, ...Array.from({ length: 300 }, () => riskyString(next))].map((s) => core.fence(s, 'review', 80)),
+    sanitizer: [...HOSTILE, ...Array.from({ length: 300 }, () => riskyString(next))].map((text) => core.fence(text, 'review', 80)),
     ids: idCases(),
     limits: limitCases(),
     checks: checkCases(),

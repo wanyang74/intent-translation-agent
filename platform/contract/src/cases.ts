@@ -24,6 +24,8 @@ export const mustReject: MustReject[] = [
   { schema: 'messages.json', instance: { type: 'answer', traceId: 'trace_0001abcd', text: 'ok', present: [{ name: 'render_html', args: {} }] }, rule: 'only platform presentation tools can render' },
   { schema: 'messages.json', instance: { ...turn, message: 'x'.repeat(2001) }, rule: 'a user message is at most 2,000 characters' },
   { schema: 'messages.json', instance: { ...turn, site: undefined }, rule: 'every turn names its site' },
+  { schema: 'messages.json', instance: { type: 'amend', sessionId: 'sess_0001abcd', traceId: 'trace_0001abcd', message: '' }, rule: 'an amendment has words' },
+  { schema: 'messages.json', instance: { type: 'amended', traceId: 'trace_0001abcd', status: 'maybe' }, rule: 'an amendment is queued or too late' },
   { schema: 'errors.json', instance: { code: 'route_other_zip', message: 'x', retryable: true }, rule: 'error codes are generic; site detail goes in reason' },
   { schema: 'config.json', instance: { ...config, issuedAt: 'yesterday' }, rule: 'dates are ISO 8601 with a time zone' },
   { schema: 'config.json', instance: { ...config, rateLimitPerSecond: 0 }, rule: 'a rate limit is above zero' },

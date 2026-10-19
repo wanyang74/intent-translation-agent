@@ -16,12 +16,12 @@ export function valuesAt(value: unknown, path: string): unknown[] {
     const isArray = part.endsWith('[]');
     const key = isArray ? part.slice(0, -2) : part;
     const next: unknown[] = [];
-    for (const v of current) {
-      if (v === null || typeof v !== 'object') continue;
-      const child = (v as Record<string, unknown>)[key];
+    for (const node of current) {
+      if (node === null || typeof node !== 'object') continue;
+      const child = (node as Record<string, unknown>)[key];
       if (child === undefined || child === null) continue;
       if (!isArray) next.push(child);
-      else if (Array.isArray(child)) next.push(...child.filter((x) => x !== undefined && x !== null));
+      else if (Array.isArray(child)) next.push(...child.filter((item) => item !== undefined && item !== null));
     }
     current = next;
   }
@@ -34,25 +34,25 @@ export function select(value: unknown, path: string): unknown {
   return hasArray(path) ? values : values[0];
 }
 
-function compare(a: unknown, b: unknown): number {
-  if (typeof a === 'number' && typeof b === 'number') return a - b;
-  const x = String(a), y = String(b);
-  return x < y ? -1 : x > y ? 1 : 0;
+function compare(left: unknown, right: unknown): number {
+  if (typeof left === 'number' && typeof right === 'number') return left - right;
+  const leftText = String(left), rightText = String(right);
+  return leftText < rightText ? -1 : leftText > rightText ? 1 : 0;
 }
 
 /** JSON with sorted keys, dropping undefined values and empty arrays, so equal requests give equal keys. */
 export function canonical(value: unknown): string {
-  const norm = (v: unknown): unknown => {
-    if (Array.isArray(v)) return v.map(norm);
-    if (v && typeof v === 'object') {
+  const norm = (node: unknown): unknown => {
+    if (Array.isArray(node)) return node.map(norm);
+    if (node && typeof node === 'object') {
       return Object.fromEntries(
-        Object.entries(v as Record<string, unknown>)
-          .filter(([, x]) => x !== undefined && !(Array.isArray(x) && x.length === 0))
-          .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-          .map(([k, x]) => [k, norm(x)]),
+        Object.entries(node as Record<string, unknown>)
+          .filter(([, child]) => child !== undefined && !(Array.isArray(child) && child.length === 0))
+          .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+          .map(([key, child]) => [key, norm(child)]),
       );
     }
-    return v;
+    return node;
   };
   return JSON.stringify(norm(value));
 }

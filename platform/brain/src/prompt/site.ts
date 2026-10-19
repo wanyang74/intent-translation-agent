@@ -1,15 +1,15 @@
 // What the brain needs to serve one site: its site pack, the generated tool definitions and validators, the site's
 // prompt (brand rules and basic search) and its skills. loadSite reads them from sites/<id>/ the way a deployment
-// bundles them; tests can build a SiteBrain directly.
+// bundles them; tests can build a SiteBundle directly.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { SitePack } from '../../contract/generated/types.ts';
-import { entriesOf, sitesDir } from '../../contract/src/site-pack.ts';
-import type { Validators } from '../../core/src/validate.ts';
-import type { ToolSpec } from './model.ts';
+import type { SitePack } from '../../../contract/generated/types.ts';
+import { entriesOf, sitesDir } from '../../../contract/src/site-pack.ts';
+import type { Validators } from '../../../core/src/shared/validate.ts';
+import type { ToolSpec } from '../model/model.ts';
 
-export interface SiteBrain {
+export interface SiteBundle {
   pack: SitePack;
   /** sites/<id>/generated/tools.json, in site-pack order. */
   siteTools: ToolSpec[];
@@ -27,20 +27,20 @@ export function forModel(markdown: string): string {
   return markdown.replace(/<!--[\s\S]*?-->/g, '').replace(/\n{3,}/g, '\n\n').trim();
 }
 
-const platformGenerated = new URL('../../contract/generated/', import.meta.url);
+const platformGenerated = new URL('../../../contract/generated/', import.meta.url);
 
 /** Problems that would make the brain serve a site wrongly: a tool or skill the site pack names without its parts. */
-export function siteProblems(site: SiteBrain): string[] {
+export function siteProblems(bundle: SiteBundle): string[] {
   const problems: string[] = [];
-  const id = site.pack.site.id;
-  const defined = new Set(site.siteTools.map((t) => t.name));
-  for (const [name] of entriesOf(site.pack.tools)) if (!defined.has(name)) problems.push(`${id}: no tool definition for ${name}; run npm run generate`);
-  for (const t of site.siteTools) if (!site.pack.tools[t.name]) problems.push(`${id}: tool definition ${t.name} isn't in the site pack`);
-  for (const [name] of entriesOf(site.pack.skills)) if (!site.skills[name]) problems.push(`${id}: skill ${name} has no guidance`);
+  const id = bundle.pack.site.id;
+  const defined = new Set(bundle.siteTools.map((tool) => tool.name));
+  for (const [name] of entriesOf(bundle.pack.tools)) if (!defined.has(name)) problems.push(`${id}: no tool definition for ${name}; run npm run generate`);
+  for (const tool of bundle.siteTools) if (!bundle.pack.tools[tool.name]) problems.push(`${id}: tool definition ${tool.name} isn't in the site pack`);
+  for (const [name] of entriesOf(bundle.pack.skills)) if (!bundle.skills[name]) problems.push(`${id}: skill ${name} has no guidance`);
   return problems;
 }
 
-export async function loadSite(id: string): Promise<SiteBrain> {
+export async function loadSite(id: string): Promise<SiteBundle> {
   const dir = path.join(sitesDir, id);
   const read = (...parts: string[]) => readFileSync(path.join(dir, ...parts), 'utf8');
   const pack = JSON.parse(read('generated', 'site.json')) as SitePack;
@@ -49,7 +49,7 @@ export async function loadSite(id: string): Promise<SiteBrain> {
     const file = path.join(dir, 'skills', `${name}.md`);
     if (existsSync(file)) skills[name] = forModel(readFileSync(file, 'utf8'));
   }
-  const site: SiteBrain = {
+  const bundle: SiteBundle = {
     pack,
     siteTools: JSON.parse(read('generated', 'tools.json')) as ToolSpec[],
     platformTools: JSON.parse(readFileSync(new URL('tools.json', platformGenerated), 'utf8')) as ToolSpec[],
@@ -60,7 +60,7 @@ export async function loadSite(id: string): Promise<SiteBrain> {
     prompt: existsSync(path.join(dir, 'prompt.md')) ? forModel(read('prompt.md')) : '',
     skills,
   };
-  const problems = siteProblems(site);
+  const problems = siteProblems(bundle);
   if (problems.length) throw new Error(problems.join('\n'));
-  return site;
+  return bundle;
 }

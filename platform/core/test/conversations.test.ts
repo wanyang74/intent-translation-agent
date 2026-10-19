@@ -11,36 +11,36 @@ const contract = loadContract();
 
 for (const [siteId, site] of Object.entries(contract.sites)) {
   const pack = site.pack;
-  for (const c of loadConversations(siteId)) {
-    test(`${siteId}/${c.id}: every call passes core.js's checks`, () => {
-      assert.ok(c.now, 'the conversation gives its clock');
+  for (const conversation of loadConversations(siteId)) {
+    test(`${siteId}/${conversation.id}: every call passes core.js's checks`, () => {
+      assert.ok(conversation.now, 'the conversation gives its clock');
       const ids = new IdSet(pack.entities);
-      const now = Date.parse(c.now!);
+      const now = Date.parse(conversation.now!);
       const calls = new Map<string, string>();
       const validateInput = (tool: string, args: unknown) => {
-        const v = contract.siteValidator(siteId, pack.tools[tool]!.input);
-        return v(args) ? null : describeErrors(v.errors);
+        const validate = contract.siteValidator(siteId, pack.tools[tool]!.input);
+        return validate(args) ? null : describeErrors(validate.errors);
       };
       let page: PageContext | undefined;
       let checked = 0;
-      for (const m of c.messages) {
-        if (m.type === 'turn') {
-          page = m.pageContext;
+      for (const message of conversation.messages) {
+        if (message.type === 'turn') {
+          page = message.pageContext;
           if (page.entity) ids.learn(page.entity.kind, page.entity.id, { now });
-        } else if (m.type === 'tool_call') {
+        } else if (message.type === 'tool_call') {
           const ctx: CheckContext = { pack, policy: effectivePolicy(pack).policy, ids, now, page, validateInput };
-          assert.equal(checkToolCall(ctx, m.call.name, m.call.args), null, `${m.call.id} ${m.call.name}`);
-          calls.set(m.call.id, m.call.name);
+          assert.equal(checkToolCall(ctx, message.call.name, message.call.args), null, `${message.call.id} ${message.call.name}`);
+          calls.set(message.call.id, message.call.name);
           checked++;
-        } else if (m.type === 'results') {
-          for (const r of m.results) if (r.ok) ids.learnFrom(r.output, pack.tools[calls.get(r.id)!]!.ids?.output, now);
-        } else if (m.type === 'answer') {
+        } else if (message.type === 'results') {
+          for (const result of message.results) if (result.ok) ids.learnFrom(result.output, pack.tools[calls.get(result.id)!]!.ids?.output, now);
+        } else if (message.type === 'answer') {
           const ctx: CheckContext = { pack, policy: effectivePolicy(pack).policy, ids, now, page };
-          for (const p of m.present ?? []) {
-            assert.equal(checkPresentation(ctx, p), null, `${p.name} ${JSON.stringify(p.args).slice(0, 80)}`);
+          for (const presentation of message.present ?? []) {
+            assert.equal(checkPresentation(ctx, presentation), null, `${presentation.name} ${JSON.stringify(presentation.args).slice(0, 80)}`);
             checked++;
           }
-          assert.deepEqual(missingNotices(pack, m.present ?? []), []);
+          assert.deepEqual(missingNotices(pack, message.present ?? []), []);
         }
       }
       assert.ok(checked > 0);

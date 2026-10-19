@@ -21,7 +21,7 @@ export const DEFAULT_MAX_LENGTH = 1000;
 
 /** The text with the rules applied, without a fence: what a card shows. */
 export function cleanText(text: unknown, maxLength: number = DEFAULT_MAX_LENGTH): string {
-  let s = String(text ?? '')
+  let cleaned = String(text ?? '')
     .replace(SURROGATES, (pair) => (pair.length === 2 ? pair : '\uFFFD'))
     .replace(/\r\n?/g, '\n')
     .replace(INVISIBLE, '')
@@ -29,9 +29,9 @@ export function cleanText(text: unknown, maxLength: number = DEFAULT_MAX_LENGTH)
     .replace(ROLE, '$1$2 (quoted)$3:')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  const chars = Array.from(s);
-  if (chars.length > maxLength) s = chars.slice(0, maxLength).join('') + '…';
-  return s;
+  const chars = Array.from(cleaned);
+  if (chars.length > maxLength) cleaned = chars.slice(0, maxLength).join('') + '…';
+  return cleaned;
 }
 
 /** The text cleaned and fenced: what the model sees. `source` names where it came from, in lowercase letters and dashes. */
@@ -42,6 +42,6 @@ export function fence(text: unknown, source: string, maxLength: number = DEFAULT
 
 /** The text inside a fence, for showing to the user: the fence is for the model only. */
 export function unfence(text: string): string {
-  const m = /^<untrusted source="[a-z-]+">([\s\S]*)<\/untrusted>$/.exec(text);
-  return m ? m[1]! : text;
+  const match = /^<untrusted source="[a-z-]+">([\s\S]*)<\/untrusted>$/.exec(text);
+  return match ? match[1]! : text;
 }

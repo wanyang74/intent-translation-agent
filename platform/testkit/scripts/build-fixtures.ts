@@ -28,7 +28,7 @@ const outDir = outArg ?? fixtureDir(site);
 const hooksFile = path.join(siteDir, 'fixture-hooks.ts');
 const hooks: FixtureHooks = existsSync(hooksFile) ? await import(pathToFileURL(hooksFile).href) : {};
 
-const lower = (xs: string[]) => new Set(xs.map((x) => x.toLowerCase()));
+const lower = (xs: string[]) => new Set(xs.map((item) => item.toLowerCase()));
 const scrubFields = new Set(pack.recording.scrubFields);
 const scrubHeaders = lower(pack.recording.scrubHeaders);
 const keepHeaders = lower(pack.recording.keepHeaders);
@@ -36,39 +36,39 @@ const keepHeaders = lower(pack.recording.keepHeaders);
 // One placeholder per distinct identifier, numbered in order of first appearance,
 // so links between requests (one response's request ID sent back in the next request) survive.
 const placeholders = new Map<string, string>();
-function placeholder(v: string): string {
-  if (!v) return v;
-  let p = placeholders.get(v);
-  if (!p) {
-    p = `00000000-0000-4000-8000-${String(placeholders.size + 1).padStart(12, '0')}`;
-    placeholders.set(v, p);
+function placeholder(value: string): string {
+  if (!value) return value;
+  let replacement = placeholders.get(value);
+  if (!replacement) {
+    replacement = `00000000-0000-4000-8000-${String(placeholders.size + 1).padStart(12, '0')}`;
+    placeholders.set(value, replacement);
   }
-  return p;
+  return replacement;
 }
 
 function scrub(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(scrub);
   if (value && typeof value === 'object') {
-    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, scrubFields.has(k) && typeof v === 'string' ? placeholder(v) : scrub(v)]));
+    return Object.fromEntries(Object.entries(value).map(([key, fieldValue]) => [key, scrubFields.has(key) && typeof fieldValue === 'string' ? placeholder(fieldValue) : scrub(fieldValue)]));
   }
   return value;
 }
 
 function scrubUrl(url: string): string {
-  const u = new URL(url);
-  const names = [...u.searchParams.keys()].filter((k) => scrubFields.has(k));
+  const address = new URL(url);
+  const names = [...address.searchParams.keys()].filter((key) => scrubFields.has(key));
   if (!names.length) return url;
-  for (const k of names) u.searchParams.set(k, placeholder(u.searchParams.get(k)!));
-  return u.toString();
+  for (const key of names) address.searchParams.set(key, placeholder(address.searchParams.get(key)!));
+  return address.toString();
 }
 
 function scrubHeaderList(headers: { name: string; value: string }[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (const { name, value } of headers) {
-    const n = name.toLowerCase();
-    if (keepHeaders.has(n)) out[n] = scrubHeaders.has(n) ? placeholder(value) : value;
+    const lowerName = name.toLowerCase();
+    if (keepHeaders.has(lowerName)) out[lowerName] = scrubHeaders.has(lowerName) ? placeholder(value) : value;
   }
-  return Object.fromEntries(Object.entries(out).sort(([a], [b]) => (a < b ? -1 : 1)));
+  return Object.fromEntries(Object.entries(out).sort(([left], [right]) => (left < right ? -1 : 1)));
 }
 
 // ---------------------------------------------------------------- recorded traffic
@@ -79,31 +79,31 @@ const counters = new Map<string, number>();
 const seenKeys = new Map<string, string>();
 let skippedHtml = 0;
 
-for (const [i, e] of entries.entries()) {
-  const match = endpointOf(pack, e.request.url);
-  if (!match || e.response.status !== 200 || e.request.method !== match.endpoint.method) continue;
+for (const [i, entry] of entries.entries()) {
+  const match = endpointOf(pack, entry.request.url);
+  if (!match || entry.response.status !== 200 || entry.request.method !== match.endpoint.method) continue;
   if ((match.endpoint.responseFormat ?? 'json') !== 'json') { skippedHtml++; continue; }
   const { name: endpoint } = match;
 
-  const method = e.request.method as 'GET' | 'POST';
-  const url = scrubUrl(e.request.url);
-  const body = method === 'GET' ? null : scrub(JSON.parse(e.request.postData.text));
-  const response = scrub(JSON.parse(e.response.content.text));
-  const n = (counters.get(endpoint) ?? 0) + 1;
-  counters.set(endpoint, n);
-  const id = `${endpoint}-${String(n).padStart(2, '0')}`;
+  const method = entry.request.method as 'GET' | 'POST';
+  const url = scrubUrl(entry.request.url);
+  const body = method === 'GET' ? null : scrub(JSON.parse(entry.request.postData.text));
+  const response = scrub(JSON.parse(entry.response.content.text));
+  const count = (counters.get(endpoint) ?? 0) + 1;
+  counters.set(endpoint, count);
+  const id = `${endpoint}-${String(count).padStart(2, '0')}`;
   const value = requestValue(pack, { method, url, body });
 
   const key = `${endpoint} ${matchKey(match.endpoint, value)}`;
   if (seenKeys.has(key)) console.warn(`warning: ${id} has the same match key as ${seenKeys.get(key)}; FakeHost will use the first`);
   else seenKeys.set(key, id);
 
-  used.push(e);
+  used.push(entry);
   recorded.push({
     id, site, endpoint, kind: 'recorded',
-    source: `recording ${String(e.startedDateTime).slice(0, 10)}, HAR entry ${i}`,
+    source: `recording ${String(entry.startedDateTime).slice(0, 10)}, HAR entry ${i}`,
     description: hooks.describe?.(endpoint, value, response) ?? `${method} ${endpoint}`,
-    request: { method, url, headers: scrubHeaderList(e.request.headers), body },
+    request: { method, url, headers: scrubHeaderList(entry.request.headers), body },
     response: { status: 200, headers: { 'content-type': 'application/json' }, body: response },
   });
 }
@@ -113,44 +113,44 @@ const ctx: DeriveContext = {
   site,
   recorded,
   first(endpoint) {
-    const f = recorded.find((x) => x.endpoint === endpoint);
-    if (!f) throw new Error(`no recorded ${endpoint} fixture to derive from`);
-    return structuredClone(f);
+    const fixture = recorded.find((candidate) => candidate.endpoint === endpoint);
+    if (!fixture) throw new Error(`no recorded ${endpoint} fixture to derive from`);
+    return structuredClone(fixture);
   },
   placeholder,
 };
-const derived = (hooks.derive?.(ctx) ?? []).map((f) => ({ ...f, site }));
+const derived = (hooks.derive?.(ctx) ?? []).map((fixture) => ({ ...fixture, site }));
 const fixtures = [...recorded, ...derived].map(normalizeFixture);
-const ids = fixtures.map((f) => f.id);
+const ids = fixtures.map((fixture) => fixture.id);
 const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
 if (dupes.length) throw new Error(`Duplicate fixture ids: ${dupes.join(', ')}`);
 
 // ---------------------------------------------------------------- write, then check nothing identifying leaked
 rmSync(outDir, { recursive: true, force: true });
 const index: FixtureIndexEntry[] = [];
-for (const f of fixtures) {
-  const file = `${f.endpoint}/${f.id}.json`;
-  mkdirSync(path.join(outDir, f.endpoint), { recursive: true });
-  writeFileSync(path.join(outDir, file), JSON.stringify(f, null, 2) + '\n');
-  index.push({ id: f.id, endpoint: f.endpoint, kind: f.kind, description: f.description, file });
+for (const fixture of fixtures) {
+  const file = `${fixture.endpoint}/${fixture.id}.json`;
+  mkdirSync(path.join(outDir, fixture.endpoint), { recursive: true });
+  writeFileSync(path.join(outDir, file), JSON.stringify(fixture, null, 2) + '\n');
+  index.push({ id: fixture.id, endpoint: fixture.endpoint, kind: fixture.kind, description: fixture.description, file });
 }
 writeFileSync(path.join(outDir, 'index.json'), JSON.stringify(index, null, 2) + '\n');
 
 // UUIDs, long hex strings and long digit strings in the headers that weren't kept as they are:
 // session, trace and visitor IDs the site pack doesn't list must not turn up in a body either.
 const ID_LIKE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|\b[0-9a-f]{16,}\b|\b\d{12,}\b/gi;
-const droppedTokens = used.flatMap((e) => [...e.request.headers, ...e.response.headers]
-  .filter((h: { name: string }) => !h.name.startsWith(':') && (!keepHeaders.has(h.name.toLowerCase()) || scrubHeaders.has(h.name.toLowerCase())))
-  .flatMap((h: { value: string }) => h.value.match(ID_LIKE) ?? []));
-const written = index.map((e) => readFileSync(path.join(outDir, e.file), 'utf8')).join('\n');
-const leaks = [...new Set([...placeholders.keys(), ...droppedTokens])].filter((v) => v.length > 8 && written.includes(v));
+const droppedTokens = used.flatMap((entry) => [...entry.request.headers, ...entry.response.headers]
+  .filter((header: { name: string }) => !header.name.startsWith(':') && (!keepHeaders.has(header.name.toLowerCase()) || scrubHeaders.has(header.name.toLowerCase())))
+  .flatMap((header: { value: string }) => header.value.match(ID_LIKE) ?? []));
+const written = index.map((entry) => readFileSync(path.join(outDir, entry.file), 'utf8')).join('\n');
+const leaks = [...new Set([...placeholders.keys(), ...droppedTokens])].filter((value) => value.length > 8 && written.includes(value));
 if (leaks.length) {
   console.error(`Aborting: ${leaks.length} identifier(s) from the recording remain in the fixtures. Add the fields to recording.scrubFields.`);
   rmSync(outDir, { recursive: true, force: true });
   process.exit(1);
 }
 
-const byKind = fixtures.reduce<Record<string, number>>((acc, f) => ({ ...acc, [f.kind]: (acc[f.kind] ?? 0) + 1 }), {});
-console.log(`Wrote ${fixtures.length} ${site} fixtures (${Object.entries(byKind).map(([k, n]) => `${n} ${k}`).join(', ')}) to ${path.relative(process.cwd(), outDir)}`);
+const byKind = fixtures.reduce<Record<string, number>>((acc, fixture) => ({ ...acc, [fixture.kind]: (acc[fixture.kind] ?? 0) + 1 }), {});
+console.log(`Wrote ${fixtures.length} ${site} fixtures (${Object.entries(byKind).map(([kind, count]) => `${count} ${kind}`).join(', ')}) to ${path.relative(process.cwd(), outDir)}`);
 if (skippedHtml) console.log(`Skipped ${skippedHtml} HTML page(s): their fixtures hold parsed output and come from the site's own tests.`);
 console.log(`Replaced ${placeholders.size} identifiers with placeholders; no identifier from the recording remains.`);

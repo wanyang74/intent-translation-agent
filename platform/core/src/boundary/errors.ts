@@ -1,8 +1,8 @@
 // Errors the model can act on. Codes are the platform's (errors.json); each error also has a reason and a message.
 // Site errors come from the site pack (each tool's errors); platform errors are problems core.js finds itself,
 // worded the same on every site.
-import type { SitePack, ToolError } from '../../contract/generated/types.ts';
-import { fill, hasPlaceholder } from './text.ts';
+import type { SitePack, ToolError } from '../../../contract/generated/types.ts';
+import { fill, hasPlaceholder } from '../shared/text.ts';
 
 type Code = ToolError['code'];
 interface Template { code: Code; message: string; retryable: boolean }
@@ -56,15 +56,15 @@ export const PLATFORM_ERRORS = {
 export type PlatformReason = keyof typeof PLATFORM_ERRORS;
 
 export function platformError(reason: PlatformReason, values: Record<string, unknown> = {}): ToolError {
-  const t: Template = PLATFORM_ERRORS[reason];
-  return { code: t.code, reason, message: fill(t.message, values), retryable: t.retryable };
+  const template: Template = PLATFORM_ERRORS[reason];
+  return { code: template.code, reason, message: fill(template.message, values), retryable: template.retryable };
 }
 
 /** A site error by the reason a tool declares in the site pack, or null if the tool has no such error. */
 export function siteError(pack: SitePack, tool: string, reason: string, values: Record<string, unknown> = {}): ToolError | null {
-  const e = pack.tools[tool]?.errors?.[reason];
-  if (!e) return null;
-  return { code: e.code, reason, message: fill(e.message, values), retryable: e.retryable ?? false };
+  const declared = pack.tools[tool]?.errors?.[reason];
+  if (!declared) return null;
+  return { code: declared.code, reason, message: fill(declared.message, values), retryable: declared.retryable ?? false };
 }
 
 /**
@@ -72,11 +72,11 @@ export function siteError(pack: SitePack, tool: string, reason: string, values: 
  * the same code and that message can be filled from the standard values; otherwise the platform's wording.
  */
 export function errorFor(pack: SitePack, tool: string, reason: PlatformReason, values: Record<string, unknown>): ToolError {
-  const own = Object.entries(pack.tools[tool]?.errors ?? {}).filter(([, e]) => e?.code === PLATFORM_ERRORS[reason].code);
+  const own = Object.entries(pack.tools[tool]?.errors ?? {}).filter(([, declared]) => declared?.code === PLATFORM_ERRORS[reason].code);
   if (own.length === 1) {
-    const [name, e] = own[0]!;
-    const message = fill(e!.message, values);
-    if (!hasPlaceholder(message)) return { code: e!.code, reason: name, message, retryable: e!.retryable ?? false };
+    const [name, declared] = own[0]!;
+    const message = fill(declared!.message, values);
+    if (!hasPlaceholder(message)) return { code: declared!.code, reason: name, message, retryable: declared!.retryable ?? false };
   }
   return platformError(reason, values);
 }

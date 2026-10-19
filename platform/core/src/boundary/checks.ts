@@ -3,12 +3,12 @@
 // sign-in it needs, has valid arguments, uses only known and current IDs, and uses only values the site offers.
 // A presentation call must name things the site pack declares, show only known IDs, and never show internal kinds.
 // Each check returns the first problem as an error the model can act on, or null.
-import type { PageContext, PresentationCall, SitePack, ToolError } from '../../contract/generated/types.ts';
-import { select, valuesAt } from '../../contract/src/paths.ts';
+import type { PageContext, PresentationCall, SitePack, ToolError } from '../../../contract/generated/types.ts';
+import { select, valuesAt } from '../../../contract/src/paths.ts';
 import { errorFor, platformError } from './errors.ts';
 import { type IdSet, idShapeOk } from './ids.ts';
 import type { Policy } from './limits.ts';
-import { show } from './text.ts';
+import { show } from '../shared/text.ts';
 
 export interface CheckContext {
   pack: SitePack;
@@ -35,7 +35,7 @@ function idProblem(ctx: CheckContext, tool: string | null, kind: string, id: unk
   return null;
 }
 
-const flat = (v: unknown): unknown[] => (Array.isArray(v) ? v.flatMap(flat) : v === undefined || v === null ? [] : [v]);
+const flat = (value: unknown): unknown[] => (Array.isArray(value) ? value.flatMap(flat) : value === undefined || value === null ? [] : [value]);
 
 /** The allowed-value rules that apply to a tool: argument path, source endpoint and response path. */
 export function allowedValueRules(pack: SitePack, tool: string): { arg: string; endpoint: string; path: string }[] {
@@ -50,8 +50,8 @@ export function allowedValueRules(pack: SitePack, tool: string): { arg: string; 
 /** Endpoints whose responses a call's allowed-value rules need and that the session doesn't have yet. */
 export function missingValueSources(ctx: CheckContext, tool: string, args: unknown): string[] {
   return [...new Set(allowedValueRules(ctx.pack, tool)
-    .filter((r) => flat(select(args, r.arg)).length > 0 && ctx.responses?.[r.endpoint] === undefined)
-    .map((r) => r.endpoint))];
+    .filter((rule) => flat(select(args, rule.arg)).length > 0 && ctx.responses?.[rule.endpoint] === undefined)
+    .map((rule) => rule.endpoint))];
 }
 
 function allowedValueProblem(ctx: CheckContext, tool: string, args: unknown): ToolError | null {
@@ -77,9 +77,9 @@ export function checkToolCall(ctx: CheckContext, name: string, args: unknown): T
   if (tool.signIn && ctx.page?.signedIn !== true) return errorFor(ctx.pack, name, 'needs_sign_in', { tool: name, what: name });
   const bad = ctx.validateInput?.(name, args) ?? null;
   if (bad) return platformError('bad_arguments', { tool: name, details: bad });
-  for (const p of tool.ids?.input ?? []) {
-    for (const id of valuesAt(args, p.path)) {
-      const problem = idProblem(ctx, name, p.kind, id);
+  for (const idPath of tool.ids?.input ?? []) {
+    for (const id of valuesAt(args, idPath.path)) {
+      const problem = idProblem(ctx, name, idPath.kind, id);
       if (problem) return problem;
     }
   }
@@ -96,12 +96,12 @@ export function fieldsShown(pack: SitePack, call: PresentationCall): string[] {
 }
 
 function formProblem(ctx: CheckContext, form: string, prefill: Record<string, unknown>): ToolError | null {
-  const f = ctx.pack.forms?.[form];
-  if (!f) return platformError('unknown_form', { form });
+  const definition = ctx.pack.forms?.[form];
+  if (!definition) return platformError('unknown_form', { form });
   for (const [field, value] of Object.entries(prefill)) {
-    const spec = f.fields[field];
+    const spec = definition.fields[field];
     const bad = (details: string) => platformError('bad_prefill', { form, field, value: show(value), details });
-    if (!spec) return bad(`the form has no such field; its fields are ${Object.keys(f.fields).join(', ')}`);
+    if (!spec) return bad(`the form has no such field; its fields are ${Object.keys(definition.fields).join(', ')}`);
     if (spec.type === 'integer') {
       if (typeof value !== 'number' || !Number.isInteger(value)) return bad('it takes a whole number');
       if (spec.min !== undefined && value < spec.min) return bad(`the minimum is ${spec.min}`);
@@ -148,10 +148,10 @@ export function checkPresentation(ctx: CheckContext, call: PresentationCall): To
 
 /** Notices that must appear with these calls, because a field they explain is on screen, and that are missing. */
 export function missingNotices(pack: SitePack, calls: readonly PresentationCall[]): string[] {
-  const shown = new Set(calls.flatMap((c) => fieldsShown(pack, c)));
-  const present = new Set(calls.flatMap((c) => (c.name === 'present_notice' ? [c.args.notice] : [])));
+  const shown = new Set(calls.flatMap((presentation) => fieldsShown(pack, presentation)));
+  const present = new Set(calls.flatMap((presentation) => (presentation.name === 'present_notice' ? [presentation.args.notice] : [])));
   return Object.entries(pack.notices ?? {})
-    .filter(([name, n]) => n && !present.has(name) && (n.showWith ?? []).some((f) => shown.has(f)))
+    .filter(([name, notice]) => notice && !present.has(name) && (notice.showWith ?? []).some((field) => shown.has(field)))
     .map(([name]) => name);
 }
 

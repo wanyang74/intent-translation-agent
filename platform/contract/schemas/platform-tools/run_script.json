@@ -17,7 +17,7 @@
   "additionalProperties": false,
   "examples": [
     {
-      "source": "const ids = [];\nlet checked = 0;\nfor (let page = 1; page <= 3; page++) {\n  const r = await tools.search_products({ query: 'shoe', page });\n  checked += r.products.length;\n  ids.push(...r.products.filter((p) => p.price < 100).map((p) => p.id));\n}\nreturn { ids, checked };"
+      "source": "const ids = [];\nlet checked = 0;\nfor (let page = 1; page <= 3; page++) {\n  const found = await tools.search_products({ query: 'shoe', page });\n  checked += found.products.length;\n  ids.push(...found.products.filter((product) => product.price < 100).map((product) => product.id));\n}\nreturn { ids, checked };"
     }
   ]
 }

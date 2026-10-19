@@ -15,29 +15,29 @@ import { runTurn, startSession } from '../src/index.ts';
 for (const site of listSites().filter(hasFixtures)) {
   const rt = await loadSiteRuntime(site);
   const fixtures = loadFixtures(site);
-  for (const c of loadConversations(site)) {
-    test(`${site}/${c.id}: core.js replays the client's side exactly`, async () => {
-      const brain = new FakeBrain(c);
-      const { host, fake } = testHost({ site, fixtures, start: c.now!, pageData: c.pageData, brain: brain.brain });
+  for (const conversation of loadConversations(site)) {
+    test(`${site}/${conversation.id}: core.js replays the client's side exactly`, async () => {
+      const fakeBrain = new FakeBrain(conversation);
+      const { host, fake } = testHost({ site, fixtures, start: conversation.now!, pageData: conversation.pageData, brain: fakeBrain.brain });
       const { session, warnings } = await startSession({ pack: rt.pack, site: rt.code, validators: rt.validators, host });
       assert.deepEqual(warnings, []);
       const surface = new FakeSurface();
-      const turns = c.messages.filter((m) => m.type === 'turn');
+      const turns = conversation.messages.filter((message) => message.type === 'turn');
       for (const turn of turns) {
         session.setPage(turn.pageContext);
         const outcome = await runTurn(session, turn.message, surface);
         assert.deepEqual(outcome, { ok: true }, JSON.stringify(surface.errors));
       }
-      assert.deepEqual(brain.differences, [], brain.differences.join('\n'));
-      assert.ok(brain.finished, 'every client message the conversation expects was sent');
+      assert.deepEqual(fakeBrain.differences, [], fakeBrain.differences.join('\n'));
+      assert.ok(fakeBrain.finished, 'every client message the conversation expects was sent');
       assert.deepEqual(surface.errors, []);
       assert.equal(surface.answers.length, turns.length);
-      const answers = c.messages.filter((m) => m.type === 'answer');
-      surface.answers.forEach((a, i) => {
-        assert.equal(a.text, answers[i]!.text);
-        assert.equal(a.components.length, (answers[i]!.present ?? []).length, 'one component per presentation call; required notices were already there');
+      const answers = conversation.messages.filter((message) => message.type === 'answer');
+      surface.answers.forEach((answer, i) => {
+        assert.equal(answer.text, answers[i]!.text);
+        assert.equal(answer.components.length, (answers[i]!.present ?? []).length, 'one component per presentation call; required notices were already there');
       });
-      assert.deepEqual([...new Set(fake.calls.map((call) => call.fixtureId))].sort(), [...c.fixtures].sort(), 'calls exactly the fixtures the conversation lists');
+      assert.deepEqual([...new Set(fake.calls.map((call) => call.fixtureId))].sort(), [...conversation.fixtures].sort(), 'calls exactly the fixtures the conversation lists');
     });
   }
 }

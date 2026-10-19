@@ -8,10 +8,10 @@ import { displayText, formatMoney, groupDigits, present, presentToolResult, runT
 import { exampleSession } from './example-site.ts';
 
 async function afterSearch() {
-  const s = await exampleSession();
-  const r = await runToolCall(s.session, 'search_products', { query: 'shoe' });
-  assert.ok(r.ok);
-  return { ...s, output: r.output };
+  const shop = await exampleSession();
+  const outcome = await runToolCall(shop.session, 'search_products', { query: 'shoe' });
+  assert.ok(outcome.ok);
+  return { ...shop, output: outcome.output };
 }
 const items = (ids: number[]): PresentationCall => ({ name: 'present_items', args: { entity: 'product', ids: ids as [number, ...number[]], heading: 'Shoes' } });
 
@@ -21,9 +21,9 @@ test('money and units read the way people write them, without Intl', () => {
 });
 
 test('card text keeps what it has and drops what it lacks, part by part', () => {
-  const t = '{year} {make} {model}';
-  assert.equal(displayText(t, { year: 2023, make: 'Tesla', model: 'Model Y' }), '2023 Tesla Model Y');
-  assert.equal(displayText(t, { make: 'Tesla', model: 'Model Y' }), 'Tesla Model Y');
+  const template = '{year} {make} {model}';
+  assert.equal(displayText(template, { year: 2023, make: 'Tesla', model: 'Model Y' }), '2023 Tesla Model Y');
+  assert.equal(displayText(template, { make: 'Tesla', model: 'Model Y' }), 'Tesla Model Y');
   assert.equal(displayText('{trim} · {mileage} mi', { trim: 'Long Range' }), 'Long Range');
   assert.equal(displayText('{trim} · {mileage} mi', { mileage: '27,689' }), '27,689 mi');
   assert.equal(displayText('{trim} · {mileage} mi', { trim: 'LR', mileage: '27,689' }), 'LR · 27,689 mi');
@@ -55,7 +55,7 @@ test('a value no tool returned reads "not available", and a template drops the m
   const card = list!.type === 'items' ? list!.items[0]! : undefined;
   assert.equal(card?.title, '7', 'no name: the ID stands in');
   assert.equal(card?.subtitle, undefined, 'no rating: no subtitle rather than " stars"');
-  assert.deepEqual(card?.fields.map((f) => f.text), ['not available', 'not available']);
+  assert.deepEqual(card?.fields.map((field) => field.text), ['not available', 'not available']);
 });
 
 test("comparisons, detail views with the site's own sections, options, forms and notices", async () => {
@@ -67,11 +67,11 @@ test("comparisons, detail views with the site's own sections, options, forms and
     { name: 'present_notice', args: { notice: 'total_estimate' } },
   ]);
   const [comparison, detail, form, notice] = shown.components;
-  assert.deepEqual(comparison!.type === 'comparison' && comparison!.rows.map((r) => [r.label, r.cells.map((c) => c.text)]), [['Price', ['$40', '$1,250']], ['Rating', ['4.5', '3.9']]]);
+  assert.deepEqual(comparison!.type === 'comparison' && comparison!.rows.map((row) => [row.label, row.cells.map((field) => field.text)]), [['Price', ['$40', '$1,250']], ['Rating', ['4.5', '3.9']]]);
   assert.deepEqual(comparison!.type === 'comparison' && comparison!.items.map((i) => i.title), ['Red Shoe', 'Blue Shoe']);
   assert.ok(detail!.type === 'detail');
-  assert.deepEqual(detail!.type === 'detail' && detail!.sections.map((s) => s.name), ['overview', 'reviews']);
-  assert.deepEqual(detail!.type === 'detail' && detail!.sections[0]!.fields!.map((f) => f.key), ['price', 'total', 'rating', 'name']);
+  assert.deepEqual(detail!.type === 'detail' && detail!.sections.map((section) => section.name), ['overview', 'reviews']);
+  assert.deepEqual(detail!.type === 'detail' && detail!.sections[0]!.fields!.map((field) => field.key), ['price', 'total', 'rating', 'name']);
   assert.equal(detail!.type === 'detail' && detail!.sections[1]!.summary, 'Rated 4.5 of 5.');
   assert.deepEqual(form, {
     type: 'form', form: 'shipping', heading: 'Where to?', submitTool: 'place_order',
@@ -88,21 +88,21 @@ test("comparisons, detail views with the site's own sections, options, forms and
 test('a required notice is added when a field it explains is shown', async () => {
   const { session } = await afterSearch();
   const { components } = present(session, [items([1])]);
-  assert.deepEqual(components.map((c) => c.type), ['items', 'notice']);
+  assert.deepEqual(components.map((component) => component.type), ['items', 'notice']);
 });
 
 test('a call that fails the checks is left out and reported, and logged', async () => {
   const { session, log } = await afterSearch();
   const shown = present(session, [items([1, 99]), { name: 'present_notice', args: { notice: 'made_up' } }]);
   assert.deepEqual(shown.components, []);
-  assert.deepEqual(shown.refused.map((r) => r.error.reason), ['unknown_id', 'unknown_notice']);
-  assert.ok(log.some((e) => e.kind === 'presentation_refused'));
+  assert.deepEqual(shown.refused.map((refusal) => refusal.error.reason), ['unknown_id', 'unknown_notice']);
+  assert.ok(log.some((entry) => entry.kind === 'presentation_refused'));
 });
 
 test("the fast path shows a tool's result with the presentation the site pack names for it", async () => {
   const { session, output } = await afterSearch();
   const components = presentToolResult(session, 'search_products', output);
-  assert.deepEqual(components.map((c) => c.type), ['items', 'notice']);
+  assert.deepEqual(components.map((component) => component.type), ['items', 'notice']);
   assert.deepEqual(components[0]!.type === 'items' && components[0]!.items.map((i) => i.id), [1, 2]);
   assert.deepEqual(presentToolResult(session, 'my_orders', { orders: [] }), [], 'no presentation named: nothing early');
 });

@@ -3,7 +3,7 @@
 import * as platformValidators from '../../contract/generated/validators.js';
 import { validatorName } from '../../contract/src/names.ts';
 import { VirtualClock } from '../../testkit/src/virtual-clock.ts';
-import type { Host, HostRequest, HostResponse, LogEntry } from '../src/host.ts';
+import type { Host, HostRequest, HostResponse, LogEntry } from '../src/runtime/host.ts';
 import { Session, startSession, type SiteCode, type Validators } from '../src/index.ts';
 import { examplePack } from './example-pack.ts';
 
@@ -12,18 +12,18 @@ export const START = Date.UTC(2026, 9, 14, 12);
 /** Validators for the shop's schemas: each accepts any object, unless a test supplies its own rule. */
 export function exampleValidators(rules: Record<string, (data: any) => boolean> = {}): Validators {
   const paths = new Set<string>();
-  for (const e of Object.values(examplePack.endpoints)) paths.add(e!.request).add(e!.response);
-  for (const t of Object.values(examplePack.tools)) paths.add(t!.input).add(t!.output);
+  for (const endpoint of Object.values(examplePack.endpoints)) paths.add(endpoint!.request).add(endpoint!.response);
+  for (const tool of Object.values(examplePack.tools)) paths.add(tool!.input).add(tool!.output);
   const site: Record<string, unknown> = {};
   for (const rel of paths) {
-    const rule = rules[rel] ?? ((d: unknown) => d !== null && typeof d === 'object' && !Array.isArray(d));
-    const v = (data: unknown) => {
+    const rule = rules[rel] ?? ((data: unknown) => data !== null && typeof data === 'object' && !Array.isArray(data));
+    const validator = (data: unknown) => {
       const ok = rule(data);
-      v.errors = ok ? null : [{ instancePath: '', message: `does not match ${rel}` }];
+      validator.errors = ok ? null : [{ instancePath: '', message: `does not match ${rel}` }];
       return ok;
     };
-    v.errors = null as null | { instancePath: string; message: string }[];
-    site[validatorName(rel)] = v;
+    validator.errors = null as null | { instancePath: string; message: string }[];
+    site[validatorName(rel)] = validator;
   }
   return { platform: platformValidators as Record<string, unknown>, site };
 }
@@ -110,9 +110,9 @@ export const exampleCode: SiteCode = {
   },
 };
 
-export async function exampleSession(o: { network?: (req: HostRequest) => HostResponse | Promise<HostResponse>; code?: SiteCode; validators?: Validators; host?: Partial<Host>; config?: unknown } = {}): Promise<ExampleHost & { session: Session }> {
-  const h = exampleHost(o.network ?? shopNetwork, o.host);
-  const { session } = await startSession({ pack: examplePack, site: o.code ?? exampleCode, validators: o.validators ?? exampleValidators(), host: h.host, config: o.config });
+export async function exampleSession(options: { network?: (req: HostRequest) => HostResponse | Promise<HostResponse>; code?: SiteCode; validators?: Validators; host?: Partial<Host>; config?: unknown } = {}): Promise<ExampleHost & { session: Session }> {
+  const shop = exampleHost(options.network ?? shopNetwork, options.host);
+  const { session } = await startSession({ pack: examplePack, site: options.code ?? exampleCode, validators: options.validators ?? exampleValidators(), host: shop.host, config: options.config });
   session.setPage({ url: 'https://www.example.com/', pageType: 'home' });
-  return { ...h, session };
+  return { ...shop, session };
 }

@@ -31,15 +31,15 @@ for (const id of sites) {
 // The words that would tie platform code to a site: its id and its hostnames.
 function siteWords(id: string): string[] {
   const { pack } = readSite(id);
-  const hosts = pack.site.origins.map((o) => new URL(o).hostname.replace(/^(www|api)\./, ''));
+  const hosts = pack.site.origins.map((origin) => new URL(origin).hostname.replace(/^(www|api)\./, ''));
   return [...new Set([id, ...hosts])];
 }
 
 function platformFiles(dir: string): string[] {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
-    if (e.name === 'node_modules') return [];
-    const p = path.join(dir, e.name);
-    return e.isDirectory() ? platformFiles(p) : /\.(ts|js|json|ya?ml|md)$/.test(e.name) ? [p] : [];
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.name === 'node_modules') return [];
+    const entryPath = path.join(dir, entry.name);
+    return entry.isDirectory() ? platformFiles(entryPath) : /\.(ts|js|json|ya?ml|md)$/.test(entry.name) ? [entryPath] : [];
   });
 }
 
@@ -48,7 +48,7 @@ test('no platform file names a site: site-specific facts live in sites/<id>/', (
   const hits: string[] = [];
   for (const file of platformFiles(path.join(repoRoot, 'platform'))) {
     const text = readFileSync(file, 'utf8').toLowerCase();
-    for (const w of words) if (text.includes(w.toLowerCase())) hits.push(`${path.relative(repoRoot, file)} mentions "${w}"`);
+    for (const word of words) if (text.includes(word.toLowerCase())) hits.push(`${path.relative(repoRoot, file)} mentions "${word}"`);
   }
   assert.deepEqual(hits, []);
 });

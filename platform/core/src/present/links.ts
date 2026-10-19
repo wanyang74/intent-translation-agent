@@ -2,8 +2,8 @@
 // Template syntax:
 //   {name}             params.name, URL-encoded (text or a number)
 //   {base64json:name}  params.name as JSON, base64-encoded (any JSON value)
-import type { SitePack } from '../../contract/generated/types.ts';
-import { base64 } from './text.ts';
+import type { SitePack } from '../../../contract/generated/types.ts';
+import { base64 } from '../shared/text.ts';
 
 const PLACEHOLDER = /\{(?:(base64json):)?([A-Za-z_][A-Za-z0-9_]*)\}/g;
 
@@ -22,17 +22,17 @@ export function linkPlaceholders(template: string): { name: string; encoding: 't
 export function buildLink(template: string, params: Record<string, unknown>): LinkResult {
   const problems: string[] = [];
   const url = template.replace(PLACEHOLDER, (_whole, enc: string | undefined, name: string) => {
-    const v = params[name];
-    if (v === undefined || v === null || v === '') {
+    const value = params[name];
+    if (value === undefined || value === null || value === '') {
       problems.push(`${name} is missing`);
       return '';
     }
-    if (enc) return base64(JSON.stringify(v));
-    if (typeof v !== 'string' && typeof v !== 'number') {
+    if (enc) return base64(JSON.stringify(value));
+    if (typeof value !== 'string' && typeof value !== 'number') {
       problems.push(`${name} must be text or a number`);
       return '';
     }
-    return encodeURIComponent(String(v));
+    return encodeURIComponent(String(value));
   });
   if (/[{}]/.test(url) && !problems.length) problems.push('the template has a malformed placeholder');
   return problems.length ? { ok: false, problems } : { ok: true, url };

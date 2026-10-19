@@ -30,19 +30,19 @@ export interface CallRecord {
   fixtureId: string | null;
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const toResponse = (f: Fixture): HostResponse => ({
-  status: f.response.status,
-  headers: f.response.headers,
-  body: typeof f.response.body === 'string' ? f.response.body : JSON.stringify(f.response.body),
+const toResponse = (fixture: Fixture): HostResponse => ({
+  status: fixture.response.status,
+  headers: fixture.response.headers,
+  body: typeof fixture.response.body === 'string' ? fixture.response.body : JSON.stringify(fixture.response.body),
 });
 
 /** Dotted paths of the fields an Ajv error list complains about, e.g. "analyticsData.clientId". */
 function errorFields(errors: ErrorObject[]): string[] {
-  return errors.map((e) => {
-    const base = e.instancePath.split('/').filter(Boolean);
-    if (e.keyword === 'required') base.push(String((e.params as { missingProperty: string }).missingProperty));
+  return errors.map((problem) => {
+    const base = problem.instancePath.split('/').filter(Boolean);
+    if (problem.keyword === 'required') base.push(String((problem.params as { missingProperty: string }).missingProperty));
     return base.join('.');
   });
 }
@@ -60,12 +60,12 @@ export class FakeHost {
     this.site = site;
     this.#contract = loadContract({ sites: [site] });
     this.#pack = this.#contract.sites[site]!.pack;
-    for (const f of fixtures) {
-      if (f.trigger) { this.#observed.push(f); continue; }
-      const endpoint = this.#pack.endpoints[f.endpoint];
-      if (!endpoint) throw new Error(`FakeHost: fixture ${f.id} names endpoint ${f.endpoint}, which ${site} doesn't have`);
-      const key = `${f.endpoint} ${matchKey(endpoint, requestValue(this.#pack, f.request))}`;
-      if (!this.#byKey.has(key)) this.#byKey.set(key, f);
+    for (const fixture of fixtures) {
+      if (fixture.trigger) { this.#observed.push(fixture); continue; }
+      const endpoint = this.#pack.endpoints[fixture.endpoint];
+      if (!endpoint) throw new Error(`FakeHost: fixture ${fixture.id} names endpoint ${fixture.endpoint}, which ${site} doesn't have`);
+      const key = `${fixture.endpoint} ${matchKey(endpoint, requestValue(this.#pack, fixture.request))}`;
+      if (!this.#byKey.has(key)) this.#byKey.set(key, fixture);
     }
   }
 
@@ -94,8 +94,8 @@ export class FakeHost {
     const validate = this.#contract.siteValidator(this.site, endpoint.request);
     if (!validate(value)) {
       const broken = errorFields(validate.errors ?? []);
-      const observed = this.#observed.find((f) => f.endpoint === name &&
-        f.trigger!.fields.some((t) => broken.some((b) => b === t || t.startsWith(b + '.') || b.startsWith(t + '.'))));
+      const observed = this.#observed.find((recorded) => recorded.endpoint === name &&
+        recorded.trigger!.fields.some((field) => broken.some((brokenField) => brokenField === field || field.startsWith(brokenField + '.') || brokenField.startsWith(field + '.'))));
       if (observed) return this.#record(name, null, observed.id, toResponse(observed));
       return this.#record(name, null, null, {
         status: 400, headers: { 'content-type': 'application/json' },
@@ -106,14 +106,14 @@ export class FakeHost {
     const key = matchKey(endpoint, value);
     const fixture = this.#byKey.get(`${name} ${key}`);
     if (!fixture) {
-      const known = [...this.#byKey.keys()].filter((k) => k.startsWith(name + ' ')).map((k) => '  ' + k.slice(name.length + 1));
+      const known = [...this.#byKey.keys()].filter((fixtureKey) => fixtureKey.startsWith(name + ' ')).map((fixtureKey) => '  ' + fixtureKey.slice(name.length + 1));
       throw new Error(`FakeHost: no ${name} fixture matches\n  ${key}\nRecorded ${name} requests:\n${known.join('\n') || '  (none)'}`);
     }
     return this.#record(name, key, fixture.id, toResponse(fixture));
   }
 
   #takeFault(endpoint: string): Fault | undefined {
-    const i = this.#faults.findIndex((f) => !f.endpoint || f.endpoint === endpoint);
+    const i = this.#faults.findIndex((candidate) => !candidate.endpoint || candidate.endpoint === endpoint);
     if (i < 0) return undefined;
     const fault = this.#faults[i]!;
     fault.times -= 1;

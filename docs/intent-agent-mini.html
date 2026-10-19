@@ -1747,6 +1747,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <div class="q"><b>How are UI components sent to each platform?</b> · The model-facing side is decided: typed presentation tools. Still open: whether Respond sends them to the surfaces as A2UI or as our own JSON.</div>
         <div class="q"><b>Can the agent ever show financing figures?</b> · Needs counsel's review of the Regulation Z wording, and a way to capture and version Carvana's disclosure text.</div>
         <div class="q"><b>What should the per-session and per-day call budgets be?</b> · Set them from real usage in the first rollout.</div>
+        <div class="q"><b>When does a message typed during a turn amend it, and when does it start a new turn?</b> · The brain handles both. An amend is queued on the running turn and reaches the model with the next tool results, or comes back on the answer as a follow-up if it arrives during the last model call. A new turn ends the running one: its model call is stopped and its pending tool calls are closed with errors. core.js offers both (<code>amendTurn</code>, <code>runTurn</code>), but no surface chooses between them yet. Still open: whether typing during a turn always amends, whether the surfaces get an explicit stop-and-restart control, and what a failed amend falls back to.</div>
       </div>
       <p class="note">Answered in phase 0: Cloudflare didn't block calls at about one per second (faster rates weren't tested), and the vehicle page's data is embedded in its HTML.</p>
 </div>

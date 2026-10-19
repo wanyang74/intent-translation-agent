@@ -27,21 +27,21 @@ function context(over: Partial<CheckContext> = {}): CheckContext {
     responses: { filters: { colors: [{ key: 'Gray' }, { key: 'Black' }] } }, ...over,
   };
 }
-const reason = (e: { reason?: string } | null) => e?.reason ?? null;
+const reason = (error: { reason?: string } | null) => error?.reason ?? null;
 
 test('the made-up shop is a valid site pack', () => {
   assert.ok(validateSitePack(pack), JSON.stringify(validateSitePack.errors));
 });
 
 test('every platform error and every site error matches the contract, with every placeholder filled', () => {
-  for (const r of Object.keys(PLATFORM_ERRORS) as PlatformReason[]) {
-    const e = platformError(r, STANDARD);
-    assert.ok(validateToolError(e), r);
-    assert.ok(!hasPlaceholder(e.message), `${r}: ${e.message}`);
+  for (const platformReason of Object.keys(PLATFORM_ERRORS) as PlatformReason[]) {
+    const error = platformError(platformReason, STANDARD);
+    assert.ok(validateToolError(error), platformReason);
+    assert.ok(!hasPlaceholder(error.message), `${platformReason}: ${error.message}`);
   }
-  for (const site of [pack, ...sitePacks()]) {
-    for (const [tool, t] of Object.entries(site.tools)) {
-      for (const r of Object.keys(t?.errors ?? {})) assert.ok(validateToolError(siteError(site, tool, r, STANDARD)), `${site.site.id}/${tool}/${r}`);
+  for (const sitePack of [pack, ...sitePacks()]) {
+    for (const [tool, definition] of Object.entries(sitePack.tools)) {
+      for (const siteReason of Object.keys(definition?.errors ?? {})) assert.ok(validateToolError(siteError(sitePack, tool, siteReason, STANDARD)), `${sitePack.site.id}/${tool}/${siteReason}`);
     }
   }
   assert.equal(siteError(pack, 'get_offer', 'no_such_reason'), null);
@@ -80,8 +80,8 @@ test('tool calls: IDs must be known, current and the right shape', () => {
 test('tool calls: values must be ones the site offers, listing the valid options', () => {
   const ctx = context();
   assert.equal(checkToolCall(ctx, 'search_products', { colors: ['Gray', 'Black'] }), null);
-  const e = checkToolCall(ctx, 'search_products', { colors: ['Gray', 'Grey'] });
-  assert.deepEqual(e, { code: 'invalid_value', reason: 'bad_color', message: "'Grey' isn't one of the colors we sell. Try one of: Gray, Black.", retryable: true });
+  const error = checkToolCall(ctx, 'search_products', { colors: ['Gray', 'Grey'] });
+  assert.deepEqual(error, { code: 'invalid_value', reason: 'bad_color', message: "'Grey' isn't one of the colors we sell. Try one of: Gray, Black.", retryable: true });
   const many = { colors: Array.from({ length: 30 }, (_, i) => ({ key: `C${i}` })) };
   assert.match(checkToolCall({ ...ctx, responses: { filters: many } }, 'search_products', { colors: ['Zz'] })!.message, /C19, …\.$/);
   assert.deepEqual(allowedValueRules(pack, 'search_products'), [{ arg: 'colors', endpoint: 'filters', path: 'colors[].key' }]);

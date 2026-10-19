@@ -53,40 +53,40 @@ const bundleOf = async (dir: string, contents: string, minify = false) => (await
 
 for (const scope of scopes) {
   const generated = await import(pathToFileURL(path.join(scope.generatedDir, 'validators.js')).href) as Record<string, (data: unknown) => boolean>;
-  const exported = scope.schemas.filter((s) => s.rel !== 'common.json');
+  const exported = scope.schemas.filter((schema) => schema.rel !== 'common.json');
 
   // Every example (valid) and every must-reject case (invalid), with the runtime validator's verdict.
   const cases = [
-    ...exported.flatMap((s) => (s.doc.examples ?? []).map((ex) => ({ rel: s.rel, data: ex }))),
-    ...scope.cases.map((c) => ({ rel: c.schema, data: c.instance })),
-  ].map((c) => ({ ...c, fn: validatorName(c.rel), expected: scope.validator(c.rel)(c.data) as boolean }));
+    ...exported.flatMap((schema) => (schema.doc.examples ?? []).map((ex) => ({ rel: schema.rel, data: ex }))),
+    ...scope.cases.map((rejectCase) => ({ rel: rejectCase.schema, data: rejectCase.instance })),
+  ].map((testCase) => ({ ...testCase, fn: validatorName(testCase.rel), expected: scope.validator(testCase.rel)(testCase.data) as boolean }));
 
   test(`${scope.label}: a generated validator for every schema except the shared definitions`, () => {
-    for (const s of exported) assert.equal(typeof generated[validatorName(s.rel)], 'function', s.rel);
+    for (const schema of exported) assert.equal(typeof generated[validatorName(schema.rel)], 'function', schema.rel);
   });
 
   test(`${scope.label}: generated validators agree with the runtime validator on every example and must-reject case`, () => {
-    assert.ok(cases.some((c) => c.expected), 'no valid examples');
-    if (scope.cases.length) assert.ok(cases.some((c) => !c.expected), 'must-reject cases were accepted');
-    for (const c of cases) assert.equal(generated[c.fn]!(c.data), c.expected, `${c.rel}: ${JSON.stringify(c.data).slice(0, 80)}`);
+    assert.ok(cases.some((testCase) => testCase.expected), 'no valid examples');
+    if (scope.cases.length) assert.ok(cases.some((testCase) => !testCase.expected), 'must-reject cases were accepted');
+    for (const testCase of cases) assert.equal(generated[testCase.fn]!(testCase.data), testCase.expected, `${testCase.rel}: ${JSON.stringify(testCase.data).slice(0, 80)}`);
   });
 
   test(`${scope.label}: each tool definition stands alone and accepts and refuses what its schema does`, () => {
     const defs = JSON.parse(readFileSync(path.join(scope.generatedDir, 'tools.json'), 'utf8')) as { name: string; inputSchema: object }[];
-    const site = Object.values(contract.sites).find((s) => scope.generatedDir === path.join(s.dir, 'generated'));
+    const site = Object.values(contract.sites).find((siteInfo) => scope.generatedDir === path.join(siteInfo.dir, 'generated'));
     assert.ok(defs.length > 0);
     for (const def of defs) {
-      const rel = site ? site.pack.tools[def.name]!.input : scope.schemas.find((s) => s.rel.endsWith(`/${def.name}.json`))!.rel;
+      const rel = site ? site.pack.tools[def.name]!.input : scope.schemas.find((schema) => schema.rel.endsWith(`/${def.name}.json`))!.rel;
       assert.doesNotMatch(JSON.stringify(def.inputSchema), /\$ref|\$id|"examples"/, def.name);
       const alone = new Ajv2020({ ...AJV_OPTIONS, allErrors: false }).compile(def.inputSchema);
-      const own = cases.filter((c) => c.rel === rel);
-      assert.ok(own.some((c) => c.expected), `${def.name}: no example to check against`);
-      for (const c of own) assert.equal(alone(c.data), c.expected, `${def.name}: ${JSON.stringify(c.data).slice(0, 80)}`);
+      const own = cases.filter((testCase) => testCase.rel === rel);
+      assert.ok(own.some((testCase) => testCase.expected), `${def.name}: no example to check against`);
+      for (const testCase of own) assert.equal(alone(testCase.data), testCase.expected, `${def.name}: ${JSON.stringify(testCase.data).slice(0, 80)}`);
     }
   });
 
   const bundle = await bundleOf(scope.generatedDir, `import * as v from './validators.js';\nglobalThis.__run = (cases) => JSON.stringify(cases.map((c) => v[c.fn](c.data)));`);
-  const expected = JSON.stringify(cases.map((c) => c.expected));
+  const expected = JSON.stringify(cases.map((testCase) => testCase.expected));
   const input = JSON.stringify(cases.map(({ fn, data }) => ({ fn, data })));
 
   test(`${scope.label}: the bundled validators use no eval or new Function`, () => {

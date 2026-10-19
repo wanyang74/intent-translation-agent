@@ -5,8 +5,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { SitePack } from '../../contract/generated/types.ts';
 import { sitesDir } from '../../contract/src/site-pack.ts';
-import type { SiteCode } from '../../core/src/site-code.ts';
-import type { Validators } from '../../core/src/validate.ts';
+import type { SiteCode } from '../../core/src/execute/site-code.ts';
+import type { Validators } from '../../core/src/shared/validate.ts';
 import * as platformValidators from '../../contract/generated/validators.js';
 
 export interface SiteRuntime {

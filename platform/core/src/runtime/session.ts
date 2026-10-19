@@ -1,12 +1,12 @@
 // One user's session on one site: the IDs it has seen, its share of the call budget and rate limit, cached responses,
 // the latest response of each endpoint (for allowed-value checks), site code's scratch space, and the records Respond
 // fills cards from. Sessions share nothing.
-import type { PageContext, SitePack } from '../../contract/generated/types.ts';
+import type { PageContext, SitePack } from '../../../contract/generated/types.ts';
 import type { Host } from './host.ts';
-import { IdSet } from './ids.ts';
-import { CallBudget, RateLimiter, type Policy } from './limits.ts';
-import type { SiteCode } from './site-code.ts';
-import type { Validators } from './validate.ts';
+import { IdSet } from '../boundary/ids.ts';
+import { CallBudget, RateLimiter, type Policy } from '../boundary/limits.ts';
+import type { SiteCode } from '../execute/site-code.ts';
+import type { Validators } from '../shared/validate.ts';
 
 export interface SessionOptions {
   pack: SitePack;
@@ -37,21 +37,23 @@ export class Session {
   page: PageContext | undefined;
   /** The current turn's trace ID, for the development log. */
   traceId: string | undefined;
+  /** The trace of the turn that's running, while one is; amendments go to it. */
+  activeTurn: string | undefined;
   /** Where progress lines go while tools run. */
   onProgress: ((text: string) => void) | undefined;
   private records = new Map<string, Map<string, unknown>>();
   private tracking = new Map<string, string>();
 
-  constructor(o: SessionOptions) {
-    this.pack = o.pack;
-    this.site = o.site;
-    this.validators = o.validators;
-    this.host = o.host;
-    this.policy = o.policy;
-    this.id = o.id ?? `sess_${o.host.randomId()}`;
-    this.ids = new IdSet(o.pack.entities);
-    this.budget = new CallBudget(o.policy.budgets, () => o.host.now(), o.usedToday ? { day: o.usedToday.day, dayKey: o.usedToday.dayKey } : {});
-    this.limiter = new RateLimiter(o.policy.rateLimitPerSecond);
+  constructor(options: SessionOptions) {
+    this.pack = options.pack;
+    this.site = options.site;
+    this.validators = options.validators;
+    this.host = options.host;
+    this.policy = options.policy;
+    this.id = options.id ?? `sess_${options.host.randomId()}`;
+    this.ids = new IdSet(options.pack.entities);
+    this.budget = new CallBudget(options.policy.budgets, () => options.host.now(), options.usedToday ? { day: options.usedToday.day, dayKey: options.usedToday.dayKey } : {});
+    this.limiter = new RateLimiter(options.policy.rateLimitPerSecond);
   }
 
   /** The page the user is on. The item on screen counts as a known ID. */

@@ -17,28 +17,28 @@ test('fill joins lists, writes objects as JSON, and leaves unknown names visible
 test('UTF-8 and base64 match Node for random text, including lone surrogates', () => {
   const next = random(7);
   for (let i = 0; i < 500; i++) {
-    const s = riskyString(next, 20);
-    assert.deepEqual(utf8(s), [...Buffer.from(s, 'utf8')], JSON.stringify(s));
-    assert.equal(base64(s), Buffer.from(s, 'utf8').toString('base64'), JSON.stringify(s));
+    const text = riskyString(next, 20);
+    assert.deepEqual(utf8(text), [...Buffer.from(text, 'utf8')], JSON.stringify(text));
+    assert.equal(base64(text), Buffer.from(text, 'utf8').toString('base64'), JSON.stringify(text));
   }
 });
 
 test('formulas follow arithmetic precedence and give no value instead of a wrong one', () => {
   const item = { a: 3, b: 4, s: 'x', n: { c: 2 } };
-  const v = (src: string) => parseFormula(src).evaluate(item);
-  assert.equal(v('a + b * 2'), 11);
-  assert.equal(v('(a + b) * 2'), 14);
-  assert.equal(v('-a - -b'), 1);
-  assert.equal(v('a * n.c - 1.5'), 4.5);
-  assert.equal(v('a / 0'), undefined);
-  assert.equal(v('a + missing'), undefined);
-  assert.equal(v('a + s'), undefined);
+  const evaluate = (src: string) => parseFormula(src).evaluate(item);
+  assert.equal(evaluate('a + b * 2'), 11);
+  assert.equal(evaluate('(a + b) * 2'), 14);
+  assert.equal(evaluate('-a - -b'), 1);
+  assert.equal(evaluate('a * n.c - 1.5'), 4.5);
+  assert.equal(evaluate('a / 0'), undefined);
+  assert.equal(evaluate('a + missing'), undefined);
+  assert.equal(evaluate('a + s'), undefined);
   assert.deepEqual(parseFormula('price.total + price.estimatedTaxesAndFees - price.total').paths, ['price.total', 'price.estimatedTaxesAndFees']);
 });
 
 test('a formula that does not parse says where', () => {
   for (const [src, msg] of [['2 * (a', /missing "\)"|ends too early/], ['a +', /ends too early/], ['3 # 4', /unexpected "#" at 2/], [')', /unexpected "\)" at 0/], ['', /empty/], ['a b', /unexpected field at 2/]] as const) {
-    assert.throws(() => parseFormula(src), (e: Error) => e instanceof FormulaError && msg.test(e.message), src);
+    assert.throws(() => parseFormula(src), (error: Error) => error instanceof FormulaError && msg.test(error.message), src);
   }
 });
 
@@ -52,9 +52,9 @@ test('every derived field in every site pack parses, and money is rounded to cen
 });
 
 test('deep links URL-encode text and base64-encode JSON', () => {
-  const r = deepLink(examplePack, 'search', { query: 'red shoes & socks', state: { page: 2, tags: ['é'] } });
-  assert.ok(r.ok);
-  const url = new URL(r.url);
+  const link = deepLink(examplePack, 'search', { query: 'red shoes & socks', state: { page: 2, tags: ['é'] } });
+  assert.ok(link.ok);
+  const url = new URL(link.url);
   assert.equal(url.searchParams.get('q'), 'red shoes & socks');
   assert.deepEqual(JSON.parse(Buffer.from(url.searchParams.get('state')!.replace(/ /g, '+'), 'base64').toString('utf8')), { page: 2, tags: ['é'] });
   assert.deepEqual(deepLink(examplePack, 'product', { id: 7 }), { ok: true, url: 'https://www.example.com/p/7' });
@@ -70,9 +70,9 @@ test('a deep link with a missing or unusable value, or an unknown name, is refus
 test("every site's deep links build once each placeholder has a value", () => {
   for (const pack of packs) {
     for (const [name, link] of Object.entries(pack.deepLinks ?? {})) {
-      const params = Object.fromEntries(linkPlaceholders(link!.template).map((p) => [p.name, p.encoding === 'base64json' ? { k: 1 } : 'v']));
-      const r = buildLink(link!.template, params);
-      assert.ok(r.ok && !/[{}]/.test(r.url) && r.url.startsWith('https://'), `${pack.site.id}/${name}: ${JSON.stringify(r)}`);
+      const params = Object.fromEntries(linkPlaceholders(link!.template).map((placeholder) => [placeholder.name, placeholder.encoding === 'base64json' ? { k: 1 } : 'v']));
+      const built = buildLink(link!.template, params);
+      assert.ok(built.ok && !/[{}]/.test(built.url) && built.url.startsWith('https://'), `${pack.site.id}/${name}: ${JSON.stringify(built)}`);
     }
   }
 });

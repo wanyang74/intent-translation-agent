@@ -48,20 +48,20 @@ export const hasFixtures = (site: string) => existsSync(path.join(fixtureDir(sit
 
 export function loadFixtures(site: string, dir: string = fixtureDir(site)): Fixture[] {
   const index: FixtureIndexEntry[] = JSON.parse(readFileSync(path.join(dir, 'index.json'), 'utf8'));
-  return index.map((e) => JSON.parse(readFileSync(path.join(dir, e.file), 'utf8')) as Fixture);
+  return index.map((entry) => JSON.parse(readFileSync(path.join(dir, entry.file), 'utf8')) as Fixture);
 }
 
 /** The request as FakeHost receives it: JSON bodies as text. */
-export const toHostRequest = (f: Fixture, body: unknown = f.request.body): HostRequest => ({
-  method: f.request.method,
-  url: f.request.url,
-  headers: f.request.headers,
+export const toHostRequest = (fixture: Fixture, body: unknown = fixture.request.body): HostRequest => ({
+  method: fixture.request.method,
+  url: fixture.request.url,
+  headers: fixture.request.headers,
   body: body === null || body === undefined ? null : JSON.stringify(body),
 });
 
 /** A fixture with its keys in the standard order, so every builder writes identical files. */
-export function normalizeFixture(f: Fixture): Fixture {
-  const { id, site, endpoint, kind, source, description, trigger, expect, request, response } = f;
+export function normalizeFixture(fixture: Fixture): Fixture {
+  const { id, site, endpoint, kind, source, description, trigger, expect, request, response } = fixture;
   return { id, site, endpoint, kind, source, description, ...(trigger ? { trigger } : {}), ...(expect ? { expect } : {}), request, response };
 }
 

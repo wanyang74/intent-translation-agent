@@ -5,16 +5,16 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
 import { FakeModel } from '../../testkit/src/fake-model.ts';
-import { Brain } from '../src/loop.ts';
-import { contextBlock, globalSegment, siteSection, toolSpecs } from '../src/prompt.ts';
-import { forModel, loadSite } from '../src/site.ts';
+import { Brain } from '../src/agent/loop.ts';
+import { contextBlock, globalSegment, siteSection, toolSpecs } from '../src/prompt/prompt.ts';
+import { forModel, loadSite } from '../src/prompt/site.ts';
 import { HOME, NOW, shopPack, shopSite } from './example-brain.ts';
 
 test('the global segment is byte-identical across sessions and restarts', () => {
-  const a = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
-  const b = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
-  assert.equal(a.system, b.system);
-  assert.equal(JSON.stringify(a.tools), JSON.stringify(b.tools));
+  const first = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
+  const second = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
+  assert.equal(first.system, second.system);
+  assert.equal(JSON.stringify(first.tools), JSON.stringify(second.tools));
   assert.equal(JSON.stringify(globalSegment(shopSite())), JSON.stringify(globalSegment(shopSite())));
 });
 
@@ -24,7 +24,7 @@ test("every site's global segment is the same on every load, its tool definition
     assert.equal(JSON.stringify(globalSegment(one)), JSON.stringify(globalSegment(two)), id);
     const { system, tools } = globalSegment(one);
     assert.ok(!JSON.stringify(tools).includes('$ref'), `${id}: tool definitions have no $ref`);
-    assert.ok(!system.includes('<!--') && !Object.values(one.skills).some((s) => s.includes('<!--')), `${id}: no authoring comments reach the model`);
+    assert.ok(!system.includes('<!--') && !Object.values(one.skills).some((skill) => skill.includes('<!--')), `${id}: no authoring comments reach the model`);
     assert.ok(system.length > 2000, `${id}: the system prompt has the rules and the site's section`);
   }
 });
@@ -59,17 +59,17 @@ test('the system prompt: the platform rules, then what the site pack says, inclu
 
 test("the tools: the site's in site-pack order (no writes when writes are off), then presentation, scripts and skills", () => {
   const tools = toolSpecs(shopSite());
-  assert.deepEqual(tools.map((t) => t.name), [
+  assert.deepEqual(tools.map((tool) => tool.name), [
     'search_products', 'get_offer', 'compare_products', 'my_orders', 'read_product_page',
     'present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice', 'run_script', 'load_skill',
   ]);
-  const byName = Object.fromEntries(tools.map((t) => [t.name, t]));
+  const byName = Object.fromEntries(tools.map((tool) => [tool.name, tool]));
   assert.equal(byName.search_products!.description, 'Search products. Show its results with present_items.');
   assert.equal(byName.my_orders!.description, "The shopper's orders. The user must be signed in.");
   assert.deepEqual((byName.load_skill!.inputSchema as { properties: { name: { enum: string[] } } }).properties.name.enum, ['product_research', 'gift_ideas']);
   assert.match(byName.run_script!.description, /await tools\.<name>\(arguments\)/);
   const noSkills = toolSpecs(shopSite({ pack: { ...shopPack, skills: {} }, skills: {} }));
-  assert.ok(!noSkills.some((t) => t.name === 'load_skill'), 'no skills, no load_skill');
+  assert.ok(!noSkills.some((tool) => tool.name === 'load_skill'), 'no skills, no load_skill');
 });
 
 test('the context block: the page fenced as untrusted text, then the time and weekday in UTC', () => {

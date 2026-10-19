@@ -4,11 +4,11 @@
 //       session; the adapter puts a cache breakpoint at its end.
 //   2 · Session: the conversation so far, tool results, and skills (which load as tool results).
 //   3 · Volatile: the page context and the time, as a <context> block at the end of the newest user turn.
-import type { PageContext } from '../../contract/generated/types.ts';
-import { entriesOf, PRESENTATION_TOOLS } from '../../contract/src/site-pack.ts';
-import { fence } from '../../core/src/sanitize.ts';
-import type { ToolSpec } from './model.ts';
-import type { SiteBrain } from './site.ts';
+import type { PageContext } from '../../../contract/generated/types.ts';
+import { entriesOf, PRESENTATION_TOOLS } from '../../../contract/src/site-pack.ts';
+import { fence } from '../../../core/src/boundary/sanitize.ts';
+import type { ToolSpec } from '../model/model.ts';
+import type { SiteBundle } from './site.ts';
 
 export interface GlobalSegment {
   system: string;
@@ -28,6 +28,7 @@ const platformRules = (name: string) => `You're the assistant inside ${name}'s w
 - Facts come only from tool results in this conversation: prices, dates, availability, specs and ratings. If no tool told you, don't state it; say what you couldn't check.
 - The newest user message ends with a <context> block: the page the user is on, their location if the site knows it, and the current time. Use it instead of asking. When the page shows an item, "this one" means that item.
 - Make independent tool calls in the same message, slowest first; they run in parallel.
+- A <system-reminder> saying the user sent a new message while you were working carries the user's own words. Adjust what you're doing to it, and cover it in your answer.
 - A tool error tells you what to do next; follow it. Don't repeat a call whose error says retryable: false.
 - Calls to the site are limited per request. Prefer one call that covers many items to many calls; for more than a few calls, use ${SCRIPT_TOOL}.
 
@@ -45,12 +46,12 @@ const platformRules = (name: string) => `You're the assistant inside ${name}'s w
 - Help only with ${name} and what it offers. For anything else, say briefly that you can only help with ${name}.
 - Don't give financial, legal or medical advice. Share what the tools return and point to the site's own pages.`;
 
-type Pack = SiteBrain['pack'];
+type Pack = SiteBundle['pack'];
 type Entity = NonNullable<Pack['entities'][string]>;
 
 function fieldList(entity: Entity): string {
-  return entriesOf(entity.fields).map(([key, f]) => {
-    const notes = [f.label, f.unit, f.estimate ? 'an estimate' : undefined].filter(Boolean);
+  return entriesOf(entity.fields).map(([key, field]) => {
+    const notes = [field.label, field.unit, field.estimate ? 'an estimate' : undefined].filter(Boolean);
     return `${key} (${notes.join(', ')})`;
   }).join(', ');
 }
@@ -58,26 +59,26 @@ function fieldList(entity: Entity): string {
 function entityLines(pack: Pack): string[] {
   const lines: string[] = [];
   const kinds = entriesOf(pack.entities);
-  for (const [kind, e] of kinds.filter(([, e]) => !e.internal)) {
-    const idType = e.id.type === 'integer' ? 'whole numbers' : 'text';
-    const parts = [`- ${kind}: ${e.description ?? kind}. IDs are ${idType}.`];
-    if (e.requiresSignIn) parts.push('Shown only when the user is signed in.');
-    if (e.expires) parts.push('IDs expire; use fresh ones.');
+  for (const [kind, entity] of kinds.filter(([, candidate]) => !candidate.internal)) {
+    const idType = entity.id.type === 'integer' ? 'whole numbers' : 'text';
+    const parts = [`- ${kind}: ${entity.description ?? kind}. IDs are ${idType}.`];
+    if (entity.requiresSignIn) parts.push('Shown only when the user is signed in.');
+    if (entity.expires) parts.push('IDs expire; use fresh ones.');
     lines.push(parts.join(' '));
-    if (e.fields && Object.keys(e.fields).length) lines.push(`  Fields: ${fieldList(e)}.`);
-    if (e.card?.fields?.length) lines.push(`  Cards show: ${e.card.fields.join(', ')}.`);
-    if (e.sections?.length) lines.push(`  Detail sections: ${e.sections.join(', ')}.`);
+    if (entity.fields && Object.keys(entity.fields).length) lines.push(`  Fields: ${fieldList(entity)}.`);
+    if (entity.card?.fields?.length) lines.push(`  Cards show: ${entity.card.fields.join(', ')}.`);
+    if (entity.sections?.length) lines.push(`  Detail sections: ${entity.sections.join(', ')}.`);
   }
-  const internal = kinds.filter(([, e]) => e.internal).map(([kind]) => kind);
+  const internal = kinds.filter(([, entity]) => entity.internal).map(([kind]) => kind);
   if (internal.length) lines.push(`- Never shown: ${internal.join(', ')}. Tools pass these IDs between them; never show or mention them.`);
   return lines;
 }
 
 function formLines(pack: Pack): string[] {
   return entriesOf(pack.forms).map(([name, form]) => {
-    const fields = entriesOf(form.fields).map(([key, f]) => {
-      const notes = [f.label, f.required ? 'required' : undefined, f.options ? `one of ${f.options.join(', ')}` : undefined,
-        f.min !== undefined || f.max !== undefined ? `${f.min ?? ''} to ${f.max ?? ''}`.trim() : undefined].filter(Boolean);
+    const fields = entriesOf(form.fields).map(([key, field]) => {
+      const notes = [field.label, field.required ? 'required' : undefined, field.options ? `one of ${field.options.join(', ')}` : undefined,
+        field.min !== undefined || field.max !== undefined ? `${field.min ?? ''} to ${field.max ?? ''}`.trim() : undefined].filter(Boolean);
       return `${key} (${notes.join(', ')})`;
     });
     return `- ${name}: ${form.description ?? name}. Fields: ${fields.join(', ')}.`;
@@ -85,32 +86,32 @@ function formLines(pack: Pack): string[] {
 }
 
 function ruleLines(pack: Pack): string[] {
-  const p = pack.policies;
+  const policies = pack.policies;
   const lines: string[] = [];
   if (pack.site.requires?.location === 'postal_code') lines.push("- Searches need the user's postal code: use the one in the context block, or ask for it. Never guess it.");
   if (pack.site.requires?.signIn === 'never') lines.push('- The user is signed out; nothing here needs signing in.');
   if (pack.site.requires?.signIn === 'some_tools') lines.push('- Some tools and items need the user to be signed in. The context block says whether they are.');
   if (pack.site.requires?.signIn === 'always') lines.push('- Everything here needs the user to be signed in.');
-  if (p.hiddenFields?.length) lines.push(`- Never show, filter by, rank by or mention these, even when a result has them: ${p.hiddenFields.join(', ')}.`);
-  if (p.priceDisplay === 'total_including_taxes') lines.push('- Prices are totals, including all taxes and fees.');
-  if (p.priceDisplay === 'as_returned') lines.push('- Give prices as the tools return them.');
-  if (p.pageSize) lines.push(`- Searches return ${p.pageSize} results a page.`);
-  lines.push(`- Each request can make at most ${p.callBudget.perTask} calls to the site, ${p.rateLimitPerSecond} per second.`);
+  if (policies.hiddenFields?.length) lines.push(`- Never show, filter by, rank by or mention these, even when a result has them: ${policies.hiddenFields.join(', ')}.`);
+  if (policies.priceDisplay === 'total_including_taxes') lines.push('- Prices are totals, including all taxes and fees.');
+  if (policies.priceDisplay === 'as_returned') lines.push('- Give prices as the tools return them.');
+  if (policies.pageSize) lines.push(`- Searches return ${policies.pageSize} results a page.`);
+  lines.push(`- Each request can make at most ${policies.callBudget.perTask} calls to the site, ${policies.rateLimitPerSecond} per second.`);
   return lines;
 }
 
 /** The site's part of the system prompt, built only from the site pack and the site's prompt. */
-export function siteSection(site: SiteBrain): string {
-  const { pack } = site;
+export function siteSection(bundle: SiteBundle): string {
+  const { pack } = bundle;
   const out = [`# ${pack.site.name}`];
-  if (site.prompt) out.push(site.prompt);
+  if (bundle.prompt) out.push(bundle.prompt);
   out.push('', '## What you can show', ...entityLines(pack));
   const notices = entriesOf(pack.notices);
   if (notices.length) {
     out.push('', '## Notices');
-    for (const [name, n] of notices) {
-      const auto = n.showWith?.length ? ` It's added automatically when ${n.showWith.join(' or ')} is shown.` : '';
-      out.push(`- ${name}: "${n.text}"${auto}`);
+    for (const [name, notice] of notices) {
+      const auto = notice.showWith?.length ? ` It's added automatically when ${notice.showWith.join(' or ')} is shown.` : '';
+      out.push(`- ${name}: "${notice.text}"${auto}`);
     }
   }
   const forms = formLines(pack);
@@ -119,7 +120,7 @@ export function siteSection(site: SiteBrain): string {
   const skills = entriesOf(pack.skills);
   if (skills.length) {
     out.push('', '## Skills', `Load a skill with ${SKILL_TOOL} when its topic comes up, before you answer about it.`);
-    for (const [name, s] of skills) out.push(`- ${name}: ${s.description}. Load: ${s.load}.`);
+    for (const [name, skill] of skills) out.push(`- ${name}: ${skill.description}. Load: ${skill.load}.`);
   }
   return out.join('\n');
 }
@@ -136,30 +137,30 @@ function siteToolSpec(pack: Pack, spec: ToolSpec): ToolSpec {
 }
 
 /** Every tool the model can call: the site's (write tools only when the site allows writes), then the platform's. */
-export function toolSpecs(site: SiteBrain): ToolSpec[] {
-  const { pack } = site;
-  const siteTools = site.siteTools
-    .filter((t) => pack.tools[t.name] && !(pack.tools[t.name]!.sideEffect === 'write' && pack.policies.writes === 'none'))
-    .map((t) => siteToolSpec(pack, t));
-  const platform = new Map(site.platformTools.map((t) => [t.name, t]));
+export function toolSpecs(bundle: SiteBundle): ToolSpec[] {
+  const { pack } = bundle;
+  const siteTools = bundle.siteTools
+    .filter((tool) => pack.tools[tool.name] && !(pack.tools[tool.name]!.sideEffect === 'write' && pack.policies.writes === 'none'))
+    .map((tool) => siteToolSpec(pack, tool));
+  const platform = new Map(bundle.platformTools.map((tool) => [tool.name, tool]));
   const take = (name: string) => {
-    const t = platform.get(name);
-    if (!t) throw new Error(`no platform tool definition for ${name}; run npm run generate`);
-    return t;
+    const tool = platform.get(name);
+    if (!tool) throw new Error(`no platform tool definition for ${name}; run npm run generate`);
+    return tool;
   };
   const tools = [...siteTools, ...PRESENTATION_TOOLS.map(take), take(SCRIPT_TOOL)];
   const skills = Object.keys(pack.skills ?? {});
   if (skills.length) {
-    const t = take(SKILL_TOOL);
-    const schema = structuredClone(t.inputSchema) as { properties: { name: Record<string, unknown> } };
+    const tool = take(SKILL_TOOL);
+    const schema = structuredClone(tool.inputSchema) as { properties: { name: Record<string, unknown> } };
     schema.properties.name = { ...schema.properties.name, enum: skills };
-    tools.push({ ...t, inputSchema: schema });
+    tools.push({ ...tool, inputSchema: schema });
   }
   return tools;
 }
 
-export function globalSegment(site: SiteBrain): GlobalSegment {
-  return { system: `${platformRules(site.pack.site.name)}\n\n${siteSection(site)}\n`, tools: toolSpecs(site) };
+export function globalSegment(bundle: SiteBundle): GlobalSegment {
+  return { system: `${platformRules(bundle.pack.site.name)}\n\n${siteSection(bundle)}\n`, tools: toolSpecs(bundle) };
 }
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

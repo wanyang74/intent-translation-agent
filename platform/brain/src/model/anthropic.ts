@@ -25,30 +25,30 @@ export interface AnthropicOptions {
 
 type CacheOptions = { anthropic: { cacheControl: { type: 'ephemeral'; ttl?: '5m' | '1h' } } };
 
-function toolResultOutput(p: ToolResultPart) {
-  if (typeof p.output === 'string') return { type: p.isError ? 'error-text' as const : 'text' as const, value: p.output };
-  return { type: p.isError ? 'error-json' as const : 'json' as const, value: p.output as JSONValue };
+function toolResultOutput(result: ToolResultPart) {
+  if (typeof result.output === 'string') return { type: result.isError ? 'error-text' as const : 'text' as const, value: result.output };
+  return { type: result.isError ? 'error-json' as const : 'json' as const, value: result.output as JSONValue };
 }
 
 /** The brain's messages as AI SDK messages, with a cache breakpoint on the last one. */
 export function toModelMessages(messages: readonly ChatMessage[], cache: CacheOptions): ModelMessage[] {
-  return messages.map((m, i): ModelMessage => {
+  return messages.map((message, i): ModelMessage => {
     const options = i === messages.length - 1 ? { providerOptions: cache } : {};
-    switch (m.role) {
+    switch (message.role) {
       case 'user':
-        return { role: 'user', content: m.content.map((p) => ({ type: 'text' as const, text: p.text })), ...options };
+        return { role: 'user', content: message.content.map((part) => ({ type: 'text' as const, text: part.text })), ...options };
       case 'assistant':
         return {
           role: 'assistant',
-          content: m.content.map((p) => (p.type === 'text'
-            ? { type: 'text' as const, text: p.text }
-            : { type: 'tool-call' as const, toolCallId: p.id, toolName: p.name, input: p.input })),
+          content: message.content.map((part) => (part.type === 'text'
+            ? { type: 'text' as const, text: part.text }
+            : { type: 'tool-call' as const, toolCallId: part.id, toolName: part.name, input: part.input })),
           ...options,
         };
       case 'tool':
         return {
           role: 'tool',
-          content: m.content.map((p) => ({ type: 'tool-result' as const, toolCallId: p.id, toolName: p.name, output: toolResultOutput(p) })),
+          content: message.content.map((result) => ({ type: 'tool-result' as const, toolCallId: result.id, toolName: result.name, output: toolResultOutput(result) })),
           ...options,
         };
     }
@@ -57,25 +57,25 @@ export function toModelMessages(messages: readonly ChatMessage[], cache: CacheOp
 
 /** Tool definitions without execute functions: the model calls them, the client runs them. */
 export function toToolSet(specs: readonly ToolSpec[]): ToolSet {
-  return Object.fromEntries(specs.map((s) => [s.name, tool({ description: s.description, inputSchema: jsonSchema(s.inputSchema as Parameters<typeof jsonSchema>[0]) })]));
+  return Object.fromEntries(specs.map((definition) => [definition.name, tool({ description: definition.description, inputSchema: jsonSchema(definition.inputSchema as Parameters<typeof jsonSchema>[0]) })]));
 }
 
 const FINISH: Record<string, FinishReason> = { stop: 'stop', 'tool-calls': 'tool-calls', length: 'length' };
 
-function usageOf(u: { inputTokens: number | undefined; outputTokens: number | undefined; inputTokenDetails?: { cacheReadTokens: number | undefined; cacheWriteTokens: number | undefined } }): Usage {
+function usageOf(usage: { inputTokens: number | undefined; outputTokens: number | undefined; inputTokenDetails?: { cacheReadTokens: number | undefined; cacheWriteTokens: number | undefined } }): Usage {
   return {
-    inputTokens: u.inputTokens ?? 0,
-    outputTokens: u.outputTokens ?? 0,
-    cacheReadTokens: u.inputTokenDetails?.cacheReadTokens ?? 0,
-    cacheWriteTokens: u.inputTokenDetails?.cacheWriteTokens ?? 0,
+    inputTokens: usage.inputTokens ?? 0,
+    outputTokens: usage.outputTokens ?? 0,
+    cacheReadTokens: usage.inputTokenDetails?.cacheReadTokens ?? 0,
+    cacheWriteTokens: usage.inputTokenDetails?.cacheWriteTokens ?? 0,
   };
 }
 
-export function anthropicModel(o: AnthropicOptions): ModelAdapter {
-  const modelId = o.model ?? DEFAULT_MODEL;
-  const provider = createAnthropic({ apiKey: o.apiKey, ...(o.fetch ? { fetch: o.fetch } : {}), ...(o.baseURL ? { baseURL: o.baseURL } : {}) });
+export function anthropicModel(options: AnthropicOptions): ModelAdapter {
+  const modelId = options.model ?? DEFAULT_MODEL;
+  const provider = createAnthropic({ apiKey: options.apiKey, ...(options.fetch ? { fetch: options.fetch } : {}), ...(options.baseURL ? { baseURL: options.baseURL } : {}) });
   const model = provider(modelId);
-  const cache: CacheOptions = { anthropic: { cacheControl: { type: 'ephemeral', ...(o.cacheTtl === '1h' ? { ttl: '1h' as const } : {}) } } };
+  const cache: CacheOptions = { anthropic: { cacheControl: { type: 'ephemeral', ...(options.cacheTtl === '1h' ? { ttl: '1h' as const } : {}) } } };
   // The global segment's tools are one array per site; convert each array once.
   const toolSets = new WeakMap<readonly ToolSpec[], ToolSet>();
   return {
@@ -93,9 +93,9 @@ export function anthropicModel(o: AnthropicOptions): ModelAdapter {
         tools,
         toolChoice: 'auto',
         maxOutputTokens: request.maxOutputTokens,
-        maxRetries: o.maxRetries ?? 2,
+        maxRetries: options.maxRetries ?? 2,
         abortSignal: request.signal,
-        providerOptions: { anthropic: { effort: o.effort ?? 'low' } },
+        providerOptions: { anthropic: { effort: options.effort ?? 'low' } },
         onError: () => {}, // errors arrive as stream parts and are thrown below
       });
       for await (const part of result.stream) {

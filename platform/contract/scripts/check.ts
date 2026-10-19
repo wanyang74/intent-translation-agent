@@ -18,14 +18,14 @@ const fail = (what: string, detail: string) => failures.push(`${what}: ${detail}
 
 function checkSchemas(label: string, schemas: SchemaFile[]) {
   let examples = 0;
-  for (const s of schemas) {
-    if (s.doc.$id !== s.id) fail(`${label}/${s.rel}`, `$id should be ${s.id}`);
+  for (const schema of schemas) {
+    if (schema.doc.$id !== schema.id) fail(`${label}/${schema.rel}`, `$id should be ${schema.id}`);
     let validate;
-    try { validate = contract.ajv.getSchema(s.id); } catch (e) { fail(`${label}/${s.rel}`, `does not compile: ${(e as Error).message}`); continue; }
-    if (!validate) { fail(`${label}/${s.rel}`, 'not loaded'); continue; }
-    for (const [i, ex] of (s.doc.examples ?? []).entries()) {
+    try { validate = contract.ajv.getSchema(schema.id); } catch (error) { fail(`${label}/${schema.rel}`, `does not compile: ${(error as Error).message}`); continue; }
+    if (!validate) { fail(`${label}/${schema.rel}`, 'not loaded'); continue; }
+    for (const [i, ex] of (schema.doc.examples ?? []).entries()) {
       examples++;
-      if (!validate(ex)) fail(`${label}/${s.rel} example ${i}`, describeErrors(validate.errors));
+      if (!validate(ex)) fail(`${label}/${schema.rel} example ${i}`, describeErrors(validate.errors));
     }
   }
   return examples;
@@ -45,7 +45,7 @@ const summary: string[] = [];
 }
 
 for (const [id, site] of Object.entries(contract.sites)) {
-  for (const p of crossCheck(site)) fail(`sites/${id}/site.yaml`, p);
+  for (const problem of crossCheck(site)) fail(`sites/${id}/site.yaml`, problem);
   const siteValidator = (rel: string) => contract.siteValidator(id, rel);
   const examples = checkSchemas(`sites/${id}`, site.schemas);
 
@@ -56,11 +56,11 @@ for (const [id, site] of Object.entries(contract.sites)) {
   let recorded = 0;
   const har = site.pack.recording.har && path.join(repoRoot, site.pack.recording.har);
   if (har && existsSync(har)) {
-    for (const [i, e] of JSON.parse(readFileSync(har, 'utf8')).log.entries.entries()) {
-      const match = endpointOf(site.pack, e.request.url);
-      if (!match || e.response.status !== 200 || (match.endpoint.responseFormat ?? 'json') !== 'json') continue;
-      const request = requestValue(site.pack, { method: e.request.method, url: e.request.url, body: e.request.postData?.text ?? null });
-      const response = JSON.parse(e.response.content?.text ?? 'null');
+    for (const [i, entry] of JSON.parse(readFileSync(har, 'utf8')).log.entries.entries()) {
+      const match = endpointOf(site.pack, entry.request.url);
+      if (!match || entry.response.status !== 200 || (match.endpoint.responseFormat ?? 'json') !== 'json') continue;
+      const request = requestValue(site.pack, { method: entry.request.method, url: entry.request.url, body: entry.request.postData?.text ?? null });
+      const response = JSON.parse(entry.response.content?.text ?? 'null');
       for (const [kind, rel, body] of [['request', match.endpoint.request, request], ['response', match.endpoint.response, response]] as const) {
         recorded++;
         const validate = contract.siteValidator(id, rel);
@@ -72,10 +72,10 @@ for (const [id, site] of Object.entries(contract.sites)) {
   summary.push(`sites/${id}: ${site.schemas.length} schemas, ${examples} examples, ${cases.length} must-reject cases${recordingNote}`);
 }
 
-summary.forEach((s) => console.log(s));
+summary.forEach((line) => console.log(line));
 if (failures.length) {
   console.log(`\n${failures.length} failure(s):`);
-  failures.slice(0, 40).forEach((f) => console.log(' - ' + f));
+  failures.slice(0, 40).forEach((failure) => console.log(' - ' + failure));
   process.exit(1);
 }
 console.log('Contract check passed.');

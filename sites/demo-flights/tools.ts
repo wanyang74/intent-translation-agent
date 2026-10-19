@@ -6,21 +6,21 @@ interface Segment { carrier: string; flightNumber: string; from: string; to: str
 export const site: SiteCode = {
   tools: {
     async search_flights(ctx) {
-      const a = ctx.args as { origin: string; destination: string; departDate: string; returnDate?: string; adults: number; cabin: string };
+      const args = ctx.args as { origin: string; destination: string; departDate: string; returnDate?: string; adults: number; cabin: string };
       const res = await ctx.call('offers', {
-        body: { origin: a.origin, destination: a.destination, departDate: a.departDate, ...(a.returnDate ? { returnDate: a.returnDate } : {}), adults: a.adults, cabin: a.cabin },
+        body: { origin: args.origin, destination: args.destination, departDate: args.departDate, ...(args.returnDate ? { returnDate: args.returnDate } : {}), adults: args.adults, cabin: args.cabin },
       });
       return {
-        offers: res.offers.map((o: { offerId: string; expiresAt: string; price: { total: number }; segments: Segment[]; duration: string }) => ({
-          offerId: o.offerId,
-          expiresAt: o.expiresAt,
-          totalPrice: o.price.total,
-          carrier: o.segments[0]!.carrier,
-          flightNumbers: o.segments.map((s) => s.flightNumber).join(' / '),
-          departs: o.segments[0]!.departs,
-          arrives: o.segments[o.segments.length - 1]!.arrives,
-          stops: o.segments.length - 1,
-          duration: o.duration,
+        offers: res.offers.map((offer: { offerId: string; expiresAt: string; price: { total: number }; segments: Segment[]; duration: string }) => ({
+          offerId: offer.offerId,
+          expiresAt: offer.expiresAt,
+          totalPrice: offer.price.total,
+          carrier: offer.segments[0]!.carrier,
+          flightNumbers: offer.segments.map((segment) => segment.flightNumber).join(' / '),
+          departs: offer.segments[0]!.departs,
+          arrives: offer.segments[offer.segments.length - 1]!.arrives,
+          stops: offer.segments.length - 1,
+          duration: offer.duration,
         })),
       };
     },
@@ -28,11 +28,11 @@ export const site: SiteCode = {
     async get_trips(ctx) {
       const res = await ctx.call('trips', { query: { status: (ctx.args as { status?: string }).status ?? 'upcoming' } });
       return {
-        trips: res.trips.map((t: { recordLocator: string; status: string; segments: Segment[] }) => ({
-          recordLocator: t.recordLocator,
-          route: `${t.segments[0]!.from} to ${t.segments[t.segments.length - 1]!.to}`,
-          departs: t.segments[0]!.departs,
-          status: t.status,
+        trips: res.trips.map((trip: { recordLocator: string; status: string; segments: Segment[] }) => ({
+          recordLocator: trip.recordLocator,
+          route: `${trip.segments[0]!.from} to ${trip.segments[trip.segments.length - 1]!.to}`,
+          departs: trip.segments[0]!.departs,
+          status: trip.status,
         })),
       };
     },

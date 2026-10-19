@@ -72,10 +72,10 @@ for (const site of ioSites) {
   const rt = await loadSiteRuntime(site);
   const fixtures = loadFixtures(site);
   for (const conversation of loadConversations(site)) {
-    const recorded = fixtures.filter((f) => conversation.fixtures.includes(f.id) && !f.trigger).map((f) => ({
-      endpoint: f.endpoint,
-      key: matchKey(rt.pack.endpoints[f.endpoint]!, requestValue(rt.pack, f.request)),
-      response: { status: f.response.status, headers: f.response.headers, body: typeof f.response.body === 'string' ? f.response.body : JSON.stringify(f.response.body) },
+    const recorded = fixtures.filter((fixture) => conversation.fixtures.includes(fixture.id) && !fixture.trigger).map((fixture) => ({
+      endpoint: fixture.endpoint,
+      key: matchKey(rt.pack.endpoints[fixture.endpoint]!, requestValue(rt.pack, fixture.request)),
+      response: { status: fixture.response.status, headers: fixture.response.headers, body: typeof fixture.response.body === 'string' ? fixture.response.body : JSON.stringify(fixture.response.body) },
     }));
     ioCases.push({ pack: rt.pack, code: rt.code, siteValidators: rt.validators.site, conversation, recorded });
   }
@@ -85,7 +85,7 @@ const ioExpected = JSON.stringify(await runIoCases(ioCases, (await import('../..
 // The bundle imports each site's code and validators by path, as a site's core.js bundle would.
 const imports = ioSites.map((site, i) => `import { site as code${i} } from ${JSON.stringify(path.join(sitesDir, site, 'tools.ts'))};\nimport * as v${i} from ${JSON.stringify(path.join(sitesDir, site, 'generated', 'validators.js'))};`).join('\n');
 const codeOf = `{ ${ioSites.map((site, i) => `${JSON.stringify(site)}: [code${i}, v${i}]`).join(', ')} }`;
-const ioData = JSON.stringify(ioCases.map((c) => ({ site: c.pack.site.id, pack: c.pack, conversation: c.conversation, recorded: c.recorded })));
+const ioData = JSON.stringify(ioCases.map((ioCase) => ({ site: ioCase.pack.site.id, pack: ioCase.pack, conversation: ioCase.conversation, recorded: ioCase.recorded })));
 const ioBundle = (await build({
   stdin: {
     contents: `${imports}
@@ -102,9 +102,9 @@ globalThis.__runIo = async () => JSON.stringify(await runIoCases(data.map((d) =>
 test("every conversation's client side gives the same results in Node, with no differences from the conversation", () => {
   const results = JSON.parse(ioExpected) as { conversation: string; differences: string[]; finished: boolean; outcomes: { ok: boolean }[] }[];
   assert.ok(results.length >= 4);
-  for (const r of results) {
-    assert.deepEqual(r.differences, [], r.conversation);
-    assert.ok(r.finished && r.outcomes.every((o) => o.ok), r.conversation);
+  for (const result of results) {
+    assert.deepEqual(result.differences, [], result.conversation);
+    assert.ok(result.finished && result.outcomes.every((outcome) => outcome.ok), result.conversation);
   }
 });
 

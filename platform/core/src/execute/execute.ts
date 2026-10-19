@@ -2,17 +2,17 @@
 // through a ToolContext, and its output is checked against the tool's output schema before anyone sees it. The
 // output's IDs join the session's known IDs, and its records are kept for Respond. run_script runs a model-written
 // script in the platform's sandbox, where the only way out is these same tool calls, on the same budget.
-import type { ToolError } from '../../contract/generated/types.ts';
-import { valuesAt } from '../../contract/src/paths.ts';
-import { checkToolCall, missingValueSources, type CheckContext } from './checks.ts';
+import type { ToolError } from '../../../contract/generated/types.ts';
+import { valuesAt } from '../../../contract/src/paths.ts';
+import { checkToolCall, missingValueSources, type CheckContext } from '../boundary/checks.ts';
 import { callEndpoint } from './endpoints.ts';
-import { platformError, siteError } from './errors.ts';
-import { computeDerived } from './formula.ts';
-import { deepLink } from './links.ts';
-import { fence } from './sanitize.ts';
-import type { Session } from './session.ts';
+import { platformError, siteError } from '../boundary/errors.ts';
+import { computeDerived } from '../present/formula.ts';
+import { deepLink } from '../present/links.ts';
+import { fence } from '../boundary/sanitize.ts';
+import type { Session } from '../runtime/session.ts';
 import { type ToolContext, ToolFailure } from './site-code.ts';
-import { problemsWith } from './validate.ts';
+import { problemsWith } from '../shared/validate.ts';
 
 export type CallOutcome = { ok: true; output: Record<string, unknown> } | { ok: false; error: ToolError };
 
@@ -46,8 +46,8 @@ function toolContext(session: Session, tool: string, args: unknown): ToolContext
     call: (endpoint, request) => callEndpoint(session, tool, endpoint, request),
     derived: (kind, item) => computeDerived(session.pack, kind, item),
     link: (name, params) => {
-      const r = deepLink(session.pack, name, params);
-      return r.ok ? r.url : undefined;
+      const link = deepLink(session.pack, name, params);
+      return link.ok ? link.url : undefined;
     },
     fence: (text, source, maxLength) => fence(text, source, maxLength),
     fail: (reason, values = {}) => {
@@ -64,17 +64,17 @@ function toolContext(session: Session, tool: string, args: unknown): ToolContext
 /** Keeps what a tool returned about each item, for Respond: by the tool's output ID paths, or for its input IDs. */
 function keepRecords(session: Session, tool: string, args: unknown, output: Record<string, unknown>): void {
   const ids = session.pack.tools[tool]!.ids;
-  const outputKinds = new Set((ids?.output ?? []).map((p) => p.kind));
-  for (const p of ids?.output ?? []) {
-    const cut = p.path.lastIndexOf('.');
-    const field = p.path.slice(cut + 1);
+  const outputKinds = new Set((ids?.output ?? []).map((idPath) => idPath.kind));
+  for (const idPath of ids?.output ?? []) {
+    const cut = idPath.path.lastIndexOf('.');
+    const field = idPath.path.slice(cut + 1);
     if (field.endsWith('[]')) continue;
-    const records = cut < 0 ? [output] : valuesAt(output, p.path.slice(0, cut));
-    for (const r of records) if (r && typeof r === 'object') session.putRecord(p.kind, (r as Record<string, unknown>)[field], tool, r);
+    const records = cut < 0 ? [output] : valuesAt(output, idPath.path.slice(0, cut));
+    for (const record of records) if (record && typeof record === 'object') session.putRecord(idPath.kind, (record as Record<string, unknown>)[field], tool, record);
   }
-  for (const p of ids?.input ?? []) {
-    if (outputKinds.has(p.kind)) continue;
-    for (const id of valuesAt(args, p.path)) session.putRecord(p.kind, id, tool, output);
+  for (const idPath of ids?.input ?? []) {
+    if (outputKinds.has(idPath.kind)) continue;
+    for (const id of valuesAt(args, idPath.path)) session.putRecord(idPath.kind, id, tool, output);
   }
 }
 
@@ -91,9 +91,9 @@ export async function runToolCall(session: Session, name: string, args: unknown,
       if (!source) continue;
       try {
         await callEndpoint(session, name, endpoint, source(args));
-      } catch (e) {
-        if (e instanceof ToolFailure) return refuse(e.error);
-        throw e;
+      } catch (thrown) {
+        if (thrown instanceof ToolFailure) return refuse(thrown.error);
+        throw thrown;
       }
     }
     if (missing.length) problem = checkToolCall(checkContext(session), name, args);
@@ -106,10 +106,10 @@ export async function runToolCall(session: Session, name: string, args: unknown,
   let output: Record<string, unknown>;
   try {
     output = await impl(toolContext(session, name, args));
-  } catch (e) {
-    if (e instanceof ToolFailure) return refuse(e.error);
-    session.log('tool_crashed', { tool: name, error: String(e) });
-    return refuse(platformError('site_code_error', { tool: name, details: 'an unexpected error' }));
+  } catch (thrown) {
+    if (thrown instanceof ToolFailure) return refuse(thrown.error);
+    session.log('tool_crashed', { tool: name, error: String(thrown) });
+    return refuse(platformError('site_code_error', { tool: name, details: 'an unexpected thrown' }));
   }
   if (tool.nextStep && output.nextStep === undefined) output = { ...output, nextStep: tool.nextStep };
   const bad = problemsWith(session.validators.site, tool.output, output);
@@ -126,17 +126,17 @@ export async function runToolCall(session: Session, name: string, args: unknown,
 function knownIdsIn(session: Session, value: unknown): Record<string, (string | number)[]> {
   const found: Record<string, Set<string | number>> = {};
   const now = session.host.now();
-  const visit = (v: unknown): void => {
-    if (Array.isArray(v)) v.forEach(visit);
-    else if (v && typeof v === 'object') Object.values(v).forEach(visit);
-    else if (typeof v === 'string' || typeof v === 'number') {
+  const visit = (node: unknown): void => {
+    if (Array.isArray(node)) node.forEach(visit);
+    else if (node && typeof node === 'object') Object.values(node).forEach(visit);
+    else if (typeof node === 'string' || typeof node === 'number') {
       for (const kind of Object.keys(session.pack.entities)) {
-        if (session.ids.status(kind, v, now) === 'known') (found[kind] ??= new Set()).add(v);
+        if (session.ids.status(kind, node, now) === 'known') (found[kind] ??= new Set()).add(node);
       }
     }
   };
   visit(value);
-  return Object.fromEntries(Object.entries(found).map(([k, s]) => [k, [...s]]));
+  return Object.fromEntries(Object.entries(found).map(([kind, ids]) => [kind, [...ids]]));
 }
 
 async function runScript(session: Session, args: unknown): Promise<CallOutcome> {
@@ -147,9 +147,9 @@ async function runScript(session: Session, args: unknown): Promise<CallOutcome> 
     return refuse(platformError('bad_script', { details: `the source must be text of at most ${MAX_SCRIPT} characters` }));
   }
   const result = await runner.run(source, async (tool, toolArgs) => {
-    const r = await runToolCall(session, tool, toolArgs, { fromScript: true });
-    if (r.ok) return r.output;
-    throw new Error(r.error.message);
+    const outcome = await runToolCall(session, tool, toolArgs, { fromScript: true });
+    if (outcome.ok) return outcome.output;
+    throw new Error(outcome.error.message);
   }, SCRIPT_LIMITS);
   if (!result.ok) return refuse(platformError('bad_script', { details: result.error }));
   const value = result.value;

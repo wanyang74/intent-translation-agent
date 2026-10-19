@@ -1,9 +1,9 @@
-// The brain over HTTP, as core.js's web host calls it: POST /v1/turn and POST /v1/results take one protocol message
+// The brain over HTTP, as core.js's web host calls it: POST /v1/turn, /v1/results and /v1/amend take one protocol message
 // as JSON and answer with newline-delimited JSON, one event per line, written the moment each event exists, so every
 // tool call reaches the client while the model is still writing. A message that breaks the protocol gets 400 and a
 // JSON error. Browsers call it from the site's own pages, so it answers CORS for the sites' origins.
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
-import type { Brain } from './loop.ts';
+import type { Brain } from '../agent/loop.ts';
 
 export interface ServerOptions {
   brain: Brain;
@@ -36,8 +36,8 @@ function readBody(req: IncomingMessage, limit: number): Promise<string> {
   });
 }
 
-export function createBrainServer(o: ServerOptions): Server {
-  const allowed = new Set(o.allowedOrigins);
+export function createBrainServer(options: ServerOptions): Server {
+  const allowed = new Set(options.allowedOrigins);
   const cors = (req: IncomingMessage, res: ServerResponse) => {
     const origin = req.headers.origin;
     if (origin && allowed.has(origin)) {
@@ -63,15 +63,15 @@ export function createBrainServer(o: ServerOptions): Server {
       return;
     }
     if (req.method === 'GET' && path === '/healthz') return json(res, 200, { ok: true });
-    const endpoint = path === '/v1/turn' ? 'turn' : path === '/v1/results' ? 'results' : null;
+    const endpoint = path === '/v1/turn' ? 'turn' : path === '/v1/results' ? 'results' : path === '/v1/amend' ? 'amend' : null;
     if (!endpoint) return json(res, 404, { error: 'not found' });
     if (req.method !== 'POST') return json(res, 405, { error: 'use POST' });
 
     let message: unknown;
     try {
-      message = JSON.parse(await readBody(req, o.maxBodyBytes ?? MAX_BODY));
-    } catch (e) {
-      if (e instanceof TooLarge) return json(res, 413, { error: 'the message is too large' }, { connection: 'close' });
+      message = JSON.parse(await readBody(req, options.maxBodyBytes ?? MAX_BODY));
+    } catch (error) {
+      if (error instanceof TooLarge) return json(res, 413, { error: 'the message is too large' }, { connection: 'close' });
       return json(res, 400, { error: 'the body is not JSON' });
     }
     // If the client goes away before the stream ends, the brain stops the step that's running and ends the turn.
@@ -83,7 +83,7 @@ export function createBrainServer(o: ServerOptions): Server {
         hangUp.abort();
       }
     });
-    const accepted = o.brain.accept(message, { endpoint, signal: hangUp.signal });
+    const accepted = options.brain.accept(message, { endpoint, signal: hangUp.signal });
     if (!accepted.ok) return json(res, accepted.status, { error: accepted.error });
 
     req.socket.setNoDelay(true);

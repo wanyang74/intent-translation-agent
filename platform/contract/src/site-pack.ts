@@ -13,7 +13,7 @@ export type Tool = NonNullable<SitePack['tools'][string]>;
 
 /** Object.entries for the site pack's maps (their generated types allow undefined values). */
 export const entriesOf = <T>(map: Record<string, T | undefined> | undefined): [string, T][] =>
-  Object.entries(map ?? {}).filter((e): e is [string, T] => e[1] !== undefined);
+  Object.entries(map ?? {}).filter((entry): entry is [string, T] => entry[1] !== undefined);
 
 export const repoRoot = fileURLToPath(new URL('../../../', import.meta.url));
 export const sitesDir = path.join(repoRoot, 'sites');
@@ -29,8 +29,8 @@ export interface Site {
 export function listSites(): string[] {
   if (!existsSync(sitesDir)) return [];
   return readdirSync(sitesDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(path.join(sitesDir, d.name, 'site.yaml')))
-    .map((d) => d.name)
+    .filter((entry) => entry.isDirectory() && existsSync(path.join(sitesDir, entry.name, 'site.yaml')))
+    .map((entry) => entry.name)
     .sort();
 }
 
@@ -44,18 +44,18 @@ export function readSite(id: string): Site {
 // ---------------------------------------------------------------- endpoints and requests
 
 function templateToRegExp(url: string): RegExp {
-  const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, (c) => (c === '{' || c === '}' ? c : '\\' + c));
+  const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, (char) => (char === '{' || char === '}' ? char : '\\' + char));
   return new RegExp('^' + escaped.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g, '(?<$1>[^/]+)') + '$');
 }
 
 /** The endpoint a URL belongs to, and its path parameters. Query strings are ignored for matching. */
 export function endpointOf(pack: SitePack, url: string): { name: string; endpoint: Endpoint; params: Record<string, string> } | null {
-  let u: URL;
-  try { u = new URL(url); } catch { return null; }
-  const target = u.origin + u.pathname;
+  let address: URL;
+  try { address = new URL(url); } catch { return null; }
+  const target = address.origin + address.pathname;
   for (const [name, endpoint] of entriesOf(pack.endpoints)) {
-    const m = templateToRegExp(endpoint.url).exec(target);
-    if (m) return { name, endpoint, params: { ...(m.groups ?? {}) } };
+    const match = templateToRegExp(endpoint.url).exec(target);
+    if (match) return { name, endpoint, params: { ...(match.groups ?? {}) } };
   }
   return null;
 }
@@ -71,13 +71,13 @@ export function requestValue(pack: SitePack, req: { method: string; url: string;
 
 /** The fields that decide the response (the endpoint's matchKey), as a canonical string. */
 export function matchKey(endpoint: Endpoint, value: unknown): string {
-  return canonical(Object.fromEntries(endpoint.matchKey.map((p) => [p, select(value, p)])));
+  return canonical(Object.fromEntries(endpoint.matchKey.map((field) => [field, select(value, field)])));
 }
 
 /** IDs a response or tool output carries, by entity kind, from the declared id paths. */
 export function idsIn(value: unknown, idPaths: { kind: string; path: string }[] | undefined): { kind: string; id: string | number }[] {
-  return (idPaths ?? []).flatMap(({ kind, path: p }) =>
-    valuesAt(value, p).filter((v): v is string | number => typeof v === 'string' || typeof v === 'number').map((id) => ({ kind, id })));
+  return (idPaths ?? []).flatMap(({ kind, path: valuePath }) =>
+    valuesAt(value, valuePath).filter((candidate): candidate is string | number => typeof candidate === 'string' || typeof candidate === 'number').map((id) => ({ kind, id })));
 }
 
 // ---------------------------------------------------------------- cross-checks the schema can't express
@@ -97,41 +97,41 @@ export function crossCheck(site: Site): string[] {
   const schemaExists = (rel: string) => existsSync(path.join(site.schemasDir, rel));
 
   if (pack.site.id !== site.id) add('site.id', `should be the folder name "${site.id}"`);
-  for (const [name, e] of entriesOf(pack.endpoints)) {
-    for (const rel of [e.request, e.response]) if (!schemaExists(rel)) add(`endpoints.${name}`, `schema ${rel} not found`);
-    for (const id of e.ids ?? []) if (!kinds.has(id.kind)) add(`endpoints.${name}.ids`, `unknown entity kind ${id.kind}`);
-    if (!pack.site.origins.some((o) => e.url.startsWith(o))) add(`endpoints.${name}.url`, 'not under any of site.origins');
+  for (const [name, endpoint] of entriesOf(pack.endpoints)) {
+    for (const rel of [endpoint.request, endpoint.response]) if (!schemaExists(rel)) add(`endpoints.${name}`, `schema ${rel} not found`);
+    for (const id of endpoint.ids ?? []) if (!kinds.has(id.kind)) add(`endpoints.${name}.ids`, `unknown entity kind ${id.kind}`);
+    if (!pack.site.origins.some((origin) => endpoint.url.startsWith(origin))) add(`endpoints.${name}.url`, 'not under any of site.origins');
   }
-  for (const [name, t] of entriesOf(pack.tools)) {
+  for (const [name, tool] of entriesOf(pack.tools)) {
     if (RESERVED_TOOLS.includes(name)) add(`tools.${name}`, 'name is reserved for a platform tool');
-    for (const rel of [t.input, t.output]) if (!schemaExists(rel)) add(`tools.${name}`, `schema ${rel} not found`);
-    for (const u of t.uses) if (!pack.endpoints[u]) add(`tools.${name}.uses`, `unknown endpoint ${u}`);
-    for (const id of [...(t.ids?.input ?? []), ...(t.ids?.output ?? [])]) if (!kinds.has(id.kind)) add(`tools.${name}.ids`, `unknown entity kind ${id.kind}`);
+    for (const rel of [tool.input, tool.output]) if (!schemaExists(rel)) add(`tools.${name}`, `schema ${rel} not found`);
+    for (const endpointName of tool.uses) if (!pack.endpoints[endpointName]) add(`tools.${name}.uses`, `unknown endpoint ${endpointName}`);
+    for (const id of [...(tool.ids?.input ?? []), ...(tool.ids?.output ?? [])]) if (!kinds.has(id.kind)) add(`tools.${name}.ids`, `unknown entity kind ${id.kind}`);
   }
-  const fieldKeys = new Set(entriesOf(pack.entities).flatMap(([, e]) => Object.keys(e.fields ?? {})));
-  for (const [kind, e] of entriesOf(pack.entities)) {
-    for (const f of e.card?.fields ?? []) if (!e.fields?.[f]) add(`entities.${kind}.card`, `unknown field ${f}`);
-    if (e.card?.link && !pack.deepLinks?.[e.card.link]) add(`entities.${kind}.card.link`, `unknown deep link ${e.card.link}`);
+  const fieldKeys = new Set(entriesOf(pack.entities).flatMap(([, entity]) => Object.keys(entity.fields ?? {})));
+  for (const [kind, entity] of entriesOf(pack.entities)) {
+    for (const field of entity.card?.fields ?? []) if (!entity.fields?.[field]) add(`entities.${kind}.card`, `unknown field ${field}`);
+    if (entity.card?.link && !pack.deepLinks?.[entity.card.link]) add(`entities.${kind}.card.link`, `unknown deep link ${entity.card.link}`);
   }
-  for (const [name, n] of entriesOf(pack.notices)) {
-    for (const f of n.showWith ?? []) if (!fieldKeys.has(f)) add(`notices.${name}.showWith`, `unknown field ${f}`);
+  for (const [name, notice] of entriesOf(pack.notices)) {
+    for (const field of notice.showWith ?? []) if (!fieldKeys.has(field)) add(`notices.${name}.showWith`, `unknown field ${field}`);
   }
-  for (const [name, f] of entriesOf(pack.forms)) {
-    if (f.submitTool && !pack.tools[f.submitTool]) add(`forms.${name}.submitTool`, `unknown tool ${f.submitTool}`);
+  for (const [name, form] of entriesOf(pack.forms)) {
+    if (form.submitTool && !pack.tools[form.submitTool]) add(`forms.${name}.submitTool`, `unknown tool ${form.submitTool}`);
   }
   for (const key of Object.keys(pack.policies.allowedValues ?? {})) {
     if (!pack.tools[key.split('.')[0]!]) add(`policies.allowedValues.${key}`, 'unknown tool');
   }
-  for (const [name, d] of entriesOf(pack.policies.derivedFields)) {
-    if (d.appliesTo && !kinds.has(d.appliesTo)) add(`policies.derivedFields.${name}`, `unknown entity kind ${d.appliesTo}`);
+  for (const [name, derived] of entriesOf(pack.policies.derivedFields)) {
+    if (derived.appliesTo && !kinds.has(derived.appliesTo)) add(`policies.derivedFields.${name}`, `unknown entity kind ${derived.appliesTo}`);
   }
   // Each skill's guidance is a Markdown file the brain loads: sites/<id>/skills/<name>.md.
   const skillFiles = existsSync(path.join(site.dir, 'skills'))
-    ? readdirSync(path.join(site.dir, 'skills')).filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3))
+    ? readdirSync(path.join(site.dir, 'skills')).filter((file) => file.endsWith('.md')).map((file) => file.slice(0, -3))
     : [];
   for (const [name, skill] of entriesOf(pack.skills)) {
     if (!skillFiles.includes(name)) add(`skills.${name}`, `no guidance file skills/${name}.md`);
-    for (const t of skill.pageTypes ?? []) if (!pack.site.pageTypes?.includes(t)) add(`skills.${name}.pageTypes`, `unknown page type ${t}`);
+    for (const pageType of skill.pageTypes ?? []) if (!pack.site.pageTypes?.includes(pageType)) add(`skills.${name}.pageTypes`, `unknown page type ${pageType}`);
   }
   for (const name of skillFiles) if (!pack.skills?.[name]) add(`skills/${name}.md`, 'not declared under skills in site.yaml');
   return problems;

@@ -33,34 +33,34 @@ function splitRef(ref: string, prefix: string, rel: string) {
   const [file, pointer = ''] = ref.split('#') as [string, string | undefined];
   let refPrefix = prefix, target = rel;
   if (file) {
-    const m = file.replace(/^\//, '').match(/^(schemas\/|sites\/[^/]+\/schemas\/)(.+)$/);
-    if (!m) throw new Error(`Unexpected $ref ${ref}`);
-    refPrefix = m[1]!; target = m[2]!;
+    const match = file.replace(/^\//, '').match(/^(schemas\/|sites\/[^/]+\/schemas\/)(.+)$/);
+    if (!match) throw new Error(`Unexpected $ref ${ref}`);
+    refPrefix = match[1]!; target = match[2]!;
   }
   return { refPrefix, target, pointer, def: pointer.match(/^\/\$defs\/([^/]+)$/)?.[1] };
 }
 
 function resolvePointer(prefix: string, rel: string, pointer: string): unknown {
-  const doc = byPrefix.get(prefix)?.find((s) => s.rel === rel)?.doc;
+  const doc = byPrefix.get(prefix)?.find((schema) => schema.rel === rel)?.doc;
   if (!doc) throw new Error(`No schema ${prefix}${rel}`);
   return pointer.split('/').filter(Boolean).reduce<any>((node, key) => node?.[key], doc);
 }
 
 function rewrite(node: unknown, prefix: string, rel: string, imports: Set<string>): unknown {
-  if (Array.isArray(node)) return node.map((n) => rewrite(n, prefix, rel, imports));
+  if (Array.isArray(node)) return node.map((child) => rewrite(child, prefix, rel, imports));
   if (!node || typeof node !== 'object') return node;
   const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(node)) {
-    if (k === 'examples' || k === '$schema' || k === '$id') continue;
-    if (k === '$ref' && typeof v === 'string') {
-      const { refPrefix, target, pointer, def } = splitRef(v, prefix, rel);
+  for (const [key, value] of Object.entries(node)) {
+    if (key === 'examples' || key === '$schema' || key === '$id') continue;
+    if (key === '$ref' && typeof value === 'string') {
+      const { refPrefix, target, pointer, def } = splitRef(value, prefix, rel);
       if (!def && pointer) return rewrite(resolvePointer(refPrefix, target, pointer), refPrefix, target, imports);
       const name = def ? defName(target, def) : typeName(target);
       if (refPrefix !== prefix) { imports.add(name); return { tsType: name }; }
       out.$ref = `#/$defs/${name}`;
       continue;
     }
-    out[k] = rewrite(v, prefix, rel, imports);
+    out[key] = rewrite(value, prefix, rel, imports);
   }
   return out;
 }
@@ -72,11 +72,11 @@ async function generateTypes(prefix: string, schemas: SchemaFile[], platformType
     if (defs[name]) throw new Error(`Duplicate type name ${name} in ${prefix}`);
     defs[name] = schema;
   };
-  for (const s of schemas) {
-    const { $defs, title, description, ...root } = s.doc as Record<string, any>;
-    for (const [key, def] of Object.entries($defs ?? {})) add(defName(s.rel, key), { ...(rewrite(def, prefix, s.rel, imports) as object), title: defName(s.rel, key) });
-    if (s.rel === 'common.json') continue;
-    add(typeName(s.rel), { ...(rewrite(root, prefix, s.rel, imports) as object), title: typeName(s.rel), description: [title, description].filter(Boolean).join('. ') });
+  for (const schema of schemas) {
+    const { $defs, title, description, ...root } = schema.doc as Record<string, any>;
+    for (const [key, def] of Object.entries($defs ?? {})) add(defName(schema.rel, key), { ...(rewrite(def, prefix, schema.rel, imports) as object), title: defName(schema.rel, key) });
+    if (schema.rel === 'common.json') continue;
+    add(typeName(schema.rel), { ...(rewrite(root, prefix, schema.rel, imports) as object), title: typeName(schema.rel), description: [title, description].filter(Boolean).join('. ') });
   }
   const ts = (await compile(
     { title: 'ContractTypes', type: 'object', additionalProperties: false, $defs: defs } as never,
@@ -90,9 +90,9 @@ async function generateTypes(prefix: string, schemas: SchemaFile[], platformType
 // ---------------------------------------------------------------- validators
 function generateValidators(scope: SchemaFile[], all: SchemaFile[], validatorTypesImport: string | null): { js: string; dts: string } {
   const ajv = new Ajv2020({ ...AJV_OPTIONS, allErrors: false, code: { source: true, esm: true } });
-  for (const s of all) ajv.addSchema(s.doc);
-  const exported = scope.filter((s) => s.rel !== 'common.json').map((s) => ({ fn: validatorName(s.rel), type: typeName(s.rel), id: s.id, rel: s.rel }));
-  const js = standaloneCode(ajv, Object.fromEntries(exported.map((e) => [e.fn, e.id])));
+  for (const schema of all) ajv.addSchema(schema.doc);
+  const exported = scope.filter((schema) => schema.rel !== 'common.json').map((schema) => ({ fn: validatorName(schema.rel), type: typeName(schema.rel), id: schema.id, rel: schema.rel }));
+  const js = standaloneCode(ajv, Object.fromEntries(exported.map((entry) => [entry.fn, entry.id])));
   const forbidden = [/\brequire\(/, /^\s*import\s/m, /\bnew Function\b/, /\beval\(/].filter((re) => re.test(js));
   if (forbidden.length) {
     console.error(`Generated validators must not match ${forbidden.join(', ')}. Change the schemas so Ajv can inline the check.`);
@@ -106,9 +106,9 @@ function generateValidators(scope: SchemaFile[], all: SchemaFile[], validatorTyp
         'export interface Validator<T> {', '  (data: unknown): data is T;', '  errors?: ValidationError[] | null;', '}',
       ];
   const dts = [
-    `import type { ${exported.map((e) => e.type).join(', ')} } from './types.ts';`,
+    `import type { ${exported.map((entry) => entry.type).join(', ')} } from './types.ts';`,
     ...validatorDecl, '',
-    ...exported.map((e) => `/** ${e.id.replace(/^https:\/\/intent-agent\.invalid\//, '')} */\nexport declare const ${e.fn}: Validator<${e.type}>;`), '',
+    ...exported.map((entry) => `/** ${entry.id.replace(/^https:\/\/intent-agent\.invalid\//, '')} */\nexport declare const ${entry.fn}: Validator<${entry.type}>;`), '',
   ].join('\n');
   return { js: BANNER + js + '\n', dts: BANNER + dts };
 }
@@ -126,25 +126,25 @@ interface ToolDefinition {
 const DROPPED = new Set(['$schema', '$id', '$defs', 'title', 'examples']);
 
 function inlined(node: unknown, prefix: string, rel: string, chain: string[]): unknown {
-  if (Array.isArray(node)) return node.map((n) => inlined(n, prefix, rel, chain));
+  if (Array.isArray(node)) return node.map((child) => inlined(child, prefix, rel, chain));
   if (!node || typeof node !== 'object') return node;
   const out: Record<string, unknown> = {};
   let target: Record<string, unknown> | null = null;
-  for (const [k, v] of Object.entries(node)) {
-    if (DROPPED.has(k)) continue;
-    if (k === '$ref' && typeof v === 'string') {
-      const { refPrefix, target: file, pointer } = splitRef(v, prefix, rel);
+  for (const [key, value] of Object.entries(node)) {
+    if (DROPPED.has(key)) continue;
+    if (key === '$ref' && typeof value === 'string') {
+      const { refPrefix, target: file, pointer } = splitRef(value, prefix, rel);
       const where = `${refPrefix}${file}#${pointer}`;
-      if (chain.includes(where)) throw new Error(`${prefix}${rel}: the $ref ${v} is recursive, so it can't be inlined`);
+      if (chain.includes(where)) throw new Error(`${prefix}${rel}: the $ref ${value} is recursive, so it can't be inlined`);
       target = inlined(resolvePointer(refPrefix, file, pointer), refPrefix, file, [...chain, where]) as Record<string, unknown>;
       continue;
     }
-    out[k] = inlined(v, prefix, rel, chain);
+    out[key] = inlined(value, prefix, rel, chain);
   }
   if (!target) return out;
-  for (const [k, v] of Object.entries(out)) {
-    if (k !== 'description' && k in target && JSON.stringify(target[k]) !== JSON.stringify(v)) {
-      throw new Error(`${prefix}${rel}: "${k}" next to a $ref differs from what the $ref points to; keep one of them`);
+  for (const [key, value] of Object.entries(out)) {
+    if (key !== 'description' && key in target && JSON.stringify(target[key]) !== JSON.stringify(value)) {
+      throw new Error(`${prefix}${rel}: "${key}" next to a $ref differs from what the $ref points to; keep one of them`);
     }
   }
   return { ...target, ...out };
@@ -162,7 +162,7 @@ function platformToolDefinitions(): ToolDefinition[] {
     ...PRESENTATION_TOOLS.map((name) => ({ name, rel: `presentation/${name}.json` })),
     ...PLATFORM_TOOLS.map((name) => ({ name, rel: `platform-tools/${name}.json` })),
   ].map(({ name, rel }) => {
-    const doc = platform.find((s) => s.rel === rel)?.doc;
+    const doc = platform.find((schema) => schema.rel === rel)?.doc;
     if (!doc) throw new Error(`No schema for the platform tool ${name}: expected schemas/${rel}`);
     return toolDefinition(name, String(doc.description ?? ''), 'schemas/', rel);
   });
@@ -173,11 +173,11 @@ const toolsJson = (defs: ToolDefinition[]) => JSON.stringify(defs, null, 2) + '\
 // ---------------------------------------------------------------- everything to write
 const outputs: { file: string; text: string }[] = [];
 {
-  const v = generateValidators(platform, platform, null);
+  const validators = generateValidators(platform, platform, null);
   outputs.push(
     { file: path.join(platformOut, 'types.ts'), text: await generateTypes('schemas/', platform) },
-    { file: path.join(platformOut, 'validators.js'), text: v.js },
-    { file: path.join(platformOut, 'validators.d.ts'), text: v.dts },
+    { file: path.join(platformOut, 'validators.js'), text: validators.js },
+    { file: path.join(platformOut, 'validators.d.ts'), text: validators.dts },
     { file: path.join(platformOut, 'tools.json'), text: toolsJson(platformToolDefinitions()) },
   );
 }
@@ -187,29 +187,29 @@ for (const id of listSites()) {
   const schemas = listSchemas(site.schemasDir, prefix);
   byPrefix.set(prefix, schemas);
   const out = path.join(site.dir, 'generated');
-  const v = generateValidators(schemas, [...platform, ...schemas], '../../../platform/contract/generated/validators.js');
+  const validators = generateValidators(schemas, [...platform, ...schemas], '../../../platform/contract/generated/validators.js');
   outputs.push(
     { file: path.join(out, 'types.ts'), text: await generateTypes(prefix, schemas, '../../../platform/contract/generated/types.ts') },
-    { file: path.join(out, 'validators.js'), text: v.js },
-    { file: path.join(out, 'validators.d.ts'), text: v.dts },
+    { file: path.join(out, 'validators.js'), text: validators.js },
+    { file: path.join(out, 'validators.d.ts'), text: validators.dts },
     { file: path.join(out, 'site.json'), text: JSON.stringify(site.pack, null, 2) + '\n' },
-    { file: path.join(out, 'tools.json'), text: toolsJson(entriesOf(site.pack.tools).map(([name, t]) => toolDefinition(name, t.description, prefix, t.input))) },
+    { file: path.join(out, 'tools.json'), text: toolsJson(entriesOf(site.pack.tools).map(([name, tool]) => toolDefinition(name, tool.description, prefix, tool.input))) },
   );
 }
 
-const rel = (f: string) => path.relative(process.cwd(), f);
+const fromCwd = (file: string) => path.relative(process.cwd(), file);
 if (check) {
-  const stale = outputs.filter((o) => !existsSync(o.file) || readFileSync(o.file, 'utf8') !== o.text).map((o) => rel(o.file));
+  const stale = outputs.filter((output) => !existsSync(output.file) || readFileSync(output.file, 'utf8') !== output.text).map((output) => fromCwd(output.file));
   if (stale.length) {
     console.error(`Generated code is stale: ${stale.join(', ')}. Run \`npm run generate\` and commit the result.`);
     process.exit(1);
   }
   console.log(`Generated code is up to date (${outputs.length} files).`);
 } else {
-  for (const o of outputs) {
-    mkdirSync(path.dirname(o.file), { recursive: true });
-    writeFileSync(o.file, o.text);
+  for (const output of outputs) {
+    mkdirSync(path.dirname(output.file), { recursive: true });
+    writeFileSync(output.file, output.text);
   }
-  const kb = (s: string) => `${Math.round(Buffer.byteLength(s) / 1024)} KB`;
-  for (const o of outputs) console.log(`${rel(o.file).padEnd(52)} ${kb(o.text)}`);
+  const kb = (text: string) => `${Math.round(Buffer.byteLength(text) / 1024)} KB`;
+  for (const output of outputs) console.log(`${fromCwd(output.file).padEnd(52)} ${kb(output.text)}`);
 }

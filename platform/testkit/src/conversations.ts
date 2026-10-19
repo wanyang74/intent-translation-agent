@@ -29,8 +29,8 @@ export const conversationDir = (site: string) => path.join(sitesDir, site, 'conv
 export function loadConversations(site: string): Conversation[] {
   const dir = conversationDir(site);
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => f.endsWith('.json')).sort()
-    .map((f) => JSON.parse(readFileSync(path.join(dir, f), 'utf8')) as Conversation);
+  return readdirSync(dir).filter((file) => file.endsWith('.json')).sort()
+    .map((file) => JSON.parse(readFileSync(path.join(dir, file), 'utf8')) as Conversation);
 }
 
 type Entity = NonNullable<SitePack['entities'][string]>;
@@ -38,17 +38,17 @@ type IdPath = { kind: string; path: string; expiresAt?: string };
 
 /** IDs at the given paths, each with its expiry when the path declares one (paired by position). */
 function idsWithExpiry(value: unknown, idPaths: IdPath[] | undefined) {
-  return (idPaths ?? []).flatMap(({ kind, path: p, expiresAt }) => {
-    const ids = valuesAt(value, p);
+  return (idPaths ?? []).flatMap(({ kind, path: valuePath, expiresAt }) => {
+    const ids = valuesAt(value, valuePath);
     const expiries = expiresAt ? valuesAt(value, expiresAt) : [];
     return ids.map((id, i) => ({ kind, id: id as string | number, expiresAt: typeof expiries[i] === 'string' ? (expiries[i] as string) : undefined }));
   });
 }
 
 /** Fields a presentation call puts on screen: the card's fields, or a comparison's attributes. */
-function fieldsShown(p: PresentationCall, entity: Entity | undefined): string[] {
-  if (p.name === 'present_comparison') return p.args.attributes;
-  if (p.name === 'present_items' || p.name === 'present_options' || p.name === 'present_detail') return entity?.card?.fields ?? [];
+function fieldsShown(presentation: PresentationCall, entity: Entity | undefined): string[] {
+  if (presentation.name === 'present_comparison') return presentation.args.attributes;
+  if (presentation.name === 'present_items' || presentation.name === 'present_options' || presentation.name === 'present_detail') return entity?.card?.fields ?? [];
   return [];
 }
 
@@ -59,18 +59,18 @@ function fieldsShown(p: PresentationCall, entity: Entity | undefined): string[] 
  * result or the page context (and hadn't expired), that notices appear with the fields they explain, and that
  * calls, awaits and results line up.
  */
-export function checkConversation(contract: Contract, c: Conversation): string[] {
+export function checkConversation(contract: Contract, conversation: Conversation): string[] {
   const problems: string[] = [];
-  const add = (where: string, msg: string) => problems.push(`${c.site}/${c.id}: ${where}: ${msg}`);
-  const site = contract.sites[c.site];
-  if (!site) return [`${c.id}: unknown site ${c.site}`];
+  const add = (where: string, msg: string) => problems.push(`${conversation.site}/${conversation.id}: ${where}: ${msg}`);
+  const site = contract.sites[conversation.site];
+  if (!site) return [`${conversation.id}: unknown site ${conversation.site}`];
   const { pack } = site;
   const validateMessage = contract.validator('messages.json');
-  const now = c.now ? Date.parse(c.now) : null;
-  if (c.now !== undefined && Number.isNaN(now)) add('now', `${c.now} isn't a date`);
+  const now = conversation.now ? Date.parse(conversation.now) : null;
+  if (conversation.now !== undefined && Number.isNaN(now)) add('now', `${conversation.now} isn't a date`);
 
-  const fixtureIds = new Set(hasFixtures(c.site) ? loadFixtures(c.site).map((f) => f.id) : []);
-  for (const id of c.fixtures) if (!fixtureIds.has(id)) add('fixtures', `no fixture ${id}`);
+  const fixtureIds = new Set(hasFixtures(conversation.site) ? loadFixtures(conversation.site).map((fixture) => fixture.id) : []);
+  for (const id of conversation.fixtures) if (!fixtureIds.has(id)) add('fixtures', `no fixture ${id}`);
 
   // IDs the session has seen, by kind, with their expiry if they have one.
   const known = new Map<string, string | null>();
@@ -97,22 +97,22 @@ export function checkConversation(contract: Contract, c: Conversation): string[]
   const traces = new Set<string>();
   const calls = new Map<string, { name: string; traceId: string; awaited: boolean; answered: boolean }>();
 
-  c.messages.forEach((m, i) => {
-    const where = `message ${i} (${(m as { type?: string }).type ?? '?'})`;
-    if (!validateMessage(m)) return add(where, `doesn't match the protocol: ${describeErrors(validateMessage.errors)}`);
-    if (m.type !== 'turn' && m.traceId !== traceId) add(where, `trace ${m.traceId} isn't the current turn's (${traceId})`);
-    if (m.type !== 'turn' && m.type !== 'results' && !open) add(where, 'comes after the turn was answered');
+  conversation.messages.forEach((message, i) => {
+    const where = `message ${i} (${(message as { type?: string }).type ?? '?'})`;
+    if (!validateMessage(message)) return add(where, `doesn't match the protocol: ${describeErrors(validateMessage.errors)}`);
+    if (message.type !== 'turn' && message.traceId !== traceId) add(where, `trace ${message.traceId} isn't the current turn's (${traceId})`);
+    if (message.type !== 'turn' && message.type !== 'results' && message.type !== 'amend' && message.type !== 'amended' && !open) add(where, 'comes after the turn was answered');
 
-    switch (m.type) {
+    switch (message.type) {
       case 'turn': {
         if (open) add(where, 'a new turn before the previous one was answered');
-        if (m.site !== c.site) add(where, `site is ${m.site}, not ${c.site}`);
-        if (sessionId && m.sessionId !== sessionId) add(where, 'the session changed mid-conversation');
-        if (traces.has(m.traceId)) add(where, `trace ${m.traceId} was used before`);
-        sessionId = m.sessionId; traceId = m.traceId; open = true; page = m.pageContext; callsThisTurn = 0;
-        traces.add(m.traceId);
+        if (message.site !== conversation.site) add(where, `site is ${message.site}, not ${conversation.site}`);
+        if (sessionId && message.sessionId !== sessionId) add(where, 'the session changed mid-conversation');
+        if (traces.has(message.traceId)) add(where, `trace ${message.traceId} was used before`);
+        sessionId = message.sessionId; traceId = message.traceId; open = true; page = message.pageContext; callsThisTurn = 0;
+        traces.add(message.traceId);
         if (!pack.site.pageTypes?.includes(page.pageType)) add(where, `page type ${page.pageType} isn't one of the site's`);
-        if (!pack.site.origins.some((o) => page!.url.startsWith(o))) add(where, `page ${page.url} isn't on the site`);
+        if (!pack.site.origins.some((origin) => page!.url.startsWith(origin))) add(where, `page ${page.url} isn't on the site`);
         if (page.entity) {
           if (!pack.entities[page.entity.kind]) add(where, `unknown entity kind ${page.entity.kind}`);
           checkIdShape(where, page.entity.kind, page.entity.id);
@@ -121,89 +121,91 @@ export function checkConversation(contract: Contract, c: Conversation): string[]
         break;
       }
       case 'tool_call': {
-        const { id, name, args } = m.call;
+        const { id, name, args } = message.call;
         if (calls.has(id)) add(where, `call id ${id} was used before`);
-        calls.set(id, { name, traceId: m.traceId, awaited: false, answered: false });
+        calls.set(id, { name, traceId: message.traceId, awaited: false, answered: false });
         if (++callsThisTurn > pack.policies.callBudget.perTask) add(where, `more tool calls than the per-task budget (${pack.policies.callBudget.perTask})`);
         const tool = pack.tools[name];
         if (!tool) {
-          add(where, PRESENTATION_TOOLS.includes(name) ? `${name} is a presentation tool; it belongs in an answer` : `${name} isn't a ${c.site} tool`);
+          add(where, PRESENTATION_TOOLS.includes(name) ? `${name} is a presentation tool; it belongs in an answer` : `${name} isn't a ${conversation.site} tool`);
           break;
         }
-        const validate = contract.siteValidator(c.site, tool.input);
+        const validate = contract.siteValidator(conversation.site, tool.input);
         if (!validate(args)) add(where, `${name} arguments: ${describeErrors(validate.errors)}`);
-        for (const x of idsWithExpiry(args, tool.ids?.input)) checkKnown(where, `${name} uses`, x.kind, x.id);
+        for (const found of idsWithExpiry(args, tool.ids?.input)) checkKnown(where, `${name} uses`, found.kind, found.id);
         if (tool.sideEffect === 'write' && pack.policies.writes === 'none') add(where, `${name} writes, and the site pack allows no writes`);
         break;
       }
       case 'progress':
+      case 'amend':
+      case 'amended':
         break;
       case 'await_results': {
         if (pending.length) add(where, 'awaits again before the previous results arrived');
-        for (const id of m.callIds) {
+        for (const id of message.callIds) {
           const call = calls.get(id);
           if (!call) add(where, `awaits ${id}, which was never called`);
           else if (call.answered || call.awaited) add(where, `awaits ${id} twice`);
-          else if (call.traceId !== m.traceId) add(where, `awaits ${id} from another turn`);
+          else if (call.traceId !== message.traceId) add(where, `awaits ${id} from another turn`);
           else call.awaited = true;
         }
-        pending = [...m.callIds];
+        pending = [...message.callIds];
         break;
       }
       case 'results': {
-        if (m.sessionId !== sessionId) add(where, `session ${m.sessionId} isn't the conversation's`);
-        const answered = m.results.map((r) => r.id);
+        if (message.sessionId !== sessionId) add(where, `session ${message.sessionId} isn't the conversation's`);
+        const answered = message.results.map((result) => result.id);
         if ([...answered].sort().join() !== [...pending].sort().join()) add(where, `answers [${answered}] but the server awaited [${pending}]`);
         pending = [];
-        for (const r of m.results) {
-          const call = calls.get(r.id);
+        for (const result of message.results) {
+          const call = calls.get(result.id);
           if (!call) continue;
           call.answered = true;
           const tool = pack.tools[call.name];
           if (!tool) continue;
-          if (r.ok) {
-            const validate = contract.siteValidator(c.site, tool.output);
-            if (!validate(r.output)) add(where, `${call.name} output: ${describeErrors(validate.errors)}`);
-            for (const x of idsWithExpiry(r.output, tool.ids?.output)) learn(x.kind, x.id, x.expiresAt);
+          if (result.ok) {
+            const validate = contract.siteValidator(conversation.site, tool.output);
+            if (!validate(result.output)) add(where, `${call.name} output: ${describeErrors(validate.errors)}`);
+            for (const found of idsWithExpiry(result.output, tool.ids?.output)) learn(found.kind, found.id, found.expiresAt);
             if (tool.signIn && page?.signedIn !== true) add(where, `${call.name} needs sign-in and the user isn't signed in: expect an auth_required error`);
-          } else if (r.error.reason) {
-            const declared = tool.errors?.[r.error.reason];
-            if (!declared) add(where, `${call.name} has no error ${r.error.reason}`);
-            else if (declared.code !== r.error.code) add(where, `${call.name} error ${r.error.reason} has code ${declared.code}, not ${r.error.code}`);
+          } else if (result.error.reason) {
+            const declared = tool.errors?.[result.error.reason];
+            if (!declared) add(where, `${call.name} has no error ${result.error.reason}`);
+            else if (declared.code !== result.error.code) add(where, `${call.name} error ${result.error.reason} has code ${declared.code}, not ${result.error.code}`);
           }
         }
         break;
       }
       case 'answer': {
         if (pending.length) add(where, `answers while results for [${pending}] are pending`);
-        const present = m.present ?? [];
-        const notices = new Set(present.flatMap((p) => (p.name === 'present_notice' ? [p.args.notice] : [])));
+        const present = message.present ?? [];
+        const notices = new Set(present.flatMap((presentation) => (presentation.name === 'present_notice' ? [presentation.args.notice] : [])));
         const shown = new Set<string>();
-        for (const [j, p] of present.entries()) {
-          const at = `${where} present[${j}] ${p.name}`;
-          if (p.name === 'present_notice') {
-            if (!pack.notices?.[p.args.notice]) add(at, `unknown notice ${p.args.notice}`);
+        for (const [j, presentation] of present.entries()) {
+          const at = `${where} present[${j}] ${presentation.name}`;
+          if (presentation.name === 'present_notice') {
+            if (!pack.notices?.[presentation.args.notice]) add(at, `unknown notice ${presentation.args.notice}`);
             continue;
           }
-          if (p.name === 'present_form') {
-            const form = pack.forms?.[p.args.form];
-            if (!form) { add(at, `unknown form ${p.args.form}`); continue; }
-            for (const f of Object.keys(p.args.prefill ?? {})) if (!form.fields[f]) add(at, `form ${p.args.form} has no field ${f}`);
+          if (presentation.name === 'present_form') {
+            const form = pack.forms?.[presentation.args.form];
+            if (!form) { add(at, `unknown form ${presentation.args.form}`); continue; }
+            for (const field of Object.keys(presentation.args.prefill ?? {})) if (!form.fields[field]) add(at, `form ${presentation.args.form} has no field ${field}`);
             continue;
           }
-          const kind = p.args.entity;
+          const kind = presentation.args.entity;
           const entity = pack.entities[kind];
           if (!entity) { add(at, `unknown entity kind ${kind}`); continue; }
           if (entity.internal) add(at, `${kind} is internal and is never shown`);
           if (entity.requiresSignIn && page?.signedIn !== true) add(at, `${kind} needs sign-in and the user isn't signed in`);
-          const ids = p.name === 'present_detail' ? [p.args.id] : p.args.ids;
+          const ids = presentation.name === 'present_detail' ? [presentation.args.id] : presentation.args.ids;
           for (const id of ids) { checkIdShape(at, kind, id); checkKnown(at, 'shows', kind, id); }
-          if (p.name === 'present_comparison') for (const a of p.args.attributes) if (!entity.fields?.[a]) add(at, `${kind} has no field ${a}`);
-          if (p.name === 'present_detail') for (const s of p.args.sections ?? []) if (!entity.sections?.includes(s)) add(at, `${kind} has no section ${s}`);
-          for (const f of fieldsShown(p, entity)) shown.add(f);
+          if (presentation.name === 'present_comparison') for (const attribute of presentation.args.attributes) if (!entity.fields?.[attribute]) add(at, `${kind} has no field ${attribute}`);
+          if (presentation.name === 'present_detail') for (const section of presentation.args.sections ?? []) if (!entity.sections?.includes(section)) add(at, `${kind} has no section ${section}`);
+          for (const field of fieldsShown(presentation, entity)) shown.add(field);
         }
-        for (const [name, n] of Object.entries(pack.notices ?? {})) {
-          const needed = n?.showWith?.filter((f) => shown.has(f)) ?? [];
+        for (const [name, notice] of Object.entries(pack.notices ?? {})) {
+          const needed = notice?.showWith?.filter((field) => shown.has(field)) ?? [];
           if (needed.length && !notices.has(name)) add(where, `shows ${needed.join(', ')} without the ${name} notice`);
         }
         open = false;

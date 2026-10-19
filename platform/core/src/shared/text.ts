@@ -48,13 +48,13 @@ const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 /** Standard base64, with padding, of the string's UTF-8 bytes. */
 export function base64(text: string): string {
-  const b = utf8(text);
+  const bytes = utf8(text);
   let out = '';
-  for (let i = 0; i < b.length; i += 3) {
-    const n = ((b[i] ?? 0) << 16) | ((b[i + 1] ?? 0) << 8) | (b[i + 2] ?? 0);
-    out += B64.charAt((n >> 18) & 63) + B64.charAt((n >> 12) & 63)
-      + (i + 1 < b.length ? B64.charAt((n >> 6) & 63) : '=')
-      + (i + 2 < b.length ? B64.charAt(n & 63) : '=');
+  for (let i = 0; i < bytes.length; i += 3) {
+    const chunk = ((bytes[i] ?? 0) << 16) | ((bytes[i + 1] ?? 0) << 8) | (bytes[i + 2] ?? 0);
+    out += B64.charAt((chunk >> 18) & 63) + B64.charAt((chunk >> 12) & 63)
+      + (i + 1 < bytes.length ? B64.charAt((chunk >> 6) & 63) : '=')
+      + (i + 2 < bytes.length ? B64.charAt(chunk & 63) : '=');
   }
   return out;
 }

@@ -165,6 +165,32 @@
       ],
       "additionalProperties": false
     },
+    "ClientAmend": {
+      "type": "object",
+      "description": "A message the user sent while the turn is still running. The brain adds it to that turn, after the next tool results, instead of starting over.",
+      "properties": {
+        "type": {
+          "const": "amend"
+        },
+        "sessionId": {
+          "$ref": "/schemas/common.json#/$defs/SessionId"
+        },
+        "traceId": {
+          "$ref": "/schemas/common.json#/$defs/TraceId"
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,2000}$"
+        }
+      },
+      "required": [
+        "type",
+        "sessionId",
+        "traceId",
+        "message"
+      ],
+      "additionalProperties": false
+    },
     "PresentationCall": {
       "oneOf": [
         {
@@ -350,6 +376,15 @@
         },
         "budgetReached": {
           "type": "boolean"
+        },
+        "followUps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,2000}$"
+          },
+          "minItems": 1,
+          "description": "Messages the user sent during this turn that arrived after its last model call. The client sends them as the next turn."
         }
       },
       "required": [
@@ -388,6 +423,30 @@
       ],
       "additionalProperties": false
     },
+    "AmendedEvent": {
+      "type": "object",
+      "description": "The reply to an amend. queued: the turn will see the message at its next step. too_late: the turn has ended; send the message as a new turn.",
+      "properties": {
+        "type": {
+          "const": "amended"
+        },
+        "traceId": {
+          "$ref": "/schemas/common.json#/$defs/TraceId"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "too_late"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "traceId",
+        "status"
+      ],
+      "additionalProperties": false
+    },
     "ClientMessage": {
       "oneOf": [
         {
@@ -395,6 +454,9 @@
         },
         {
           "$ref": "/schemas/messages.json#/$defs/ClientResults"
+        },
+        {
+          "$ref": "/schemas/messages.json#/$defs/ClientAmend"
         }
       ]
     },
@@ -414,6 +476,9 @@
         },
         {
           "$ref": "/schemas/messages.json#/$defs/ErrorEvent"
+        },
+        {
+          "$ref": "/schemas/messages.json#/$defs/AmendedEvent"
         }
       ]
     }
@@ -505,6 +570,17 @@
           }
         }
       ]
+    },
+    {
+      "type": "amend",
+      "sessionId": "sess_0001abcd",
+      "traceId": "trace_0001abcd",
+      "message": "Make it nonstop only"
+    },
+    {
+      "type": "amended",
+      "traceId": "trace_0001abcd",
+      "status": "queued"
     }
   ]
 }

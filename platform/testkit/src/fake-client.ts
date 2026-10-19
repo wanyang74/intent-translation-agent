@@ -53,25 +53,37 @@ export class FakeClient {
   readonly sessionId: string;
   readonly sent: ClientMessage[] = [];
   private send: Send;
-  private o: FakeClientOptions;
+  private options: FakeClientOptions;
   private turns = 0;
+  /** The trace of the turn in progress, for amend. */
+  current: string | undefined;
 
-  constructor(send: Send, o: FakeClientOptions) {
+  constructor(send: Send, options: FakeClientOptions) {
     this.send = send;
-    this.o = o;
-    this.sessionId = o.sessionId ?? `sess_fake_${Math.random().toString(36).slice(2, 10)}`;
+    this.options = options;
+    this.sessionId = options.sessionId ?? `sess_fake_${Math.random().toString(36).slice(2, 10)}`;
   }
 
-  async turn(message: string, page: PageContext, results: ResultFor | undefined = this.o.results): Promise<TurnRecord> {
+  /** Sends a message to the turn in progress, as a user typing while the agent works; returns the brain's reply. */
+  async amend(message: string): Promise<unknown[]> {
+    const amendMessage: ClientMessage = { type: 'amend', sessionId: this.sessionId, traceId: this.current ?? 'trace_none_yet', message };
+    this.sent.push(amendMessage);
+    const events: unknown[] = [];
+    for await (const event of this.send(amendMessage)) events.push(event);
+    return events;
+  }
+
+  async turn(message: string, page: PageContext, results: ResultFor | undefined = this.options.results): Promise<TurnRecord> {
     const traceId = `trace_${this.sessionId}_${++this.turns}`;
+    this.current = traceId;
     const record: TurnRecord = { traceId, events: [], answer: null, error: null, calls: [], problems: [] };
-    let outgoing: ClientMessage = { type: 'turn', site: this.o.site, sessionId: this.sessionId, traceId, message, pageContext: page };
+    let outgoing: ClientMessage = { type: 'turn', site: this.options.site, sessionId: this.sessionId, traceId, message, pageContext: page };
     const running = new Map<string, Promise<ResultBody | typeof DROP>>();
     for (let round = 0; round < MAX_ROUNDS; round++) {
       this.sent.push(outgoing);
       let awaited: string[] | null = null;
       for await (const raw of this.send(outgoing)) {
-        if (!this.o.validate(raw)) record.problems.push(`breaks the protocol: ${JSON.stringify(raw).slice(0, 200)}`);
+        if (!this.options.validate(raw)) record.problems.push(`breaks the protocol: ${JSON.stringify(raw).slice(0, 200)}`);
         const ev = raw as ServerEvent;
         record.events.push(ev);
         if (ev.traceId !== traceId) record.problems.push(`event for trace ${ev.traceId}`);
@@ -101,7 +113,7 @@ export class FakeClient {
       const bodies = await Promise.all(awaited.map((id) => running.get(id)!));
       if (bodies.includes(DROP)) return record;
       let sent = awaited.map((id, i) => ({ id, ...(bodies[i] as ResultBody) }) as ToolResult);
-      if (this.o.tamper) sent = this.o.tamper(sent);
+      if (this.options.tamper) sent = this.options.tamper(sent);
       for (const id of awaited) running.delete(id);
       outgoing = { type: 'results', sessionId: this.sessionId, traceId, results: sent as [ToolResult, ...ToolResult[]] };
     }
@@ -114,14 +126,14 @@ export class FakeClient {
  * Plays an example conversation from the client's side, message by message, as the conversation has them (same
  * session, traces and results), and compares the brain's events with the conversation's.
  */
-export async function replayConversation(send: Send, c: Conversation): Promise<{ differences: string[]; events: unknown[] }> {
+export async function replayConversation(send: Send, conversation: Conversation): Promise<{ differences: string[]; events: unknown[] }> {
   const differences: string[] = [];
   const events: unknown[] = [];
-  const messages = c.messages;
+  const messages = conversation.messages;
   for (let i = 0; i < messages.length;) {
-    const m = messages[i]!;
-    if (m.type !== 'turn' && m.type !== 'results') {
-      differences.push(`${c.id} message ${i}: a ${m.type} event with no client message before it`);
+    const message = messages[i]!;
+    if (message.type !== 'turn' && message.type !== 'results') {
+      differences.push(`${conversation.id} message ${i}: a ${message.type} event with no client message before it`);
       i++;
       continue;
     }
@@ -129,12 +141,12 @@ export async function replayConversation(send: Send, c: Conversation): Promise<{
     let j = i + 1;
     for (; j < messages.length && messages[j]!.type !== 'turn' && messages[j]!.type !== 'results'; j++) expected.push(messages[j]);
     const got: unknown[] = [];
-    for await (const ev of send(m)) got.push(ev);
+    for await (const ev of send(message)) got.push(ev);
     events.push(...got);
-    for (let k = 0; k < Math.max(expected.length, got.length); k++) {
-      const want = expected[k] === undefined ? 'nothing' : stableJson(expected[k]);
-      const have = got[k] === undefined ? 'nothing' : stableJson(got[k]);
-      if (want !== have) differences.push(`${c.id} message ${i + 1 + k}:\n  expected ${want.slice(0, 500)}\n  got      ${have.slice(0, 500)}`);
+    for (let offset = 0; offset < Math.max(expected.length, got.length); offset++) {
+      const want = expected[offset] === undefined ? 'nothing' : stableJson(expected[offset]);
+      const have = got[offset] === undefined ? 'nothing' : stableJson(got[offset]);
+      if (want !== have) differences.push(`${conversation.id} message ${i + 1 + offset}:\n  expected ${want.slice(0, 500)}\n  got      ${have.slice(0, 500)}`);
     }
     i = j;
   }

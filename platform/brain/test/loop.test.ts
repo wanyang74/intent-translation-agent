@@ -7,32 +7,32 @@ import assert from 'node:assert/strict';
 import type { ClientResults, ToolResult } from '../../contract/generated/types.ts';
 import { DROP, FakeClient, type TurnRecord } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeStep } from '../../testkit/src/fake-model.ts';
-import { Brain, progressLine } from '../src/loop.ts';
-import type { ToolResultPart } from '../src/model.ts';
+import { Brain, progressLine } from '../src/agent/loop.ts';
+import type { ToolResultPart } from '../src/model/model.ts';
 import {
   HOME, historyProblems, inProcess, NOW, productPage, SEARCH_OUTPUT, setup, shopPack, shopResults, shopSite, textOf, validateMessage,
 } from './example-brain.ts';
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-function within<T>(p: Promise<T>, ms: number, message: string): Promise<T> {
-  return Promise.race([p, new Promise<T>((_, reject) => setTimeout(() => reject(new Error(message)), ms))]);
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+function within<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return Promise.race([promise, new Promise<T>((_, reject) => setTimeout(() => reject(new Error(message)), ms))]);
 }
 const search = (query: string) => ({ name: 'search_products', input: { query } });
 const items = (ids: (number | string)[], entity = 'product') => ({ name: 'present_items', input: { entity, ids } });
 const notice = { name: 'present_notice', args: { notice: 'total_estimate' } };
-const types = (t: TurnRecord) => t.events.map((e) => e.type);
-const callIds = (t: TurnRecord) => t.calls.map((c) => c.id);
+const types = (turn: TurnRecord) => turn.events.map((event) => event.type);
+const callIds = (turn: TurnRecord) => turn.calls.map((call) => call.id);
 /** The results the model was given in a request's last message. */
-const lastResults = (m: FakeModel, request: number) => {
-  const last = m.requests[request]!.messages.at(-1)!;
+const lastResults = (model: FakeModel, request: number) => {
+  const last = model.requests[request]!.messages.at(-1)!;
   assert.equal(last.role, 'tool');
   return last.content as ToolResultPart[];
 };
-const reasons = (parts: ToolResultPart[]) => parts.map((p) => (p.isError ? (p.output as { reason: string }).reason : 'ok'));
+const reasons = (parts: ToolResultPart[]) => parts.map((result) => (result.isError ? (result.output as { reason: string }).reason : 'ok'));
 
 test('each tool call reaches the client the moment the model finishes writing it, before the step ends (eager dispatch)', async () => {
   let arrived!: () => void;
-  const firstCallArrived = new Promise<void>((r) => { arrived = r; });
+  const firstCallArrived = new Promise<void>((resolve) => { arrived = resolve; });
   const { client, model, brain } = setup([
     {
       text: 'Searching red and blue shoes…', calls: [search('red'), search('blue')],
@@ -40,17 +40,17 @@ test('each tool call reaches the client the moment the model finishes writing it
     },
     { text: 'Two shoes.', calls: [items([1, 2])] },
   ], { results: (call) => { arrived(); return shopResults(call); } });
-  const t = await client.turn('shoes in red or blue', HOME);
-  assert.deepEqual(t.problems, []);
-  assert.deepEqual(types(t), ['tool_call', 'tool_call', 'progress', 'await_results', 'answer']);
-  assert.deepEqual(t.events.slice(0, 4), [
-    { type: 'tool_call', traceId: t.traceId, call: { id: 'call_1', name: 'search_products', args: { query: 'red' } } },
-    { type: 'tool_call', traceId: t.traceId, call: { id: 'call_2', name: 'search_products', args: { query: 'blue' } } },
-    { type: 'progress', traceId: t.traceId, text: 'Searching red and blue shoes…' },
-    { type: 'await_results', traceId: t.traceId, callIds: ['call_1', 'call_2'] },
+  const turn = await client.turn('shoes in red or blue', HOME);
+  assert.deepEqual(turn.problems, []);
+  assert.deepEqual(types(turn), ['tool_call', 'tool_call', 'progress', 'await_results', 'answer']);
+  assert.deepEqual(turn.events.slice(0, 4), [
+    { type: 'tool_call', traceId: turn.traceId, call: { id: 'call_1', name: 'search_products', args: { query: 'red' } } },
+    { type: 'tool_call', traceId: turn.traceId, call: { id: 'call_2', name: 'search_products', args: { query: 'blue' } } },
+    { type: 'progress', traceId: turn.traceId, text: 'Searching red and blue shoes…' },
+    { type: 'await_results', traceId: turn.traceId, callIds: ['call_1', 'call_2'] },
   ]);
-  assert.deepEqual(t.answer, {
-    type: 'answer', traceId: t.traceId, text: 'Two shoes.',
+  assert.deepEqual(turn.answer, {
+    type: 'answer', traceId: turn.traceId, text: 'Two shoes.',
     present: [{ name: 'present_items', args: { entity: 'product', ids: [1, 2] } }, notice],
   }, 'the notice for the total on the cards is added');
   assert.deepEqual(lastResults(model, 1), [
@@ -80,18 +80,18 @@ test('every request starts with the same global segment, and the newest user tur
   const { client, model } = setup([{ calls: [search('red')] }, { text: 'One.', calls: [items([1])] }, { text: 'Hello again.' }]);
   await client.turn('red shoes', HOME);
   await client.turn('thanks', { ...HOME, url: 'https://www.example.com/cart', pageType: 'home' });
-  const [a, b, c] = model.requests;
-  assert.equal(a!.system, b!.system);
-  assert.equal(a!.tools, b!.tools, 'the very same tools array, so the adapter converts it once');
-  assert.equal(JSON.stringify(a!.tools), JSON.stringify(c!.tools));
-  const firstUser = a!.messages[0]!;
+  const [firstRequest, secondRequest, thirdRequest] = model.requests;
+  assert.equal(firstRequest!.system, secondRequest!.system);
+  assert.equal(firstRequest!.tools, secondRequest!.tools, 'the very same tools array, so the adapter converts it once');
+  assert.equal(JSON.stringify(firstRequest!.tools), JSON.stringify(thirdRequest!.tools));
+  const firstUser = firstRequest!.messages[0]!;
   assert.equal(firstUser.role, 'user');
   assert.equal(firstUser.content[0]!.type === 'text' && firstUser.content[0]!.text, 'red shoes');
   assert.match(firstUser.content[1]!.type === 'text' ? firstUser.content[1]!.text : '', /^<context>\n<untrusted source="page-context">Page: https:\/\/www\.example\.com\/ \(home page\)/);
-  const newest = c!.messages.at(-1)!;
+  const newest = thirdRequest!.messages.at(-1)!;
   assert.equal(newest.role, 'user');
   assert.match(textOf([newest]), /www\.example\.com\/cart/);
-  assert.ok(textOf(c!.messages).includes('https://www.example.com/ (home page)'), 'earlier context blocks stay, so the cached prefix stays the same');
+  assert.ok(textOf(thirdRequest!.messages).includes('https://www.example.com/ (home page)'), 'earlier context blocks stay, so the cached prefix stays the same');
 });
 
 test('calls the brain can refuse never reach the client: made-up tools, bad arguments, unknown IDs and writes', async () => {
@@ -107,9 +107,9 @@ test('calls the brain can refuse never reach the client: made-up tools, bad argu
     },
     { text: 'Sorry, I made some mistakes.' },
   ]);
-  const t = await client.turn('buy shoes', HOME);
-  assert.deepEqual(t.calls, [], 'the client never sees them');
-  assert.deepEqual(types(t), ['answer'], 'the errors went straight back to the model, in the same stream');
+  const turn = await client.turn('buy shoes', HOME);
+  assert.deepEqual(turn.calls, [], 'the client never sees them');
+  assert.deepEqual(types(turn), ['answer'], 'the errors went straight back to the model, in the same stream');
   assert.deepEqual(reasons(lastResults(model, 1)), ['unknown_tool', 'bad_arguments', 'unknown_id', 'writes_off', 'bad_arguments']);
   assert.match((lastResults(model, 1)[1]!.output as { message: string }).message, /The arguments for search_products are invalid/);
   const history = brain.historyOf(client.sessionId)!;
@@ -125,23 +125,23 @@ test('presentation calls are checked before they are sent; a refused one goes ba
     { text: 'More.', calls: [items(['tok_1'], 'token'), { name: 'present_items', input: { entity: 'product' } }, { name: 'present_notice', input: { notice: 'no_such_notice' } }] },
     { text: 'Here is the one I found.', calls: [{ name: 'present_detail', input: { entity: 'product', id: 1, sections: ['reviews'] } }] },
   ]);
-  const t = await client.turn('shoes', HOME);
-  assert.deepEqual(types(t), ['tool_call', 'await_results', 'answer']);
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(types(turn), ['tool_call', 'await_results', 'answer']);
   assert.deepEqual(reasons(lastResults(model, 2)), ['unknown_id', 'not_shown']);
   assert.deepEqual(reasons(lastResults(model, 3)), ['internal_kind', 'bad_arguments', 'unknown_notice']);
-  assert.deepEqual(t.answer!.present, [{ name: 'present_detail', args: { entity: 'product', id: 1, sections: ['reviews'] } }, notice], "the detail's card shows the total, so its notice is added");
-  assert.equal(t.answer!.text, 'Here is the one I found.');
+  assert.deepEqual(turn.answer!.present, [{ name: 'present_detail', args: { entity: 'product', id: 1, sections: ['reviews'] } }, notice], "the detail's card shows the total, so its notice is added");
+  assert.equal(turn.answer!.text, 'Here is the one I found.');
 });
 
-test('cards sent with no words are kept, and the next step writes the answer; a call sent twice is shown once', async () => {
+test('cards sent with no words are kept, and the next step writes the answer; a call sent twice is shown once; on the last step they are shown as they are', async () => {
   const { client, model } = setup([
     { calls: [search('shoes')] },
     { calls: [items([1])] },
     { text: 'The red one costs less and rates higher.', calls: [items([1])] },
   ]);
-  const t = await client.turn('which shoe?', HOME);
-  assert.deepEqual(lastResults(model, 2).map((r) => r.output), ['Accepted: it will be shown with your answer. Now write the answer text; there is no need to call it again.']);
-  assert.deepEqual(t.answer, { type: 'answer', traceId: t.traceId, text: 'The red one costs less and rates higher.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice] });
+  const turn = await client.turn('which shoe?', HOME);
+  assert.deepEqual(lastResults(model, 2).map((result) => result.output), ['Accepted: it will be shown with your answer. Now write the answer text; there is no need to call it again.']);
+  assert.deepEqual(turn.answer, { type: 'answer', traceId: turn.traceId, text: 'The red one costs less and rates higher.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice] });
 
   const wordsAfter = setup([{ calls: [search('shoes')] }, { calls: [items([1])] }, { text: 'The red one is the better buy.' }]);
   const t1 = await wordsAfter.client.turn('which shoe?', HOME);
@@ -149,7 +149,7 @@ test('cards sent with no words are kept, and the next step writes the answer; a 
 
   const last = setup([{ calls: [search('shoes')] }, { calls: [items([1])] }], { limits: { stepsPerTurn: 2 } });
   const t2 = await last.client.turn('which shoe?', HOME);
-  assert.deepEqual(t2.answer, { type: 'answer', traceId: t2.traceId, text: '', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice], budgetReached: true });
+  assert.deepEqual(t2.answer, { type: 'answer', traceId: t2.traceId, text: '', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice] });
 });
 
 test('presentation calls in a step that also calls site tools are refused as too early; only the site call is sent', async () => {
@@ -157,10 +157,10 @@ test('presentation calls in a step that also calls site tools are refused as too
     { calls: [search('shoes'), items([1])] },
     { text: 'One.', calls: [items([1])] },
   ]);
-  const t = await client.turn('shoes', HOME);
-  assert.deepEqual(t.calls.map((c) => c.name), ['search_products']);
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(turn.calls.map((call) => call.name), ['search_products']);
   assert.deepEqual(reasons(lastResults(model, 1)), ['ok', 'present_too_early']);
-  assert.deepEqual(t.answer!.present![0], { name: 'present_items', args: { entity: 'product', ids: [1] } });
+  assert.deepEqual(turn.answer!.present![0], { name: 'present_items', args: { entity: 'product', ids: [1] } });
 });
 
 test('skills load as tool results without a round trip, once each; unknown and switched-off skills are refused', async () => {
@@ -169,8 +169,8 @@ test('skills load as tool results without a round trip, once each; unknown and s
     { calls: [{ name: 'load_skill', input: { name: 'gift_ideas' } }, { name: 'load_skill', input: { name: 'astrology' } }, { name: 'load_skill', input: { name: 'product_research' } }] },
     { text: 'Who is the gift for?' },
   ], { configs: [{ site: 'example-shop', version: '1', issuedAt: '2026-10-14T00:00:00Z', disabledTools: [], disabledSkills: ['product_research'], budgets: { perTask: 5, perSession: 8, perDay: 10 }, rateLimitPerSecond: 2, signature: 'test' }] });
-  const t = await client.turn('a gift for my dad', HOME);
-  assert.deepEqual(types(t), ['answer']);
+  const turn = await client.turn('a gift for my dad', HOME);
+  assert.deepEqual(types(turn), ['answer']);
   assert.deepEqual(lastResults(model, 1), [{ type: 'tool-result', id: 'toolu_fake_1', name: 'load_skill', output: '# Gift ideas\nAsk who the gift is for before searching.', isError: false }]);
   const second = lastResults(model, 2);
   assert.match(String(second[0]!.output), /already loaded/);
@@ -183,8 +183,8 @@ test("a skill for the page's type loads before the first model call, once per se
     { text: 'This one.', calls: [{ name: 'present_detail', input: { entity: 'product', id: 7 } }] },
     { text: 'Still this one.', calls: [{ name: 'present_detail', input: { entity: 'product', id: 7 } }] },
   ]);
-  const t = await client.turn('tell me about this', productPage(7));
-  assert.deepEqual(t.answer!.present, [{ name: 'present_detail', args: { entity: 'product', id: 7 } }, notice]);
+  const turn = await client.turn('tell me about this', productPage(7));
+  assert.deepEqual(turn.answer!.present, [{ name: 'present_detail', args: { entity: 'product', id: 7 } }, notice]);
   const [user, call, result] = model.requests[0]!.messages;
   assert.equal(user!.role, 'user');
   assert.deepEqual(call, { role: 'assistant', content: [{ type: 'tool-call', id: 'preload_product_research', name: 'load_skill', input: { name: 'product_research' } }] });
@@ -193,31 +193,37 @@ test("a skill for the page's type loads before the first model call, once per se
   assert.equal(textOf(model.requests[1]!.messages).split('preload_product_research').length - 1, 2, 'one call and one result: not loaded twice');
 });
 
-test('the step budget: the last step is told to answer; tools it calls anyway are not run, and the answer says so', async () => {
+test('the step budget: a last step that still needs site tools ends the turn with an error, not a partial answer', async () => {
+  const OUT_OF_STEPS = "I couldn't finish this within the steps I can take for one request, so I'm not showing a partial answer. Try asking for less at once.";
   const { client, model, brain } = setup([
     { calls: [search('a')] }, { calls: [search('b')] }, { text: 'Checking more…', calls: [search('c')] },
   ], { limits: { stepsPerTurn: 3 } });
-  const t = await client.turn('every shoe', HOME);
-  assert.deepEqual(callIds(t), ['call_1', 'call_2']);
-  assert.deepEqual(t.answer, { type: 'answer', traceId: t.traceId, text: 'I ran out of steps before I could finish. Here is what I found so far; ask me to continue.', present: [], budgetReached: true });
-  assert.match(textOf([model.requests[2]!.messages.at(-1)!]), /This request is out of steps/);
+  const turn = await client.turn('every shoe', HOME);
+  assert.deepEqual(callIds(turn), ['call_1', 'call_2'], 'the last step\'s call is not sent');
+  assert.equal(turn.answer, null);
+  assert.deepEqual(turn.error, { type: 'error', traceId: turn.traceId, code: 'budget_reached', message: OUT_OF_STEPS });
+  assert.ok(!textOf(model.requests[2]!.messages).includes('out of steps'), 'the last step is not told to rush');
   assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
 
-  const obliging = setup([{ calls: [search('a')] }, { text: 'Here is what I have.', calls: [items([1])] }], { limits: { stepsPerTurn: 2 } });
-  const t2 = await obliging.client.turn('every shoe', HOME);
-  assert.deepEqual(t2.answer, { type: 'answer', traceId: t2.traceId, text: 'Here is what I have.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice], budgetReached: true });
+  const refusedAtTheEnd = setup([{ calls: [search('a')] }, { text: 'Here.', calls: [items([1, 99])] }], { limits: { stepsPerTurn: 2 } });
+  const refusedTurn = await refusedAtTheEnd.client.turn('every shoe', HOME);
+  assert.equal(refusedTurn.error?.code, 'budget_reached', 'a card it can no longer fix: no answer rather than half of one');
+
+  const finishedInTime = setup([{ calls: [search('a')] }, { text: 'Here is what I found.', calls: [items([1])] }], { limits: { stepsPerTurn: 2 } });
+  const finishedTurn = await finishedInTime.client.turn('every shoe', HOME);
+  assert.deepEqual(finishedTurn.answer, { type: 'answer', traceId: finishedTurn.traceId, text: 'Here is what I found.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice] }, 'an answer on the last step is a normal answer');
 });
 
 test('results are accepted only for the calls the brain is waiting for, each exactly once', async () => {
   for (const tamper of [
-    (r: ToolResult[]) => [{ ...r[0]!, id: 'call_99' }],
-    (r: ToolResult[]) => [r[0]!, r[0]!],
-    (r: ToolResult[]) => [r[0]!],
+    (results: ToolResult[]) => [{ ...results[0]!, id: 'call_99' }],
+    (results: ToolResult[]) => [results[0]!, results[0]!],
+    (results: ToolResult[]) => [results[0]!],
   ]) {
     const { brain, model } = setup([{ calls: [search('a'), search('b')] }, { text: 'Fresh start.' }]);
     const client = new FakeClient(inProcess(brain), { site: 'example-shop', validate: validateMessage, results: shopResults, tamper });
-    const t = await client.turn('shoes', HOME);
-    assert.deepEqual(t.error, { type: 'error', traceId: t.traceId, code: 'internal', message: 'Something went wrong. Try again.' });
+    const turn = await client.turn('shoes', HOME);
+    assert.deepEqual(turn.error, { type: 'error', traceId: turn.traceId, code: 'internal', message: 'Something went wrong. Try again.' });
     const next = await client.turn('try again', HOME);
     assert.equal(next.answer?.text, 'Fresh start.');
     assert.deepEqual(historyProblems(model.requests[1]!.messages), [], 'the refused calls were closed with errors');
@@ -228,20 +234,20 @@ test('results for a turn that is not waiting expire; malformed and oversized out
   const { brain, send, model } = setup([{ calls: [search('a'), search('b'), search('c')] }, { text: 'Done.' }]);
   const stale: ClientResults = { type: 'results', sessionId: 'sess_nobody_home', traceId: 'trace_nobody_home', results: [{ id: 'call_1', ok: true, output: {} }] };
   const events = [];
-  for await (const e of send(stale)) events.push(e);
+  for await (const event of send(stale)) events.push(event);
   assert.deepEqual(events, [{ type: 'error', traceId: 'trace_nobody_home', code: 'timeout', message: 'This request expired. Ask again.' }]);
 
   const client = new FakeClient(inProcess(brain), {
     site: 'example-shop', validate: validateMessage,
     results: (call) => {
-      const q = (call.args as { query: string }).query;
-      if (q === 'a') return { ok: true, output: { items: [] } };
-      if (q === 'b') return { ok: true, output: { products: [{ id: 1, name: 'x'.repeat(200_000) }] } };
+      const query = (call.args as { query: string }).query;
+      if (query === 'a') return { ok: true, output: { items: [] } };
+      if (query === 'b') return { ok: true, output: { products: [{ id: 1, name: 'x'.repeat(200_000) }] } };
       return { ok: false, error: { code: 'upstream_error', reason: 'site_unavailable', message: 'The site had a problem.', retryable: true } };
     },
   });
-  const t = await client.turn('shoes', HOME);
-  assert.equal(t.answer?.text, 'Done.');
+  const turn = await client.turn('shoes', HOME);
+  assert.equal(turn.answer?.text, 'Done.');
   assert.deepEqual(reasons(lastResults(model, 1)), ['response_changed', 'response_changed', 'site_unavailable']);
 });
 
@@ -249,17 +255,17 @@ test('a client that never sends results: the turn ends after the wait limit, and
   const { brain, client, model, send, log } = setup([{ calls: [search('a')] }, { text: 'Back again.' }], {
     limits: { resultsTimeoutMs: 30 }, results: () => DROP,
   });
-  const t = await client.turn('shoes', HOME);
-  assert.deepEqual(types(t), ['tool_call', 'await_results']);
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(types(turn), ['tool_call', 'await_results']);
   await sleep(80);
-  assert.ok(log.some((e) => e.kind === 'turn_end' && (e.detail as { why: string }).why === 'results timed out'));
-  const late: ClientResults = { type: 'results', sessionId: client.sessionId, traceId: t.traceId, results: [{ id: 'call_1', ok: true, output: SEARCH_OUTPUT }] };
+  assert.ok(log.some((entry) => entry.kind === 'turn_end' && (entry.detail as { why: string }).why === 'results timed out'));
+  const late: ClientResults = { type: 'results', sessionId: client.sessionId, traceId: turn.traceId, results: [{ id: 'call_1', ok: true, output: SEARCH_OUTPUT }] };
   const events = [];
-  for await (const e of send(late)) events.push(e);
+  for await (const event of send(late)) events.push(event);
   assert.equal((events[0] as { code: string }).code, 'timeout');
   const next = await client.turn('hello?', HOME, shopResults);
   assert.equal(next.answer?.text, 'Back again.');
-  const closed = model.requests[1]!.messages.find((m) => m.role === 'tool')!.content[0] as ToolResultPart;
+  const closed = model.requests[1]!.messages.find((message) => message.role === 'tool')!.content[0] as ToolResultPart;
   assert.match((closed.output as { message: string }).message, /didn't return a result: the user's device didn't send it in time/);
   assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
 });
@@ -273,8 +279,8 @@ test('model failures end the turn with a plain message: an API error, a model th
   ];
   for (const [step, code, message] of cases) {
     const { client, brain } = setup([step, { text: 'Working now.' }], { limits: { modelTimeoutMs: 30 } });
-    const t = await client.turn('shoes', HOME);
-    assert.deepEqual(t.error, { type: 'error', traceId: t.traceId, code, message });
+    const turn = await client.turn('shoes', HOME);
+    assert.deepEqual(turn.error, { type: 'error', traceId: turn.traceId, code, message });
     assert.equal((await client.turn('again', HOME)).answer?.text, 'Working now.');
     assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), [], 'a failed step leaves nothing half-written');
   }
@@ -286,7 +292,7 @@ test('a new message while the brain waits for results closes the old calls; resu
   const fresh = await client.turn('actually, boots', HOME, shopResults);
   assert.equal(fresh.answer?.text, 'New answer.');
   const late = [];
-  for await (const e of send({ type: 'results', sessionId: client.sessionId, traceId: old.traceId, results: [{ id: 'call_1', ok: true, output: SEARCH_OUTPUT }] })) late.push(e);
+  for await (const event of send({ type: 'results', sessionId: client.sessionId, traceId: old.traceId, results: [{ id: 'call_1', ok: true, output: SEARCH_OUTPUT }] })) late.push(event);
   assert.equal((late[0] as { code: string }).code, 'timeout');
   assert.match(textOf(model.requests[1]!.messages), /the user sent a new message first/);
   assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
@@ -294,13 +300,13 @@ test('a new message while the brain waits for results closes the old calls; resu
 
 test('a new message while the model is still writing aborts that step; the new turn runs on a clean history', async () => {
   let release!: () => void;
-  const paused = new Promise<void>((r) => { release = r; });
+  const paused = new Promise<void>((resolve) => { release = resolve; });
   const { brain, client, model } = setup([
     { calls: [search('a'), search('b')], beforeCall: (i) => (i === 1 ? paused : undefined), hang: 'abortable' },
     { text: 'Boots it is.' },
   ]);
   let firstCall!: () => void;
-  const sawCall = new Promise<void>((r) => { firstCall = r; });
+  const sawCall = new Promise<void>((resolve) => { firstCall = resolve; });
   const old = client.turn('shoes', HOME, (call) => { firstCall(); return shopResults(call); });
   await within(sawCall, 2000, 'the first call never arrived');
   const fresh = await client.turn('boots instead', HOME);
@@ -327,7 +333,7 @@ test('a client that stops reading mid-step: the model call is aborted and the tu
   assert.equal((first.value as { type: string }).type, 'tool_call');
   await stream.return!(undefined);
   assert.ok(aborted, 'the model call was aborted');
-  assert.ok(log.some((e) => e.kind === 'turn_end' && (e.detail as { why: string }).why === 'the client went away'));
+  assert.ok(log.some((entry) => entry.kind === 'turn_end' && (entry.detail as { why: string }).why === 'the client went away'));
   assert.equal((await client.turn('hello', HOME)).answer?.text, 'Hi again.');
   assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
 });
@@ -339,7 +345,7 @@ test('a client that is already gone when the brain starts: the model is not call
   const accepted = brain.accept({ type: 'turn', site: 'example-shop', sessionId: client.sessionId, traceId: 'trace_gone_1', message: 'shoes', pageContext: HOME }, { signal: hungUp.signal });
   assert.ok(accepted.ok);
   const events = [];
-  for await (const e of accepted.events) events.push(e);
+  for await (const event of accepted.events) events.push(event);
   assert.deepEqual(events, []);
   assert.equal(model.requests.length, 0, 'no model call for a client that is gone');
   assert.equal((await client.turn('hello', HOME)).answer?.text, 'Hello again.');
@@ -348,15 +354,15 @@ test('a client that is already gone when the brain starts: the model is not call
 test('scripts: a bad source is refused by the brain; the IDs a script returns can be shown, others cannot', async () => {
   const { client, model } = setup([
     { calls: [{ name: 'run_script', input: { source: '' } }] },
-    { calls: [{ name: 'run_script', input: { source: "const r = await tools.search_products({ query: 'x' }); return { ids: [r.products[0].id] };" } }] },
+    { calls: [{ name: 'run_script', input: { source: "const found = await tools.search_products({ query: 'x' }); return { ids: [found.products[0].id] };" } }] },
     { text: 'Two.', calls: [items([1, 2])] },
     { text: 'One.', calls: [items([1])] },
   ]);
-  const t = await client.turn('cheap shoes', HOME);
-  assert.deepEqual(t.calls.map((c) => [c.id, c.name]), [['call_1', 'run_script']], 'the empty script never reached the client');
+  const turn = await client.turn('cheap shoes', HOME);
+  assert.deepEqual(turn.calls.map((call) => [call.id, call.name]), [['call_1', 'run_script']], 'the empty script never reached the client');
   assert.deepEqual(reasons(lastResults(model, 1)), ['bad_arguments']);
   assert.deepEqual(reasons(lastResults(model, 3)), ['unknown_id'], 'product 2 was never returned');
-  assert.equal(t.answer?.text, 'One.');
+  assert.equal(turn.answer?.text, 'One.');
 });
 
 test('LLM quotas: turns, model calls and tokens per session, and model calls per day for the site', async () => {
@@ -387,13 +393,13 @@ test('LLM quotas: turns, model calls and tokens per session, and model calls per
 test('messages that break the protocol are refused before anything runs (400), and results for a running turn get 409', async () => {
   const site2 = shopSite({ pack: { ...shopPack, site: { ...shopPack.site, id: 'other-shop' } } });
   let release!: () => void;
-  const paused = new Promise<void>((r) => { release = r; });
+  const paused = new Promise<void>((resolve) => { release = resolve; });
   const model = new FakeModel([{ calls: [search('a')], beforeFinish: () => paused }, { text: 'ok' }]);
   const brain = new Brain({ sites: [shopSite(), site2], model, now: () => NOW });
   const turn = { type: 'turn', site: 'example-shop', sessionId: 'sess_protocol_1', traceId: 'trace_protocol_1', message: 'shoes', pageContext: HOME };
-  const status = (m: unknown, endpoint?: 'turn' | 'results') => {
-    const a = brain.accept(m, endpoint ? { endpoint } : {});
-    return a.ok ? 200 : a.status;
+  const status = (message: unknown, endpoint?: 'turn' | 'results') => {
+    const result = brain.accept(message, endpoint ? { endpoint } : {});
+    return result.ok ? 200 : result.status;
   };
   assert.equal(status('hello'), 400);
   assert.equal(status({ type: 'answer', traceId: 'trace_x1234', text: 'hi' }), 400);
@@ -428,8 +434,8 @@ test('idle sessions are forgotten, and the oldest go first when there are too ma
 
 test('an answer with no text and nothing to show gets a plain fallback', async () => {
   const { client } = setup([{}]);
-  const t = await client.turn('hmm', HOME);
-  assert.deepEqual(t.answer, { type: 'answer', traceId: t.traceId, text: "I couldn't put together an answer. Try asking another way.", present: [] });
+  const turn = await client.turn('hmm', HOME);
+  assert.deepEqual(turn.answer, { type: 'answer', traceId: turn.traceId, text: "I couldn't put together an answer. Try asking another way.", present: [] });
 });
 
 test('progress lines are the text before the calls, cut to 200 characters at a sentence when they run long', () => {
@@ -440,4 +446,76 @@ test('progress lines are the text before the calls, cut to 200 characters at a s
   const noStop = 'y'.repeat(300);
   assert.equal(Array.from(progressLine(noStop)!).length, 200);
   assert.ok(progressLine(noStop)!.endsWith('…'));
+});
+
+test('a message sent while the brain waits for results reaches the model with those results, as a reminder', async () => {
+  let amendReply: unknown[] = [];
+  const holder: { client?: FakeClient } = {};
+  const { client, model, brain } = setup([
+    { calls: [search('shoes')] },
+    { text: 'Here are the red ones.', calls: [items([1])] },
+  ], { results: async (call) => { amendReply = await holder.client!.amend('only red ones, please'); return shopResults(call); } });
+  holder.client = client;
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(amendReply, [{ type: 'amended', traceId: turn.traceId, status: 'queued' }]);
+  const messages = model.requests[1]!.messages;
+  assert.equal(messages.at(-2)!.role, 'tool', 'the tool results come first');
+  const reminder = messages.at(-1)!;
+  assert.equal(reminder.role, 'user', 'then the reminder, in the same user turn once the adapter merges them');
+  assert.match(textOf([reminder]), /<system-reminder>\\nThe user sent a new message while you were working:\\nonly red ones, please/);
+  assert.equal(turn.answer?.text, 'Here are the red ones.');
+  assert.equal(turn.answer?.followUps, undefined);
+  assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
+});
+
+test("a message that arrives during the turn's last model call comes back on the answer as a follow-up", async () => {
+  const holder: { client?: FakeClient } = {};
+  const { client, model } = setup([
+    { calls: [search('shoes')] },
+    { text: 'Two shoes.', calls: [items([1, 2])], beforeFinish: async () => { await holder.client!.amend('and boots too'); } },
+  ]);
+  holder.client = client;
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(turn.answer?.followUps, ['and boots too']);
+  assert.equal(model.requests.length, 2, 'the answer is not held back for it');
+});
+
+test('a message sent while cards wait for their words: the model is told what is held, and new cards replace them', async () => {
+  const holder: { client?: FakeClient } = {};
+  const { client, model } = setup([
+    { calls: [search('shoes')] },
+    { calls: [items([1, 2])], beforeFinish: async () => { await holder.client!.amend('just the cheaper one'); } },
+    { text: 'The cheaper one.', calls: [items([1])] },
+  ]);
+  holder.client = client;
+  const turn = await client.turn('shoes', HOME);
+  assert.match(textOf([model.requests[2]!.messages.at(-1)!]), /just the cheaper one/);
+  assert.deepEqual(turn.answer?.present, [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice]);
+});
+
+test('held cards stand when the model answers the new message with text only', async () => {
+  const holder: { client?: FakeClient } = {};
+  const { client, model } = setup([
+    { calls: [search('shoes')] },
+    { calls: [items([1, 2])], beforeFinish: async () => { await holder.client!.amend('which one rates higher?') } },
+    { text: 'The red one rates higher: 4.5 against 3.9.' },
+  ]);
+  holder.client = client;
+  const turn = await client.turn('shoes', HOME);
+  assert.match(textOf([model.requests[2]!.messages.at(-1)!]), /You were about to show: present_items \(product 1, 2\)\. Handle the user's message however it needs, with more tools if useful\. When you answer, those cards are shown with it, unless you call presentation tools again; whatever you send then replaces them\./);
+  assert.deepEqual(turn.answer, { type: 'answer', traceId: turn.traceId, text: 'The red one rates higher: 4.5 against 3.9.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1, 2] } }, notice] });
+});
+
+test('a message for a turn that has ended, or for no turn, is too late; an empty one is refused', async () => {
+  const { client, brain } = setup([{ text: 'Hi.' }]);
+  const turn = await client.turn('hello', HOME);
+  assert.ok(turn.answer);
+  assert.deepEqual(await client.amend('one more thing'), [{ type: 'amended', traceId: turn.traceId, status: 'too_late' }]);
+  const stranger = brain.accept({ type: 'amend', sessionId: 'sess_never_seen', traceId: 'trace_never_seen', message: 'hi' });
+  assert.ok(stranger.ok);
+  const replies = [];
+  for await (const reply of stranger.events) replies.push(reply);
+  assert.deepEqual(replies, [{ type: 'amended', traceId: 'trace_never_seen', status: 'too_late' }]);
+  const empty = brain.accept({ type: 'amend', sessionId: client.sessionId, traceId: turn.traceId, message: '' });
+  assert.deepEqual(empty.ok ? 200 : empty.status, 400);
 });
