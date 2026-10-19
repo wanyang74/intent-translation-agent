@@ -1,13 +1,13 @@
 // The brain over HTTP, as core.js's web host calls it: POST /v1/turn, /v1/results and /v1/amend take one protocol message
 // as JSON and answer with newline-delimited JSON, one event per line, written the moment each event exists, so every
 // tool call reaches the client while the model is still writing. A message that breaks the protocol gets 400 and a
-// JSON error. Browsers call it from the site's own pages, so it answers CORS for the sites' origins.
+// JSON error. Browsers call it from the site's own pages, so it answers CORS for the site's origins.
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
-import type { Brain } from '../agent/loop.ts';
+import type { Brain } from '../agent/brain.ts';
 
 export interface ServerOptions {
   brain: Brain;
-  /** Origins allowed to call from a browser: the sites' own origins, and any added for development. */
+  /** Origins allowed to call from a browser: the site's own origins, and any added for development. */
   allowedOrigins: readonly string[];
   /** The largest request body accepted. Results carry tool outputs, so this is generous. */
   maxBodyBytes?: number;

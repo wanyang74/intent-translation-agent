@@ -18,7 +18,8 @@ import { loadSiteRuntime } from '../../testkit/src/site-runtime.ts';
 import { testHost } from '../../testkit/src/test-host.ts';
 import { anthropicModel } from '../src/model/anthropic.ts';
 import { setting } from '../src/server/env.ts';
-import { Brain, type BrainLogEntry } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
+import type { BrainLogEntry } from '../src/agent/shared.ts';
 import { loadSite } from '../src/prompt/site.ts';
 
 const live = process.env.LIVE === '1';
@@ -37,7 +38,7 @@ for (const id of listSites()) {
     session.setPage(turn.pageContext);
 
     const log: BrainLogEntry[] = [];
-    const brain = new Brain({ sites: [bundle], model: anthropicModel({ apiKey: apiKey! }), now: () => now, log: (entry) => log.push(entry) });
+    const brain = new Brain({ site: bundle, model: anthropicModel({ apiKey: apiKey! }), now: () => now, log: (entry) => log.push(entry) });
     const client = new FakeClient(inProcess(brain), {
       site: id,
       validate: validatorFor(bundle.validators.platform, 'messages.json'),

@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PageContext } from '../../../platform/contract/generated/types.ts';
 import { validatorFor } from '../../../platform/core/src/shared/validate.ts';
-import { Brain } from '../../../platform/brain/src/agent/loop.ts';
+import { Brain } from '../../../platform/brain/src/agent/brain.ts';
 import { loadSite } from '../../../platform/brain/src/prompt/site.ts';
 import { loadConversations } from '../../../platform/testkit/src/conversations.ts';
 import { FakeClient, inProcess, type ResultFor } from '../../../platform/testkit/src/fake-client.ts';
@@ -21,7 +21,7 @@ const search = { name: 'search_flights', input: { origin: 'SFO', destination: 'J
 
 function setup(script: FakeScript[], now: () => number = () => Date.parse('2026-10-12T18:05:00Z')) {
   const model = new FakeModel(script);
-  const brain = new Brain({ sites: [bundle], model, now });
+  const brain = new Brain({ site: bundle, model, now });
   return { model, client: new FakeClient(inProcess(brain), { site: 'demo-flights', validate, results }) };
 }
 const reasons = (model: FakeModel, i: number) => (model.requests[i]!.messages.at(-1)!.content as { isError: boolean; output: { reason: string } }[])

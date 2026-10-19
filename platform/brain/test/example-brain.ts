@@ -9,7 +9,8 @@ import { examplePack } from '../../core/test/example-pack.ts';
 import { exampleValidators } from '../../core/test/example-site.ts';
 import { FakeClient, inProcess, type ResultBody, type ResultFor } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeScript } from '../../testkit/src/fake-model.ts';
-import { Brain, type BrainLimits, type BrainLogEntry } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
+import type { BrainLimits, BrainLogEntry } from '../src/agent/shared.ts';
 import type { ChatMessage, ToolSpec } from '../src/model/model.ts';
 import type { QuotaLimits } from '../src/system/quotas.ts';
 import type { SiteBundle } from '../src/prompt/site.ts';
@@ -85,7 +86,7 @@ export const shopResults: ResultFor = (call): ResultBody => {
 export interface SetupOptions {
   limits?: Partial<BrainLimits>;
   quotas?: Partial<QuotaLimits>;
-  configs?: RemoteConfig[];
+  config?: RemoteConfig;
   now?: () => number;
   results?: ResultFor;
   bundle?: SiteBundle;
@@ -98,7 +99,7 @@ export function setup(script: FakeScript[], options: SetupOptions = {}) {
   const model = new FakeModel(script);
   const log: BrainLogEntry[] = [];
   const brain = new Brain({
-    sites: [options.bundle ?? shopSite()], model, limits: options.limits, quotas: options.quotas, configs: options.configs, now: options.now ?? (() => NOW), log: (entry) => log.push(entry),
+    site: options.bundle ?? shopSite(), model, limits: options.limits, quotas: options.quotas, config: options.config, now: options.now ?? (() => NOW), log: (entry) => log.push(entry),
   });
   const client = new FakeClient(inProcess(brain), {
     site: 'example-shop', validate: validateMessage, results: options.results ?? shopResults, ...(options.sessionId ? { sessionId: options.sessionId } : {}),

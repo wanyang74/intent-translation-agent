@@ -270,6 +270,23 @@ ul.plain li{margin-bottom:8px}
 
 .phase-tbl td:first-child{white-space:nowrap}
 
+/* brain levels: nested boxes, one per level, longest-lived outside */
+.levels{margin-block:6px 18px}
+.lv{border:1px solid var(--line);border-radius:10px;padding:12px 14px 14px;background:var(--surface);min-width:0}
+.lv .lv{margin-top:12px;background:var(--sunk)}
+.lv .lv .lv{background:var(--surface)}
+.lv .lv .lv .lv{background:var(--sunk)}
+.lv .lv .lv .lv .lv{background:var(--surface)}
+.lv-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:8px}
+.lv-name{font:600 15px var(--font-display);color:var(--accent)}
+.lv-count{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+.lv-file{margin-left:auto;font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+.lv-fields{display:flex;flex-wrap:wrap;gap:6px}
+.lv-fields span{font-size:12.5px;line-height:1.35;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--bg)}
+.lv-fields b{font-family:var(--font-mono);font-size:11.5px;font-weight:500;color:var(--fg);margin-right:4px}
+.lv-fields .lv-shared{border-style:dashed;border-color:var(--accent)}
+@media (max-width:640px){.lv{padding:10px 10px 12px}.lv-file{margin-left:0;width:100%}}
+
 /* folding sections: every main tab and section folds from its heading */
 details.fold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:6px}
 details.fold > summary::-webkit-details-marker{display:none}
@@ -319,6 +336,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#core-scripts">Script sandbox</a></div></li>
 </ol></li>
 <li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Agentic brain"></button><a href="#brain">Agentic brain</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#brain-levels">Brain, sessions and turns</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#brain-skills">Prompt and skills</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-cache">Prompt caching</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#brain-memory">Memory</a></div></li>
@@ -374,7 +392,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 
 <main>
     <header class="top">
-      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-14</div>
+      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-18</div>
       <h1>Intent Agent Mini</h1>
       <p class="lede">The smallest first version: take what a person can already do on a consumer site's frontend and turn it into a conversational agent flow that can loop and compare at scale. It only sends requests the frontend already sends. It doesn't touch the backend and doesn't place orders. The platform is general: everything it knows about a site comes from that site's pack, and Carvana is the first.</p>
       <div class="chips">
@@ -904,6 +922,78 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <p>Neither page scripts nor the app can hold an API key, or anyone could extract it. So the agentic brain runs on our server: it receives the conversation and page context, runs the agent loop, calls the model, and sends tool calls to the client to run. It never calls the site directly (D1).</p>
         <p>All three platforms share it. It is also where the gateway starts later: logging, audit, quotas and external-agent access will live here.</p>
       </div>
+<details class="fold lvl4" id="brain-levels" open>
+<summary><h4>Brain, sessions and turns</h4></summary>
+<div class="fold-body">
+<p class="sub">The brain's state is kept at five levels. Each level contains many of the level inside it and lives for a shorter time than the one around it. In the code, each of the first three levels is a class in its own file, and the brain gives every session and turn the same read-only set of shared services.</p>
+<div class="levels" role="img" aria-label="Nested levels: a Brain per site holds AgentSessions; each session holds at most one running Turn; a turn is a series of ModelSteps; each step holds the CallRecords of its tool calls.">
+  <div class="lv">
+    <div class="lv-head"><span class="lv-name">Brain</span><span class="lv-count">one per site · always on</span><span class="lv-file">agent/brain.ts</span></div>
+    <div class="lv-fields">
+      <span class="lv-shared"><b>site</b>the site pack, its cached prompt segment and its policy</span>
+      <span class="lv-shared"><b>model</b>the model adapter</span>
+      <span class="lv-shared"><b>limits, quotas</b>step budget, timeouts, LLM quotas</span>
+      <span><b>sessions</b>every open conversation, in order of last use</span>
+    </div>
+    <div class="lv">
+      <div class="lv-head"><span class="lv-name">AgentSession</span><span class="lv-count">one per conversation · lives across turns</span><span class="lv-file">agent/session.ts</span></div>
+      <div class="lv-fields">
+        <span><b>history</b>everything the model has seen, across all turns</span>
+        <span><b>ids</b>every ID tools returned</span>
+        <span><b>skills</b>skills already loaded</span>
+        <span><b>call counter</b>call_1, call_2, …</span>
+        <span><b>usage</b>turns, model calls, tokens</span>
+        <span><b>turn</b>at most one; none between turns</span>
+      </div>
+      <div class="lv">
+        <div class="lv-head"><span class="lv-name">Turn</span><span class="lv-count">one per user message · ends with an answer or an error</span><span class="lv-file">agent/turn.ts</span></div>
+        <div class="lv-fields">
+          <span><b>traceId, page</b>the message's trace and page context</span>
+          <span><b>state</b>running, awaiting results, or done</span>
+          <span><b>amendments</b>messages sent while it runs</span>
+          <span><b>kept</b>cards held for the answer</span>
+          <span><b>awaiting</b>the step whose calls the client is running</span>
+        </div>
+        <div class="lv">
+          <div class="lv-head"><span class="lv-name">ModelStep</span><span class="lv-count">one per model call</span><span class="lv-file">agent/turn.ts</span></div>
+          <div class="lv-fields">
+            <span><b>text</b>what the model wrote</span>
+            <span><b>calls</b>every tool call it made</span>
+          </div>
+          <div class="lv">
+            <div class="lv-head"><span class="lv-name">CallRecord</span><span class="lv-count">one per tool call</span><span class="lv-file">agent/turn.ts</span></div>
+            <div class="lv-fields">
+              <span><b>modelId</b>the model's ID, used in the history</span>
+              <span><b>callId</b>the brain's ID, the only one the client sees</span>
+              <span><b>kind</b>client, present, or answered by the brain</span>
+              <span><b>result</b>filled in once known</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="note">Dashed fields are the services the brain shares with every session and turn below it. All of a site's sessions use the same site object, so every request starts with the same prompt bytes, which is what lets the prompt cache work.</p>
+<div class="tbl">
+  <table>
+    <thead><tr><th>Level</th><th>How many</th><th>Lives for</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>Brain</td><td>One per site</td><td>The server process</td><td>Checks each message against the protocol, finds or opens its session, and forgets idle sessions</td></tr>
+      <tr><td>AgentSession</td><td>One per conversation</td><td>Until it's idle too long</td><td>Starts turns (a new message replaces a running turn), and routes results and amendments to the current one</td></tr>
+      <tr><td>Turn</td><td>At most one running per session</td><td>One user message</td><td>Runs the agent loop: model call after model call, until it answers, fails or waits for the client</td></tr>
+      <tr><td>ModelStep</td><td>Several per turn</td><td>One model call</td><td>Collects the model's text and calls; kept on the turn only while the client runs its tools</td></tr>
+      <tr><td>CallRecord</td><td>Several per step</td><td>Its step</td><td>Records where each call went and its result, so the history has a result for every call</td></tr>
+    </tbody>
+  </table>
+</div>
+<ul class="plain">
+  <li><b>The history belongs to the session, not the turn.</b> When a step ends, what the model wrote and called, and the results, go into the session's history. The turn and its steps then go away, and the conversation carries on into the next turn.</li>
+  <li><b>Each call has two IDs.</b> The model's ID stays in the history. The brain's ID is the only one the client sees, and results are accepted only for IDs the brain issued.</li>
+  <li><b>One brain per site.</b> Each site deploys its own brain, with its own model keys, quotas and logs. A host that serves several sites would run one brain per site behind a router.</li>
+</ul>
+</div>
+</details>
 <details class="fold lvl4" id="brain-skills" open>
 <summary><h4>Prompt and skills</h4></summary>
 <div class="fold-body">

@@ -8,7 +8,8 @@ import type { ClientMessage } from '../../contract/generated/types.ts';
 import { webHost } from '../../core/hosts/web.ts';
 import { FakeClient } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeScript } from '../../testkit/src/fake-model.ts';
-import { Brain, type BrainLogEntry } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
+import type { BrainLogEntry } from '../src/agent/shared.ts';
 import { createBrainServer } from '../src/server/server.ts';
 import { HOME, NOW, shopResults, shopSite, validateMessage } from './example-brain.ts';
 
@@ -17,7 +18,7 @@ const SITE_ORIGIN = 'https://www.example.com';
 async function serve(script: FakeScript[], options: { maxBodyBytes?: number } = {}) {
   const log: BrainLogEntry[] = [];
   const model = new FakeModel(script);
-  const brain = new Brain({ sites: [shopSite()], model, now: () => NOW, log: (entry) => log.push(entry) });
+  const brain = new Brain({ site: shopSite(), model, now: () => NOW, log: (entry) => log.push(entry) });
   const server = createBrainServer({ brain, allowedOrigins: [SITE_ORIGIN], ...(options.maxBodyBytes ? { maxBodyBytes: options.maxBodyBytes } : {}) });
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;

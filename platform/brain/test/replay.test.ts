@@ -8,7 +8,7 @@ import { listSites } from '../../contract/src/site-pack.ts';
 import { loadConversations } from '../../testkit/src/conversations.ts';
 import { replayConversation } from '../../testkit/src/fake-client.ts';
 import { fakeModelFor } from '../../testkit/src/fake-model.ts';
-import { Brain } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
 import { loadSite } from '../src/prompt/site.ts';
 import { historyProblems, inProcess } from './example-brain.ts';
 
@@ -17,11 +17,11 @@ for (const id of listSites()) {
   for (const conversation of loadConversations(id)) {
     test(`${id}/${conversation.id}: the brain streams back exactly the conversation's events`, async () => {
       const model = fakeModelFor(conversation);
-      const brain = new Brain({ sites: [bundle], model, now: () => Date.parse(conversation.now!) });
+      const brain = new Brain({ site: bundle, model, now: () => Date.parse(conversation.now!) });
       const { differences } = await replayConversation(inProcess(brain), conversation);
       assert.deepEqual(differences, []);
       assert.equal(model.remaining, 0, 'every model step was used');
-      const global = brain.globalFor(id)!;
+      const global = brain.global;
       for (const request of model.requests) {
         assert.equal(request.system, global.system);
         assert.equal(request.tools, global.tools);

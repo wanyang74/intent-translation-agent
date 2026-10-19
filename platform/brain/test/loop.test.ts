@@ -7,10 +7,11 @@ import assert from 'node:assert/strict';
 import type { ClientResults, ToolResult } from '../../contract/generated/types.ts';
 import { DROP, FakeClient, type TurnRecord } from '../../testkit/src/fake-client.ts';
 import { FakeModel, type FakeStep } from '../../testkit/src/fake-model.ts';
-import { Brain, progressLine } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
+import { progressLine } from '../src/agent/turn.ts';
 import type { ToolResultPart } from '../src/model/model.ts';
 import {
-  HOME, historyProblems, inProcess, NOW, productPage, SEARCH_OUTPUT, setup, shopPack, shopResults, shopSite, textOf, validateMessage,
+  HOME, historyProblems, inProcess, NOW, productPage, SEARCH_OUTPUT, setup, shopResults, shopSite, textOf, validateMessage,
 } from './example-brain.ts';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -168,7 +169,7 @@ test('skills load as tool results without a round trip, once each; unknown and s
     { calls: [{ name: 'load_skill', input: { name: 'gift_ideas' } }] },
     { calls: [{ name: 'load_skill', input: { name: 'gift_ideas' } }, { name: 'load_skill', input: { name: 'astrology' } }, { name: 'load_skill', input: { name: 'product_research' } }] },
     { text: 'Who is the gift for?' },
-  ], { configs: [{ site: 'example-shop', version: '1', issuedAt: '2026-10-14T00:00:00Z', disabledTools: [], disabledSkills: ['product_research'], budgets: { perTask: 5, perSession: 8, perDay: 10 }, rateLimitPerSecond: 2, signature: 'test' }] });
+  ], { config: { site: 'example-shop', version: '1', issuedAt: '2026-10-14T00:00:00Z', disabledTools: [], disabledSkills: ['product_research'], budgets: { perTask: 5, perSession: 8, perDay: 10 }, rateLimitPerSecond: 2, signature: 'test' } });
   const turn = await client.turn('a gift for my dad', HOME);
   assert.deepEqual(types(turn), ['answer']);
   assert.deepEqual(lastResults(model, 1), [{ type: 'tool-result', id: 'toolu_fake_1', name: 'load_skill', output: '# Gift ideas\nAsk who the gift is for before searching.', isError: false }]);
@@ -391,11 +392,10 @@ test('LLM quotas: turns, model calls and tokens per session, and model calls per
 });
 
 test('messages that break the protocol are refused before anything runs (400), and results for a running turn get 409', async () => {
-  const site2 = shopSite({ pack: { ...shopPack, site: { ...shopPack.site, id: 'other-shop' } } });
   let release!: () => void;
   const paused = new Promise<void>((resolve) => { release = resolve; });
   const model = new FakeModel([{ calls: [search('a')], beforeFinish: () => paused }, { text: 'ok' }]);
-  const brain = new Brain({ sites: [shopSite(), site2], model, now: () => NOW });
+  const brain = new Brain({ site: shopSite(), model, now: () => NOW });
   const turn = { type: 'turn', site: 'example-shop', sessionId: 'sess_protocol_1', traceId: 'trace_protocol_1', message: 'shoes', pageContext: HOME };
   const status = (message: unknown, endpoint?: 'turn' | 'results') => {
     const result = brain.accept(message, endpoint ? { endpoint } : {});
@@ -406,16 +406,21 @@ test('messages that break the protocol are refused before anything runs (400), a
   assert.equal(status({ ...turn, pageContext: undefined }), 400);
   assert.equal(status({ ...turn, message: '' }), 400);
   assert.equal(status(turn, 'results'), 400);
-  assert.equal(status({ ...turn, site: 'nowhere-shop' }), 400);
+  assert.equal(status({ ...turn, site: 'nowhere-shop' }), 400, 'a brain serves one site');
   const accepted = brain.accept(turn, { endpoint: 'turn' });
   assert.ok(accepted.ok);
   const it = accepted.events[Symbol.asyncIterator]();
   assert.equal(((await it.next()).value as { type: string }).type, 'tool_call');
   const pending = it.next();
   assert.equal(status({ type: 'results', sessionId: 'sess_protocol_1', traceId: 'trace_protocol_1', results: [{ id: 'call_1', ok: true, output: SEARCH_OUTPUT }] }, 'results'), 409);
-  assert.equal(status({ ...turn, site: 'other-shop', traceId: 'trace_protocol_2' }), 400, 'a session belongs to one site');
+  assert.equal(status({ ...turn, site: 'other-shop', traceId: 'trace_protocol_2' }), 400, 'a turn for another site is refused, even for a session that exists');
   release();
   assert.equal(((await pending).value as { type: string }).type, 'await_results');
+});
+
+test("a brain serves one site: a remote config for another site is a mistake, caught at start", () => {
+  const config = { site: 'other-shop', version: '1', issuedAt: '2026-10-14T00:00:00Z', disabledTools: [], disabledSkills: [], budgets: { perTask: 5, perSession: 8, perDay: 10 }, rateLimitPerSecond: 2, signature: 'test' };
+  assert.throws(() => new Brain({ site: shopSite(), model: new FakeModel([]), config }), /for other-shop, not example-shop/);
 });
 
 test('idle sessions are forgotten, and the oldest go first when there are too many', async () => {

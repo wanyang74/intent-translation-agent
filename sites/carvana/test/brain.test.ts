@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validatorFor } from '../../../platform/core/src/shared/validate.ts';
-import { Brain } from '../../../platform/brain/src/agent/loop.ts';
+import { Brain } from '../../../platform/brain/src/agent/brain.ts';
 import { globalSegment } from '../../../platform/brain/src/prompt/prompt.ts';
 import { loadSite } from '../../../platform/brain/src/prompt/site.ts';
 import { loadConversations } from '../../../platform/testkit/src/conversations.ts';
@@ -36,7 +36,7 @@ test("the model is told Carvana's rules: hidden payment figures, the zip code, t
 test("on a car's page, vehicle research loads before the first model call, and the conversation replays exactly", async () => {
   const conversation = loadConversations('carvana').find((candidate) => candidate.id === 'car-on-screen')!;
   const model = fakeModelFor(conversation);
-  const brain = new Brain({ sites: [bundle], model, now: () => Date.parse(conversation.now!) });
+  const brain = new Brain({ site: bundle, model, now: () => Date.parse(conversation.now!) });
   const { differences } = await replayConversation(inProcess(brain), conversation);
   assert.deepEqual(differences, []);
   const [, preload, skill] = model.requests[0]!.messages;
@@ -56,7 +56,7 @@ test("the brain refuses what Carvana's schemas and the session's IDs don't allow
     { text: 'Which car?', calls: [{ name: 'present_items', input: { entity: 'vehicle', ids: ['4812031'] } }] },
     { text: 'Which car do you mean?' },
   ]);
-  const brain = new Brain({ sites: [bundle], model, now: () => Date.parse('2026-10-08T19:15:00Z') });
+  const brain = new Brain({ site: bundle, model, now: () => Date.parse('2026-10-08T19:15:00Z') });
   const client = new FakeClient(inProcess(brain), { site: 'carvana', validate });
   const turn = await client.turn('quote car 4812031', HOME);
   assert.deepEqual(turn.calls, []);

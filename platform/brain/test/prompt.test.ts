@@ -5,14 +5,14 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
 import { FakeModel } from '../../testkit/src/fake-model.ts';
-import { Brain } from '../src/agent/loop.ts';
+import { Brain } from '../src/agent/brain.ts';
 import { contextBlock, globalSegment, siteSection, toolSpecs } from '../src/prompt/prompt.ts';
 import { forModel, loadSite } from '../src/prompt/site.ts';
 import { HOME, NOW, shopPack, shopSite } from './example-brain.ts';
 
 test('the global segment is byte-identical across sessions and restarts', () => {
-  const first = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
-  const second = new Brain({ sites: [shopSite()], model: new FakeModel([]) }).globalFor('example-shop')!;
+  const first = new Brain({ site: shopSite(), model: new FakeModel([]) }).global;
+  const second = new Brain({ site: shopSite(), model: new FakeModel([]) }).global;
   assert.equal(first.system, second.system);
   assert.equal(JSON.stringify(first.tools), JSON.stringify(second.tools));
   assert.equal(JSON.stringify(globalSegment(shopSite())), JSON.stringify(globalSegment(shopSite())));
