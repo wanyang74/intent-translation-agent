@@ -217,6 +217,517 @@
     "file": "availability/availability-10.json"
   },
   {
+    "id": "facets-07",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla: valid filter values",
+    "file": "facets/facets-07.json"
+  },
+  {
+    "id": "search-07",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-07.json"
+  },
+  {
+    "id": "suggest-07",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla: 10 suggestions",
+    "file": "suggest/suggest-07.json"
+  },
+  {
+    "id": "availability-11",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-11.json"
+  },
+  {
+    "id": "search-08",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-08.json"
+  },
+  {
+    "id": "availability-12",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-12.json"
+  },
+  {
+    "id": "search-09",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-09.json"
+  },
+  {
+    "id": "availability-13",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-13.json"
+  },
+  {
+    "id": "search-10",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-10.json"
+  },
+  {
+    "id": "availability-14",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-14.json"
+  },
+  {
+    "id": "search-11",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-11.json"
+  },
+  {
+    "id": "availability-15",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-15.json"
+  },
+  {
+    "id": "search-12",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-12.json"
+  },
+  {
+    "id": "availability-16",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-16.json"
+  },
+  {
+    "id": "search-13",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-13.json"
+  },
+  {
+    "id": "availability-17",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-17.json"
+  },
+  {
+    "id": "search-14",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 1842",
+    "file": "search/search-14.json"
+  },
+  {
+    "id": "availability-18",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-18.json"
+  },
+  {
+    "id": "search-15",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 2: 23 cars of 1842",
+    "file": "search/search-15.json"
+  },
+  {
+    "id": "availability-19",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "23 cars, search-page shape",
+    "file": "availability/availability-19.json"
+  },
+  {
+    "id": "search-16",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 3: 23 cars of 1842",
+    "file": "search/search-16.json"
+  },
+  {
+    "id": "availability-20",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "23 cars, search-page shape",
+    "file": "availability/availability-20.json"
+  },
+  {
+    "id": "search-17",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 4: 23 cars of 1842",
+    "file": "search/search-17.json"
+  },
+  {
+    "id": "availability-21",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "23 cars, search-page shape",
+    "file": "availability/availability-21.json"
+  },
+  {
+    "id": "facets-08",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla: valid filter values",
+    "file": "facets/facets-08.json"
+  },
+  {
+    "id": "search-18",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 881",
+    "file": "search/search-18.json"
+  },
+  {
+    "id": "suggest-08",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla: 10 suggestions",
+    "file": "suggest/suggest-08.json"
+  },
+  {
+    "id": "availability-22",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-22.json"
+  },
+  {
+    "id": "availability-23",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-23.json"
+  },
+  {
+    "id": "facets-09",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla: valid filter values",
+    "file": "facets/facets-09.json"
+  },
+  {
+    "id": "suggest-09",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla: 10 suggestions",
+    "file": "suggest/suggest-09.json"
+  },
+  {
+    "id": "search-19",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 21 cars of 946",
+    "file": "search/search-19.json"
+  },
+  {
+    "id": "availability-24",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-24.json"
+  },
+  {
+    "id": "facets-10",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla: valid filter values",
+    "file": "facets/facets-10.json"
+  },
+  {
+    "id": "suggest-10",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla: 5 suggestions",
+    "file": "suggest/suggest-10.json"
+  },
+  {
+    "id": "search-20",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla, page 1: 15 cars of 15",
+    "file": "search/search-20.json"
+  },
+  {
+    "id": "availability-25",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "15 cars, search-page shape",
+    "file": "availability/availability-25.json"
+  },
+  {
+    "id": "availability-26",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "12 cars, search-page shape",
+    "file": "availability/availability-26.json"
+  },
+  {
+    "id": "availability-27",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "1 car, search-page shape",
+    "file": "availability/availability-27.json"
+  },
+  {
+    "id": "reviews-02",
+    "endpoint": "reviews",
+    "kind": "recorded",
+    "description": "2026 Tesla Model Y Standard Sport Utility 4D",
+    "file": "reviews/reviews-02.json"
+  },
+  {
+    "id": "pricing-02",
+    "endpoint": "pricing",
+    "kind": "recorded",
+    "description": "car 4695181, delivery route, zip 94085",
+    "file": "pricing/pricing-02.json"
+  },
+  {
+    "id": "gap-02",
+    "endpoint": "gap",
+    "kind": "recorded",
+    "description": "car 4695181, 52683 financed",
+    "file": "gap/gap-02.json"
+  },
+  {
+    "id": "availability-28",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "32 cars, vehicle-page shape",
+    "file": "availability/availability-28.json"
+  },
+  {
+    "id": "facets-11",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "Tesla · 2022 or newer: valid filter values",
+    "file": "facets/facets-11.json"
+  },
+  {
+    "id": "suggest-11",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "Tesla · 2022 or newer: 10 suggestions",
+    "file": "suggest/suggest-11.json"
+  },
+  {
+    "id": "search-21",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2022 or newer, page 1: 21 cars of 1130",
+    "file": "search/search-21.json"
+  },
+  {
+    "id": "search-22",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "Tesla · 2022 or newer, page 1: 21 cars of 1130",
+    "file": "search/search-22.json"
+  },
+  {
+    "id": "availability-29",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-29.json"
+  },
+  {
+    "id": "availability-30",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "1 car, search-page shape",
+    "file": "availability/availability-30.json"
+  },
+  {
+    "id": "reviews-03",
+    "endpoint": "reviews",
+    "kind": "recorded",
+    "description": "2023 Tesla Model 3 Standard Sedan 4D",
+    "file": "reviews/reviews-03.json"
+  },
+  {
+    "id": "pricing-03",
+    "endpoint": "pricing",
+    "kind": "recorded",
+    "description": "car 4812262, delivery route, zip 94085",
+    "file": "pricing/pricing-03.json"
+  },
+  {
+    "id": "facets-12",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "2022 or newer: valid filter values",
+    "file": "facets/facets-12.json"
+  },
+  {
+    "id": "suggest-12",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "2022 or newer: 10 suggestions",
+    "file": "suggest/suggest-12.json"
+  },
+  {
+    "id": "search-23",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "2022 or newer, page 1: 21 cars of 37065",
+    "file": "search/search-23.json"
+  },
+  {
+    "id": "availability-31",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-31.json"
+  },
+  {
+    "id": "facets-13",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer: valid filter values",
+    "file": "facets/facets-13.json"
+  },
+  {
+    "id": "suggest-13",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer: 10 suggestions",
+    "file": "suggest/suggest-13.json"
+  },
+  {
+    "id": "search-24",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer, page 1: 21 cars of 728",
+    "file": "search/search-24.json"
+  },
+  {
+    "id": "availability-32",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-32.json"
+  },
+  {
+    "id": "facets-14",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi: valid filter values",
+    "file": "facets/facets-14.json"
+  },
+  {
+    "id": "suggest-14",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi: 10 suggestions",
+    "file": "suggest/suggest-14.json"
+  },
+  {
+    "id": "search-25",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi, page 1: 21 cars of 371",
+    "file": "search/search-25.json"
+  },
+  {
+    "id": "availability-33",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-33.json"
+  },
+  {
+    "id": "availability-34",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "1 car, search-page shape",
+    "file": "availability/availability-34.json"
+  },
+  {
+    "id": "reviews-04",
+    "endpoint": "reviews",
+    "kind": "recorded",
+    "description": "2022 BMW X3 sDrive30i Sport Utility 4D",
+    "file": "reviews/reviews-04.json"
+  },
+  {
+    "id": "pricing-04",
+    "endpoint": "pricing",
+    "kind": "recorded",
+    "description": "car 4715987, delivery route, zip 94085",
+    "file": "pricing/pricing-04.json"
+  },
+  {
+    "id": "gap-03",
+    "endpoint": "gap",
+    "kind": "recorded",
+    "description": "car 4715987, 32824 financed",
+    "file": "gap/gap-03.json"
+  },
+  {
+    "id": "availability-35",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "40 cars, vehicle-page shape",
+    "file": "availability/availability-35.json"
+  },
+  {
+    "id": "availability-36",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-36.json"
+  },
+  {
+    "id": "facets-15",
+    "endpoint": "facets",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi: valid filter values",
+    "file": "facets/facets-15.json"
+  },
+  {
+    "id": "suggest-15",
+    "endpoint": "suggest",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi: 10 suggestions",
+    "file": "suggest/suggest-15.json"
+  },
+  {
+    "id": "search-26",
+    "endpoint": "search",
+    "kind": "recorded",
+    "description": "BMW · 2022 or newer · under 30000 mi, page 1: 21 cars of 371",
+    "file": "search/search-26.json"
+  },
+  {
+    "id": "availability-37",
+    "endpoint": "availability",
+    "kind": "recorded",
+    "description": "21 cars, search-page shape",
+    "file": "availability/availability-37.json"
+  },
+  {
     "id": "pricing-err-no-client-id",
     "endpoint": "pricing",
     "kind": "observed",

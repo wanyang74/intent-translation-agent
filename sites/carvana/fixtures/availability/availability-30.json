@@ -1,0 +1,89 @@
+{
+  "id": "availability-30",
+  "site": "carvana",
+  "endpoint": "availability",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 500",
+  "description": "1 car, search-page shape",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "browsercookieid": "00000000-0000-4000-8000-000000000001",
+      "clientid": "vdp_ui",
+      "content-type": "application/json",
+      "correlationid": "00000000-0000-4000-8000-000000000047"
+    },
+    "body": {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available",
+          "vehicleId": 4812262
+        }
+      ],
+      "zipCode": "94085"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "content": [
+        {
+          "vehicleId": 4812262,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 57759,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 57759,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        }
+      ],
+      "status": "Succeeded",
+      "errorMessage": ""
+    }
+  }
+}

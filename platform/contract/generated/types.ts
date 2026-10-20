@@ -764,9 +764,9 @@ export interface Policies {
  */
 export interface Recording {
   /**
-   * Path from the repository root to the site's recording (kept out of git).
+   * Paths from the repository root to the site's recordings (kept out of git), oldest first. Fixtures are numbered in this order, so a new recording goes last and the existing fixtures keep their IDs.
    */
-  har?: string;
+  hars?: string[];
   scrubFields: string[];
   scrubHeaders: string[];
   keepHeaders: string[];

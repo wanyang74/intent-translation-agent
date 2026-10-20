@@ -135,22 +135,22 @@
             "reviews": [
               {
                 "text": "<untrusted source=\"carvana-reviews\">I was hesitant about owning an EV and especially Tesla since I have heard stories about quality issues. However, my Tesla has been amazing and it's one of the best purchases I have made in the car realm.  Extremely comfortable to drive, amazing safety features. Constant over the air updates. Solid warranty on power train and battery.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2025-12-01"
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">Don't listen to the haters. The Tesla Model Y is safe, reliable, and has all the tech you want but simplified in an easy to understand interface.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2025-08-12"
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">I use this car to drive rideshare (my retirement job). I drive most of the day 5 days a week everyone loves my car, including me. Completely problem free.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2025-05-10"
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">Love it, don't miss pumping gas, love how quickly it accelerates.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2025-05-10"
               },
               {
@@ -180,12 +180,12 @@
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">I am very happy with the Tesla Model Y. It handles and performs incredibly. I feel very good about the safety features in the car and the ability to have power when needed for passing. I hope in future models that they design a smoother ride on roads that are not smooth and that Tesla designs the Model Y to have better visibility out the back.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2024-03-22"
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">If you have daily commutes, golf, tennis, etc. and you enjoy technology, comfy quiet ride, and safety features when buzzing on interstates or just two lanes, try a Tesla.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2024-03-22"
               },
               {
@@ -195,7 +195,7 @@
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">Tesla is the safest car available to protect you and your family, it also costs a lot less to operate if you can charge at home.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2024-03-21"
               },
               {
@@ -210,12 +210,12 @@
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">Best first ev you can buy if you're wanting to go electric and not sure what to buy. Reliability for ev owners is paramount and Tesla delivers that overall.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2024-03-11"
               },
               {
                 "text": "<untrusted source=\"carvana-reviews\">Technology at your hands - true work of art from performance to comfort. Charging infrastructure makes up for lack of customer service from Tesla. Don't believe the catchy articles of “Tesla recalled… millions\" or “I hear the battery dies and costs a lot\". Do your own research, numbers don't lie when you take into consideration short term vs long term upkeep/maintenance costs.</untrusted>",
-                "rating": 0,
+                "rating": null,
                 "date": "2024-03-07"
               },
               {

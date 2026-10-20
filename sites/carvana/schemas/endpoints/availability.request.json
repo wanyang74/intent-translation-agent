@@ -29,7 +29,8 @@
                 "description": "Mapped from the search response's vehicleInventoryType: 1 -> Core, 2 -> Unknown (seen on an on-demand car)."
               },
               "vehicleSaleStatus": {
-                "const": "Available"
+                "enum": ["Available", ""],
+                "description": "Our tool sends Available. The site's own pages send an empty string for some cars (seen on the pickup-truck search, 2026-10-19), and get the same kind of answer."
               }
             },
             "required": [

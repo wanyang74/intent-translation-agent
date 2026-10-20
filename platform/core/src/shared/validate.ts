@@ -4,7 +4,7 @@ import { validatorName } from '../../../contract/src/names.ts';
 
 export interface Validator {
   (data: unknown): boolean;
-  errors?: { instancePath: string; message?: string }[] | null;
+  errors?: { instancePath: string; message?: string; keyword?: string; params?: Record<string, unknown> }[] | null;
 }
 
 export interface Validators {
@@ -20,9 +20,15 @@ export function validatorFor(module: Record<string, unknown>, schemaPath: string
   return exported as Validator;
 }
 
-/** A short description of why data failed a validator: the first two problems. */
+/**
+ * A short description of why data failed a validator: the first two problems. A value outside a fixed list names the
+ * list, so the model can pick a valid value instead of guessing again.
+ */
 export function describeProblems(validator: Validator): string {
-  return (validator.errors ?? []).slice(0, 2).map((problem) => `${problem.instancePath || 'the value'} ${problem.message ?? 'is invalid'}`).join('; ') || 'it is invalid';
+  return (validator.errors ?? []).slice(0, 2).map((problem) => {
+    const allowed = problem.keyword === 'enum' && Array.isArray(problem.params?.allowedValues) ? `: ${problem.params.allowedValues.map(String).join(', ')}` : '';
+    return `${problem.instancePath || 'the value'} ${problem.message ?? 'is invalid'}${allowed}`;
+  }).join('; ') || 'it is invalid';
 }
 
 /** Runs a validator: null when the data is valid, otherwise a short description of the problem. */

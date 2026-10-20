@@ -1,0 +1,1129 @@
+{
+  "id": "availability-11",
+  "site": "carvana",
+  "endpoint": "availability",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 18",
+  "description": "21 cars, search-page shape",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/buffering/api/v1/soonestavailabilitybulk",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "browsercookieid": "00000000-0000-4000-8000-000000000001",
+      "clientid": "srp_ui",
+      "content-type": "application/json",
+      "correlationid": "00000000-0000-4000-8000-000000000020"
+    },
+    "body": {
+      "userId": "",
+      "vehicles": [
+        {
+          "vehicleId": 4792667,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4786670,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4843538,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4814642,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4833541,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4798465,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4775036,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4781617,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4806036,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4773567,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4794409,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4793418,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4795274,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4767745,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4785938,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4830350,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4711832,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4810361,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4814561,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4785659,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 300,
+          "vehicleSaleStatus": "Available"
+        },
+        {
+          "vehicleId": 4782382,
+          "vehicleInventoryType": "Core",
+          "vehicleLocationId": 147,
+          "vehicleSaleStatus": "Available"
+        }
+      ],
+      "zipCode": "94085"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "content": [
+        {
+          "vehicleId": 4792667,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4786670,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4843538,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4814642,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4833541,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4798465,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4775036,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4781617,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4806036,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4773567,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4794409,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4793418,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4795274,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4767745,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4785938,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4830350,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4711832,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4810361,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4814561,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4785659,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792637100000,
+              "utcSoonestDateTimeIso": "2026-10-22T02:45:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZUAUFlblKVoa1OkopRSCGqY5SWWoRWEtycYmSlZKzo5KOUnJVgZKVkqWJgYWpUi0AMjFOM2wAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792682100000,
+              "utcSoonestDateTimeIso": "2026-10-22T15:15:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Thursday",
+              "daysToAvailability": 3,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        },
+        {
+          "vehicleId": 4782382,
+          "closestLocationId": {
+            "content": 335,
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestDelivery": {
+            "content": {
+              "activityType": "LocalDelivery",
+              "utcSoonestDateTime": 1792531800000,
+              "utcSoonestDateTimeIso": "2026-10-20T21:30:00Z",
+              "drivingMiles": 48,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "tomorrow",
+              "daysToAvailability": 1,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 480,
+              "locationCity": "Tracy",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          },
+          "soonestPickup": {
+            "content": {
+              "activityType": "Pickup",
+              "utcSoonestDateTime": 1792607400000,
+              "utcSoonestDateTimeIso": "2026-10-21T18:30:00Z",
+              "drivingMiles": 15,
+              "isRestrictedLocation": false,
+              "asSoonAsText": "Wednesday",
+              "daysToAvailability": 2,
+              "secondsUntilCutoff": 58040,
+              "localTimeZone": "America/Los_Angeles",
+              "servicingLocationId": 335,
+              "locationCity": "San Jose",
+              "locationState": "CA",
+              "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMjY21VFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMUBKU4vASpOrCpSslCxNDCxMlWoB-5rVfGEAAAA"
+            },
+            "status": "Succeeded",
+            "errorMessage": ""
+          }
+        }
+      ],
+      "status": "Succeeded",
+      "errorMessage": ""
+    }
+  }
+}

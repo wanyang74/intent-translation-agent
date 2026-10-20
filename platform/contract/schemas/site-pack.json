@@ -705,9 +705,12 @@
     "Recording": {
       "type": "object",
       "properties": {
-        "har": {
-          "type": "string",
-          "description": "Path from the repository root to the site's recording (kept out of git)."
+        "hars": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Paths from the repository root to the site's recordings (kept out of git), oldest first. Fixtures are numbered in this order, so a new recording goes last and the existing fixtures keep their IDs."
         },
         "scrubFields": {
           "type": "array",

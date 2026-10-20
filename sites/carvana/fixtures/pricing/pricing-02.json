@@ -1,0 +1,81 @@
+{
+  "id": "pricing-02",
+  "site": "carvana",
+  "endpoint": "pricing",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 268",
+  "description": "car 4695181, delivery route, zip 94085",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v2/pricing/vehicle",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "applyVerboseLogging": false,
+      "applyTradeIn": true,
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMjQysTTXUcrJT1ayMrEw0FFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGxqY6SgWVuUpWhrU6SilFuSA9OkplqUVgLcnFJUpWSs6OSjpKyVUFSlZKliYGFqZKtQDq5TuwbAAAAA",
+      "vehicleId": 4695181,
+      "zip5": "94085",
+      "preferredAcquisitionName": "",
+      "analyticsData": {
+        "clientId": "vdp_ui",
+        "correlationId": "00000000-0000-4000-8000-000000000041",
+        "utmParams": {}
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "vehicleId": 4695181,
+      "price": {
+        "total": 49990,
+        "totalDiscountAmount": 0,
+        "monthlyPayment": 795,
+        "downPayment": 2590,
+        "downPaymentDetails": {
+          "totalCashDue": 2590,
+          "additionalCashDown": 2590,
+          "nonRefundableShippingFees": 0,
+          "tradeDown": 0
+        },
+        "apr": 0.0699,
+        "term": 84,
+        "transportCost": 0,
+        "pricingErrorMessage": "",
+        "totalTaxes": 0,
+        "totalFees": 0,
+        "feesMinusShipping": 0,
+        "estimatedTaxesAndFees": 5283,
+        "tradeTaxSavings": 0,
+        "incentivizedPrice": 49990,
+        "msrp": 41630,
+        "marketAdjustment": 8360,
+        "incentives": [],
+        "marketplaceIncentives": [],
+        "appliedIncentives": [],
+        "additionalIncentives": []
+      },
+      "errors": [],
+      "searchRequestId": "00000000-0000-4000-8000-000000000042",
+      "offering": "Used",
+      "financeInfo": {
+        "financingType": "estimatedFinancing",
+        "maxMonthlyPayment": 2000,
+        "minDownPayment": 0,
+        "pricingHasErrored": false,
+        "isUsingTerms2": false,
+        "isUsingSampleTerms": true,
+        "terms2ErrorMessage": "",
+        "tradeTaxSavings": 0,
+        "creditStatusErrorMessage": ""
+      }
+    }
+  }
+}

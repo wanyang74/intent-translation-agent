@@ -115,6 +115,40 @@ test("a filter value Carvana doesn't offer is refused before any search, listing
   assert.deepEqual(fake.calls.map((call) => call.endpoint), ['facets'], 'only the facts needed for the check');
 });
 
+test("a sort order Carvana doesn't have is refused before any request, listing the ones it does", async () => {
+  const { coreSession, fake } = await session();
+  const outcome = await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', sort: 'PriceLow' });
+  assert.equal(!outcome.ok && outcome.error.reason, 'bad_arguments');
+  assert.match(!outcome.ok ? outcome.error.message : '', /\/sort must be equal to one of the allowed values: MostPopular, LowestPrice, HighestPrice, LowestMileage, NewestYear/);
+  assert.deepEqual(fake.calls, [], 'nothing reached Carvana');
+});
+
+test('each of Carvana\'s sort orders, and later pages, come back as recorded (2026-10-19 recording)', async () => {
+  const totals = async (args: Record<string, unknown>) => {
+    const { coreSession } = await session();
+    const outcome = await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', ...args });
+    assert.ok(outcome.ok, JSON.stringify(!outcome.ok && outcome.error));
+    return (outcome.output as { vehicles: { year: number; mileage: number; price: number }[] }).vehicles;
+  };
+  const cheapest = await totals({ sort: 'LowestPrice' });
+  assert.deepEqual(cheapest.map((car) => car.price), [...cheapest.map((car) => car.price)].sort((left, right) => left - right), 'cheapest first');
+  const newest = await totals({ sort: 'NewestYear' });
+  assert.equal(newest[0]!.year, 2026);
+  const lowMileage = await totals({ sort: 'LowestMileage' });
+  assert.ok(lowMileage[0]!.mileage < 5000);
+  for (const page of [2, 3, 4]) assert.ok((await totals({ sort: 'NewestYear', page })).length > 0, `page ${page}`);
+});
+
+test('a review written without stars has no rating, not a rating of 0', async () => {
+  const { coreSession } = await session({ page: { ...PAGE, location: { postalCode: '94085' } } });
+  assert.ok((await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', year_min: 2022, sort: 'LowestPrice' })).ok);
+  const outcome = await runToolCall(coreSession, 'get_owner_reviews', { vehicleId: 4812262 });
+  assert.ok(outcome.ok, JSON.stringify(!outcome.ok && outcome.error));
+  const ratings = (outcome.output as { reviews: { rating: number | null }[] }).reviews.map((review) => review.rating);
+  assert.ok(ratings.includes(null), 'the recording has reviews without stars');
+  assert.ok(ratings.every((rating) => rating === null || (rating >= 1 && rating <= 5)));
+});
+
 test("requests keep to Carvana's rate limit: one per second", async () => {
   const { coreSession, slept, fake } = await session();
   assert.ok((await runToolCall(coreSession, 'search_vehicles', goalSearch)).ok);

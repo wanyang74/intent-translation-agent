@@ -1,0 +1,367 @@
+{
+  "id": "suggest-14",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 695",
+  "description": "BMW · 2022 or newer · under 30000 mi: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000054",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000050",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "mileage": {
+          "max": 30000
+        },
+        "year": {
+          "min": 2022
+        },
+        "makes": [
+          {
+            "name": "BMW"
+          }
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "LowestPrice",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000055",
+      "suggestedFilters": [
+        {
+          "suggestionId": "7b1627e1-98f6-4996-a60c-02ae99a7ef49",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 280,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "driveTypes": [
+              "Awd"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "ab8f3b63-3d67-453f-ba9a-1cc0bb2ca3cd",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 217,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "interiorColors": [
+              "Black"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "8b0a56a4-200d-4ed0-b49c-3d021a3b62c8",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 47,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Heated and Ventilated Seats",
+          "searchFilters": {
+            "cvnaFeatures": [
+              "Heated and Ventilated Seats"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Heated and Ventilated Seats\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "2accb8c7-a73d-40cb-85b7-7ee936161eac",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 247,
+          "facetKey": "tagIds",
+          "suggestionKey": "tagId",
+          "displayName": "Great Deals",
+          "searchFilters": {
+            "tagIds": [
+              "104"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"tagId\":\"104\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "5f7727a5-48c5-4b9d-8152-8805c729264c",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 152,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Apple CarPlay",
+          "searchFilters": {
+            "cvnaFeatures": [
+              "Apple CarPlay"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Apple CarPlay\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "8ceeb5cb-5232-47f1-8273-3fe2d04c46f4",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 109,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "colors": [
+              "White"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "6e8e8051-190f-4773-acdc-7b3ab467b38c",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 92,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Heads Up Display",
+          "searchFilters": {
+            "cvnaFeatures": [
+              "Heads Up Display"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Heads Up Display\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "7f4d6776-a377-4e89-b29a-e575c3745174",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 80,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "isFreeDelivery": true,
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        },
+        {
+          "suggestionId": "ea91752f-ea6d-41cc-a318-5e0679fe203b",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 217,
+          "facetKey": "bodyStyles",
+          "suggestionKey": "bodyStyle",
+          "displayName": "SUVs",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"bodyStyle\":\"suv\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "a6b2df4e-24bb-432b-92f3-458d8a25d95e",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 65,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "Gray Exterior",
+          "searchFilters": {
+            "colors": [
+              "Gray"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"Gray\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        }
+      ]
+    }
+  }
+}

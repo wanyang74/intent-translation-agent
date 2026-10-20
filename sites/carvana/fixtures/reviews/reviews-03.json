@@ -1,0 +1,359 @@
+{
+  "id": "reviews-03",
+  "site": "carvana",
+  "endpoint": "reviews",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 501",
+  "description": "2023 Tesla Model 3 Standard Sedan 4D",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/reviews/api/review/sv",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "from": 0,
+      "make": "Tesla",
+      "model": "Model 3",
+      "size": 20,
+      "trim": "Standard Sedan 4D",
+      "year": 2023
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "summary": {
+        "review_count_total": 168,
+        "rating_counts": [
+          {
+            "key": 5,
+            "doc_count": 431
+          },
+          {
+            "key": 4,
+            "doc_count": 282
+          },
+          {
+            "key": 3,
+            "doc_count": 110
+          },
+          {
+            "key": 2,
+            "doc_count": 31
+          },
+          {
+            "key": 1,
+            "doc_count": 2
+          }
+        ]
+      },
+      "reviews": [
+        {
+          "review_id": 60932087,
+          "review_text": "I love my Tesla model 3. It's been a game changer since I bought it. Use it for any excuse to go out and do something. Easy to charge and fun to drive. Never can go back to any other car than a Tesla. Especially the fact it can drive itself is beyond expectations.",
+          "review_date": "2025-12-05",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Andrew O."
+          }
+        },
+        {
+          "review_id": 60484970,
+          "review_text": "Tesla Model 3 is a good looking car and cheaper to operate than a gas vehicle I wish I would have bought a the long range version of the Model 3, other than that my first 3 months of owing this car have been amazing.",
+          "review_date": "2025-09-24",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Frank C."
+          }
+        },
+        {
+          "review_id": 59710086,
+          "review_text": "Great vehicle, easy to drive and fun to drive.",
+          "review_date": "2025-07-10",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Chad B."
+          }
+        },
+        {
+          "review_id": 59344012,
+          "review_text": "Excellent around town/commuter/short trip vehicle, WHICH requires little/no routine maintenance. Fun to drive. EV. Comfortable...",
+          "review_date": "2025-05-22",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Roy B."
+          }
+        },
+        {
+          "review_id": 59343308,
+          "review_text": "Model 3 is the only sedan I will ever own. It's the best the market has to offer with full self driving capability.",
+          "review_date": "2025-05-10",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Jacob W."
+          }
+        },
+        {
+          "review_id": 57608828,
+          "review_text": "Fun to drive, great mileage, standard features and warranty. Cons are limited buttons or controls because everything is controlled by the screen. Road noise is pronounced and tires wear out quickly due to weight of vehicle and torque.",
+          "review_date": "2025-04-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Carrie F."
+          }
+        },
+        {
+          "review_id": 57608593,
+          "review_text": "It's an amazing car.",
+          "review_date": "2025-04-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Jon G."
+          }
+        },
+        {
+          "review_id": 57282248,
+          "review_text": "Model 3 was definitely an upgrade from a Honda Accord, very simplistic and classy. Extremely fun to drive yet very economical. The Tesla supercharger makes the charging experience a breeze.",
+          "review_date": "2024-09-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "George A."
+          }
+        },
+        {
+          "review_id": 57282414,
+          "review_text": "A delightful and technologically advanced EV that lives up to its billing! This is Tesla's entry-level model, and this is apparent in certain aspects. Nevertheless, it is an excellent value and appropriate to my personality and tastes as a technology professional who also cringes at the thought of setting The Earth's entrails on fire just to propel himself to the grocery store. The most common concerns I hear from others are about charging infrastructure, but I honestly have not found this to be a problem, even though I cannot charge at home because I live in an apartment complex. The supercharger network is very deep now!",
+          "review_date": "2024-09-16",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Alexander B."
+          }
+        },
+        {
+          "review_id": 56336253,
+          "review_text": "The long-term cost/benefit of the vehicle, along with the environmental aspects of not burning gasoline fuel, makes it a logical choice.",
+          "review_date": "2024-07-12",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Larry F."
+          }
+        },
+        {
+          "review_id": 55875814,
+          "review_text": "I have often been locked out of my Tesla Model 3 because it fails to recognize my phone key.",
+          "review_date": "2024-04-05",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Michael S."
+          }
+        },
+        {
+          "review_id": 56099429,
+          "review_text": "I would share with them how much fun it is to drive and how cheap it is to operate if residential, off-peak charging is available to them.",
+          "review_date": "2024-04-01",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "David L."
+          }
+        },
+        {
+          "review_id": 56133951,
+          "review_text": "Tesla has much more experience building EV's, so the choice was rather easy. I have many friends with Tesla's and they are very satisfied with the brand.",
+          "review_date": "2024-03-23",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Robert W."
+          }
+        },
+        {
+          "review_id": 56133528,
+          "review_text": "Far and away the Tesla Model 3 Performance is the best car I've ever driven. I love it.",
+          "review_date": "2024-03-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Chad S."
+          }
+        },
+        {
+          "review_id": 56133598,
+          "review_text": "The Tesla model three is a great vehicle to drive very comfortable. I am very easy to use. Would recommend that anyone.",
+          "review_date": "2024-03-21",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Donald S."
+          }
+        },
+        {
+          "review_id": 55875779,
+          "review_text": "If you don't like gas stations, get this car.",
+          "review_date": "2024-03-05",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Michael G."
+          }
+        },
+        {
+          "review_id": 55808585,
+          "review_text": "Great car so far!! Love it",
+          "review_date": "2024-03-04",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "April C."
+          }
+        },
+        {
+          "review_id": 55875042,
+          "review_text": "I love it is always full. The seats are comfortable and it is very easy to drive.",
+          "review_date": "2024-02-29",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Donna H."
+          }
+        },
+        {
+          "review_id": 55876396,
+          "review_text": "range is no where near what is advertised, interior noise while driving is louder than expected",
+          "review_date": "2024-02-29",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Warren B."
+          }
+        },
+        {
+          "review_id": 55808044,
+          "review_text": "Nice and comfortable car but needs some modifications for better functionality and comfort.",
+          "review_date": "2024-02-28",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "Tesla Model 3",
+            "make": "Tesla",
+            "model": "Tesla Model 3",
+            "year": 2023
+          },
+          "customer": {
+            "name": "Georgiy O."
+          }
+        }
+      ]
+    }
+  }
+}

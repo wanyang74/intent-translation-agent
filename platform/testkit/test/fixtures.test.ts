@@ -82,12 +82,12 @@ for (const site of sites) {
     assert.deepEqual(bad, []);
   });
 
-  const har = pack.recording.har ? path.join(repoRoot, pack.recording.har) : null;
-  const skip = !har ? 'no recording: fixtures are hand-written' : !existsSync(har) && 'recording not present';
-  test(`${site}: rebuilding from the recording gives byte-identical fixtures`, { skip }, () => {
+  const hars = (pack.recording.hars ?? []).map((file) => path.join(repoRoot, file));
+  const skip = !hars.length ? 'no recording: fixtures are hand-written' : !hars.every((file) => existsSync(file)) && 'recordings not present';
+  test(`${site}: rebuilding from the recordings gives byte-identical fixtures`, { skip }, () => {
     const tmp = mkdtempSync(path.join(os.tmpdir(), 'fixtures-'));
     try {
-      execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/build-fixtures.ts', import.meta.url)), site, har!, tmp], { stdio: 'pipe' });
+      execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/build-fixtures.ts', import.meta.url)), site, hars.join(','), tmp], { stdio: 'pipe' });
       assert.deepEqual(filesIn(tmp), filesIn(fixtureDir(site)));
       for (const file of filesIn(fixtureDir(site))) {
         assert.equal(readFileSync(path.join(tmp, file), 'utf8'), readFileSync(path.join(fixtureDir(site), file), 'utf8'), `${file} differs after a rebuild`);

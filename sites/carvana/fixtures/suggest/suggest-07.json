@@ -1,0 +1,309 @@
+{
+  "id": "suggest-07",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 11",
+  "description": "Tesla: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000018",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000019",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "MostPopular",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000021",
+      "suggestedFilters": [
+        {
+          "suggestionId": "daa496e3-9f4e-40eb-a252-b4418e754c51",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 762,
+          "facetKey": "year",
+          "suggestionKey": "year",
+          "displayName": "2023 or newer",
+          "searchFilters": {
+            "year": {
+              "min": 2023
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"year_min\":2023}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "4f915515-1dcc-453b-b15c-e84a6452d370",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 616,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 40000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "d001b3d1-7eb3-42db-8685-003e00281f4e",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 1336,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "interiorColors": [
+              "Black"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "556da68d-ad1d-4abb-8ed2-96378a18b61b",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 1267,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "driveTypes": [
+              "Awd"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "7a3a0125-e2ab-488a-9501-aa919b4e8cf1",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 480,
+          "facetKey": "makes",
+          "suggestionKey": "trim",
+          "displayName": "Long Range",
+          "searchFilters": {
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [
+                  {
+                    "name": "Model Y",
+                    "trims": [
+                      "Long Range"
+                    ]
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"trim\":[\"Tesla\",\"Model Y\",\"Long Range\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "c4b5b3f1-01da-4e96-b4ef-4d9cc4dd26b1",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 749,
+          "facetKey": "makes",
+          "suggestionKey": "parentModel",
+          "displayName": "Tesla Model Y",
+          "searchFilters": {
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [
+                  {
+                    "name": "Model Y",
+                    "trims": []
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"parentModel\":[\"Tesla\",\"Model Y\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "4aa85192-d447-4fe9-bbf1-9a8ff34a317f",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 500,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "colors": [
+              "White"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "88556c61-84ab-4db4-bed7-8953f39ad4e3",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 336,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 30000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "01316ff8-03bf-41bd-8898-c53cf5b9a9dc",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 1129,
+          "facetKey": "year",
+          "suggestionKey": "year",
+          "displayName": "2022 or newer",
+          "searchFilters": {
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"year_min\":2022}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "527db3dd-4a7f-4086-b868-778b5d1420a0",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 1436,
+          "facetKey": "price",
+          "suggestionKey": "price",
+          "displayName": "Under $35,000",
+          "searchFilters": {
+            "price": {
+              "max": 35000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"price_max\":35000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        }
+      ]
+    }
+  }
+}

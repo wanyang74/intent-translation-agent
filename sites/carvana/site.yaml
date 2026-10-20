@@ -244,7 +244,7 @@ skills:
     load: when financing comes up
 
 recording:
-  har: recordings/www.carvana.com.har
+  hars: [recordings/www.carvana.com.har, recordings/carvana-10-19.har]
   scrubFields: [browserCookieId, searchSessionId, searchRequestId, previousSearchRequestId, correlationId, suggestedFiltersRequestId, traceId]
   scrubHeaders: [browsercookieid, correlationid]
   keepHeaders: [accept, content-type, clientid, browsercookieid, correlationid, x-cvna-ncc-disabled, x-cvna-sebs-srp]

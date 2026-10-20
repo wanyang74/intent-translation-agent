@@ -1,7 +1,9 @@
-// L1 for the small pieces: template filling, base64, derived-field formulas and deep links.
+// L1 for the small pieces: template filling, base64, derived-field formulas, deep links, and how validation problems
+// are described.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { base64, buildLink, computeDerived, deepLink, derivedFields, fill, FormulaError, linkPlaceholders, parseFormula, utf8 } from '../src/index.ts';
+import { describeProblems, type Validator } from '../src/shared/validate.ts';
 import { examplePack } from './example-pack.ts';
 import { random, riskyString } from './random.ts';
 import { sitePacks } from './sites.ts';
@@ -75,4 +77,14 @@ test("every site's deep links build once each placeholder has a value", () => {
       assert.ok(built.ok && !/[{}]/.test(built.url) && built.url.startsWith('https://'), `${pack.site.id}/${name}: ${JSON.stringify(built)}`);
     }
   }
+});
+
+test('a value outside a fixed list is described with the list, so the model can pick a valid one', () => {
+  const validator: Validator = Object.assign(() => false, {
+    errors: [
+      { instancePath: '/sort', keyword: 'enum', message: 'must be equal to one of the allowed values', params: { allowedValues: ['LowestPrice', 'HighestPrice'] } },
+      { instancePath: '/page', keyword: 'minimum', message: 'must be >= 1', params: { limit: 1 } },
+    ],
+  });
+  assert.equal(describeProblems(validator), '/sort must be equal to one of the allowed values: LowestPrice, HighestPrice; /page must be >= 1');
 });

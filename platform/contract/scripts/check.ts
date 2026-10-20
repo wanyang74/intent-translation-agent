@@ -54,8 +54,10 @@ for (const [id, site] of Object.entries(contract.sites)) {
   checkCases(`sites/${id}`, cases, siteValidator);
 
   let recorded = 0;
-  const har = site.pack.recording.har && path.join(repoRoot, site.pack.recording.har);
-  if (har && existsSync(har)) {
+  const hars = (site.pack.recording.hars ?? []).map((file) => path.join(repoRoot, file));
+  const present = hars.filter((file) => existsSync(file));
+  for (const har of present) {
+    const name = path.basename(har);
     for (const [i, entry] of JSON.parse(readFileSync(har, 'utf8')).log.entries.entries()) {
       const match = endpointOf(site.pack, entry.request.url);
       if (!match || entry.response.status !== 200 || (match.endpoint.responseFormat ?? 'json') !== 'json') continue;
@@ -64,11 +66,11 @@ for (const [id, site] of Object.entries(contract.sites)) {
       for (const [kind, rel, body] of [['request', match.endpoint.request, request], ['response', match.endpoint.response, response]] as const) {
         recorded++;
         const validate = contract.siteValidator(id, rel);
-        if (!validate(body)) fail(`sites/${id} recording entry ${i} ${match.name} ${kind}`, describeErrors(validate.errors));
+        if (!validate(body)) fail(`sites/${id} recording ${name} entry ${i} ${match.name} ${kind}`, describeErrors(validate.errors));
       }
     }
   }
-  const recordingNote = har ? (existsSync(har) ? `, ${recorded} recorded requests and responses` : ', recording not present') : '';
+  const recordingNote = hars.length ? `, ${recorded} recorded requests and responses from ${present.length} of ${hars.length} recordings` : '';
   summary.push(`sites/${id}: ${site.schemas.length} schemas, ${examples} examples, ${cases.length} must-reject cases${recordingNote}`);
 }
 

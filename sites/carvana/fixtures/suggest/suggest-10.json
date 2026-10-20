@@ -1,0 +1,199 @@
+{
+  "id": "suggest-10",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 234",
+  "description": "Tesla: 5 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000037",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000019",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ],
+        "bodyStyles": [
+          "pickup"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "NewestYear",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000038",
+      "suggestedFilters": [
+        {
+          "suggestionId": "37af15f3-ce3b-4ae9-b561-b45000e21f8e",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 14,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "pickup"
+            ],
+            "mileage": {
+              "max": 40000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "1b4b24f8-1f58-4895-9724-81db48ebe591",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 10,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "bodyStyles": [
+              "pickup"
+            ],
+            "interiorColors": [
+              "Black"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "e88554fa-e393-49a5-86a1-1de7be86fb2a",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 6,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "Gray Exterior",
+          "searchFilters": {
+            "bodyStyles": [
+              "pickup"
+            ],
+            "colors": [
+              "Gray"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"Gray\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "d5936d3d-6dcb-41f1-be9e-e4ace6abcb26",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 13,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "pickup"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "851995ac-69de-4a26-802c-53d9b2ca9336",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 1,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "bodyStyles": [
+              "pickup"
+            ],
+            "isFreeDelivery": true,
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        }
+      ]
+    }
+  }
+}

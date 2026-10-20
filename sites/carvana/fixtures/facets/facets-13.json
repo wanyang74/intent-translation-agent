@@ -1,0 +1,4548 @@
+{
+  "id": "facets-13",
+  "site": "carvana",
+  "endpoint": "facets",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 680",
+  "description": "BMW · 2022 or newer: valid filter values",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v2/search/facets",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "",
+        "clientId": "",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": false,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "",
+        "referrer": "",
+        "searchRequestId": "",
+        "searchSessionId": "",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "year": {
+          "min": 2022
+        },
+        "makes": [
+          {
+            "name": "BMW"
+          }
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering"
+      ],
+      "sortBy": "LowestPrice",
+      "zip5": "94085"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "pagination": {
+        "currentPage": 1,
+        "pageSize": 24,
+        "totalMatchedInventory": 728,
+        "totalMatchedPages": 31
+      },
+      "bodyStyles": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "suv",
+            "count": 476,
+            "isApplied": false,
+            "displayName": "SUV"
+          },
+          {
+            "key": "sedan",
+            "count": 128,
+            "isApplied": false,
+            "displayName": "Sedan"
+          },
+          {
+            "key": "coupe",
+            "count": 87,
+            "isApplied": false,
+            "displayName": "Coupe"
+          },
+          {
+            "key": "convertible",
+            "count": 37,
+            "isApplied": false,
+            "displayName": "Convertible"
+          }
+        ]
+      },
+      "colors": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Beige",
+            "count": 30,
+            "isApplied": false,
+            "displayName": "Beige Exterior"
+          },
+          {
+            "key": "Black",
+            "count": 264,
+            "isApplied": false,
+            "displayName": "Black Exterior"
+          },
+          {
+            "key": "Blue",
+            "count": 42,
+            "isApplied": false,
+            "displayName": "Blue Exterior"
+          },
+          {
+            "key": "Brown",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Brown Exterior"
+          },
+          {
+            "key": "Gold",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Gold Exterior"
+          },
+          {
+            "key": "Gray",
+            "count": 167,
+            "isApplied": false,
+            "displayName": "Gray Exterior"
+          },
+          {
+            "key": "Green",
+            "count": 7,
+            "isApplied": false,
+            "displayName": "Green Exterior"
+          },
+          {
+            "key": "Orange",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Orange Exterior"
+          },
+          {
+            "key": "Pink",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Pink Exterior"
+          },
+          {
+            "key": "Purple",
+            "count": 2,
+            "isApplied": false,
+            "displayName": "Purple Exterior"
+          },
+          {
+            "key": "Red",
+            "count": 6,
+            "isApplied": false,
+            "displayName": "Red Exterior"
+          },
+          {
+            "key": "Silver",
+            "count": 9,
+            "isApplied": false,
+            "displayName": "Silver Exterior"
+          },
+          {
+            "key": "Tan",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tan Exterior"
+          },
+          {
+            "key": "Other",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Unspecified Exterior"
+          },
+          {
+            "key": "White",
+            "count": 201,
+            "isApplied": false,
+            "displayName": "White Exterior"
+          },
+          {
+            "key": "Yellow",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Yellow Exterior"
+          }
+        ]
+      },
+      "interiorColors": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Beige",
+            "count": 68,
+            "isApplied": false,
+            "displayName": "Beige Interior"
+          },
+          {
+            "key": "Black",
+            "count": 460,
+            "isApplied": false,
+            "displayName": "Black Interior"
+          },
+          {
+            "key": "Blue",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Blue Interior"
+          },
+          {
+            "key": "Brown",
+            "count": 80,
+            "isApplied": false,
+            "displayName": "Brown Interior"
+          },
+          {
+            "key": "Gray",
+            "count": 24,
+            "isApplied": false,
+            "displayName": "Gray Interior"
+          },
+          {
+            "key": "Green",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Green Interior"
+          },
+          {
+            "key": "Orange",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Orange Interior"
+          },
+          {
+            "key": "Red",
+            "count": 42,
+            "isApplied": false,
+            "displayName": "Red Interior"
+          },
+          {
+            "key": "Tan",
+            "count": 10,
+            "isApplied": false,
+            "displayName": "Tan Interior"
+          },
+          {
+            "key": "Other",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "Unspecified Interior"
+          },
+          {
+            "key": "White",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "White Interior"
+          },
+          {
+            "key": "Yellow",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Yellow Interior"
+          }
+        ]
+      },
+      "driveTypes": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "4wd",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "4WD"
+          },
+          {
+            "key": "Awd",
+            "count": 503,
+            "isApplied": false,
+            "displayName": "AWD"
+          },
+          {
+            "key": "Fwd",
+            "count": 16,
+            "isApplied": false,
+            "displayName": "FWD"
+          },
+          {
+            "key": "Rwd",
+            "count": 208,
+            "isApplied": false,
+            "displayName": "RWD"
+          }
+        ]
+      },
+      "cylinderCounts": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "FourCylinders",
+            "count": 350,
+            "isApplied": false,
+            "displayName": "4 Cylinders"
+          },
+          {
+            "key": "SixCylinders",
+            "count": 262,
+            "isApplied": false,
+            "displayName": "6 Cylinders"
+          },
+          {
+            "key": "EightCylinders",
+            "count": 30,
+            "isApplied": false,
+            "displayName": "8 Cylinders"
+          },
+          {
+            "key": "OtherCylinders",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Other Cylinders"
+          }
+        ]
+      },
+      "transmissions": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Automatic",
+            "count": 726,
+            "isApplied": false,
+            "displayName": "Automatic"
+          },
+          {
+            "key": "Manual",
+            "count": 2,
+            "isApplied": false,
+            "displayName": "Manual"
+          }
+        ]
+      },
+      "sizeClasses": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Subcompact",
+            "count": 126,
+            "isApplied": false,
+            "displayName": "Subcompact"
+          },
+          {
+            "key": "Compact",
+            "count": 269,
+            "isApplied": false,
+            "displayName": "Compact"
+          },
+          {
+            "key": "Mid-size",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Mid-size"
+          },
+          {
+            "key": "Full-size",
+            "count": 78,
+            "isApplied": false,
+            "displayName": "Full-size"
+          }
+        ]
+      },
+      "fuelTypes": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Electric",
+            "count": 85,
+            "isApplied": false,
+            "displayName": "Electric"
+          },
+          {
+            "key": "Gas",
+            "count": 611,
+            "isApplied": false,
+            "displayName": "Gas"
+          },
+          {
+            "key": "Hybrid",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Hybrid"
+          },
+          {
+            "key": "Plug-In Hybrid",
+            "count": 4,
+            "isApplied": false,
+            "displayName": "Plug-In Hybrid"
+          }
+        ]
+      },
+      "tagIds": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "108",
+            "count": 142,
+            "isApplied": false,
+            "displayName": "Affordable Luxury Sedans"
+          },
+          {
+            "key": "109",
+            "count": 281,
+            "isApplied": false,
+            "displayName": "Affordable Luxury SUVs"
+          },
+          {
+            "key": "110",
+            "count": 423,
+            "isApplied": false,
+            "displayName": "All Affordable Luxury"
+          },
+          {
+            "key": "104",
+            "count": 436,
+            "isApplied": false,
+            "displayName": "Great Deal"
+          },
+          {
+            "key": "120",
+            "count": 135,
+            "isApplied": false,
+            "displayName": "Low Miles Per Year"
+          },
+          {
+            "key": "18",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Lower Mileage"
+          },
+          {
+            "key": "117",
+            "count": 728,
+            "isApplied": false,
+            "displayName": "Luxury Vehicle"
+          },
+          {
+            "key": "103",
+            "count": 377,
+            "isApplied": false,
+            "displayName": "New Price"
+          },
+          {
+            "key": "21",
+            "count": 613,
+            "isApplied": false,
+            "displayName": "No Reported Accidents"
+          },
+          {
+            "key": "75",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Partner Inventory"
+          },
+          {
+            "key": "121",
+            "count": 49,
+            "isApplied": false,
+            "displayName": "Recently Added"
+          },
+          {
+            "key": "122",
+            "count": 160,
+            "isApplied": false,
+            "displayName": "Shaq's favorites"
+          },
+          {
+            "key": "20",
+            "count": 367,
+            "isApplied": false,
+            "displayName": "Single Owner"
+          },
+          {
+            "key": "118",
+            "count": 32,
+            "isApplied": false,
+            "displayName": "Sports Vehicles"
+          }
+        ]
+      },
+      "categoryIds": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "254",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "American"
+          },
+          {
+            "key": "267",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Cargo Van"
+          },
+          {
+            "key": "262",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Commercial Truck"
+          },
+          {
+            "key": "253",
+            "count": 412,
+            "isApplied": false,
+            "displayName": "Crossover"
+          },
+          {
+            "key": "265",
+            "count": 385,
+            "isApplied": false,
+            "displayName": "Dog Friendly"
+          },
+          {
+            "key": "258",
+            "count": 23,
+            "isApplied": false,
+            "displayName": "Fast Car"
+          },
+          {
+            "key": "255",
+            "count": 728,
+            "isApplied": false,
+            "displayName": "German"
+          },
+          {
+            "key": "260",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Hot Hatch"
+          },
+          {
+            "key": "256",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Japanese"
+          },
+          {
+            "key": "257",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Korean"
+          },
+          {
+            "key": "273",
+            "count": 21,
+            "isApplied": false,
+            "displayName": "Luxury"
+          },
+          {
+            "key": "269",
+            "count": 21,
+            "isApplied": false,
+            "displayName": "Luxury Car"
+          },
+          {
+            "key": "270",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Luxury SUV"
+          },
+          {
+            "key": "259",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Muscle Car"
+          },
+          {
+            "key": "264",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Offroad SUV"
+          },
+          {
+            "key": "263",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Offroad Truck"
+          },
+          {
+            "key": "268",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Passenger Van"
+          },
+          {
+            "key": "272",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Reliable"
+          },
+          {
+            "key": "266",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Senior Friendly"
+          },
+          {
+            "key": "271",
+            "count": 32,
+            "isApplied": false,
+            "displayName": "Sports Car"
+          },
+          {
+            "key": "261",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Work Truck"
+          }
+        ]
+      },
+      "features": {
+        "type": "AllOfList",
+        "buckets": [
+          {
+            "key": "12V Power Outlet",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "12V Power Outlet"
+          },
+          {
+            "key": "360 Camera",
+            "count": 178,
+            "isApplied": false,
+            "displayName": "360 Camera"
+          },
+          {
+            "key": "4-Wheel Disc Brakes",
+            "count": 198,
+            "isApplied": false,
+            "displayName": "4-Wheel Disc Brakes"
+          },
+          {
+            "key": "Active Lane Keep Assistance",
+            "count": 146,
+            "isApplied": false,
+            "displayName": "Active Lane Keep Assistance"
+          },
+          {
+            "key": "Adaptive Headlights",
+            "count": 175,
+            "isApplied": false,
+            "displayName": "Adaptive Headlights"
+          },
+          {
+            "key": "Air Conditioning",
+            "count": 401,
+            "isApplied": false,
+            "displayName": "Air Conditioning"
+          },
+          {
+            "key": "Alarm System",
+            "count": 446,
+            "isApplied": false,
+            "displayName": "Alarm System"
+          },
+          {
+            "key": "Alloy Wheels",
+            "count": 410,
+            "isApplied": false,
+            "displayName": "Alloy Wheels"
+          },
+          {
+            "key": "Aluminum Interior Trim",
+            "count": 195,
+            "isApplied": false,
+            "displayName": "Aluminum Interior Trim"
+          },
+          {
+            "key": "Android Auto",
+            "count": 351,
+            "isApplied": false,
+            "displayName": "Android Auto"
+          },
+          {
+            "key": "Anti-Lock Brakes",
+            "count": 565,
+            "isApplied": false,
+            "displayName": "Anti-Lock Brakes"
+          },
+          {
+            "key": "Apple CarPlay",
+            "count": 155,
+            "isApplied": false,
+            "displayName": "Apple CarPlay"
+          },
+          {
+            "key": "Auto Dimming Mirrors",
+            "count": 363,
+            "isApplied": false,
+            "displayName": "Auto Dimming Mirrors"
+          },
+          {
+            "key": "Automatic Air Conditioning",
+            "count": 252,
+            "isApplied": false,
+            "displayName": "Automatic Air Conditioning"
+          },
+          {
+            "key": "Automatic Emergency Braking",
+            "count": 373,
+            "isApplied": false,
+            "displayName": "Automatic Emergency Braking"
+          },
+          {
+            "key": "Automatic Headlights",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Automatic Headlights"
+          },
+          {
+            "key": "Automatic High Beams",
+            "count": 365,
+            "isApplied": false,
+            "displayName": "Automatic High Beams"
+          },
+          {
+            "key": "Automatic Leveling Headlights",
+            "count": 192,
+            "isApplied": false,
+            "displayName": "Automatic Leveling Headlights"
+          },
+          {
+            "key": "Automatic Self Parking",
+            "count": 104,
+            "isApplied": false,
+            "displayName": "Automatic Self Parking"
+          },
+          {
+            "key": "Automatic Windshield Wipers",
+            "count": 380,
+            "isApplied": false,
+            "displayName": "Automatic Windshield Wipers"
+          },
+          {
+            "key": "Auxiliary Input Jack",
+            "count": 109,
+            "isApplied": false,
+            "displayName": "Auxiliary Input Jack"
+          },
+          {
+            "key": "Blindspot Sensors",
+            "count": 377,
+            "isApplied": false,
+            "displayName": "Blindspot Sensors"
+          },
+          {
+            "key": "Bluetooth Music",
+            "count": 386,
+            "isApplied": false,
+            "displayName": "Bluetooth Music"
+          },
+          {
+            "key": "Child Door Locks",
+            "count": 187,
+            "isApplied": false,
+            "displayName": "Child Door Locks"
+          },
+          {
+            "key": "Collision Detection",
+            "count": 347,
+            "isApplied": false,
+            "displayName": "Collision Detection"
+          },
+          {
+            "key": "Compass",
+            "count": 162,
+            "isApplied": false,
+            "displayName": "Compass"
+          },
+          {
+            "key": "Cruise Control",
+            "count": 281,
+            "isApplied": false,
+            "displayName": "Cruise Control"
+          },
+          {
+            "key": "Cup Holder",
+            "count": 198,
+            "isApplied": false,
+            "displayName": "Cup Holder"
+          },
+          {
+            "key": "Daytime Running Lights",
+            "count": 373,
+            "isApplied": false,
+            "displayName": "Daytime Running Lights"
+          },
+          {
+            "key": "Driver Airbag",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Driver Airbag"
+          },
+          {
+            "key": "Driver Attention Assist Monitor",
+            "count": 225,
+            "isApplied": false,
+            "displayName": "Driver Attention Assist Monitor"
+          },
+          {
+            "key": "Driver Knee Airbag",
+            "count": 185,
+            "isApplied": false,
+            "displayName": "Driver Knee Airbag"
+          },
+          {
+            "key": "Eco Assist System",
+            "count": 111,
+            "isApplied": false,
+            "displayName": "Eco Assist System"
+          },
+          {
+            "key": "Electronic Stability Control",
+            "count": 196,
+            "isApplied": false,
+            "displayName": "Electronic Stability Control"
+          },
+          {
+            "key": "Emergency & Security Services",
+            "count": 198,
+            "isApplied": false,
+            "displayName": "Emergency & Security Services"
+          },
+          {
+            "key": "Engine Immobilizer",
+            "count": 198,
+            "isApplied": false,
+            "displayName": "Engine Immobilizer"
+          },
+          {
+            "key": "Fold Down Rear Seats",
+            "count": 256,
+            "isApplied": false,
+            "displayName": "Fold Down Rear Seats"
+          },
+          {
+            "key": "Front Head Curtain Airbag",
+            "count": 250,
+            "isApplied": false,
+            "displayName": "Front Head Curtain Airbag"
+          },
+          {
+            "key": "Front Side Airbag",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Front Side Airbag"
+          },
+          {
+            "key": "GPS Navigation",
+            "count": 423,
+            "isApplied": false,
+            "displayName": "GPS Navigation"
+          },
+          {
+            "key": "Hands Free Calling",
+            "count": 409,
+            "isApplied": false,
+            "displayName": "Hands Free Calling"
+          },
+          {
+            "key": "Hands Free Trunk Access",
+            "count": 197,
+            "isApplied": false,
+            "displayName": "Hands Free Trunk Access"
+          },
+          {
+            "key": "Heads Up Display",
+            "count": 138,
+            "isApplied": false,
+            "displayName": "Heads Up Display"
+          },
+          {
+            "key": "Heated Mirrors",
+            "count": 384,
+            "isApplied": false,
+            "displayName": "Heated Mirrors"
+          },
+          {
+            "key": "Heated Seats",
+            "count": 391,
+            "isApplied": false,
+            "displayName": "Heated Seats"
+          },
+          {
+            "key": "Heated Steering Wheel",
+            "count": 253,
+            "isApplied": false,
+            "displayName": "Heated Steering Wheel"
+          },
+          {
+            "key": "Hill Assistance",
+            "count": 335,
+            "isApplied": false,
+            "displayName": "Hill Assistance"
+          },
+          {
+            "key": "Integrated Garage Door Opener",
+            "count": 358,
+            "isApplied": false,
+            "displayName": "Integrated Garage Door Opener"
+          },
+          {
+            "key": "Intelligent Traction Control",
+            "count": 157,
+            "isApplied": false,
+            "displayName": "Intelligent Traction Control"
+          },
+          {
+            "key": "Interior Ambient Lighting",
+            "count": 253,
+            "isApplied": false,
+            "displayName": "Interior Ambient Lighting"
+          },
+          {
+            "key": "Keyless Entry",
+            "count": 438,
+            "isApplied": false,
+            "displayName": "Keyless Entry"
+          },
+          {
+            "key": "Keyless Ignition",
+            "count": 404,
+            "isApplied": false,
+            "displayName": "Keyless Ignition"
+          },
+          {
+            "key": "Lane Departure Warning",
+            "count": 323,
+            "isApplied": false,
+            "displayName": "Lane Departure Warning"
+          },
+          {
+            "key": "Leather-Wrapped Steering Wheel",
+            "count": 352,
+            "isApplied": false,
+            "displayName": "Leather-Wrapped Steering Wheel"
+          },
+          {
+            "key": "LED Daytime Running Lights",
+            "count": 390,
+            "isApplied": false,
+            "displayName": "LED Daytime Running Lights"
+          },
+          {
+            "key": "LED Headlamps",
+            "count": 361,
+            "isApplied": false,
+            "displayName": "LED Headlamps"
+          },
+          {
+            "key": "LED Tail Lights",
+            "count": 254,
+            "isApplied": false,
+            "displayName": "LED Tail Lights"
+          },
+          {
+            "key": "Manual Mode",
+            "count": 165,
+            "isApplied": false,
+            "displayName": "Manual Mode"
+          },
+          {
+            "key": "Memory Exterior Mirrors",
+            "count": 340,
+            "isApplied": false,
+            "displayName": "Memory Exterior Mirrors"
+          },
+          {
+            "key": "Memory Radio",
+            "count": 198,
+            "isApplied": false,
+            "displayName": "Memory Radio"
+          },
+          {
+            "key": "Multi-Zone Climate Control",
+            "count": 319,
+            "isApplied": false,
+            "displayName": "Multi-Zone Climate Control"
+          },
+          {
+            "key": "Overdrive",
+            "count": 157,
+            "isApplied": false,
+            "displayName": "Overdrive"
+          },
+          {
+            "key": "Paddle Shifters",
+            "count": 123,
+            "isApplied": false,
+            "displayName": "Paddle Shifters"
+          },
+          {
+            "key": "Parking Assistance",
+            "count": 312,
+            "isApplied": false,
+            "displayName": "Parking Assistance"
+          },
+          {
+            "key": "Passenger Airbag",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Passenger Airbag"
+          },
+          {
+            "key": "Pedestrian Detection",
+            "count": 250,
+            "isApplied": false,
+            "displayName": "Pedestrian Detection"
+          },
+          {
+            "key": "Power Adjustable Steering Column",
+            "count": 116,
+            "isApplied": false,
+            "displayName": "Power Adjustable Steering Column"
+          },
+          {
+            "key": "Power Driver Seat",
+            "count": 401,
+            "isApplied": false,
+            "displayName": "Power Driver Seat"
+          },
+          {
+            "key": "Power Folding Exterior Mirrors",
+            "count": 356,
+            "isApplied": false,
+            "displayName": "Power Folding Exterior Mirrors"
+          },
+          {
+            "key": "Power Locks",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Power Locks"
+          },
+          {
+            "key": "Power Lumbar Support",
+            "count": 294,
+            "isApplied": false,
+            "displayName": "Power Lumbar Support"
+          },
+          {
+            "key": "Power Mirrors",
+            "count": 394,
+            "isApplied": false,
+            "displayName": "Power Mirrors"
+          },
+          {
+            "key": "Power Passenger Seat",
+            "count": 369,
+            "isApplied": false,
+            "displayName": "Power Passenger Seat"
+          },
+          {
+            "key": "Power Tailgate/Hatch",
+            "count": 379,
+            "isApplied": false,
+            "displayName": "Power Tailgate/Hatch"
+          },
+          {
+            "key": "Power Windows",
+            "count": 447,
+            "isApplied": false,
+            "displayName": "Power Windows"
+          },
+          {
+            "key": "Premium Sound System",
+            "count": 166,
+            "isApplied": false,
+            "displayName": "Premium Sound System"
+          },
+          {
+            "key": "Privacy Glass",
+            "count": 126,
+            "isApplied": false,
+            "displayName": "Privacy Glass"
+          },
+          {
+            "key": "Real-Time Traffic Information",
+            "count": 247,
+            "isApplied": false,
+            "displayName": "Real-Time Traffic Information"
+          },
+          {
+            "key": "Rear Climate Control",
+            "count": 254,
+            "isApplied": false,
+            "displayName": "Rear Climate Control"
+          },
+          {
+            "key": "Rear Cross Traffic Alert",
+            "count": 346,
+            "isApplied": false,
+            "displayName": "Rear Cross Traffic Alert"
+          },
+          {
+            "key": "Rear Spoiler",
+            "count": 141,
+            "isApplied": false,
+            "displayName": "Rear Spoiler"
+          },
+          {
+            "key": "Rear View Camera",
+            "count": 622,
+            "isApplied": false,
+            "displayName": "Rear View Camera"
+          },
+          {
+            "key": "Rear Window Defroster",
+            "count": 238,
+            "isApplied": false,
+            "displayName": "Rear Window Defroster"
+          },
+          {
+            "key": "Roof Rails",
+            "count": 233,
+            "isApplied": false,
+            "displayName": "Roof Rails"
+          },
+          {
+            "key": "Satellite Radio Available",
+            "count": 196,
+            "isApplied": false,
+            "displayName": "Satellite Radio Available"
+          },
+          {
+            "key": "Seat Memory System",
+            "count": 392,
+            "isApplied": false,
+            "displayName": "Seat Memory System"
+          },
+          {
+            "key": "Side View Cameras",
+            "count": 109,
+            "isApplied": false,
+            "displayName": "Side View Cameras"
+          },
+          {
+            "key": "Stability Control",
+            "count": 290,
+            "isApplied": false,
+            "displayName": "Stability Control"
+          },
+          {
+            "key": "Steering Wheel Controls",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Steering Wheel Controls"
+          },
+          {
+            "key": "Stolen Vehicle Tracking Software",
+            "count": 155,
+            "isApplied": false,
+            "displayName": "Stolen Vehicle Tracking Software"
+          },
+          {
+            "key": "Sunroof",
+            "count": 380,
+            "isApplied": false,
+            "displayName": "Sunroof"
+          },
+          {
+            "key": "Synthetic Leather Seats",
+            "count": 270,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Seats"
+          },
+          {
+            "key": "Tilt Wheel",
+            "count": 441,
+            "isApplied": false,
+            "displayName": "Tilt Wheel"
+          },
+          {
+            "key": "Tire Pressure Monitor",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Tire Pressure Monitor"
+          },
+          {
+            "key": "Touch Screen Monitor",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Touch Screen Monitor"
+          },
+          {
+            "key": "Traction Control",
+            "count": 202,
+            "isApplied": false,
+            "displayName": "Traction Control"
+          },
+          {
+            "key": "Traffic Sign Recognition",
+            "count": 189,
+            "isApplied": false,
+            "displayName": "Traffic Sign Recognition"
+          },
+          {
+            "key": "USB Input",
+            "count": 395,
+            "isApplied": false,
+            "displayName": "USB Input"
+          },
+          {
+            "key": "Voice Recognition System",
+            "count": 255,
+            "isApplied": false,
+            "displayName": "Voice Recognition System"
+          },
+          {
+            "key": "Wi-Fi Hot Spot",
+            "count": 186,
+            "isApplied": false,
+            "displayName": "Wi-Fi Hot Spot"
+          }
+        ]
+      },
+      "offerings": {
+        "type": "AnyOfList",
+        "buckets": [
+          {
+            "key": "Used",
+            "count": 728,
+            "isApplied": false,
+            "displayName": "Used"
+          }
+        ]
+      },
+      "cvnaFeatures": {
+        "Popular": [
+          {
+            "key": "Apple CarPlay",
+            "count": 284,
+            "isApplied": false,
+            "displayName": "Apple CarPlay"
+          },
+          {
+            "key": "Heated Seats",
+            "count": 581,
+            "isApplied": false,
+            "displayName": "Heated Seats"
+          },
+          {
+            "key": "Genuine Leather Seats",
+            "count": 88,
+            "isApplied": false,
+            "displayName": "Genuine Leather Seats"
+          },
+          {
+            "key": "Synthetic Leather Seats",
+            "count": 388,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Seats"
+          },
+          {
+            "key": "Sunroof",
+            "count": 532,
+            "isApplied": false,
+            "displayName": "Sunroof"
+          },
+          {
+            "key": "Third Row Seat",
+            "count": 45,
+            "isApplied": false,
+            "displayName": "Third Row Seat"
+          }
+        ],
+        "Comfort & Convenience": [
+          {
+            "key": "115V Power Outlet",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "115V Power Outlet"
+          },
+          {
+            "key": "Advanced Self-Driving",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Advanced Self-Driving"
+          },
+          {
+            "key": "Automatic Windshield Wipers",
+            "count": 620,
+            "isApplied": false,
+            "displayName": "Automatic Windshield Wipers"
+          },
+          {
+            "key": "Auxiliary Switches",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Auxiliary Switches"
+          },
+          {
+            "key": "Built-In Air Compressor",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Built-In Air Compressor"
+          },
+          {
+            "key": "Conditional Hands-Free Self-Driving",
+            "count": 35,
+            "isApplied": false,
+            "displayName": "Conditional Hands-Free Self-Driving"
+          },
+          {
+            "key": "Digital Key",
+            "count": 100,
+            "isApplied": false,
+            "displayName": "Digital Key"
+          },
+          {
+            "key": "Dual-Zone Climate Control",
+            "count": 183,
+            "isApplied": false,
+            "displayName": "Dual-Zone Climate Control"
+          },
+          {
+            "key": "Hands Free Trunk Access",
+            "count": 257,
+            "isApplied": false,
+            "displayName": "Hands Free Trunk Access"
+          },
+          {
+            "key": "Heat Pump",
+            "count": 39,
+            "isApplied": false,
+            "displayName": "Heat Pump"
+          },
+          {
+            "key": "Heated Mirrors",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "Heated Mirrors"
+          },
+          {
+            "key": "Heated Steering Wheel",
+            "count": 391,
+            "isApplied": false,
+            "displayName": "Heated Steering Wheel"
+          },
+          {
+            "key": "Heated Windshield",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Heated Windshield"
+          },
+          {
+            "key": "In-Vehicle Vacuum Cleaner",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "In-Vehicle Vacuum Cleaner"
+          },
+          {
+            "key": "Integrated Garage Door Opener",
+            "count": 530,
+            "isApplied": false,
+            "displayName": "Integrated Garage Door Opener"
+          },
+          {
+            "key": "Keyless Entry",
+            "count": 624,
+            "isApplied": false,
+            "displayName": "Keyless Entry"
+          },
+          {
+            "key": "Memory Exterior Mirrors",
+            "count": 568,
+            "isApplied": false,
+            "displayName": "Memory Exterior Mirrors"
+          },
+          {
+            "key": "Multi-Zone Climate Control",
+            "count": 459,
+            "isApplied": false,
+            "displayName": "Multi-Zone Climate Control"
+          },
+          {
+            "key": "Partial Self-Driving",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Partial Self-Driving"
+          },
+          {
+            "key": "Power Adjustable Pedals",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Adjustable Pedals"
+          },
+          {
+            "key": "Power Adjustable Steering Column",
+            "count": 161,
+            "isApplied": false,
+            "displayName": "Power Adjustable Steering Column"
+          },
+          {
+            "key": "Power Folding Exterior Mirrors",
+            "count": 560,
+            "isApplied": false,
+            "displayName": "Power Folding Exterior Mirrors"
+          },
+          {
+            "key": "Power Lumbar Support",
+            "count": 438,
+            "isApplied": false,
+            "displayName": "Power Lumbar Support"
+          },
+          {
+            "key": "Power Mirrors",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Power Mirrors"
+          },
+          {
+            "key": "Power Sliding Doors",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Sliding Doors"
+          },
+          {
+            "key": "Power Tailgate/Hatch",
+            "count": 528,
+            "isApplied": false,
+            "displayName": "Power Tailgate/Hatch"
+          },
+          {
+            "key": "Push Button Start",
+            "count": 616,
+            "isApplied": false,
+            "displayName": "Push Button Start"
+          },
+          {
+            "key": "Rear Cabin Storage",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Cabin Storage"
+          },
+          {
+            "key": "Rear Climate Control",
+            "count": 351,
+            "isApplied": false,
+            "displayName": "Rear Climate Control"
+          },
+          {
+            "key": "Rear Window Shades",
+            "count": 58,
+            "isApplied": false,
+            "displayName": "Rear Window Shades"
+          },
+          {
+            "key": "Refrigerated Center Console",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Refrigerated Center Console"
+          },
+          {
+            "key": "Refrigerator/Cooler",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Refrigerator/Cooler"
+          },
+          {
+            "key": "Remote Climate Preconditioning",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Remote Climate Preconditioning"
+          },
+          {
+            "key": "Remote Start",
+            "count": 57,
+            "isApplied": false,
+            "displayName": "Remote Start"
+          },
+          {
+            "key": "Self Driving",
+            "count": 69,
+            "isApplied": false,
+            "displayName": "Self Driving"
+          },
+          {
+            "key": "Smartphone Remote Start",
+            "count": 55,
+            "isApplied": false,
+            "displayName": "Smartphone Remote Start"
+          },
+          {
+            "key": "Soft Close Doors",
+            "count": 36,
+            "isApplied": false,
+            "displayName": "Soft Close Doors"
+          },
+          {
+            "key": "Windshield Wiper De-Icer",
+            "count": 3,
+            "isApplied": false,
+            "displayName": "Windshield Wiper De-Icer"
+          }
+        ],
+        "Seating & Interior": [
+          {
+            "key": "2nd Row Captain's Chairs",
+            "count": 7,
+            "isApplied": false,
+            "displayName": "2nd Row Captain's Chairs"
+          },
+          {
+            "key": "Dual Power Rear Seats",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Dual Power Rear Seats"
+          },
+          {
+            "key": "Executive Rear Seating",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Executive Rear Seating"
+          },
+          {
+            "key": "Fold-Flat Passenger Seat",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Fold-Flat Passenger Seat"
+          },
+          {
+            "key": "Genuine Leather Rear Seats",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "Genuine Leather Rear Seats"
+          },
+          {
+            "key": "Genuine Leather Seats",
+            "count": 88,
+            "isApplied": false,
+            "displayName": "Genuine Leather Seats"
+          },
+          {
+            "key": "Heated and Ventilated Seats",
+            "count": 106,
+            "isApplied": false,
+            "displayName": "Heated and Ventilated Seats"
+          },
+          {
+            "key": "Heated Seats",
+            "count": 581,
+            "isApplied": false,
+            "displayName": "Heated Seats"
+          },
+          {
+            "key": "Leather Interior Trim",
+            "count": 31,
+            "isApplied": false,
+            "displayName": "Leather Interior Trim"
+          },
+          {
+            "key": "Leather-Wrapped Steering Wheel",
+            "count": 572,
+            "isApplied": false,
+            "displayName": "Leather-Wrapped Steering Wheel"
+          },
+          {
+            "key": "Lounge Rear Seat",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Lounge Rear Seat"
+          },
+          {
+            "key": "Multi-Row Seating",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Multi-Row Seating"
+          },
+          {
+            "key": "Power Driver Seat",
+            "count": 625,
+            "isApplied": false,
+            "displayName": "Power Driver Seat"
+          },
+          {
+            "key": "Power Folding Rear Seat",
+            "count": 3,
+            "isApplied": false,
+            "displayName": "Power Folding Rear Seat"
+          },
+          {
+            "key": "Power Folding Third Row Seat",
+            "count": 11,
+            "isApplied": false,
+            "displayName": "Power Folding Third Row Seat"
+          },
+          {
+            "key": "Power Lumbar Support Passenger",
+            "count": 84,
+            "isApplied": false,
+            "displayName": "Power Lumbar Support Passenger"
+          },
+          {
+            "key": "Power Passenger Seat",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "Power Passenger Seat"
+          },
+          {
+            "key": "Premium Headliner",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Premium Headliner"
+          },
+          {
+            "key": "Rear Heated Seats",
+            "count": 77,
+            "isApplied": false,
+            "displayName": "Rear Heated Seats"
+          },
+          {
+            "key": "Rear Seat Massage",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Massage"
+          },
+          {
+            "key": "Reclining Rear Seats",
+            "count": 93,
+            "isApplied": false,
+            "displayName": "Reclining Rear Seats"
+          },
+          {
+            "key": "Seat Massage Passenger",
+            "count": 11,
+            "isApplied": false,
+            "displayName": "Seat Massage Passenger"
+          },
+          {
+            "key": "Seat Massage System",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Seat Massage System"
+          },
+          {
+            "key": "Seat Memory Passenger",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Seat Memory Passenger"
+          },
+          {
+            "key": "Seat Memory System",
+            "count": 591,
+            "isApplied": false,
+            "displayName": "Seat Memory System"
+          },
+          {
+            "key": "Sliding Rear Seats",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sliding Rear Seats"
+          },
+          {
+            "key": "Sound Insulation",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sound Insulation"
+          },
+          {
+            "key": "Sport Pedals",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sport Pedals"
+          },
+          {
+            "key": "Sport Seats",
+            "count": 124,
+            "isApplied": false,
+            "displayName": "Sport Seats"
+          },
+          {
+            "key": "Synthetic Leather Rear Seats",
+            "count": 101,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Rear Seats"
+          },
+          {
+            "key": "Synthetic Leather Seats",
+            "count": 388,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Seats"
+          },
+          {
+            "key": "Third Row Seat",
+            "count": 45,
+            "isApplied": false,
+            "displayName": "Third Row Seat"
+          },
+          {
+            "key": "Tip-and-Slide Second-Row Seats",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tip-and-Slide Second-Row Seats"
+          },
+          {
+            "key": "Ventilated Rear Seats",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Ventilated Rear Seats"
+          }
+        ],
+        "Safety & Security": [
+          {
+            "key": "360 Camera",
+            "count": 257,
+            "isApplied": false,
+            "displayName": "360 Camera"
+          },
+          {
+            "key": "Active Lane Keep Assistance",
+            "count": 290,
+            "isApplied": false,
+            "displayName": "Active Lane Keep Assistance"
+          },
+          {
+            "key": "Adaptive Cruise Control",
+            "count": 96,
+            "isApplied": false,
+            "displayName": "Adaptive Cruise Control"
+          },
+          {
+            "key": "Auto Dimming Mirrors",
+            "count": 575,
+            "isApplied": false,
+            "displayName": "Auto Dimming Mirrors"
+          },
+          {
+            "key": "Automatic Emergency Braking",
+            "count": 608,
+            "isApplied": false,
+            "displayName": "Automatic Emergency Braking"
+          },
+          {
+            "key": "Automatic Self Parking",
+            "count": 153,
+            "isApplied": false,
+            "displayName": "Automatic Self Parking"
+          },
+          {
+            "key": "Blind Spot Intervention",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Blind Spot Intervention"
+          },
+          {
+            "key": "Blindspot Sensors",
+            "count": 598,
+            "isApplied": false,
+            "displayName": "Blindspot Sensors"
+          },
+          {
+            "key": "Cabin Camera",
+            "count": 8,
+            "isApplied": false,
+            "displayName": "Cabin Camera"
+          },
+          {
+            "key": "Collision Detection",
+            "count": 570,
+            "isApplied": false,
+            "displayName": "Collision Detection"
+          },
+          {
+            "key": "Dash Cam",
+            "count": 2,
+            "isApplied": false,
+            "displayName": "Dash Cam"
+          },
+          {
+            "key": "Digital Rearview Mirror",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Digital Rearview Mirror"
+          },
+          {
+            "key": "Evasive Steering Assist",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "Evasive Steering Assist"
+          },
+          {
+            "key": "Front Cross Traffic Alert",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Cross Traffic Alert"
+          },
+          {
+            "key": "Front View Camera",
+            "count": 151,
+            "isApplied": false,
+            "displayName": "Front View Camera"
+          },
+          {
+            "key": "Ground View Camera",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Ground View Camera"
+          },
+          {
+            "key": "Heads Up Display",
+            "count": 190,
+            "isApplied": false,
+            "displayName": "Heads Up Display"
+          },
+          {
+            "key": "Lane Departure Warning",
+            "count": 523,
+            "isApplied": false,
+            "displayName": "Lane Departure Warning"
+          },
+          {
+            "key": "Night Vision",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Night Vision"
+          },
+          {
+            "key": "Parking Assistance",
+            "count": 526,
+            "isApplied": false,
+            "displayName": "Parking Assistance"
+          },
+          {
+            "key": "Pedestrian Detection",
+            "count": 361,
+            "isApplied": false,
+            "displayName": "Pedestrian Detection"
+          },
+          {
+            "key": "Post-Collision Braking",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Post-Collision Braking"
+          },
+          {
+            "key": "Rear Cross Traffic Alert",
+            "count": 557,
+            "isApplied": false,
+            "displayName": "Rear Cross Traffic Alert"
+          },
+          {
+            "key": "Rear Cross Traffic Braking",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Cross Traffic Braking"
+          },
+          {
+            "key": "Rear Seat Reminder",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Reminder"
+          },
+          {
+            "key": "Rear View Camera",
+            "count": 702,
+            "isApplied": false,
+            "displayName": "Rear View Camera"
+          },
+          {
+            "key": "Reverse Automatic Emergency Braking",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Reverse Automatic Emergency Braking"
+          },
+          {
+            "key": "Safe Exit Assist",
+            "count": 57,
+            "isApplied": false,
+            "displayName": "Safe Exit Assist"
+          },
+          {
+            "key": "Side View Cameras",
+            "count": 165,
+            "isApplied": false,
+            "displayName": "Side View Cameras"
+          },
+          {
+            "key": "Stolen Vehicle Tracking Software",
+            "count": 220,
+            "isApplied": false,
+            "displayName": "Stolen Vehicle Tracking Software"
+          },
+          {
+            "key": "Teen Driver Tech",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Teen Driver Tech"
+          },
+          {
+            "key": "Traffic Sign Recognition",
+            "count": 259,
+            "isApplied": false,
+            "displayName": "Traffic Sign Recognition"
+          }
+        ],
+        "Cargo & Towing": [
+          {
+            "key": "5th Wheel/Gooseneck Towing",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "5th Wheel/Gooseneck Towing"
+          },
+          {
+            "key": "Cargo Cover",
+            "count": 37,
+            "isApplied": false,
+            "displayName": "Cargo Cover"
+          },
+          {
+            "key": "Front Trunk",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Trunk"
+          },
+          {
+            "key": "Rear Step",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Step"
+          },
+          {
+            "key": "Roof Cross Bars",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Roof Cross Bars"
+          },
+          {
+            "key": "Roof Rails",
+            "count": 311,
+            "isApplied": false,
+            "displayName": "Roof Rails"
+          },
+          {
+            "key": "Tow Hitch",
+            "count": 17,
+            "isApplied": false,
+            "displayName": "Tow Hitch"
+          },
+          {
+            "key": "Tow Hitch and Connector",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tow Hitch and Connector"
+          },
+          {
+            "key": "Trailer Backup Assist",
+            "count": 20,
+            "isApplied": false,
+            "displayName": "Trailer Backup Assist"
+          },
+          {
+            "key": "Trailer Brake Controller",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Trailer Brake Controller"
+          },
+          {
+            "key": "Trailer Sway Control",
+            "count": 35,
+            "isApplied": false,
+            "displayName": "Trailer Sway Control"
+          },
+          {
+            "key": "Truck Bed Cover",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Truck Bed Cover"
+          },
+          {
+            "key": "Truck Bed Liner",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Truck Bed Liner"
+          }
+        ],
+        "Lighting": [
+          {
+            "key": "Adaptive Headlights",
+            "count": 242,
+            "isApplied": false,
+            "displayName": "Adaptive Headlights"
+          },
+          {
+            "key": "Automatic High Beams",
+            "count": 604,
+            "isApplied": false,
+            "displayName": "Automatic High Beams"
+          },
+          {
+            "key": "Daytime Running Lights",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Daytime Running Lights"
+          },
+          {
+            "key": "Fog Lights",
+            "count": 18,
+            "isApplied": false,
+            "displayName": "Fog Lights"
+          },
+          {
+            "key": "HID/Xenon Headlamps",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "HID/Xenon Headlamps"
+          },
+          {
+            "key": "LED Daytime Running Lights",
+            "count": 621,
+            "isApplied": false,
+            "displayName": "LED Daytime Running Lights"
+          },
+          {
+            "key": "LED Headlamps",
+            "count": 565,
+            "isApplied": false,
+            "displayName": "LED Headlamps"
+          },
+          {
+            "key": "LED Tail Lights",
+            "count": 386,
+            "isApplied": false,
+            "displayName": "LED Tail Lights"
+          },
+          {
+            "key": "Puddle Lights",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Puddle Lights"
+          }
+        ],
+        "Braking & Traction": [
+          {
+            "key": "Adjustable Suspension",
+            "count": 69,
+            "isApplied": false,
+            "displayName": "Adjustable Suspension"
+          },
+          {
+            "key": "Auto Leveling Suspension",
+            "count": 101,
+            "isApplied": false,
+            "displayName": "Auto Leveling Suspension"
+          },
+          {
+            "key": "Automatic Brake Hold",
+            "count": 155,
+            "isApplied": false,
+            "displayName": "Automatic Brake Hold"
+          },
+          {
+            "key": "Electronic Stability Control",
+            "count": 316,
+            "isApplied": false,
+            "displayName": "Electronic Stability Control"
+          },
+          {
+            "key": "Hill Assistance",
+            "count": 502,
+            "isApplied": false,
+            "displayName": "Hill Assistance"
+          },
+          {
+            "key": "Intelligent Traction Control",
+            "count": 176,
+            "isApplied": false,
+            "displayName": "Intelligent Traction Control"
+          },
+          {
+            "key": "Premium Brakes",
+            "count": 12,
+            "isApplied": false,
+            "displayName": "Premium Brakes"
+          },
+          {
+            "key": "Rollover Mitigation",
+            "count": 78,
+            "isApplied": false,
+            "displayName": "Rollover Mitigation"
+          },
+          {
+            "key": "Upgraded Suspension",
+            "count": 89,
+            "isApplied": false,
+            "displayName": "Upgraded Suspension"
+          }
+        ],
+        "Performance & Drive": [
+          {
+            "key": "Air Suspension",
+            "count": 44,
+            "isApplied": false,
+            "displayName": "Air Suspension"
+          },
+          {
+            "key": "Brush Guard",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Brush Guard"
+          },
+          {
+            "key": "DC Fast Charging",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "DC Fast Charging"
+          },
+          {
+            "key": "Drive Mode Select",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Drive Mode Select"
+          },
+          {
+            "key": "Dual-Clutch Automatic Transmission",
+            "count": 47,
+            "isApplied": false,
+            "displayName": "Dual-Clutch Automatic Transmission"
+          },
+          {
+            "key": "Electronic Sway Bar Disconnect",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Electronic Sway Bar Disconnect"
+          },
+          {
+            "key": "Front Lift",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Lift"
+          },
+          {
+            "key": "Launch Control",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Launch Control"
+          },
+          {
+            "key": "Off-Road Speed Control",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Off-Road Speed Control"
+          },
+          {
+            "key": "One-Pedal Driving",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "One-Pedal Driving"
+          },
+          {
+            "key": "Paddle Shifters",
+            "count": 226,
+            "isApplied": false,
+            "displayName": "Paddle Shifters"
+          },
+          {
+            "key": "Performance Exhaust System",
+            "count": 47,
+            "isApplied": false,
+            "displayName": "Performance Exhaust System"
+          },
+          {
+            "key": "Plug and Charge",
+            "count": 27,
+            "isApplied": false,
+            "displayName": "Plug and Charge"
+          },
+          {
+            "key": "Regenerative Braking",
+            "count": 84,
+            "isApplied": false,
+            "displayName": "Regenerative Braking"
+          },
+          {
+            "key": "Rev-Matching Transmission",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rev-Matching Transmission"
+          },
+          {
+            "key": "Rock Rails",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rock Rails"
+          },
+          {
+            "key": "Selectable Terrain Modes",
+            "count": 158,
+            "isApplied": false,
+            "displayName": "Selectable Terrain Modes"
+          },
+          {
+            "key": "Tow/Haul Drive Mode",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tow/Haul Drive Mode"
+          },
+          {
+            "key": "Vehicle-to-Load Power",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Vehicle-to-Load Power"
+          },
+          {
+            "key": "Winch",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Winch"
+          }
+        ],
+        "Wheels & Tires": [
+          {
+            "key": "Alloy Wheels",
+            "count": 593,
+            "isApplied": false,
+            "displayName": "Alloy Wheels"
+          },
+          {
+            "key": "Dual Rear Wheels",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Dual Rear Wheels"
+          },
+          {
+            "key": "Painted Brake Calipers",
+            "count": 104,
+            "isApplied": false,
+            "displayName": "Painted Brake Calipers"
+          }
+        ],
+        "Entertainment & Technology": [
+          {
+            "key": "Amazon Alexa",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Amazon Alexa"
+          },
+          {
+            "key": "Android Auto",
+            "count": 544,
+            "isApplied": false,
+            "displayName": "Android Auto"
+          },
+          {
+            "key": "Apple CarPlay",
+            "count": 284,
+            "isApplied": false,
+            "displayName": "Apple CarPlay"
+          },
+          {
+            "key": "Augmented Reality Navigation",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Augmented Reality Navigation"
+          },
+          {
+            "key": "Bluetooth Music",
+            "count": 616,
+            "isApplied": false,
+            "displayName": "Bluetooth Music"
+          },
+          {
+            "key": "Digital Instrument Cluster",
+            "count": 134,
+            "isApplied": false,
+            "displayName": "Digital Instrument Cluster"
+          },
+          {
+            "key": "Exterior Speakers",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Exterior Speakers"
+          },
+          {
+            "key": "Front Passenger Screen",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Passenger Screen"
+          },
+          {
+            "key": "GPS Navigation",
+            "count": 553,
+            "isApplied": false,
+            "displayName": "GPS Navigation"
+          },
+          {
+            "key": "Hands Free Calling",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Hands Free Calling"
+          },
+          {
+            "key": "Home Link",
+            "count": 5,
+            "isApplied": false,
+            "displayName": "Home Link"
+          },
+          {
+            "key": "In-Cabin Intercom System",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "In-Cabin Intercom System"
+          },
+          {
+            "key": "In-Car Streaming Apps",
+            "count": 119,
+            "isApplied": false,
+            "displayName": "In-Car Streaming Apps"
+          },
+          {
+            "key": "Noise Cancellation",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Noise Cancellation"
+          },
+          {
+            "key": "Over-the-Air Updates",
+            "count": 156,
+            "isApplied": false,
+            "displayName": "Over-the-Air Updates"
+          },
+          {
+            "key": "Performance Monitoring",
+            "count": 4,
+            "isApplied": false,
+            "displayName": "Performance Monitoring"
+          },
+          {
+            "key": "Premium Infotainment Display",
+            "count": 72,
+            "isApplied": false,
+            "displayName": "Premium Infotainment Display"
+          },
+          {
+            "key": "Premium Sound System",
+            "count": 252,
+            "isApplied": false,
+            "displayName": "Premium Sound System"
+          },
+          {
+            "key": "Rear Seat Entertainment",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Entertainment"
+          },
+          {
+            "key": "Rear USB Ports",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear USB Ports"
+          },
+          {
+            "key": "Satellite Radio Available",
+            "count": 259,
+            "isApplied": false,
+            "displayName": "Satellite Radio Available"
+          },
+          {
+            "key": "Siri Eyes Free",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Siri Eyes Free"
+          },
+          {
+            "key": "USB Input",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "USB Input"
+          },
+          {
+            "key": "Virtual Cockpit",
+            "count": 23,
+            "isApplied": false,
+            "displayName": "Virtual Cockpit"
+          },
+          {
+            "key": "Wi-Fi Hot Spot",
+            "count": 248,
+            "isApplied": false,
+            "displayName": "Wi-Fi Hot Spot"
+          },
+          {
+            "key": "Wireless Android Auto",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Wireless Android Auto"
+          },
+          {
+            "key": "Wireless Apple CarPlay",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Wireless Apple CarPlay"
+          },
+          {
+            "key": "Wireless Charging",
+            "count": 110,
+            "isApplied": false,
+            "displayName": "Wireless Charging"
+          }
+        ],
+        "Roof & Glass": [
+          {
+            "key": "Fixed Glass Roof",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Fixed Glass Roof"
+          },
+          {
+            "key": "Flip-Up Rear Window",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Flip-Up Rear Window"
+          },
+          {
+            "key": "Hard Top",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Hard Top"
+          },
+          {
+            "key": "Moonroof",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Moonroof"
+          },
+          {
+            "key": "Panoramic Sunroof",
+            "count": 12,
+            "isApplied": false,
+            "displayName": "Panoramic Sunroof"
+          },
+          {
+            "key": "Power Retractable Hard Top",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Retractable Hard Top"
+          },
+          {
+            "key": "Power Retractable Soft Top",
+            "count": 6,
+            "isApplied": false,
+            "displayName": "Power Retractable Soft Top"
+          },
+          {
+            "key": "Power Sliding Rear Window",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Sliding Rear Window"
+          },
+          {
+            "key": "Removable Top Panels",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Removable Top Panels"
+          },
+          {
+            "key": "Soft Top",
+            "count": 8,
+            "isApplied": false,
+            "displayName": "Soft Top"
+          },
+          {
+            "key": "Sunroof",
+            "count": 532,
+            "isApplied": false,
+            "displayName": "Sunroof"
+          }
+        ],
+        "Exterior": [
+          {
+            "key": "Illuminated Badge",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Illuminated Badge"
+          },
+          {
+            "key": "Removable Doors",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Removable Doors"
+          },
+          {
+            "key": "Running Boards",
+            "count": 59,
+            "isApplied": false,
+            "displayName": "Running Boards"
+          }
+        ]
+      },
+      "cvnaFeatureDetails": {
+        "Popular": [
+          {
+            "key": "0c49e57f-9f0c-56d4-8fdb-7d3ae6246ec9",
+            "count": 284,
+            "isApplied": false,
+            "displayName": "Apple CarPlay"
+          },
+          {
+            "key": "c6577abe-8c0f-5a02-ac84-aa94c2247b1e",
+            "count": 581,
+            "isApplied": false,
+            "displayName": "Heated Seats"
+          },
+          {
+            "key": "b80c8fef-a677-5340-85fb-2c162d75df03",
+            "count": 88,
+            "isApplied": false,
+            "displayName": "Genuine Leather Seats"
+          },
+          {
+            "key": "d850a1dd-f50d-54ff-9303-ada59f1b4905",
+            "count": 388,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Seats"
+          },
+          {
+            "key": "c093c7f6-6edf-595e-9539-70de788efbaa",
+            "count": 532,
+            "isApplied": false,
+            "displayName": "Sunroof"
+          },
+          {
+            "key": "334b6b31-12a2-5bfc-bf4f-870c0954b343",
+            "count": 45,
+            "isApplied": false,
+            "displayName": "Third Row Seat"
+          }
+        ],
+        "Comfort & Convenience": [
+          {
+            "key": "965e199e-beaa-5493-ae10-2223b3dc1e2e",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "115V Power Outlet"
+          },
+          {
+            "key": "7addeba4-de00-5895-bf05-ea96b9816c0e",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Advanced Self-Driving"
+          },
+          {
+            "key": "dbca4363-10c1-527d-a9ee-818c1f682b7c",
+            "count": 620,
+            "isApplied": false,
+            "displayName": "Automatic Windshield Wipers"
+          },
+          {
+            "key": "01a0aac0-7a6c-7625-ac78-93761fb6ff42",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Auxiliary Switches"
+          },
+          {
+            "key": "01a01a33-c69d-75e7-ba5b-d996efb41942",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Built-In Air Compressor"
+          },
+          {
+            "key": "ac164322-3fbc-5f58-b51e-df5f772e2a6b",
+            "count": 35,
+            "isApplied": false,
+            "displayName": "Conditional Hands-Free Self-Driving"
+          },
+          {
+            "key": "01a01a33-c69d-75fb-b1a7-c86ba01e3b38",
+            "count": 100,
+            "isApplied": false,
+            "displayName": "Digital Key"
+          },
+          {
+            "key": "01a01a33-c69d-7603-ab42-370a895dca4c",
+            "count": 183,
+            "isApplied": false,
+            "displayName": "Dual-Zone Climate Control"
+          },
+          {
+            "key": "7ea1438d-1ad5-5198-b957-a5fa617d63b4",
+            "count": 257,
+            "isApplied": false,
+            "displayName": "Hands Free Trunk Access"
+          },
+          {
+            "key": "01a01a33-c69d-7622-ac8d-5356a813dc3d",
+            "count": 39,
+            "isApplied": false,
+            "displayName": "Heat Pump"
+          },
+          {
+            "key": "c64e6ce6-4549-5b73-ab53-6746ec8714af",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "Heated Mirrors"
+          },
+          {
+            "key": "80798e70-401c-5194-a03a-d707995ba3d6",
+            "count": 391,
+            "isApplied": false,
+            "displayName": "Heated Steering Wheel"
+          },
+          {
+            "key": "2afb56dc-31ce-5c09-9cde-6b07ac2bebaf",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Heated Windshield"
+          },
+          {
+            "key": "01a0aac0-7a6c-7b90-9823-ea7460aca643",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "In-Vehicle Vacuum Cleaner"
+          },
+          {
+            "key": "2b9b14ba-b4bc-565a-b23d-122fcf78e6f4",
+            "count": 530,
+            "isApplied": false,
+            "displayName": "Integrated Garage Door Opener"
+          },
+          {
+            "key": "3d930c8b-a9eb-525d-8dcd-ff696fd2e68a",
+            "count": 624,
+            "isApplied": false,
+            "displayName": "Keyless Entry"
+          },
+          {
+            "key": "f4dee25d-c6a0-58d4-8e66-b58431dfceef",
+            "count": 568,
+            "isApplied": false,
+            "displayName": "Memory Exterior Mirrors"
+          },
+          {
+            "key": "a545a5ac-9ea0-5b65-adb0-04afa85f25e0",
+            "count": 459,
+            "isApplied": false,
+            "displayName": "Multi-Zone Climate Control"
+          },
+          {
+            "key": "9ea37f2f-3d2d-5bbe-95d3-17be5e26a517",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Partial Self-Driving"
+          },
+          {
+            "key": "7c6a3a8e-cf58-5e71-8987-5a59385334f7",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Adjustable Pedals"
+          },
+          {
+            "key": "898b1280-9e95-5140-acb8-345b37d4af86",
+            "count": 161,
+            "isApplied": false,
+            "displayName": "Power Adjustable Steering Column"
+          },
+          {
+            "key": "cca0cc0a-8d45-5ac9-b775-52b84a45cd1d",
+            "count": 560,
+            "isApplied": false,
+            "displayName": "Power Folding Exterior Mirrors"
+          },
+          {
+            "key": "c765fb02-1ee1-5ffe-8576-759aba4607d1",
+            "count": 438,
+            "isApplied": false,
+            "displayName": "Power Lumbar Support"
+          },
+          {
+            "key": "cfff2af7-ed85-5f59-8246-88bfc5a0d398",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Power Mirrors"
+          },
+          {
+            "key": "70ede393-d226-5e56-9f16-31b79e2b724b",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Sliding Doors"
+          },
+          {
+            "key": "3577af1c-295a-539f-91ff-f17ef3a95447",
+            "count": 528,
+            "isApplied": false,
+            "displayName": "Power Tailgate/Hatch"
+          },
+          {
+            "key": "c06243dc-eaed-5ddf-bc34-c28ae6c89ede",
+            "count": 616,
+            "isApplied": false,
+            "displayName": "Push Button Start"
+          },
+          {
+            "key": "01a0aac0-7a6c-7e30-abc4-137ff4fa170f",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Cabin Storage"
+          },
+          {
+            "key": "ce1b28ad-1a2e-5c7d-97fa-17fb9a837014",
+            "count": 351,
+            "isApplied": false,
+            "displayName": "Rear Climate Control"
+          },
+          {
+            "key": "942569ed-ba8e-5454-a680-0c89983a22ea",
+            "count": 58,
+            "isApplied": false,
+            "displayName": "Rear Window Shades"
+          },
+          {
+            "key": "65aff90a-a220-5483-bc6f-5f2698d1ce13",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Refrigerated Center Console"
+          },
+          {
+            "key": "33cb1b80-173d-599c-aa61-0399ade7298a",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Refrigerator/Cooler"
+          },
+          {
+            "key": "01a01a33-c69d-7670-886a-c854bbdfe95b",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Remote Climate Preconditioning"
+          },
+          {
+            "key": "5bd20866-3478-53f7-bc79-d2aae304b443",
+            "count": 57,
+            "isApplied": false,
+            "displayName": "Remote Start"
+          },
+          {
+            "key": "3fb5eb5f-71f9-55de-8c4c-4792d4269ff5",
+            "count": 69,
+            "isApplied": false,
+            "displayName": "Self Driving"
+          },
+          {
+            "key": "01a0390c-06a3-70e2-b286-aea108bf76cb",
+            "count": 55,
+            "isApplied": false,
+            "displayName": "Smartphone Remote Start"
+          },
+          {
+            "key": "f6d5d99e-cfd8-5ce2-825d-900ed8d255b6",
+            "count": 36,
+            "isApplied": false,
+            "displayName": "Soft Close Doors"
+          },
+          {
+            "key": "709d58ce-53b1-592d-8432-89e7f93c97e5",
+            "count": 3,
+            "isApplied": false,
+            "displayName": "Windshield Wiper De-Icer"
+          }
+        ],
+        "Seating & Interior": [
+          {
+            "key": "c9e8e711-4c57-57f0-9376-095d44e81a07",
+            "count": 7,
+            "isApplied": false,
+            "displayName": "2nd Row Captain's Chairs"
+          },
+          {
+            "key": "8817ace8-2144-5954-a8d2-79beb84985e2",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Dual Power Rear Seats"
+          },
+          {
+            "key": "2715a353-51a5-5673-8b1d-5a3780d5bfa0",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Executive Rear Seating"
+          },
+          {
+            "key": "01a0aac0-7a6c-7c78-a582-a9146b35efca",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Fold-Flat Passenger Seat"
+          },
+          {
+            "key": "01a01a33-c69d-761a-bc94-f739aaaad392",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "Genuine Leather Rear Seats"
+          },
+          {
+            "key": "b80c8fef-a677-5340-85fb-2c162d75df03",
+            "count": 88,
+            "isApplied": false,
+            "displayName": "Genuine Leather Seats"
+          },
+          {
+            "key": "b756dcb0-3600-525d-bacb-285c0f1a07e2",
+            "count": 106,
+            "isApplied": false,
+            "displayName": "Heated and Ventilated Seats"
+          },
+          {
+            "key": "c6577abe-8c0f-5a02-ac84-aa94c2247b1e",
+            "count": 581,
+            "isApplied": false,
+            "displayName": "Heated Seats"
+          },
+          {
+            "key": "c2d1d120-93c8-5c7e-9e77-365a04a057d7",
+            "count": 31,
+            "isApplied": false,
+            "displayName": "Leather Interior Trim"
+          },
+          {
+            "key": "89f80e02-1c58-5567-b4f6-42edbe185319",
+            "count": 572,
+            "isApplied": false,
+            "displayName": "Leather-Wrapped Steering Wheel"
+          },
+          {
+            "key": "a1dd06e9-8496-580e-835e-976fb50a75c2",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Lounge Rear Seat"
+          },
+          {
+            "key": "1fd49624-f6dc-511d-94bc-226237ab4a4d",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Multi-Row Seating"
+          },
+          {
+            "key": "6d5f64e6-d53b-5df6-8005-7d9a26547399",
+            "count": 625,
+            "isApplied": false,
+            "displayName": "Power Driver Seat"
+          },
+          {
+            "key": "07b8c90f-b51e-5dc8-9148-35b5eff86a20",
+            "count": 3,
+            "isApplied": false,
+            "displayName": "Power Folding Rear Seat"
+          },
+          {
+            "key": "64227016-1167-58c4-86d9-d03b4ba0148c",
+            "count": 11,
+            "isApplied": false,
+            "displayName": "Power Folding Third Row Seat"
+          },
+          {
+            "key": "01a01a33-c69d-7649-bc2a-727e22f204b4",
+            "count": 84,
+            "isApplied": false,
+            "displayName": "Power Lumbar Support Passenger"
+          },
+          {
+            "key": "dcf7bebe-2ae8-53d7-8569-e39a2aae958d",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "Power Passenger Seat"
+          },
+          {
+            "key": "01a01a33-c69d-7651-93e3-3186b0df5eb0",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Premium Headliner"
+          },
+          {
+            "key": "975b095c-19f8-505f-8f36-9774c099e719",
+            "count": 77,
+            "isApplied": false,
+            "displayName": "Rear Heated Seats"
+          },
+          {
+            "key": "01a01a33-c69d-7660-af68-6f76a10ba5f4",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Massage"
+          },
+          {
+            "key": "c26dd0f0-5088-5a0c-8d7c-2cd7b0aba927",
+            "count": 93,
+            "isApplied": false,
+            "displayName": "Reclining Rear Seats"
+          },
+          {
+            "key": "01a01a33-c69d-7683-9900-526856667baf",
+            "count": 11,
+            "isApplied": false,
+            "displayName": "Seat Massage Passenger"
+          },
+          {
+            "key": "00924338-d1f8-5b7c-95af-2faea3728e0d",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Seat Massage System"
+          },
+          {
+            "key": "01a01a33-c69d-7687-afcf-85addaa4067d",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Seat Memory Passenger"
+          },
+          {
+            "key": "3a242dce-7e7f-5644-bcf4-1c0c7baf3033",
+            "count": 591,
+            "isApplied": false,
+            "displayName": "Seat Memory System"
+          },
+          {
+            "key": "01a01a33-c69d-768f-b911-e071f33ba667",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sliding Rear Seats"
+          },
+          {
+            "key": "01a01a33-c69d-7694-9449-eb5c21b0703a",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sound Insulation"
+          },
+          {
+            "key": "01a0aac0-7a6c-776e-b2ad-d99e52a47736",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Sport Pedals"
+          },
+          {
+            "key": "01a01a33-c69d-7697-b2ce-1bfea134a5f7",
+            "count": 124,
+            "isApplied": false,
+            "displayName": "Sport Seats"
+          },
+          {
+            "key": "01a01a33-c69d-769b-8cfa-c7808da7507e",
+            "count": 101,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Rear Seats"
+          },
+          {
+            "key": "d850a1dd-f50d-54ff-9303-ada59f1b4905",
+            "count": 388,
+            "isApplied": false,
+            "displayName": "Synthetic Leather Seats"
+          },
+          {
+            "key": "334b6b31-12a2-5bfc-bf4f-870c0954b343",
+            "count": 45,
+            "isApplied": false,
+            "displayName": "Third Row Seat"
+          },
+          {
+            "key": "01a01a33-c69d-769f-8e98-e0631cd45d8f",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tip-and-Slide Second-Row Seats"
+          },
+          {
+            "key": "01a01a33-c69d-76ae-9af9-50cc067193c9",
+            "count": 1,
+            "isApplied": false,
+            "displayName": "Ventilated Rear Seats"
+          }
+        ],
+        "Safety & Security": [
+          {
+            "key": "ab827ed2-86c2-5c7f-8eee-0326d169f0da",
+            "count": 257,
+            "isApplied": false,
+            "displayName": "360 Camera"
+          },
+          {
+            "key": "b515d77a-1629-5856-9697-c82f3c839a7d",
+            "count": 290,
+            "isApplied": false,
+            "displayName": "Active Lane Keep Assistance"
+          },
+          {
+            "key": "1fdaa47a-21ac-5365-934a-42c53f6d327f",
+            "count": 96,
+            "isApplied": false,
+            "displayName": "Adaptive Cruise Control"
+          },
+          {
+            "key": "38341431-35c0-5ded-9aa7-118d6dd21bed",
+            "count": 575,
+            "isApplied": false,
+            "displayName": "Auto Dimming Mirrors"
+          },
+          {
+            "key": "51e4ac9a-92ed-5ca5-95ab-f9260e15f813",
+            "count": 608,
+            "isApplied": false,
+            "displayName": "Automatic Emergency Braking"
+          },
+          {
+            "key": "2c6e5af1-5b9d-5891-90d2-786607a2882e",
+            "count": 153,
+            "isApplied": false,
+            "displayName": "Automatic Self Parking"
+          },
+          {
+            "key": "01a01a33-c69d-75df-858e-c442cfbf7d49",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Blind Spot Intervention"
+          },
+          {
+            "key": "3a8b9d4c-b292-5153-b160-70f43a18999e",
+            "count": 598,
+            "isApplied": false,
+            "displayName": "Blindspot Sensors"
+          },
+          {
+            "key": "01a01a33-c69d-75eb-9f9e-3e421fac17dc",
+            "count": 8,
+            "isApplied": false,
+            "displayName": "Cabin Camera"
+          },
+          {
+            "key": "3d04c8a6-cc47-53ca-acab-6be3481dca5f",
+            "count": 570,
+            "isApplied": false,
+            "displayName": "Collision Detection"
+          },
+          {
+            "key": "01a01a33-c69d-75f3-a21d-949441d4ef54",
+            "count": 2,
+            "isApplied": false,
+            "displayName": "Dash Cam"
+          },
+          {
+            "key": "31392549-6d23-5797-8568-a1593e44b43c",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Digital Rearview Mirror"
+          },
+          {
+            "key": "01a01a33-c69d-7604-8984-27bb0789f643",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "Evasive Steering Assist"
+          },
+          {
+            "key": "01a01a33-c69d-760e-9d98-74e23d8c911a",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Cross Traffic Alert"
+          },
+          {
+            "key": "cd92195a-f848-51d8-b762-8980f6d8eb02",
+            "count": 151,
+            "isApplied": false,
+            "displayName": "Front View Camera"
+          },
+          {
+            "key": "01a01a33-c69d-761e-b3f7-09eca1168273",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Ground View Camera"
+          },
+          {
+            "key": "289dd7fb-89ab-53ff-803d-2fd731906127",
+            "count": 190,
+            "isApplied": false,
+            "displayName": "Heads Up Display"
+          },
+          {
+            "key": "12f18104-36a2-5810-a811-e616e5314449",
+            "count": 523,
+            "isApplied": false,
+            "displayName": "Lane Departure Warning"
+          },
+          {
+            "key": "71d3d747-4c18-5f1c-bd22-d634ad535dd3",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Night Vision"
+          },
+          {
+            "key": "4ffb1b16-8d69-5ec6-bd66-ce11767a98e1",
+            "count": 526,
+            "isApplied": false,
+            "displayName": "Parking Assistance"
+          },
+          {
+            "key": "9a600b23-bba0-5d09-b15b-c508131f10a2",
+            "count": 361,
+            "isApplied": false,
+            "displayName": "Pedestrian Detection"
+          },
+          {
+            "key": "01a0aac0-7a6c-7a24-9d0f-3d08de2bd7aa",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Post-Collision Braking"
+          },
+          {
+            "key": "f834e664-473a-5d23-8dfa-785e823614e1",
+            "count": 557,
+            "isApplied": false,
+            "displayName": "Rear Cross Traffic Alert"
+          },
+          {
+            "key": "01a01a33-c69d-765c-afa6-7b7fdde5efab",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Cross Traffic Braking"
+          },
+          {
+            "key": "01a01a33-c69d-7664-b63a-db535bd054fd",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Reminder"
+          },
+          {
+            "key": "afca48e9-59ea-5a28-b8a4-88e0cc6eda1c",
+            "count": 702,
+            "isApplied": false,
+            "displayName": "Rear View Camera"
+          },
+          {
+            "key": "01a01a33-c69d-767c-9bf3-2a420b57d333",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Reverse Automatic Emergency Braking"
+          },
+          {
+            "key": "2bc29c52-441e-5305-9e90-f167c773a86a",
+            "count": 57,
+            "isApplied": false,
+            "displayName": "Safe Exit Assist"
+          },
+          {
+            "key": "88b3db78-860e-5864-9897-9fff803e3de1",
+            "count": 165,
+            "isApplied": false,
+            "displayName": "Side View Cameras"
+          },
+          {
+            "key": "5a58e235-5df7-5c06-ac06-d7a36b76485a",
+            "count": 220,
+            "isApplied": false,
+            "displayName": "Stolen Vehicle Tracking Software"
+          },
+          {
+            "key": "ca01b83d-37a3-5903-b8b5-e619bfb5bc55",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Teen Driver Tech"
+          },
+          {
+            "key": "ad8b8d0f-a385-580d-a06b-bbc1470a5539",
+            "count": 259,
+            "isApplied": false,
+            "displayName": "Traffic Sign Recognition"
+          }
+        ],
+        "Cargo & Towing": [
+          {
+            "key": "01a01a33-c69d-75cc-9b9f-11d3ce2c7180",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "5th Wheel/Gooseneck Towing"
+          },
+          {
+            "key": "01a01a33-c69d-75f0-ab19-8d8b4526f1f2",
+            "count": 37,
+            "isApplied": false,
+            "displayName": "Cargo Cover"
+          },
+          {
+            "key": "01a01a33-c69d-7617-b59c-733c2b9d6715",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Trunk"
+          },
+          {
+            "key": "01a01a33-c69d-7668-97df-14880b99ebb9",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Step"
+          },
+          {
+            "key": "01a01a33-c69d-7680-83c1-1bbb69cb35b7",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Roof Cross Bars"
+          },
+          {
+            "key": "5bccf91e-aec8-5b2d-b5e9-376e477ba198",
+            "count": 311,
+            "isApplied": false,
+            "displayName": "Roof Rails"
+          },
+          {
+            "key": "7fb92d73-86ec-5509-ba7b-7be21db93784",
+            "count": 17,
+            "isApplied": false,
+            "displayName": "Tow Hitch"
+          },
+          {
+            "key": "bf8d3ce7-6778-5d87-a7f9-67e16dabc7c3",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tow Hitch and Connector"
+          },
+          {
+            "key": "01a01a33-c69d-76a7-840c-4ea733bc5a2b",
+            "count": 20,
+            "isApplied": false,
+            "displayName": "Trailer Backup Assist"
+          },
+          {
+            "key": "c3eb1b7d-7032-541e-bbdf-315d26c85ef1",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Trailer Brake Controller"
+          },
+          {
+            "key": "01a01a33-c69d-76a8-9251-3d01b7f03d6a",
+            "count": 35,
+            "isApplied": false,
+            "displayName": "Trailer Sway Control"
+          },
+          {
+            "key": "6c2adc87-91d0-56a3-809e-dab65d517dbd",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Truck Bed Cover"
+          },
+          {
+            "key": "6aa2703b-d2f7-5206-be18-ccdb8c7553a9",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Truck Bed Liner"
+          }
+        ],
+        "Lighting": [
+          {
+            "key": "15ffd26f-4502-568c-be69-4eb4bccb76c5",
+            "count": 242,
+            "isApplied": false,
+            "displayName": "Adaptive Headlights"
+          },
+          {
+            "key": "77a518ae-f6ee-5192-bb05-665bdbfb4a28",
+            "count": 604,
+            "isApplied": false,
+            "displayName": "Automatic High Beams"
+          },
+          {
+            "key": "e2ca9033-3f0f-5b89-bd7d-96cf9e2530b0",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Daytime Running Lights"
+          },
+          {
+            "key": "2018fde1-193b-547d-aca1-cbccfabe029d",
+            "count": 18,
+            "isApplied": false,
+            "displayName": "Fog Lights"
+          },
+          {
+            "key": "5c2b23de-4bad-58ee-a4b3-f22f3b9cfd7d",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "HID/Xenon Headlamps"
+          },
+          {
+            "key": "f3255cbf-6b71-59e4-b091-6d1cd3a0ab93",
+            "count": 621,
+            "isApplied": false,
+            "displayName": "LED Daytime Running Lights"
+          },
+          {
+            "key": "8a5f551c-fd85-58c0-ae0e-3b585ca3dd0a",
+            "count": 565,
+            "isApplied": false,
+            "displayName": "LED Headlamps"
+          },
+          {
+            "key": "1149a6bf-ca97-5554-b62f-2efaca955bef",
+            "count": 386,
+            "isApplied": false,
+            "displayName": "LED Tail Lights"
+          },
+          {
+            "key": "01a0aac0-7a6c-7b26-9ad6-15efe5326b87",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Puddle Lights"
+          }
+        ],
+        "Braking & Traction": [
+          {
+            "key": "2bfc074e-a3aa-5852-935d-77aafcaaa814",
+            "count": 69,
+            "isApplied": false,
+            "displayName": "Adjustable Suspension"
+          },
+          {
+            "key": "b420fd97-db8e-5fe3-a020-238c8e5ba39c",
+            "count": 101,
+            "isApplied": false,
+            "displayName": "Auto Leveling Suspension"
+          },
+          {
+            "key": "01a01a33-c69d-75d9-98c9-ba3b454b0712",
+            "count": 155,
+            "isApplied": false,
+            "displayName": "Automatic Brake Hold"
+          },
+          {
+            "key": "1191d1bc-0dde-52ed-9a2e-9a7ef299e46b",
+            "count": 316,
+            "isApplied": false,
+            "displayName": "Electronic Stability Control"
+          },
+          {
+            "key": "fc13841d-8ea7-5f38-a819-5ae8e6605a41",
+            "count": 502,
+            "isApplied": false,
+            "displayName": "Hill Assistance"
+          },
+          {
+            "key": "0216aff8-5cd5-58b0-861f-3d66c1248d03",
+            "count": 176,
+            "isApplied": false,
+            "displayName": "Intelligent Traction Control"
+          },
+          {
+            "key": "7f8da4f9-2af1-5075-be8a-06481bbeeafc",
+            "count": 12,
+            "isApplied": false,
+            "displayName": "Premium Brakes"
+          },
+          {
+            "key": "eba453ca-db1c-51d8-b9d4-0c09adf52b9c",
+            "count": 78,
+            "isApplied": false,
+            "displayName": "Rollover Mitigation"
+          },
+          {
+            "key": "a6845065-8407-57da-9cf5-e5cd1b0e69c4",
+            "count": 89,
+            "isApplied": false,
+            "displayName": "Upgraded Suspension"
+          }
+        ],
+        "Performance & Drive": [
+          {
+            "key": "01a01a33-c69d-75d4-9529-8b1b54137645",
+            "count": 44,
+            "isApplied": false,
+            "displayName": "Air Suspension"
+          },
+          {
+            "key": "01a01a33-c69d-75e3-9bf7-e07bdbc82933",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Brush Guard"
+          },
+          {
+            "key": "01a01a33-c69d-75f7-96ef-98b80595237c",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "DC Fast Charging"
+          },
+          {
+            "key": "01a0aac0-7a6c-727e-9371-b15bfb3df557",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Drive Mode Select"
+          },
+          {
+            "key": "d7b65d1b-5fbc-53c3-b8c8-a538cb3d070a",
+            "count": 47,
+            "isApplied": false,
+            "displayName": "Dual-Clutch Automatic Transmission"
+          },
+          {
+            "key": "01a0aac0-7a6c-7cf2-b0c1-cccd4df45c1f",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Electronic Sway Bar Disconnect"
+          },
+          {
+            "key": "01a01a33-c69d-7612-a348-a6d51f6cd9ee",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Lift"
+          },
+          {
+            "key": "01a0aac0-7a6c-761b-9b73-48beaf204974",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Launch Control"
+          },
+          {
+            "key": "01a01a33-c69d-7631-adf2-20564285693c",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Off-Road Speed Control"
+          },
+          {
+            "key": "01a01a33-c69d-7635-b275-c21cf3cb7f13",
+            "count": 41,
+            "isApplied": false,
+            "displayName": "One-Pedal Driving"
+          },
+          {
+            "key": "b30256b4-082a-5d1a-9cef-8e13e9b9c050",
+            "count": 226,
+            "isApplied": false,
+            "displayName": "Paddle Shifters"
+          },
+          {
+            "key": "bbe29010-73fa-5eb9-b57b-2e45b15d8c8b",
+            "count": 47,
+            "isApplied": false,
+            "displayName": "Performance Exhaust System"
+          },
+          {
+            "key": "01a01a33-c69d-7645-96a6-275a4409d3b4",
+            "count": 27,
+            "isApplied": false,
+            "displayName": "Plug and Charge"
+          },
+          {
+            "key": "01a01a33-c69d-766c-940d-df7015eac415",
+            "count": 84,
+            "isApplied": false,
+            "displayName": "Regenerative Braking"
+          },
+          {
+            "key": "1b413f27-78b3-5590-b052-baefbc1465d9",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rev-Matching Transmission"
+          },
+          {
+            "key": "01a01a33-c69d-767d-9323-8a15c38ac35e",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rock Rails"
+          },
+          {
+            "key": "01a01a33-c69d-768b-9e21-3e98be3a9f62",
+            "count": 158,
+            "isApplied": false,
+            "displayName": "Selectable Terrain Modes"
+          },
+          {
+            "key": "01a01a33-c69d-76a3-bb7c-934c8e6b39fb",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Tow/Haul Drive Mode"
+          },
+          {
+            "key": "01a01a33-c69d-76ab-8232-33b0574f8cd0",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Vehicle-to-Load Power"
+          },
+          {
+            "key": "01a01a33-c69d-76b2-ad7b-19d263395e0d",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Winch"
+          }
+        ],
+        "Wheels & Tires": [
+          {
+            "key": "163990cd-9f59-57e1-acf2-23648195c146",
+            "count": 593,
+            "isApplied": false,
+            "displayName": "Alloy Wheels"
+          },
+          {
+            "key": "01a01a33-c69d-75ff-ab19-62d49a851c64",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Dual Rear Wheels"
+          },
+          {
+            "key": "22de3257-778e-5f1e-b4e9-84c844967a4f",
+            "count": 104,
+            "isApplied": false,
+            "displayName": "Painted Brake Calipers"
+          }
+        ],
+        "Entertainment & Technology": [
+          {
+            "key": "4905e95e-da65-51e6-97af-5003dcf070c1",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Amazon Alexa"
+          },
+          {
+            "key": "fb5ee05b-8ff0-5a2d-8e7a-a74358a96b3b",
+            "count": 544,
+            "isApplied": false,
+            "displayName": "Android Auto"
+          },
+          {
+            "key": "0c49e57f-9f0c-56d4-8fdb-7d3ae6246ec9",
+            "count": 284,
+            "isApplied": false,
+            "displayName": "Apple CarPlay"
+          },
+          {
+            "key": "01a01a33-c69d-75d8-b1e3-cf19c1129ea3",
+            "count": 28,
+            "isApplied": false,
+            "displayName": "Augmented Reality Navigation"
+          },
+          {
+            "key": "2342aa20-6cb6-53c8-9764-61bcac17bdcc",
+            "count": 616,
+            "isApplied": false,
+            "displayName": "Bluetooth Music"
+          },
+          {
+            "key": "01a01a33-c69d-76e9-bf79-5a9496d810b0",
+            "count": 134,
+            "isApplied": false,
+            "displayName": "Digital Instrument Cluster"
+          },
+          {
+            "key": "01a01a33-c69d-7606-9f8e-77d65cc1b7c0",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Exterior Speakers"
+          },
+          {
+            "key": "01a01a33-c69d-7616-b836-bb7152f82887",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Front Passenger Screen"
+          },
+          {
+            "key": "ff6c5a08-b2fa-56b6-ac00-6830f4074b6a",
+            "count": 553,
+            "isApplied": false,
+            "displayName": "GPS Navigation"
+          },
+          {
+            "key": "e1e5b788-f429-5a32-9f7e-63865921a5e5",
+            "count": 626,
+            "isApplied": false,
+            "displayName": "Hands Free Calling"
+          },
+          {
+            "key": "33921e54-21da-5617-8c8e-27ab8e5716f6",
+            "count": 5,
+            "isApplied": false,
+            "displayName": "Home Link"
+          },
+          {
+            "key": "01a0aac0-7a6c-7878-b0a3-b3abd314a9c6",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "In-Cabin Intercom System"
+          },
+          {
+            "key": "01a01a33-c69d-7626-95c7-e13754ff82d8",
+            "count": 119,
+            "isApplied": false,
+            "displayName": "In-Car Streaming Apps"
+          },
+          {
+            "key": "6470e91b-5a2f-55cc-a74e-286dfa161143",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Noise Cancellation"
+          },
+          {
+            "key": "01a01a33-c69d-763d-92a4-6195e4ec7a9d",
+            "count": 156,
+            "isApplied": false,
+            "displayName": "Over-the-Air Updates"
+          },
+          {
+            "key": "6f172386-e968-5c41-baff-803a3b4fb6d0",
+            "count": 4,
+            "isApplied": false,
+            "displayName": "Performance Monitoring"
+          },
+          {
+            "key": "01a01a33-c69d-7655-83cc-ffadbf022d79",
+            "count": 72,
+            "isApplied": false,
+            "displayName": "Premium Infotainment Display"
+          },
+          {
+            "key": "fc340cae-d629-53ca-bfc2-f46c1a22d325",
+            "count": 252,
+            "isApplied": false,
+            "displayName": "Premium Sound System"
+          },
+          {
+            "key": "38a01d76-c518-5afc-9b94-14cb038b4370",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear Seat Entertainment"
+          },
+          {
+            "key": "01a01a33-c69d-7669-94ec-4fa39ee46ba4",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Rear USB Ports"
+          },
+          {
+            "key": "071beeb1-b1ed-5e7c-87e3-30a0877942b4",
+            "count": 259,
+            "isApplied": false,
+            "displayName": "Satellite Radio Available"
+          },
+          {
+            "key": "76ec6198-b83d-5cd6-9da7-61096298b7b7",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Siri Eyes Free"
+          },
+          {
+            "key": "bf2f7049-cd29-5282-a613-06cca4ef34d0",
+            "count": 618,
+            "isApplied": false,
+            "displayName": "USB Input"
+          },
+          {
+            "key": "525dd233-5698-5b07-8116-72e75105a3b2",
+            "count": 23,
+            "isApplied": false,
+            "displayName": "Virtual Cockpit"
+          },
+          {
+            "key": "dea2dfca-1957-5934-8fcf-5d473cee64eb",
+            "count": 248,
+            "isApplied": false,
+            "displayName": "Wi-Fi Hot Spot"
+          },
+          {
+            "key": "01a01a33-c69d-76b6-8e02-3731fce86fc7",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Wireless Android Auto"
+          },
+          {
+            "key": "01a01a33-c69d-76b7-b960-53aebd59e23e",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Wireless Apple CarPlay"
+          },
+          {
+            "key": "01a01a33-c69d-76ba-8132-bac8b7bed666",
+            "count": 110,
+            "isApplied": false,
+            "displayName": "Wireless Charging"
+          }
+        ],
+        "Roof & Glass": [
+          {
+            "key": "01a01a33-c69d-760a-96d4-3279d52f1ddb",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Fixed Glass Roof"
+          },
+          {
+            "key": "01a0aac0-7a6c-78dc-9e67-9e5deb945b73",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Flip-Up Rear Window"
+          },
+          {
+            "key": "c0203319-5ef0-5c04-bdbf-be9de6d3bc2f",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Hard Top"
+          },
+          {
+            "key": "01a01a33-c69d-762a-be8f-8bf8ce0ff2a8",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Moonroof"
+          },
+          {
+            "key": "01a01a33-c69d-7641-b3b5-e2e19501e2e1",
+            "count": 12,
+            "isApplied": false,
+            "displayName": "Panoramic Sunroof"
+          },
+          {
+            "key": "3d0de613-1eaa-57ad-80a8-1d6ea30e9da0",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Retractable Hard Top"
+          },
+          {
+            "key": "39d93a08-3c7f-5cfe-9b66-5a60832da226",
+            "count": 6,
+            "isApplied": false,
+            "displayName": "Power Retractable Soft Top"
+          },
+          {
+            "key": "01a01a33-c69d-764d-9bbb-a6f37d926239",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Power Sliding Rear Window"
+          },
+          {
+            "key": "01a01a33-c69d-7678-ae5e-1e4ac3d4e3b2",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Removable Top Panels"
+          },
+          {
+            "key": "01a01a33-c69d-7693-b1b6-1de0685285cb",
+            "count": 8,
+            "isApplied": false,
+            "displayName": "Soft Top"
+          },
+          {
+            "key": "c093c7f6-6edf-595e-9539-70de788efbaa",
+            "count": 532,
+            "isApplied": false,
+            "displayName": "Sunroof"
+          }
+        ],
+        "Exterior": [
+          {
+            "key": "01a0aac0-7a6c-7ac4-b6c4-c07a7fdd88ee",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Illuminated Badge"
+          },
+          {
+            "key": "01a01a33-c69d-7674-a598-f73193201c9a",
+            "count": 0,
+            "isApplied": false,
+            "displayName": "Removable Doors"
+          },
+          {
+            "key": "88d39dc9-3c4b-5bb4-afef-b92b34a5f62d",
+            "count": 59,
+            "isApplied": false,
+            "displayName": "Running Boards"
+          }
+        ]
+      },
+      "price": {
+        "type": "Range",
+        "key": "price",
+        "min": 20590,
+        "max": 98990
+      },
+      "mpg": {
+        "type": "Range",
+        "key": "mpg",
+        "min": 0,
+        "max": 122
+      },
+      "mileage": {
+        "type": "Range",
+        "key": "mileage",
+        "min": 78,
+        "max": 81481
+      },
+      "year": {
+        "type": "Range",
+        "key": "year",
+        "min": 2010,
+        "max": 2026,
+        "appliedMin": 2022
+      },
+      "seatingCapacity": {
+        "type": "Range",
+        "key": "seatingCapacity",
+        "min": 2,
+        "max": 7
+      },
+      "horsePower": {
+        "type": "Range",
+        "key": "horsePower",
+        "min": 228,
+        "max": 617
+      },
+      "torque": {
+        "type": "Range",
+        "key": "torque",
+        "min": 257,
+        "max": 749
+      },
+      "evRange": {
+        "type": "Range",
+        "key": "evRange",
+        "min": 21,
+        "max": 364
+      },
+      "overallLength": {
+        "type": "Range",
+        "key": "overallLength",
+        "min": 170,
+        "max": 213
+      },
+      "trunkCapacity": {
+        "type": "Range",
+        "key": "trunkCapacity",
+        "min": 9,
+        "max": 91
+      },
+      "cargoVolumeFolded": {
+        "type": "Range",
+        "key": "cargoVolumeFolded",
+        "min": 45,
+        "max": 91
+      },
+      "cargoVolumeMax": {
+        "type": "Range",
+        "key": "cargoVolumeMax",
+        "min": 9,
+        "max": 91
+      },
+      "remainingWarrantyMonths": {
+        "type": "Range",
+        "key": "remainingWarrantyMonths",
+        "min": 0,
+        "max": 45
+      },
+      "remainingWarrantyMiles": {
+        "type": "Range",
+        "key": "remainingWarrantyMiles",
+        "min": 0,
+        "max": 49700
+      },
+      "remainingDriveTrainWarrantyMonths": {
+        "type": "Range",
+        "key": "remainingDriveTrainWarrantyMonths",
+        "min": 0,
+        "max": 45
+      },
+      "remainingDriveTrainWarrantyMiles": {
+        "type": "Range",
+        "key": "remainingDriveTrainWarrantyMiles",
+        "min": 0,
+        "max": 49700
+      },
+      "remainingBatteryWarrantyMonths": {
+        "type": "Range",
+        "key": "remainingBatteryWarrantyMonths",
+        "min": 34,
+        "max": 91
+      },
+      "remainingBatteryWarrantyMiles": {
+        "type": "Range",
+        "key": "remainingBatteryWarrantyMiles",
+        "min": 21100,
+        "max": 99700
+      },
+      "makes": {
+        "Acura": {
+          "count": 125,
+          "key": "Acura",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Alfa Romeo": {
+          "count": 113,
+          "key": "Alfa Romeo",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Audi": {
+          "count": 448,
+          "key": "Audi",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "BMW": {
+          "count": 728,
+          "key": "BMW",
+          "isApplied": true,
+          "models": [
+            {
+              "key": "2 Series",
+              "modelId": 398,
+              "parentModel": "2 Series",
+              "count": 47,
+              "isApplied": false
+            },
+            {
+              "key": "3 Series",
+              "modelId": 11,
+              "parentModel": "3 Series",
+              "count": 38,
+              "isApplied": false
+            },
+            {
+              "key": "4 Series",
+              "modelId": 383,
+              "parentModel": "4 Series",
+              "count": 55,
+              "isApplied": false
+            },
+            {
+              "key": "5 Series",
+              "modelId": 12,
+              "parentModel": "5 Series",
+              "count": 25,
+              "isApplied": false
+            },
+            {
+              "key": "7 Series",
+              "modelId": 14,
+              "parentModel": "7 Series",
+              "count": 8,
+              "isApplied": false
+            },
+            {
+              "key": "8 Series",
+              "modelId": 836,
+              "parentModel": "8 Series",
+              "count": 8,
+              "isApplied": false
+            },
+            {
+              "key": "i4",
+              "modelId": 1029,
+              "parentModel": "i4",
+              "count": 37,
+              "isApplied": false
+            },
+            {
+              "key": "i5",
+              "modelId": 1087,
+              "parentModel": "i5",
+              "count": 12,
+              "isApplied": false
+            },
+            {
+              "key": "i7",
+              "modelId": 1100,
+              "parentModel": "i7",
+              "count": 4,
+              "isApplied": false
+            },
+            {
+              "key": "iX",
+              "modelId": 1030,
+              "parentModel": "iX",
+              "count": 32,
+              "isApplied": false
+            },
+            {
+              "key": "M2",
+              "modelId": 502,
+              "parentModel": "M2",
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M3",
+              "modelId": 15,
+              "parentModel": "M3",
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M4",
+              "modelId": 405,
+              "parentModel": "M4",
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M5",
+              "modelId": 17,
+              "parentModel": "M5",
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M8",
+              "modelId": 1047,
+              "parentModel": "M8",
+              "count": 1,
+              "isApplied": false
+            },
+            {
+              "key": "X1",
+              "modelId": 350,
+              "parentModel": "X1",
+              "count": 43,
+              "isApplied": false
+            },
+            {
+              "key": "X2",
+              "modelId": 795,
+              "parentModel": "X2",
+              "count": 28,
+              "isApplied": false
+            },
+            {
+              "key": "X3",
+              "modelId": 19,
+              "parentModel": "X3",
+              "count": 119,
+              "isApplied": false
+            },
+            {
+              "key": "X3 M",
+              "modelId": 840,
+              "parentModel": "X3 M",
+              "count": 1,
+              "isApplied": false
+            },
+            {
+              "key": "X4",
+              "modelId": 407,
+              "parentModel": "X4",
+              "count": 14,
+              "isApplied": false
+            },
+            {
+              "key": "X5",
+              "modelId": 18,
+              "parentModel": "X5",
+              "count": 162,
+              "isApplied": false
+            },
+            {
+              "key": "X5 M",
+              "modelId": 352,
+              "parentModel": "X5 M",
+              "count": 2,
+              "isApplied": false
+            },
+            {
+              "key": "X6",
+              "modelId": 266,
+              "parentModel": "X6",
+              "count": 14,
+              "isApplied": false
+            },
+            {
+              "key": "X7",
+              "modelId": 829,
+              "parentModel": "X7",
+              "count": 61,
+              "isApplied": false
+            },
+            {
+              "key": "Z4",
+              "modelId": 16,
+              "parentModel": "Z4",
+              "count": 5,
+              "isApplied": false
+            }
+          ],
+          "parentModels": [
+            {
+              "key": "2 Series",
+              "modelIds": [
+                398
+              ],
+              "count": 47,
+              "isApplied": false
+            },
+            {
+              "key": "3 Series",
+              "modelIds": [
+                11
+              ],
+              "count": 38,
+              "isApplied": false
+            },
+            {
+              "key": "4 Series",
+              "modelIds": [
+                383
+              ],
+              "count": 55,
+              "isApplied": false
+            },
+            {
+              "key": "5 Series",
+              "modelIds": [
+                12
+              ],
+              "count": 25,
+              "isApplied": false
+            },
+            {
+              "key": "7 Series",
+              "modelIds": [
+                14
+              ],
+              "count": 8,
+              "isApplied": false
+            },
+            {
+              "key": "8 Series",
+              "modelIds": [
+                836
+              ],
+              "count": 8,
+              "isApplied": false
+            },
+            {
+              "key": "M2",
+              "modelIds": [
+                502
+              ],
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M3",
+              "modelIds": [
+                15
+              ],
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M4",
+              "modelIds": [
+                405
+              ],
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M5",
+              "modelIds": [
+                17
+              ],
+              "count": 3,
+              "isApplied": false
+            },
+            {
+              "key": "M8",
+              "modelIds": [
+                1047
+              ],
+              "count": 1,
+              "isApplied": false
+            },
+            {
+              "key": "X1",
+              "modelIds": [
+                350
+              ],
+              "count": 43,
+              "isApplied": false
+            },
+            {
+              "key": "X2",
+              "modelIds": [
+                795
+              ],
+              "count": 28,
+              "isApplied": false
+            },
+            {
+              "key": "X3",
+              "modelIds": [
+                19
+              ],
+              "count": 119,
+              "isApplied": false
+            },
+            {
+              "key": "X3 M",
+              "modelIds": [
+                840
+              ],
+              "count": 1,
+              "isApplied": false
+            },
+            {
+              "key": "X4",
+              "modelIds": [
+                407
+              ],
+              "count": 14,
+              "isApplied": false
+            },
+            {
+              "key": "X5",
+              "modelIds": [
+                18
+              ],
+              "count": 162,
+              "isApplied": false
+            },
+            {
+              "key": "X5 M",
+              "modelIds": [
+                352
+              ],
+              "count": 2,
+              "isApplied": false
+            },
+            {
+              "key": "X6",
+              "modelIds": [
+                266
+              ],
+              "count": 14,
+              "isApplied": false
+            },
+            {
+              "key": "X7",
+              "modelIds": [
+                829
+              ],
+              "count": 61,
+              "isApplied": false
+            },
+            {
+              "key": "Z4",
+              "modelIds": [
+                16
+              ],
+              "count": 5,
+              "isApplied": false
+            },
+            {
+              "key": "i4",
+              "modelIds": [
+                1029
+              ],
+              "count": 37,
+              "isApplied": false
+            },
+            {
+              "key": "i5",
+              "modelIds": [
+                1087
+              ],
+              "count": 12,
+              "isApplied": false
+            },
+            {
+              "key": "i7",
+              "modelIds": [
+                1100
+              ],
+              "count": 4,
+              "isApplied": false
+            },
+            {
+              "key": "iX",
+              "modelIds": [
+                1030
+              ],
+              "count": 32,
+              "isApplied": false
+            }
+          ]
+        },
+        "Buick": {
+          "count": 493,
+          "key": "Buick",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Cadillac": {
+          "count": 369,
+          "key": "Cadillac",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Chevrolet": {
+          "count": 3533,
+          "key": "Chevrolet",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Chrysler": {
+          "count": 656,
+          "key": "Chrysler",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Dodge": {
+          "count": 788,
+          "key": "Dodge",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "FIAT": {
+          "count": 1,
+          "key": "FIAT",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Ford": {
+          "count": 2723,
+          "key": "Ford",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Genesis": {
+          "count": 365,
+          "key": "Genesis",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "GMC": {
+          "count": 1401,
+          "key": "GMC",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Honda": {
+          "count": 931,
+          "key": "Honda",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Hyundai": {
+          "count": 1895,
+          "key": "Hyundai",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "INEOS": {
+          "count": 10,
+          "key": "INEOS",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "INFINITI": {
+          "count": 260,
+          "key": "INFINITI",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Jaguar": {
+          "count": 14,
+          "key": "Jaguar",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Jeep": {
+          "count": 6167,
+          "key": "Jeep",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Kia": {
+          "count": 2028,
+          "key": "Kia",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Land Rover": {
+          "count": 340,
+          "key": "Land Rover",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Lexus": {
+          "count": 276,
+          "key": "Lexus",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Lincoln": {
+          "count": 62,
+          "key": "Lincoln",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Lucid": {
+          "count": 33,
+          "key": "Lucid",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Mazda": {
+          "count": 1155,
+          "key": "Mazda",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Mercedes-Benz": {
+          "count": 737,
+          "key": "Mercedes-Benz",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "MINI": {
+          "count": 50,
+          "key": "MINI",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Mitsubishi": {
+          "count": 220,
+          "key": "Mitsubishi",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Nissan": {
+          "count": 3178,
+          "key": "Nissan",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Polestar": {
+          "count": 50,
+          "key": "Polestar",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Porsche": {
+          "count": 135,
+          "key": "Porsche",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Ram": {
+          "count": 2175,
+          "key": "Ram",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Rivian": {
+          "count": 118,
+          "key": "Rivian",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Subaru": {
+          "count": 648,
+          "key": "Subaru",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Tesla": {
+          "count": 1130,
+          "key": "Tesla",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Toyota": {
+          "count": 2303,
+          "key": "Toyota",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Volkswagen": {
+          "count": 1113,
+          "key": "Volkswagen",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        },
+        "Volvo": {
+          "count": 294,
+          "key": "Volvo",
+          "isApplied": false,
+          "models": [],
+          "parentModels": []
+        }
+      },
+      "waysToSave": {
+        "isFreeDelivery": {
+          "displayName": "Free Shipping",
+          "key": "isFreeDelivery",
+          "count": 91634,
+          "isApplied": false,
+          "type": "Bool"
+        },
+        "tagIds": {
+          "type": "AnyOfList",
+          "buckets": [
+            {
+              "key": "104",
+              "count": 436,
+              "isApplied": false,
+              "displayName": "Great Deal"
+            },
+            {
+              "key": "103",
+              "count": 377,
+              "isApplied": false,
+              "displayName": "New Price"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

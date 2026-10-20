@@ -1,0 +1,336 @@
+{
+  "id": "suggest-13",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 681",
+  "description": "BMW · 2022 or newer: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000052",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000050",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "year": {
+          "min": 2022
+        },
+        "makes": [
+          {
+            "name": "BMW"
+          }
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "LowestPrice",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000053",
+      "suggestedFilters": [
+        {
+          "suggestionId": "a376035d-ec5b-40c1-9bf7-60b34e68f83e",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 503,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "driveTypes": [
+              "Awd"
+            ],
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "5d64a62c-5bf1-4f88-894f-55b0a91a8823",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 495,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 40000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "aa8a819d-b9dc-43e8-b35c-c7c33357acfb",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 460,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "interiorColors": [
+              "Black"
+            ],
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "85e1f8a3-517b-416c-9bb3-fdc3a36a6de8",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 38,
+          "facetKey": "makes",
+          "suggestionKey": "parentModel",
+          "displayName": "BMW 3 Series",
+          "searchFilters": {
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [
+                  {
+                    "name": "3 Series",
+                    "trims": []
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"parentModel\":[\"BMW\",\"3 Series\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "0e449133-7629-4231-9088-d6d126971601",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 599,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 50,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 50000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":50000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "422087ab-9802-4e16-bac4-58e872530745",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 201,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "colors": [
+              "White"
+            ],
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "7a481727-1d8c-44ae-b425-7bfa41d59c97",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 371,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "bb12ea07-ff34-4549-8571-9b56e1f2d210",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 149,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "year": {
+              "min": 2022
+            },
+            "isFreeDelivery": true,
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        },
+        {
+          "suggestionId": "c0302e43-3625-4139-859c-04185b03e707",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 284,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Apple CarPlay",
+          "searchFilters": {
+            "cvnaFeatures": [
+              "Apple CarPlay"
+            ],
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Apple CarPlay\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "76948354-24d1-49bb-8ac9-f9b32f687672",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 436,
+          "facetKey": "tagIds",
+          "suggestionKey": "tagId",
+          "displayName": "Great Deals",
+          "searchFilters": {
+            "tagIds": [
+              "104"
+            ],
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "BMW",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"tagId\":\"104\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        }
+      ]
+    }
+  }
+}

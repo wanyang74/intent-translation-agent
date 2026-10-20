@@ -1,0 +1,37 @@
+{
+  "id": "reviews-02",
+  "site": "carvana",
+  "endpoint": "reviews",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 263",
+  "description": "2026 Tesla Model Y Standard Sport Utility 4D",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/reviews/api/review/sv",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "from": 0,
+      "make": "Tesla",
+      "model": "Model Y",
+      "size": 20,
+      "trim": "Standard Sport Utility 4D",
+      "year": 2026
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "summary": {
+        "review_count_total": 0,
+        "rating_counts": []
+      },
+      "reviews": []
+    }
+  }
+}

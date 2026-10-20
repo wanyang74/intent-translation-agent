@@ -553,6 +553,261 @@
         "vehicleInventoryType": 1,
         "locationId": 300
       }
+    },
+    {
+      "id": "cheapest-tesla",
+      "quick": true,
+      "description": "Price order: Carvana's own LowestPrice sort, not a filter or a guess (recorded 2026-10-19)",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94085"
+        },
+        "locale": "en-US"
+      },
+      "message": "What's the cheapest Tesla you have?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94085",
+              "make": "Tesla",
+              "sort": "LowestPrice"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "first": [
+              4723598
+            ]
+          }
+        ],
+        "text": {
+          "includes": [
+            "18,990"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fewest-miles-tesla",
+      "description": "Mileage order: the LowestMileage sort",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94085"
+        },
+        "locale": "en-US"
+      },
+      "message": "Which Tesla has the fewest miles on it?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94085",
+              "make": "Tesla",
+              "sort": "LowestMileage"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "first": [
+              4819043
+            ]
+          }
+        ],
+        "text": {
+          "includes": [
+            "2,506"
+          ]
+        }
+      }
+    },
+    {
+      "id": "tesla-suvs",
+      "description": "A body style, in Carvana's spelling",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94085"
+        },
+        "locale": "en-US"
+      },
+      "message": "Show me Tesla SUVs, newest first",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94085",
+              "make": "Tesla",
+              "body_styles": [
+                "suv"
+              ],
+              "sort": "NewestYear"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "first": [
+              4695181
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cheapest-bmw",
+      "description": "Another make, three filters and a sort together",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94085"
+        },
+        "locale": "en-US"
+      },
+      "message": "The cheapest BMW from 2022 or newer with under 30,000 miles",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94085",
+              "make": "BMW",
+              "year_min": 2022,
+              "mileage_max": 30000,
+              "sort": "LowestPrice"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "first": [
+              4730045
+            ]
+          }
+        ],
+        "text": {
+          "includes": [
+            "26,990"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bmw-all-in",
+      "description": "The all-in price for another make's car on screen",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4715987",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4715987
+        },
+        "location": {
+          "postalCode": "94085",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4715987,
+        "year": 2022,
+        "make": "BMW",
+        "model": "X3",
+        "trim": "sDrive30i",
+        "kbbTrim": "sDrive30i Sport Utility 4D",
+        "mileage": 18453,
+        "color": "White",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      },
+      "message": "What would this one cost me all in?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4715987,
+              "zip5": "94085"
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "32,824"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bmw-reviews",
+      "description": "Owner reviews where many reviews have no stars: none is reported as 0 stars",
+      "now": "2026-10-20T05:55:00Z",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4715987",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4715987
+        },
+        "location": {
+          "postalCode": "94085",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4715987,
+        "year": 2022,
+        "make": "BMW",
+        "model": "X3",
+        "trim": "sDrive30i",
+        "kbbTrim": "sDrive30i Sport Utility 4D",
+        "mileage": 18453,
+        "color": "White",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      },
+      "message": "What do owners say about this car?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_owner_reviews",
+            "args": {
+              "vehicleId": 4715987
+            }
+          }
+        ],
+        "text": {
+          "excludes": [
+            "\\b0[- ]stars?\\b",
+            "zero stars?"
+          ]
+        }
+      }
     }
   ]
 }

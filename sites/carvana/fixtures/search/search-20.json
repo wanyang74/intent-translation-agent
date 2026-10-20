@@ -1,0 +1,2973 @@
+{
+  "id": "search-20",
+  "site": "carvana",
+  "endpoint": "search",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 235",
+  "description": "Tesla, page 1: 15 cars of 15",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v2/search",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json",
+      "x-cvna-ncc-disabled": "false",
+      "x-cvna-sebs-srp": "true"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000037",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000019",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ],
+        "bodyStyles": [
+          "pickup"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "EarliestAcquisitionBoosting",
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LoanTermPricing",
+        "LocationBasedPrefiltering",
+        "Personalization",
+        "ConditionalTiles",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "NewestYear",
+      "zip5": "94085",
+      "preferredAcquisitionName": ""
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "inventory": {
+        "pagination": {
+          "currentPage": 1,
+          "pageSize": 24,
+          "totalMatchedInventory": 15,
+          "totalMatchedPages": 1
+        },
+        "vehicles": [
+          {
+            "stockNumber": 3006801602,
+            "vehicleId": 4821945,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Silver",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 5690,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 77990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1269,
+              "downPayment": 3990,
+              "downPaymentDetails": {
+                "totalCashDue": 3990,
+                "additionalCashDown": 2000,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 83090,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8097,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 77990,
+              "msrp": 82235,
+              "marketAdjustment": -4245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006801602/post-large/normalized/zoomcrop/3006801602-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006801602/standardizedHero.jpg?v=1791832598.691",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1791873935.619",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1791873935.619",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006801602/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7569916/details/feature-260249030.jpg?v=1791832520.885",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7569916/details/feature-260249047.jpg?v=1791832520.885",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7569916/details/feature-260249032.jpg?v=1791832520.885",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7569916/details/feature-260249027.jpg?v=1791832520.885",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7569916/details/feature-260249034.jpg?v=1791832520.885",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.997Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 272,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED9TA089480",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $5,100 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/365436782/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1791832593.855",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/365436782/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1791832593.855",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 295,
+                    "end": 301
+                  },
+                  {
+                    "start": 334,
+                    "end": 340
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 405,
+                    "end": 411
+                  },
+                  {
+                    "start": 437,
+                    "end": 443
+                  },
+                  {
+                    "start": 470,
+                    "end": 476
+                  },
+                  {
+                    "start": 503,
+                    "end": 509
+                  },
+                  {
+                    "start": 536,
+                    "end": 542
+                  },
+                  {
+                    "start": 569,
+                    "end": 575
+                  },
+                  {
+                    "start": 602,
+                    "end": 608
+                  },
+                  {
+                    "start": 635,
+                    "end": 641
+                  },
+                  {
+                    "start": 674,
+                    "end": 680
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/365436782/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1791832593.855",
+                "frameCount": 680,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1566,
+            "score": 2.6057265,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 6,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 39,
+            "remainingWarrantyMiles": 44100,
+            "remainingDriveTrainWarrantyMonths": 87,
+            "remainingDriveTrainWarrantyMiles": 144100,
+            "remainingBatteryWarrantyMonths": 87,
+            "remainingBatteryWarrantyMiles": 94100,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006815010,
+            "vehicleId": 4825956,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Silver",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 712,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 79990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1301,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 84680,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8297,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 79990,
+              "msrp": 82235,
+              "marketAdjustment": -2245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006815010/post-large/normalized/zoomcrop/3006815010-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006815010/standardizedHero.jpg?v=1792283871.133",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1791873935.619",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1791873935.619",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006815010/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7582225/details/feature-260732270.jpg?v=1792265946.161",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7582225/details/feature-260732287.jpg?v=1792265946.161",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7582225/details/feature-260732272.jpg?v=1792265946.161",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7582225/details/feature-260732267.jpg?v=1792265946.160",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7582225/details/feature-260732274.jpg?v=1792265946.161",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 295,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED5TA102810",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,690 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/365672761/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1791874318.807",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/365672761/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1791874318.807",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 295,
+                    "end": 301
+                  },
+                  {
+                    "start": 334,
+                    "end": 340
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 405,
+                    "end": 411
+                  },
+                  {
+                    "start": 437,
+                    "end": 443
+                  },
+                  {
+                    "start": 470,
+                    "end": 476
+                  },
+                  {
+                    "start": 503,
+                    "end": 509
+                  },
+                  {
+                    "start": 536,
+                    "end": 542
+                  },
+                  {
+                    "start": 569,
+                    "end": 575
+                  },
+                  {
+                    "start": 602,
+                    "end": 608
+                  },
+                  {
+                    "start": 635,
+                    "end": 641
+                  },
+                  {
+                    "start": 674,
+                    "end": 680
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/365672761/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1791874318.807",
+                "frameCount": 680,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2248,
+            "score": 2.6052897,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 7,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 46,
+            "remainingWarrantyMiles": 49000,
+            "remainingDriveTrainWarrantyMonths": 94,
+            "remainingDriveTrainWarrantyMiles": 149000,
+            "remainingBatteryWarrantyMonths": 94,
+            "remainingBatteryWarrantyMiles": 99000,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006674158,
+            "vehicleId": 4765123,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 1295,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 77990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1269,
+              "downPayment": 3990,
+              "downPaymentDetails": {
+                "totalCashDue": 3990,
+                "additionalCashDown": 2000,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 84500,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8097,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 77990,
+              "msrp": 82235,
+              "marketAdjustment": -4245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006674158/post-large/normalized/zoomcrop/3006674158-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006674158/standardizedHero.jpg?v=1790860868.894",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1784119560.994",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1784119560.994",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006674158/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7474702/details/feature-256307375.jpg?v=1790860082.357",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7474702/details/feature-256307392.jpg?v=1790860082.357",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7474702/details/feature-256307377.jpg?v=1790860082.357",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7474702/details/feature-256307372.jpg?v=1790860082.357",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7474702/details/feature-256307379.jpg?v=1790860082.357",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 162,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED1TA100228",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $6,510 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/361716991/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1790860864.395",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/361716991/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1790860864.395",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 295,
+                    "end": 301
+                  },
+                  {
+                    "start": 334,
+                    "end": 340
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 405,
+                    "end": 411
+                  },
+                  {
+                    "start": 437,
+                    "end": 443
+                  },
+                  {
+                    "start": 470,
+                    "end": 476
+                  },
+                  {
+                    "start": 503,
+                    "end": 509
+                  },
+                  {
+                    "start": 536,
+                    "end": 542
+                  },
+                  {
+                    "start": 569,
+                    "end": 575
+                  },
+                  {
+                    "start": 602,
+                    "end": 608
+                  },
+                  {
+                    "start": 635,
+                    "end": 641
+                  },
+                  {
+                    "start": 674,
+                    "end": 680
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/361716991/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1790860864.395",
+                "frameCount": 680,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2248,
+            "score": 2.6049497,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 9,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 46,
+            "remainingWarrantyMiles": 48500,
+            "remainingDriveTrainWarrantyMonths": 94,
+            "remainingDriveTrainWarrantyMiles": 148500,
+            "remainingBatteryWarrantyMonths": 94,
+            "remainingBatteryWarrantyMiles": 98500,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006841856,
+            "vehicleId": 4829213,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 11264,
+            "milesPerGallon": 85,
+            "fuelType": "Electric",
+            "price": {
+              "total": 80590,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1311,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 85249,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8358,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 80590,
+              "msrp": 82235,
+              "marketAdjustment": -1645,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2025,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006841856/post-large/normalized/zoomcrop/3006841856-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006841856/standardizedHero.jpg?v=1792184336.196",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1788456395.956",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1788456395.956",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006841856/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7595559/details/feature-261269242.jpg?v=1792184267.522",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7595559/details/feature-261269259.jpg?v=1792184267.522",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7595559/details/feature-261269244.jpg?v=1792184267.522",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7595559/details/feature-261269239.jpg?v=1792184267.522",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7595559/details/feature-261269246.jpg?v=1792184267.522",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2025-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 466,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED0SA070007",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,659 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [
+              "CoreOD"
+            ],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/367656263/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1792184333.211",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/367656263/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1792184333.211",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 302,
+                    "end": 308
+                  },
+                  {
+                    "start": 341,
+                    "end": 347
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 406,
+                    "end": 412
+                  },
+                  {
+                    "start": 439,
+                    "end": 445
+                  },
+                  {
+                    "start": 472,
+                    "end": 478
+                  },
+                  {
+                    "start": 505,
+                    "end": 511
+                  },
+                  {
+                    "start": 538,
+                    "end": 544
+                  },
+                  {
+                    "start": 571,
+                    "end": 577
+                  },
+                  {
+                    "start": 610,
+                    "end": 616
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/367656263/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1792184333.211",
+                "frameCount": 616,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1734,
+            "score": 2.6065743,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 6,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 30,
+            "remainingWarrantyMiles": 38500,
+            "remainingDriveTrainWarrantyMonths": 78,
+            "remainingDriveTrainWarrantyMiles": 138500,
+            "remainingBatteryWarrantyMonths": 78,
+            "remainingBatteryWarrantyMiles": 88500,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006765384,
+            "vehicleId": 4804223,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 11212,
+            "milesPerGallon": 85,
+            "fuelType": "Electric",
+            "price": {
+              "total": 80990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1317,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 85799,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8398,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 80990,
+              "msrp": 82235,
+              "marketAdjustment": -1245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2025,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006765384/post-large/normalized/zoomcrop/3006765384-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006765384/standardizedHero.jpg?v=1791231587.340",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1788456395.956",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1788456395.956",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006765384/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7531101/details/feature-258610771.jpg?v=1791231478.079",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7531101/details/feature-258610788.jpg?v=1791231478.079",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7531101/details/feature-258610773.jpg?v=1791231478.079",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7531101/details/feature-258610768.jpg?v=1791231478.079",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7531101/details/feature-258610775.jpg?v=1791231478.079",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2025-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 189,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED4SA059575",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,809 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/362895287/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1791231581.840",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/362895287/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1791231581.840",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 302,
+                    "end": 308
+                  },
+                  {
+                    "start": 341,
+                    "end": 347
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 406,
+                    "end": 412
+                  },
+                  {
+                    "start": 439,
+                    "end": 445
+                  },
+                  {
+                    "start": 472,
+                    "end": 478
+                  },
+                  {
+                    "start": 505,
+                    "end": 511
+                  },
+                  {
+                    "start": 538,
+                    "end": 544
+                  },
+                  {
+                    "start": 571,
+                    "end": 577
+                  },
+                  {
+                    "start": 610,
+                    "end": 616
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/362895287/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1791231581.840",
+                "frameCount": 616,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1543,
+            "score": 2.605885,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 8,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 28,
+            "remainingWarrantyMiles": 38500,
+            "remainingDriveTrainWarrantyMonths": 76,
+            "remainingDriveTrainWarrantyMiles": 138500,
+            "remainingBatteryWarrantyMonths": 76,
+            "remainingBatteryWarrantyMiles": 88500,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006716217,
+            "vehicleId": 4790672,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 31320,
+            "milesPerGallon": 0,
+            "fuelType": "Electric",
+            "price": {
+              "total": 73990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1318,
+              "downPayment": 3790,
+              "downPaymentDetails": {
+                "totalCashDue": 3790,
+                "additionalCashDown": 1800,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 75,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 79480,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 7695,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 73990,
+              "msrp": 82235,
+              "marketAdjustment": -8245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2024,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006716217/post-large/normalized/zoomcrop/3006716217-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006716217/standardizedHero.jpg?v=1791480037.851",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1787074758.004",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1787074758.004",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006716217/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7546242/details/feature-259249779.jpg?v=1791479970.036",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7546242/details/feature-259249781.jpg?v=1791479970.036",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7546242/details/feature-259249776.jpg?v=1791479970.036",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7546242/details/feature-259249783.jpg?v=1791479970.036",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.997Z",
+            "vdpSlug": "2024-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 295,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED7RA048242",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $5,490 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/364383625/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1791480032.155",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/364383625/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1791480032.155",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 302,
+                    "end": 308
+                  },
+                  {
+                    "start": 341,
+                    "end": 347
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 406,
+                    "end": 412
+                  },
+                  {
+                    "start": 439,
+                    "end": 445
+                  },
+                  {
+                    "start": 472,
+                    "end": 478
+                  },
+                  {
+                    "start": 505,
+                    "end": 511
+                  },
+                  {
+                    "start": 538,
+                    "end": 544
+                  },
+                  {
+                    "start": 571,
+                    "end": 577
+                  },
+                  {
+                    "start": 610,
+                    "end": 616
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/364383625/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1791480032.155",
+                "frameCount": 616,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2248,
+            "score": 2.6065505,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 7,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 340,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 25,
+            "remainingWarrantyMiles": 18400,
+            "remainingDriveTrainWarrantyMonths": 73,
+            "remainingDriveTrainWarrantyMiles": 118400,
+            "remainingBatteryWarrantyMonths": 73,
+            "remainingBatteryWarrantyMiles": 68400,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006817727,
+            "vehicleId": 4823987,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Silver",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 11450,
+            "milesPerGallon": 0,
+            "fuelType": "Electric",
+            "price": {
+              "total": 77590,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1264,
+              "downPayment": 3890,
+              "downPaymentDetails": {
+                "totalCashDue": 3890,
+                "additionalCashDown": 1900,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 82520,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8056,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 77590,
+              "msrp": 82235,
+              "marketAdjustment": -4645,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2024,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006817727/post-large/normalized/zoomcrop/3006817727-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006817727/standardizedHero.jpg?v=1792079816.841",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1774362259.400",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1774362259.400",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006817727/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7585106/details/feature-260835728.jpg?v=1792079664.124",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7585106/details/feature-260835745.jpg?v=1792079664.124",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7585106/details/feature-260835730.jpg?v=1792079664.124",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7585106/details/feature-260835725.jpg?v=1792079664.124",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7585106/details/feature-260835732.jpg?v=1792079664.124",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2024-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 6,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED7RA040870",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,930 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/366930486/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1792079813.203",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/366930486/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1792079813.203",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 302,
+                    "end": 308
+                  },
+                  {
+                    "start": 341,
+                    "end": 347
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 406,
+                    "end": 412
+                  },
+                  {
+                    "start": 439,
+                    "end": 445
+                  },
+                  {
+                    "start": 472,
+                    "end": 478
+                  },
+                  {
+                    "start": 505,
+                    "end": 511
+                  },
+                  {
+                    "start": 538,
+                    "end": 544
+                  },
+                  {
+                    "start": 571,
+                    "end": 577
+                  },
+                  {
+                    "start": 610,
+                    "end": 616
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/366930486/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1792079813.203",
+                "frameCount": 616,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1668,
+            "score": 2.606238,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 6,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 340,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 25,
+            "remainingWarrantyMiles": 38300,
+            "remainingDriveTrainWarrantyMonths": 73,
+            "remainingDriveTrainWarrantyMiles": 138300,
+            "remainingBatteryWarrantyMonths": 73,
+            "remainingBatteryWarrantyMiles": 88300,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006751372,
+            "vehicleId": 4799418,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Silver",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 40056,
+            "milesPerGallon": 0,
+            "fuelType": "Electric",
+            "price": {
+              "total": 71590,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1278,
+              "downPayment": 3590,
+              "downPaymentDetails": {
+                "totalCashDue": 3590,
+                "additionalCashDown": 1600,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 75,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 78140,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 7454,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 71590,
+              "msrp": 82235,
+              "marketAdjustment": -10645,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2024,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006751372/post-large/normalized/zoomcrop/3006751372-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "https://vexgateway.fastly.carvana.io/3006751372/standardizedHero.jpg?v=1791318219.170",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1774362259.400",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1774362259.400",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006751372/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "https://vexgateway.fastly.carvana.io/vex-7523672/details/feature-258366832.jpg?v=1791318217.973",
+            "infotainmentImageUrl": "https://vexgateway.fastly.carvana.io/vex-7523672/details/feature-258366849.jpg?v=1791318217.974",
+            "steeringImageUrl": "https://vexgateway.fastly.carvana.io/vex-7523672/details/feature-258366834.jpg?v=1791318217.973",
+            "backSeatImageUrl": "https://vexgateway.fastly.carvana.io/vex-7523672/details/feature-258366829.jpg?v=1791318217.973",
+            "trunkImageUrl": "https://vexgateway.fastly.carvana.io/vex-7523672/details/feature-258366836.jpg?v=1791318217.973",
+            "isOnDemand": false,
+            "isPurchasePending": true,
+            "transportCost": 1990,
+            "vehicleInventoryType": 1,
+            "fulfillmentType": 3,
+            "vehicleLockType": 1,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2024-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 371,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED8RA021227",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $6,550 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Purchasable",
+            "vehicleReservableReasons": [],
+            "splattingVideos": [
+              {
+                "videoName": "srpvideo-photo-cards",
+                "h264VideoURL": "https://vexgateway.fastly.carvana.io/executions/363315914/GAUSSIAN_RENDERER/srpvideo-carousel-h264.mp4?v=1791307964.037",
+                "h265VideoURL": "https://vexgateway.fastly.carvana.io/executions/363315914/GAUSSIAN_RENDERER/srpvideo-carousel-h265.mp4?v=1791307964.037",
+                "dimensions": {
+                  "width": 450,
+                  "height": 240
+                },
+                "pauseFrames": [
+                  {
+                    "start": 0,
+                    "end": 0
+                  },
+                  {
+                    "start": 33,
+                    "end": 39
+                  },
+                  {
+                    "start": 66,
+                    "end": 72
+                  },
+                  {
+                    "start": 99,
+                    "end": 105
+                  },
+                  {
+                    "start": 132,
+                    "end": 138
+                  },
+                  {
+                    "start": 165,
+                    "end": 171
+                  },
+                  {
+                    "start": 198,
+                    "end": 204
+                  },
+                  {
+                    "start": 231,
+                    "end": 237
+                  },
+                  {
+                    "start": 263,
+                    "end": 269
+                  },
+                  {
+                    "start": 295,
+                    "end": 301
+                  },
+                  {
+                    "start": 334,
+                    "end": 340
+                  },
+                  {
+                    "start": 373,
+                    "end": 379
+                  },
+                  {
+                    "start": 405,
+                    "end": 411
+                  },
+                  {
+                    "start": 437,
+                    "end": 443
+                  },
+                  {
+                    "start": 470,
+                    "end": 476
+                  },
+                  {
+                    "start": 503,
+                    "end": 509
+                  },
+                  {
+                    "start": 536,
+                    "end": 542
+                  },
+                  {
+                    "start": 569,
+                    "end": 575
+                  },
+                  {
+                    "start": 602,
+                    "end": 608
+                  },
+                  {
+                    "start": 635,
+                    "end": 641
+                  },
+                  {
+                    "start": 674,
+                    "end": 680
+                  }
+                ],
+                "thumbnailURL": "https://vexgateway.fastly.carvana.io/executions/363315914/GAUSSIAN_RENDERER/srpvideo-carousel.jpg?v=1791307964.037",
+                "frameCount": 680,
+                "fps": 30
+              }
+            ],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1973,
+            "score": 2.6055515,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 9,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 340,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 21,
+            "remainingWarrantyMiles": 9700,
+            "remainingDriveTrainWarrantyMonths": 69,
+            "remainingDriveTrainWarrantyMiles": 109700,
+            "remainingBatteryWarrantyMonths": 69,
+            "remainingBatteryWarrantyMiles": 59700,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "White Décor",
+                  "displayName": "White",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "INTERIOR_COLOR",
+                  "equipmentCategoryDisplayName": "interior"
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006847563,
+            "vehicleId": 4831120,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Beige",
+            "interiorColor": "Other",
+            "bodyStyle": "Pickup",
+            "mileage": 192,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 79990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1301,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 84850,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8297,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 79990,
+              "msrp": 82235,
+              "marketAdjustment": -2245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006847563/post-large/normalized/zoomcrop/3006847563-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1791873935.619",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1791873935.619",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006847563/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1990,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 224,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED8TA100971",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,860 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1565,
+            "score": 2.1061032,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 5,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 47,
+            "remainingWarrantyMiles": 49600,
+            "remainingDriveTrainWarrantyMonths": 95,
+            "remainingDriveTrainWarrantyMiles": 149600,
+            "remainingBatteryWarrantyMonths": 95,
+            "remainingBatteryWarrantyMiles": 99600,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006841530,
+            "vehicleId": 4834624,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 108,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 80990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1317,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 84880,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8398,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 80990,
+              "msrp": 82235,
+              "marketAdjustment": -1245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006841530/post-large/normalized/zoomcrop/3006841530-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1784119560.994",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1784119560.994",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006841530/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1990,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 247,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED8TA102848",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $3,890 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1453,
+            "score": 2.1058986,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 6,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 47,
+            "remainingWarrantyMiles": 49600,
+            "remainingDriveTrainWarrantyMonths": 95,
+            "remainingDriveTrainWarrantyMiles": 149600,
+            "remainingBatteryWarrantyMonths": 95,
+            "remainingBatteryWarrantyMiles": 99600,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006783779,
+            "vehicleId": 4807921,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Beige",
+            "interiorColor": "Other",
+            "bodyStyle": "Pickup",
+            "mileage": 23239,
+            "milesPerGallon": 87,
+            "fuelType": "Electric",
+            "price": {
+              "total": 74990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1336,
+              "downPayment": 3790,
+              "downPaymentDetails": {
+                "totalCashDue": 3790,
+                "additionalCashDown": 1800,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 75,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 77460,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 7795,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 74990,
+              "msrp": 82235,
+              "marketAdjustment": -7245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2026,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006783779/post-large/normalized/zoomcrop/3006783779-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_desktop.png?v=1779979966.877",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2026_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_SILVER_stock_1_mobile.png?v=1779979966.877",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006783779/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1990,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2026-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 327,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHEDXTA091299",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $2,470 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "148pt",
+            "stores": [
+              "148pt"
+            ],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2666,
+            "score": 2.1052995,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 9,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 40,
+            "remainingWarrantyMiles": 26500,
+            "remainingDriveTrainWarrantyMonths": 88,
+            "remainingDriveTrainWarrantyMiles": 126500,
+            "remainingBatteryWarrantyMonths": 88,
+            "remainingBatteryWarrantyMiles": 76500,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006729471,
+            "vehicleId": 4794683,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Beige",
+            "interiorColor": "Other",
+            "bodyStyle": "Pickup",
+            "mileage": 19763,
+            "milesPerGallon": 85,
+            "fuelType": "Electric",
+            "price": {
+              "total": 77990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1239,
+              "downPayment": 3990,
+              "downPaymentDetails": {
+                "totalCashDue": 3990,
+                "additionalCashDown": 3990,
+                "nonRefundableShippingFees": 0,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 0,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 83679,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8097,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 77990,
+              "msrp": 82235,
+              "marketAdjustment": -4245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2025,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006729471/post-large/normalized/zoomcrop/3006729471-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_desktop.png?v=1772776005.800",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_mobile.png?v=1772776005.800",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006729471/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 0,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2025-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 300,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED9SA079014",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $5,689 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 129,
+            "score": 2.1117911,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 2,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 34,
+            "remainingWarrantyMiles": 30000,
+            "remainingDriveTrainWarrantyMonths": 82,
+            "remainingDriveTrainWarrantyMiles": 130000,
+            "remainingBatteryWarrantyMonths": 82,
+            "remainingBatteryWarrantyMiles": 80000,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006371525,
+            "vehicleId": 4627622,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Beige",
+            "interiorColor": "Other",
+            "bodyStyle": "Pickup",
+            "mileage": 27678,
+            "milesPerGallon": 85,
+            "fuelType": "Electric",
+            "price": {
+              "total": 75990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1351,
+              "downPayment": 3890,
+              "downPaymentDetails": {
+                "totalCashDue": 3890,
+                "additionalCashDown": 2000,
+                "nonRefundableShippingFees": 1890,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 75,
+              "transportCost": 1890,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 82219,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 7896,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 75990,
+              "msrp": 82235,
+              "marketAdjustment": -6245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2025,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006371525/post-large/normalized/zoomcrop/3006371525-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_desktop.png?v=1772776005.800",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_mobile.png?v=1772776005.800",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006371525/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1890,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2025-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 6,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED3SA070602",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $6,229 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 1668,
+            "score": 2.1065972,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 6,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 30,
+            "remainingWarrantyMiles": 22100,
+            "remainingDriveTrainWarrantyMonths": 78,
+            "remainingDriveTrainWarrantyMiles": 122100,
+            "remainingBatteryWarrantyMonths": 78,
+            "remainingBatteryWarrantyMiles": 72100,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006845841,
+            "vehicleId": 4833627,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "All-Wheel Drive 6 ft",
+            "kbbTrim": "All-Wheel Drive Pickup 4D 6 ft",
+            "color": "Beige",
+            "interiorColor": "Other",
+            "bodyStyle": "Pickup",
+            "mileage": 7670,
+            "milesPerGallon": 85,
+            "fuelType": "Electric",
+            "price": {
+              "total": 80990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1317,
+              "downPayment": 4090,
+              "downPaymentDetails": {
+                "totalCashDue": 4090,
+                "additionalCashDown": 2100,
+                "nonRefundableShippingFees": 1990,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 84,
+              "transportCost": 1990,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 85909,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 8398,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 80990,
+              "msrp": 82235,
+              "marketAdjustment": -1245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2025,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006845841/post-large/normalized/zoomcrop/3006845841-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_desktop.png?v=1772776005.800",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2025_TESLA_CYBERTRUCK_ALL-WHEEL%20DRIVE%20PICKUP%204D%206%20FT_BEIGE_stock_1_mobile.png?v=1772776005.800",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006845841/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1990,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2025-tesla-cybertruck-all-wheel-drive-6-ft",
+            "locationId": 248,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHED3SA060748",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $4,919 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2650,
+            "score": 2.1051247,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 9,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 600,
+            "torque": 7435,
+            "evRange": 325,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 28,
+            "remainingWarrantyMiles": 42100,
+            "remainingDriveTrainWarrantyMonths": 76,
+            "remainingDriveTrainWarrantyMiles": 142100,
+            "remainingBatteryWarrantyMonths": 76,
+            "remainingBatteryWarrantyMiles": 92100,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          },
+          {
+            "stockNumber": 3006607689,
+            "vehicleId": 4737260,
+            "make": "Tesla",
+            "parentModel": "Cybertruck",
+            "model": "Cybertruck",
+            "trim": "Cyberbeast 6 ft",
+            "kbbTrim": "Cyberbeast Pickup 4D 6 ft",
+            "color": "Gray",
+            "interiorColor": "Black",
+            "bodyStyle": "Pickup",
+            "mileage": 23547,
+            "milesPerGallon": 0,
+            "fuelType": "Electric",
+            "price": {
+              "total": 87990,
+              "totalDiscountAmount": 0,
+              "monthlyPayment": 1559,
+              "downPayment": 4490,
+              "downPaymentDetails": {
+                "totalCashDue": 4490,
+                "additionalCashDown": 2600,
+                "nonRefundableShippingFees": 1890,
+                "tradeDown": 0
+              },
+              "apr": 0.0699,
+              "term": 75,
+              "transportCost": 1890,
+              "pricingErrorMessage": "",
+              "totalTaxes": 0,
+              "totalFees": 0,
+              "kbbValue": 91750,
+              "feesMinusShipping": 0,
+              "estimatedTaxesAndFees": 9101,
+              "tradeTaxSavings": 0,
+              "incentivizedPrice": 87990,
+              "msrp": 102235,
+              "marketAdjustment": -14245,
+              "incentives": [],
+              "marketplaceIncentives": [],
+              "appliedIncentives": [],
+              "additionalIncentives": []
+            },
+            "year": 2024,
+            "seatingCapacity": 5,
+            "imageUrl": "/3006607689/post-large/normalized/zoomcrop/3006607689-edc-02.jpg?v=2026.10.20_5.54.54",
+            "standardizedHero": "",
+            "jellyBeanDesktopUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_CYBERBEAST%20PICKUP%204D%206%20FT_GRAY_stock_1_desktop.png?v=1772076629.260",
+            "jellyBeanMobileUrl": "https://vexstockimages.fastly.carvana.io/stockimages/2024_TESLA_CYBERTRUCK_CYBERBEAST%20PICKUP%204D%206%20FT_GRAY_stock_1_mobile.png?v=1772076629.260",
+            "textlessUrl": "https://vexgateway.fastly.carvana.io/3006607689/hero-no-letters.jpg",
+            "passengerSeatImageUrl": "",
+            "entireDashImageUrl": "",
+            "infotainmentImageUrl": "",
+            "steeringImageUrl": "",
+            "backSeatImageUrl": "",
+            "trunkImageUrl": "",
+            "isOnDemand": true,
+            "isPurchasePending": false,
+            "transportCost": 1890,
+            "vehicleInventoryType": 2,
+            "fulfillmentType": 0,
+            "vehicleLockType": 3,
+            "isLockedByCurrentUser": false,
+            "vehicleUnlockDateTime": "9999-12-31T23:59:59.999Z",
+            "vdpSlug": "2024-tesla-cybertruck-cyberbeast-6-ft",
+            "locationId": 111,
+            "stockRecallStatusType": 0,
+            "vin": "7G2CEHEE7RA043650",
+            "vehicleTags": [
+              {
+                "tagId": 104,
+                "tagCategoryId": 1,
+                "tagKey": "KeepMovingPrice",
+                "tagName": "Great Deal",
+                "tagDescription": "This vehicle is priced $3,760 lower than Kelley Blue Book® Typical Listing Price.<br><br>* Savings amount based on the difference between Kelley Blue Book® Typical Listing Price and the current Carvana listing price, not including tax, title, registration, or delivery charges. Savings amounts are updated daily.",
+                "tagToolTip": "",
+                "sortOrder": 700,
+                "isResultTileDisplayable": true
+              }
+            ],
+            "matchedFilters": {},
+            "missingFilters": {},
+            "storeKey": "None",
+            "stores": [],
+            "vehiclePurchaseType": "Reservable",
+            "vehicleReservableReasons": [
+              "WIP"
+            ],
+            "splattingVideos": [],
+            "earliestDaysToDeliveryOrPickupType": "Pickup",
+            "isNewSinceLastVisit": false,
+            "drivingMiles": 2462,
+            "score": 2.105494,
+            "isSprinkle": false,
+            "earliestLocalLocation": {
+              "locationId": 335,
+              "activityType": "unknown"
+            },
+            "analyticsOnlyGetItByDays": 8,
+            "offering": "Used",
+            "luxuryType": "Non-Luxury",
+            "sportType": "Non-Sport",
+            "horsePower": 845,
+            "evRange": 320,
+            "overallLength": 223.7,
+            "trunkCapacity": 54.2,
+            "cargoVolumeFolded": 54.2,
+            "cargoVolumeMax": 54.2,
+            "towingCapacity": 11000,
+            "remainingWarrantyMonths": 27,
+            "remainingWarrantyMiles": 26200,
+            "remainingDriveTrainWarrantyMonths": 75,
+            "remainingDriveTrainWarrantyMiles": 126200,
+            "remainingBatteryWarrantyMonths": 75,
+            "remainingBatteryWarrantyMiles": 76200,
+            "factoryUpgrades": {
+              "msrpTotal": 0,
+              "factoryUpgradesMsrp": 0,
+              "packagesAndOptions": [
+                {
+                  "name": "Tow Package",
+                  "displayName": "Tow Package",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                },
+                {
+                  "name": "Traffic-Aware Cruise Control",
+                  "displayName": "Traffic-Aware Cruise Control",
+                  "msrp": 0,
+                  "description": "",
+                  "equipmentCategory": "",
+                  "equipmentCategoryDisplayName": ""
+                }
+              ]
+            },
+            "marketplaceIncentives": []
+          }
+        ],
+        "conditionalTiles": [
+          {
+            "key": "financeNoPrequal",
+            "position": 6
+          },
+          {
+            "key": "tradeNoTrade",
+            "position": 15
+          }
+        ]
+      },
+      "searchRequestId": "00000000-0000-4000-8000-000000000039",
+      "financeInfo": {
+        "financingType": "estimatedFinancing",
+        "maxMonthlyPayment": 2000,
+        "minDownPayment": 0,
+        "pricingHasErrored": false,
+        "isUsingTerms2": false,
+        "isUsingSampleTerms": true,
+        "terms2ErrorMessage": "",
+        "tradeTaxSavings": 0,
+        "creditStatusErrorMessage": ""
+      },
+      "userDeliveryInfo": {
+        "city": "Sunnyvale",
+        "state": "CA",
+        "zip5": "94085",
+        "isDeliveryAllowed": true,
+        "isMeetupAllowed": false,
+        "isOutOfMarket": false,
+        "isPickupAllowed": true,
+        "milesToPickup": 15,
+        "earliestDaysToDelivery": 0,
+        "earliestDeliveryDateUtc": "2026-10-20T15:30:00Z",
+        "pickupAddress": {
+          "addressTypeId": 0,
+          "line1": "3600 Monterey Rd",
+          "line2": "",
+          "city": "San Jose",
+          "state": "CA",
+          "zip5": "95111",
+          "zip4": "3300"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "id": "suggest-12",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 665",
+  "description": "2022 or newer: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000049",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000050",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "year": {
+          "min": 2022
+        }
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "LowestPrice",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000051",
+      "suggestedFilters": [
+        {
+          "suggestionId": "9430a08c-b82c-4d4e-af24-81a063412e88",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 11666,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "driveTypes": [
+              "Awd"
+            ],
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "50b234ef-948d-4dcd-9f12-d5df85746813",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 23973,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 40000
+            },
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "808cebfe-c227-4440-b775-5506fab40f70",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 26628,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "interiorColors": [
+              "Black"
+            ],
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "16e5eb2f-3e93-4871-b887-64c32a2f7f5a",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 605,
+          "facetKey": "makes",
+          "suggestionKey": "parentModel",
+          "displayName": "Tesla Model Y",
+          "searchFilters": {
+            "year": {
+              "min": 2022
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [
+                  {
+                    "name": "Model Y",
+                    "trims": []
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"parentModel\":[\"Tesla\",\"Model Y\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "c424abc6-0236-440a-aadd-716f110c4811",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 28297,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 50,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 50000
+            },
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":50000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "96efd3c7-e590-4a00-94e6-43d7de89b5ac",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 4880,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "year": {
+              "min": 2022
+            },
+            "isFreeDelivery": true
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        },
+        {
+          "suggestionId": "dbf7216b-6454-4174-ab5a-e4fcf0c1df8a",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 9540,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "colors": [
+              "White"
+            ],
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "4bee4234-010d-4945-b112-00f8a27711fa",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 18675,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "mileage": {
+              "max": 30000
+            },
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "af90d8de-9dfc-4357-abcb-5716b508d9b2",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 12296,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Apple CarPlay",
+          "searchFilters": {
+            "cvnaFeatures": [
+              "Apple CarPlay"
+            ],
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Apple CarPlay\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "fc2bba96-e519-4ea7-a42f-89d6406e48d4",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 7527,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "Gray Exterior",
+          "searchFilters": {
+            "colors": [
+              "Gray"
+            ],
+            "year": {
+              "min": 2022
+            }
+          },
+          "rawSuggestedFilters": "[{\"color\":\"Gray\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        }
+      ]
+    }
+  }
+}

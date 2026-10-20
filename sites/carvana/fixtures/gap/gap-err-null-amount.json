@@ -27,7 +27,7 @@
       "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
       "title": "One or more validation errors occurred.",
       "status": 400,
-      "traceId": "00000000-0000-4000-8000-000000000018",
+      "traceId": "00000000-0000-4000-8000-000000000065",
       "errors": {
         "AmountFinanced": [
           "The value 'null' is not valid for AmountFinanced."

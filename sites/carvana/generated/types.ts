@@ -124,7 +124,10 @@ export interface AvailabilityRequestSearchPageShape {
        * Mapped from the search response's vehicleInventoryType: 1 -> Core, 2 -> Unknown (seen on an on-demand car).
        */
       vehicleInventoryType: 'Core' | 'Unknown';
-      vehicleSaleStatus: 'Available';
+      /**
+       * Our tool sends Available. The site's own pages send an empty string for some cars (seen on the pickup-truck search, 2026-10-19), and get the same kind of answer.
+       */
+      vehicleSaleStatus: 'Available' | '';
     },
     ...{
       vehicleId: VehicleId;
@@ -133,7 +136,10 @@ export interface AvailabilityRequestSearchPageShape {
        * Mapped from the search response's vehicleInventoryType: 1 -> Core, 2 -> Unknown (seen on an on-demand car).
        */
       vehicleInventoryType: 'Core' | 'Unknown';
-      vehicleSaleStatus: 'Available';
+      /**
+       * Our tool sends Available. The site's own pages send an empty string for some cars (seen on the pickup-truck search, 2026-10-19), and get the same kind of answer.
+       */
+      vehicleSaleStatus: 'Available' | '';
     }[]
   ];
   zipCode: Zip5;
@@ -741,7 +747,13 @@ export interface GetOwnerReviewsInput {
  * via the `definition` "GetOwnerReviewsOutput".
  */
 export interface GetOwnerReviewsOutput {
+  /**
+   * Written reviews Carvana has for this model and trim. Star ratings without text are counted in ratingCounts only, so its total is larger.
+   */
   count: number;
+  /**
+   * Star ratings from all owners, written review or not: how many gave each number of stars.
+   */
   ratingCounts?: {
     stars: number;
     count: number;
@@ -754,1090 +766,1720 @@ export interface GetOwnerReviewsOutput {
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        }
-      ]
-    | [
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
-          date: string;
-        },
-        {
-          text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ]
     | [
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         },
         {
           text: Fenced;
-          rating: number;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        }
+      ]
+    | [
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
+          date: string;
+        },
+        {
+          text: Fenced;
+          /**
+           * The owner's stars, 1 to 5; null when the owner wrote a review without giving stars (Carvana sends 0).
+           */
+          rating: number | null;
           date: string;
         }
       ];
@@ -1875,7 +2517,18 @@ export interface SearchVehiclesInput {
   tag_ids?: string[];
   features?: string[];
   free_delivery?: boolean;
-  sort?: string;
+  /**
+   * Carvana's own sort orders, as its search page offers them: LowestPrice and HighestPrice by price, LowestMileage, NewestYear by model year, NewestInventory and AcquisitionTime by when Carvana listed the car, FreeShipping with free-delivery cars first.
+   */
+  sort?:
+    | 'MostPopular'
+    | 'LowestPrice'
+    | 'HighestPrice'
+    | 'LowestMileage'
+    | 'NewestYear'
+    | 'NewestInventory'
+    | 'AcquisitionTime'
+    | 'FreeShipping';
   page?: number;
 }
 /**

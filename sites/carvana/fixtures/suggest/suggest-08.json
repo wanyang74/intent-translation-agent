@@ -1,0 +1,338 @@
+{
+  "id": "suggest-08",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 188",
+  "description": "Tesla: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000031",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000019",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ],
+        "bodyStyles": [
+          "suv"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "NewestYear",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000033",
+      "suggestedFilters": [
+        {
+          "suggestionId": "4dc908d0-8944-4178-9295-ccbdfda6db7b",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 480,
+          "facetKey": "makes",
+          "suggestionKey": "trim",
+          "displayName": "Long Range",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [
+                  {
+                    "name": "Model Y",
+                    "trims": [
+                      "Long Range"
+                    ]
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"trim\":[\"Tesla\",\"Model Y\",\"Long Range\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "d42790d7-c2f0-4044-9a57-898d7004fd7d",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 795,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "driveTypes": [
+              "Awd"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "071e512e-c8a5-4f11-b3a0-47e0cb6c4ad5",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 321,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "mileage": {
+              "max": 40000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "f0b9725a-ac2c-4c61-bf11-315fe826d19f",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 660,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "interiorColors": [
+              "Black"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "ce09d86a-a1b0-46f3-8e29-a31fbffcefbe",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 7,
+          "facetKey": "cvnaFeatures",
+          "suggestionKey": "cvnaFeature",
+          "displayName": "Tow Hitch",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "cvnaFeatures": [
+              "Tow Hitch"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"cvnaFeature\":\"Tow Hitch\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "ccc5537e-4fd5-4a09-949f-d7c2f1d856f7",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 18,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "Silver Exterior",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "colors": [
+              "Silver"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"Silver\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "02a39904-ce23-4fb8-bd72-167c7c819276",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 584,
+          "facetKey": "price",
+          "suggestionKey": "price",
+          "displayName": "Under $35,000",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "price": {
+              "max": 35000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"price_max\":35000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "a4eeb9db-6912-48fb-98c4-48ae90d1ce1a",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 158,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "isFreeDelivery": true,
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        },
+        {
+          "suggestionId": "eeb4a3c3-de81-4208-845e-f0200c10e0a3",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 241,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "colors": [
+              "White"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "d67c3b15-9719-4917-976d-9694818f3f60",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 176,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "suv"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        }
+      ]
+    }
+  }
+}

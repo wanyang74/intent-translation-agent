@@ -1,0 +1,336 @@
+{
+  "id": "suggest-09",
+  "site": "carvana",
+  "endpoint": "suggest",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 213",
+  "description": "Tesla: 10 suggestions",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/search/api/v1/suggest/filters",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "analyticsData": {
+        "browser": "Chrome",
+        "clientId": "srp_ui",
+        "deviceName": "",
+        "isBot": false,
+        "isFirstActiveSearchSession": true,
+        "isMobileDevice": false,
+        "previousSearchRequestId": "00000000-0000-4000-8000-000000000034",
+        "referrer": "",
+        "searchSessionId": "00000000-0000-4000-8000-000000000019",
+        "utmParams": {}
+      },
+      "browserCookieId": "00000000-0000-4000-8000-000000000001",
+      "dealershipId": null,
+      "filters": {
+        "makes": [
+          {
+            "name": "Tesla"
+          }
+        ],
+        "bodyStyles": [
+          "sedan"
+        ]
+      },
+      "pagination": {
+        "page": 1,
+        "pageSize": 24
+      },
+      "requestedFeatures": [
+        "ExcludeFacetData",
+        "HideImpossibleCombos",
+        "LocationBasedPrefiltering",
+        "ApplyTradeIn"
+      ],
+      "sortBy": "NewestYear",
+      "zip5": "94085",
+      "numberOfSuggestedFilters": 10
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "suggestedFiltersRequestId": "00000000-0000-4000-8000-000000000035",
+      "suggestedFilters": [
+        {
+          "suggestionId": "2444e97c-41c2-494f-982a-cf68336739ea",
+          "suggestionIndex": 0,
+          "totalMatchedInventory": 457,
+          "facetKey": "driveTypes",
+          "suggestionKey": "driveType",
+          "displayName": "AWD",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "driveTypes": [
+              "Awd"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"driveType\":\"Awd\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "3946701a-2a50-472b-b7df-dd6d495a4745",
+          "suggestionIndex": 1,
+          "totalMatchedInventory": 666,
+          "facetKey": "interiorColors",
+          "suggestionKey": "interiorColor",
+          "displayName": "Black Interior",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "interiorColors": [
+              "Black"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"interiorColor\":\"Black\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "3740aec4-2a95-401d-9c28-9a70155e8d9e",
+          "suggestionIndex": 2,
+          "totalMatchedInventory": 281,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 40,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "mileage": {
+              "max": 40000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":40000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "c5af5944-b188-434d-a0b4-d001a4a392ad",
+          "suggestionIndex": 3,
+          "totalMatchedInventory": 807,
+          "facetKey": "makes",
+          "suggestionKey": "parentModel",
+          "displayName": "Tesla Model 3",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [
+                  {
+                    "name": "Model 3",
+                    "trims": []
+                  }
+                ],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"parentModel\":[\"Tesla\",\"Model 3\"]}]",
+          "rawSuggestionValue": {
+            "valueKind": "array"
+          }
+        },
+        {
+          "suggestionId": "75f4960b-e58c-4a3c-b0a4-5420b3c92396",
+          "suggestionIndex": 4,
+          "totalMatchedInventory": 147,
+          "facetKey": "mileage",
+          "suggestionKey": "mileage",
+          "displayName": "Under 30,000 miles",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "mileage": {
+              "max": 30000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"mileage_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "dbc5db17-815a-434d-8f64-95583168d857",
+          "suggestionIndex": 5,
+          "totalMatchedInventory": 169,
+          "facetKey": "isFreeDelivery",
+          "suggestionKey": "isFreeDelivery",
+          "displayName": "Free Shipping",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "isFreeDelivery": true,
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"isFreeDelivery\":true}]",
+          "rawSuggestionValue": {
+            "valueKind": "true"
+          }
+        },
+        {
+          "suggestionId": "e7246fa0-b70e-4647-999b-c5e484ea5757",
+          "suggestionIndex": 6,
+          "totalMatchedInventory": 852,
+          "facetKey": "price",
+          "suggestionKey": "price",
+          "displayName": "Under $35,000",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "price": {
+              "max": 35000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"price_max\":35000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        },
+        {
+          "suggestionId": "f69422db-8cae-45b4-bd09-317c1858ff55",
+          "suggestionIndex": 7,
+          "totalMatchedInventory": 259,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "White Exterior",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "colors": [
+              "White"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"White\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "6e35dac0-046b-4806-b110-bc2ba6d5634b",
+          "suggestionIndex": 8,
+          "totalMatchedInventory": 163,
+          "facetKey": "colors",
+          "suggestionKey": "color",
+          "displayName": "Gray Exterior",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "colors": [
+              "Gray"
+            ],
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"color\":\"Gray\"}]",
+          "rawSuggestionValue": {
+            "valueKind": "string"
+          }
+        },
+        {
+          "suggestionId": "05d853d4-a6c4-49f2-8930-55aba971eceb",
+          "suggestionIndex": 9,
+          "totalMatchedInventory": 727,
+          "facetKey": "price",
+          "suggestionKey": "price",
+          "displayName": "Under $30,000",
+          "searchFilters": {
+            "bodyStyles": [
+              "sedan"
+            ],
+            "price": {
+              "max": 30000
+            },
+            "makes": [
+              {
+                "name": "Tesla",
+                "parentModels": [],
+                "models": []
+              }
+            ]
+          },
+          "rawSuggestedFilters": "[{\"price_max\":30000}]",
+          "rawSuggestionValue": {
+            "valueKind": "number"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "id": "reviews-04",
+  "site": "carvana",
+  "endpoint": "reviews",
+  "kind": "recorded",
+  "source": "recording 2026-10-20, HAR entry 709",
+  "description": "2022 BMW X3 sDrive30i Sport Utility 4D",
+  "request": {
+    "method": "POST",
+    "url": "https://apik.carvana.io/merch/reviews/api/review/sv",
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json"
+    },
+    "body": {
+      "from": 0,
+      "make": "BMW",
+      "model": "X3",
+      "size": 20,
+      "trim": "sDrive30i Sport Utility 4D",
+      "year": 2022
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "summary": {
+        "review_count_total": 599,
+        "rating_counts": [
+          {
+            "key": 5,
+            "doc_count": 1762
+          },
+          {
+            "key": 4,
+            "doc_count": 1078
+          },
+          {
+            "key": 3,
+            "doc_count": 280
+          },
+          {
+            "key": 2,
+            "doc_count": 62
+          },
+          {
+            "key": 1,
+            "doc_count": 18
+          }
+        ]
+      },
+      "reviews": [
+        {
+          "review_id": 56082568,
+          "review_text": "The 2022 BMW X3 is an excellent luxury SUV. It's relatively affordable, well made, and fun to drive. Very comfortable on long trips and the gas mileage is quite good. This is the second X3 and 8th BMW I've owned, so I'm sold on the brand.",
+          "review_date": "2024-03-07",
+          "review_rating": 0,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Steven J."
+          }
+        },
+        {
+          "review_id": 55324112,
+          "review_text": "I like the sooty look of the car rims,Interior color,sunroof design. The sound system could be better. I don't like that it does not have remote start! The controls are somewhat easy to understand, but I'm not quite sure what the key fobs do. Overall it's a nice looking car and a pretty smooth drive.",
+          "review_date": "2023-12-09",
+          "review_rating": 2,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Toya M."
+          }
+        },
+        {
+          "review_id": 53090589,
+          "review_text": "Unstable at high speeds, quick acceleration in and out of traffic missing and your iPhone won't fit in the open middle compartment.",
+          "review_date": "2023-05-27",
+          "review_rating": 2,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Christine W."
+          }
+        },
+        {
+          "review_id": 53089077,
+          "review_text": "I love my X3, but if I were buying again I would seriously consider the suped-up M series version. The bigger engine and more dynamic suspension could be a lot of fun.",
+          "review_date": "2023-03-31",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "David M."
+          }
+        },
+        {
+          "review_id": 52398146,
+          "review_text": "Great vehicle that performs and handles brilliantly. The interior and exterior design is fantastic.",
+          "review_date": "2023-03-30",
+          "review_rating": 3,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Andre M."
+          }
+        },
+        {
+          "review_id": 53089084,
+          "review_text": "I like it so far. Spacious for a small family. Driving is nice.",
+          "review_date": "2023-03-24",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Yeunkyung C."
+          }
+        },
+        {
+          "review_id": 52057305,
+          "review_text": "If they like driving like me, don't get the vehicle that I purchased.  It doesn't have the get up and go.",
+          "review_date": "2023-03-01",
+          "review_rating": 1,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Evelyn B."
+          }
+        },
+        {
+          "review_id": 52387434,
+          "review_text": "Well built and fun to drive",
+          "review_date": "2023-01-18",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Richard B."
+          }
+        },
+        {
+          "review_id": 51445491,
+          "review_text": "Great looking SUV! Love the options of the M3 design. Great driving experience for around town or long trips.",
+          "review_date": "2023-01-04",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Marcia D."
+          }
+        },
+        {
+          "review_id": 51445556,
+          "review_text": "The X3 is living up to the reputation - quiet drive, good room in second row, and good space in the back for storage.",
+          "review_date": "2023-01-03",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Julie R."
+          }
+        },
+        {
+          "review_id": 51443619,
+          "review_text": "Be careful of the pointed corners of the top of the doors when opening the doors. They can hit you in the face or head.",
+          "review_date": "2023-01-02",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Timothy L."
+          }
+        },
+        {
+          "review_id": 51443620,
+          "review_text": "It's a quiet, spacious and well appointed SUV for 5 that's great for long commutes, with plenty of cargo space and ample power while giving nearly 30mpg. Remote climate start isn't bad either.",
+          "review_date": "2022-12-28",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Andrew L."
+          }
+        },
+        {
+          "review_id": 51445507,
+          "review_text": "The 2022 x3 is awesome!  Best car I've ever driven.",
+          "review_date": "2022-12-28",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Barbara M."
+          }
+        },
+        {
+          "review_id": 51448084,
+          "review_text": "I have been driving BMWs for 35 years. I have never been disappointed. I have sports cars, SUVs, and sedans. All are exceptional.",
+          "review_date": "2022-12-27",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 M40i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Donald B."
+          }
+        },
+        {
+          "review_id": 52057389,
+          "review_text": "These are simply great cars to drive.",
+          "review_date": "2022-12-17",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Maruti K."
+          }
+        },
+        {
+          "review_id": 51183391,
+          "review_text": "It's an AMAZING vehicle! Highly recommended!!",
+          "review_date": "2022-12-09",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 M40i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Sarah M."
+          }
+        },
+        {
+          "review_id": 51178275,
+          "review_text": "I would tell someone else considering the same vehicle to look at all of the ways the vehicle would add value to their life.",
+          "review_date": "2022-12-05",
+          "review_rating": 3,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Aaron A."
+          }
+        },
+        {
+          "review_id": 51178466,
+          "review_text": "The only thing I am not happy with is the MSport package rims that came with the car. They are too busy and block the view of the blue calipers.",
+          "review_date": "2022-12-05",
+          "review_rating": 4,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "James A."
+          }
+        },
+        {
+          "review_id": 51178474,
+          "review_text": "BMW is the only vehicle that provides the X factor! Go for it!",
+          "review_date": "2022-12-05",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 xDrive30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "Sathish G."
+          }
+        },
+        {
+          "review_id": 51180377,
+          "review_text": "I have been very satisfied with my BMW and would highly recommend BMW",
+          "review_date": "2022-12-05",
+          "review_rating": 5,
+          "vehicle": {
+            "vehicle_make_model": "BMW X3 sDrive 30i",
+            "make": "BMW",
+            "model": "BMW X3",
+            "year": 2022
+          },
+          "customer": {
+            "name": "John H."
+          }
+        }
+      ]
+    }
+  }
+}

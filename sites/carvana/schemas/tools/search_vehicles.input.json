@@ -73,8 +73,9 @@
       "type": "boolean"
     },
     "sort": {
-      "type": "string",
-      "default": "MostPopular"
+      "enum": ["MostPopular", "LowestPrice", "HighestPrice", "LowestMileage", "NewestYear", "NewestInventory", "AcquisitionTime", "FreeShipping"],
+      "default": "MostPopular",
+      "description": "Carvana's own sort orders, as its search page offers them: LowestPrice and HighestPrice by price, LowestMileage, NewestYear by model year, NewestInventory and AcquisitionTime by when Carvana listed the car, FreeShipping with free-delivery cars first."
     },
     "page": {
       "type": "integer",

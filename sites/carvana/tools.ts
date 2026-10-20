@@ -148,7 +148,7 @@ async function quotes(ctx: ToolContext, vehicleIds: number[], zip5: string, opti
 interface Reviews {
   count: number;
   ratingCounts?: { stars: number; count: number }[];
-  reviews: { text: string; rating: number; date: string }[];
+  reviews: { text: string; rating: number | null; date: string }[];
 }
 
 export const site: SiteCode = {
@@ -209,7 +209,8 @@ export const site: SiteCode = {
       return {
         count: res.summary.review_count_total,
         ratingCounts: res.summary.rating_counts.map((bucket: { key: number; doc_count: number }) => ({ stars: bucket.key, count: bucket.doc_count })),
-        reviews: res.reviews.map((review: any) => ({ text: ctx.fence(review.review_text, 'carvana-reviews'), rating: review.review_rating, date: review.review_date })),
+        // Carvana sends 0 for a review written without stars; 0 stars would misreport it.
+        reviews: res.reviews.map((review: any) => ({ text: ctx.fence(review.review_text, 'carvana-reviews'), rating: review.review_rating >= 1 ? review.review_rating : null, date: review.review_date })),
       };
     },
     // vehicle_details waits for a recording of a vehicle page, to build and test its page reader against.

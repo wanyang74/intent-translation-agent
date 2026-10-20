@@ -570,7 +570,10 @@
     }
   },
   "recording": {
-    "har": "recordings/www.carvana.com.har",
+    "hars": [
+      "recordings/www.carvana.com.har",
+      "recordings/carvana-10-19.har"
+    ],
     "scrubFields": [
       "browserCookieId",
       "searchSessionId",
