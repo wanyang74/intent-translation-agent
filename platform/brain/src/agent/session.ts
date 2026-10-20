@@ -95,7 +95,7 @@ export class AgentSession {
     if (!turn || turn.traceId !== resultsMessage.traceId) {
       return { ok: true, events: once({ type: 'error', traceId: resultsMessage.traceId, code: 'timeout', message: MESSAGES.expired }) };
     }
-    if (turn.state === 'running') return { ok: false, status: 409, error: 'this turn is already running' };
+    if (turn.state !== 'awaiting_client_calls') return { ok: false, status: 409, error: 'this turn is already running' };
     this.touch();
     return turn.takeResults(resultsMessage, signal);
   }

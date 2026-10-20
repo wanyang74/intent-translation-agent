@@ -80,7 +80,7 @@ docs/                      local copy of the design doc
 - **Every file starts with a header comment**: what the file is for, where it sits among its neighbors, and the
   rules it keeps. Interfaces and non-obvious fields get one-line `/** … */` comments.
 - **Functions with real logic get an outline.** The doc comment lists the steps, numbered; the body repeats the
-  numbers at each step (`// 1. …`). Follow `run()`, `startTurn()`, `takeResults()` and `onToolCall()` in
+  numbers at each step (`// 1. …`). Follow `run()`, `startTurn()`, `takeResults()` and `sendClientCall()` in
   `platform/brain/src/agent/`.
 - **Explain why, and the non-obvious how.** Say why a check exists, why an order matters, and what a language
   mechanism is doing where it isn't obvious (generators and `yield`, `await` and the event loop, closures, abort
