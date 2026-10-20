@@ -8,9 +8,9 @@
 // required notices are added, and the turn ends. If the model sends them with no text, they're kept, and its next
 // step writes the words. A message the user sends while the turn runs (an amendment) is queued on the turn and
 // handed to the model with the next tool results, as a reminder; one that misses the turn's last model call comes
-// back on the answer as a follow-up, which the client sends as the next turn. A new turn instead starts over. The
-// step budget, timeouts and quotas end a turn early with a plain message, and the session's history stays valid for
-// the next turn.
+// back on the answer as a follow-up, which the client sends as the next turn. A new turn instead starts over. A reply
+// cut off at the output limit is asked for again once, with more room. The step budget, timeouts and quotas end a
+// turn early with a plain message, and the session's history stays valid for the next turn.
 import type {
   AnswerEvent, AwaitResultsEvent, ClientResults, ErrorEvent, PageContext, PresentationCall, ProgressEvent, ServerEvent, ToolCallEvent, ToolError,
 } from '../../../contract/generated/types.ts';
@@ -46,13 +46,26 @@ export interface ModelStep {
 }
 
 /**
+ * Why the loop goes round again without waiting for the client. Every way back to the next model call has one, and
+ * each has a guard that keeps it from spinning:
+ *   server_calls   the step made only calls the brain answered itself (skills, refused calls); stepsPerTurn
+ *   cards_refused  a card was refused, and the model fixes it; cardRetriesPerTurn
+ *   cards_kept     cards came with no words, and the model writes them; stepsPerTurn
+ *   cut_off_retry  the reply hit the output limit, and is asked for again with a larger one; once per turn
+ */
+export type NextStepReason = 'server_calls' | 'cards_refused' | 'cards_kept' | 'cut_off_retry';
+
+/**
  * How a step ends: the events to send, in order, and whether the loop makes another model call or the stream ends.
  * Every allowed ending is listed here, and the constructor is private, so a step can only end in one of these ways:
- * StepEndingResult.nextStep, .stopped, .failed(…), .awaitingResults(…) or .answered(…).
+ * StepEndingResult.nextStep(…), .stopped, .failed(…), .awaitingResults(…) or .answered(…).
  */
 class StepEndingResult {
-  /** Go round again: the next model call, with no request in between. */
-  static readonly nextStep = new StepEndingResult('next_step', [], 'continue');
+  /** Go round again: the next model call, with no request in between. The reason names which loop this is. */
+  static nextStep(reason: NextStepReason): StepEndingResult {
+    return new StepEndingResult('next_step', [], 'continue', reason);
+  }
+
   /** The turn is over and the client hears nothing: a new message replaced it, or its client went away. */
   static readonly stopped = new StepEndingResult('stopped', [], 'return');
 
@@ -75,11 +88,14 @@ class StepEndingResult {
   readonly kind: 'next_step' | 'stopped' | 'failed' | 'awaiting_results' | 'answered';
   readonly events: readonly ServerEvent[];
   readonly next: 'continue' | 'return';
+  /** Why the loop goes round again; null for the endings that end the stream. */
+  readonly reason: NextStepReason | null;
 
-  private constructor(kind: StepEndingResult['kind'], events: readonly ServerEvent[], next: 'continue' | 'return') {
+  private constructor(kind: StepEndingResult['kind'], events: readonly ServerEvent[], next: 'continue' | 'return', reason: NextStepReason | null = null) {
     this.kind = kind;
     this.events = events;
     this.next = next;
+    this.reason = reason;
   }
 }
 
@@ -203,6 +219,10 @@ export class Turn {
   private kept: PresentationCall[] = [];
   /** Whether the held cards were put to the model with an amendment: presentation calls it sends next replace them. */
   private keptUnderReview = false;
+  /** Times a refused card went back to the model in this turn; capped by cardRetriesPerTurn. */
+  private cardRetries = 0;
+  /** Whether a reply was cut off at the output limit in this turn: later steps get retryOutputTokens. */
+  private outputLimitRaised = false;
   /** Amendments queued for the model's next step, in the order the user sent them. */
   private amendments: string[] = [];
   /** Aborts when the client of the request being served goes away. */
@@ -368,15 +388,17 @@ export class Turn {
    *   2. Prepare the request: hand over queued amendments.
    *   3. Call the model. Each call for the client is checked and sent the moment it's complete; the others wait.
    *   4. If the call failed, end the turn with a plain message.
-   *   5. Record the step: usage and cache figures in the log, and what the model wrote and called in the history.
+   *   5. Record the step: usage and cache figures in the log, and what the model wrote and called in the history. A
+   *      reply cut off at the output limit, with nothing sent to the client, is dropped instead and asked for again
+   *      with a larger limit, once per turn; a second cut-off ends the turn with a plain message.
    *   6. Handle the calls that didn't go to the client (skills, presentation calls), then one of three endings:
    *      a. it called site tools: send progress and await_results, and stop until the client's results arrive;
    *      b. it presented (or wrote only text, or it's the last step): check the cards, and either send the answer,
    *         or go round again when a card was refused or came without words; on the last step, anything short of a
    *         finished answer ends the turn with an error instead of a partial answer;
    *      c. it only made calls the brain (aka server) answered itself (skills, refused calls): go round again with their results.
-   * The helpers below do each part: stopBeforeStep (1), deliverAmendments (2), streamStep (3, 4), recordStep (5) and
-   * endStep (6). Only run() and streamStep yield. The helpers that change the history or the turn's state are plain
+   * The helpers below do each part: stopBeforeStep (1), deliverAmendments (2), streamStep (3, 4), cutOffEnding and
+   * recordStep (5), and endStep (6). Every way round again names its reason (NextStepReason), and the log says which. Only run() and streamStep yield. The helpers that change the history or the turn's state are plain
    * functions that return the events to send, so each update between two yields still happens all at once.
    * Each `yield` hands one event to the HTTP layer and pauses here until it asks for the next. The stream ends when
    * the turn answers, fails, or starts waiting for the client; takeResults starts a new stream for the next steps.
@@ -407,13 +429,15 @@ export class Turn {
         if (!streamed || !this.isLive) return;
 
         // 5. The step is complete. Everything from here to the next yield runs at once, so the history is never
-        //    half-updated.
-        this.recordStep(step, streamed, started);
+        //    half-updated. A reply cut off at the output limit may be dropped instead of recorded (cutOffEnding).
+        const cutOff = this.cutOffEnding(step, streamed.reason, isFinalStep);
+        this.recordStep(step, streamed, started, cutOff === null);
 
         // 6. Wait for the client, answer, or go round again.
-        const ending = this.endStep(step, isFinalStep);
+        const ending = cutOff ?? this.endStep(step, isFinalStep);
         for (const event of ending.events) yield event;
         if (ending.next === 'return') return;
+        this.log('next_step', { reason: ending.reason });
       }
     } finally {
       // The caller stopped reading mid-step (the client went away): the step is dropped and the turn ends.
@@ -536,10 +560,39 @@ export class Turn {
   }
 
   /**
-   * Step 5 of run(): tokens toward the quotas, timing and cache figures in the log, and what the model wrote and
-   * called in the history, as one assistant message.
+   * Step 5 of run(): whether a reply cut off at the output limit is kept, asked for again, or ends the turn.
+   *   1. Not cut off: carry on.
+   *   2. Cut off after it sent calls to the client: carry on. Those calls are whole (a call is sent only once its
+   *      arguments are complete), and the model gets another step after their results, so nothing is lost.
+   *   3. Cut off the first time in this turn, with a step left: drop the step, so nothing half-written reaches the
+   *      history, and ask again with retryOutputTokens. Its refused calls were never sent, so dropping them is safe.
+   *   4. Otherwise: end the turn with a plain message rather than show a half-written answer.
+   * Returns null to carry on, or the step's ending; for any ending, the step is left out of the history.
    */
-  private recordStep(step: ModelStep, streamed: StreamedStep, started: number): void {
+  private cutOffEnding(step: ModelStep, reason: string, isFinalStep: boolean): StepEndingResult | null {
+    // 1. Not cut off.
+    if (reason !== 'length') return null;
+    // 2. Calls already out.
+    if (step.calls.some((call) => call.kind === 'client')) {
+      this.log('reply_cut_off', { outcome: 'kept' });
+      return null;
+    }
+    // 3. Once more, with room to finish.
+    if (!this.outputLimitRaised && !isFinalStep) {
+      this.outputLimitRaised = true;
+      this.log('reply_cut_off', { outcome: 'retry' });
+      return StepEndingResult.nextStep('cut_off_retry');
+    }
+    // 4. Give up.
+    this.log('reply_cut_off', { outcome: 'failed' });
+    return StepEndingResult.failed(this.stopWith('internal', MESSAGES.cutOff, 'the reply was cut off'));
+  }
+
+  /**
+   * Step 5 of run(): tokens toward the quotas, timing and cache figures in the log, and, unless the step is dropped,
+   * what the model wrote and called in the history, as one assistant message.
+   */
+  private recordStep(step: ModelStep, streamed: StreamedStep, started: number, inHistory: boolean): void {
     const { usage: stepUsage, reason } = streamed;
     this.services.quotas.endModelCall(this.session.usage, stepUsage.inputTokens + stepUsage.outputTokens);
     this.log('model_step', {
@@ -547,7 +600,7 @@ export class Turn {
       inputTokens: stepUsage.inputTokens, outputTokens: stepUsage.outputTokens, cacheReadTokens: stepUsage.cacheReadTokens, cacheWriteTokens: stepUsage.cacheWriteTokens,
       cacheHitRate: stepUsage.inputTokens ? stepUsage.cacheReadTokens / stepUsage.inputTokens : null,
     });
-    if (step.text || step.calls.length) {
+    if (inHistory && (step.text || step.calls.length)) {
       this.session.history.push({
         role: 'assistant',
         content: [...(step.text ? [{ type: 'text' as const, text: step.text }] : []),
@@ -578,7 +631,7 @@ export class Turn {
     if (presentsToolCalls.length || !step.calls.length || isFinalStep) return this.answerOrRetry(step, presentsToolCalls, isFinalStep);
     //    c. Only calls the brain answered.
     this.pushToolResults(step);
-    return StepEndingResult.nextStep;
+    return StepEndingResult.nextStep('server_calls');
   }
 
   /**
@@ -638,7 +691,9 @@ export class Turn {
    *   1. Check every card (known IDs, valid arguments, declared fields).
    *   2. On the last allowed step there is no step left to finish with: if the model still needed site tools, or a
    *      card was refused, or there's no answer at all, the turn ends with an error rather than a rushed answer.
-   *   3. A card was refused: the answer goes back to the model to fix; nothing is shown yet.
+   *   3. A card was refused: the answer goes back to the model to fix; nothing is shown yet. Only cardRetriesPerTurn
+   *      times per turn, so a model that keeps getting a card wrong doesn't spend every step on it: after that, the
+   *      refused cards are dropped (the model is told why) and the rest of the answer goes ahead.
    *   4. After an amendment, new presentation calls replace the held cards; with none, the held cards stand.
    *   5. Cards with no words yet: they're kept for the answer, and the model's next step writes the text.
    *   6. Otherwise this is the answer (sendAnswer).
@@ -656,12 +711,16 @@ export class Turn {
       this.log('out_of_steps', { needsMore, refused: refused.length });
       return StepEndingResult.failed(this.stopWith('budget_reached', MESSAGES.outOfSteps, 'out of steps without an answer'));
     }
-    // 3. Refused cards go back to the model.
+    // 3. Refused cards go back to the model, a few times per turn; after that, the cards that passed are shown.
     if (refused.length) {
-      for (const check of checked) check.call.result = errorResult(check.call, check.problem ?? platformError('not_shown'));
       this.log('presentation_refused', refused.map((check) => ({ tool: check.call.name, reason: check.problem!.reason })));
-      this.pushToolResults(step);
-      return StepEndingResult.nextStep;
+      if (this.cardRetries < this.services.limits.cardRetriesPerTurn) {
+        this.cardRetries++;
+        for (const check of checked) check.call.result = errorResult(check.call, check.problem ?? platformError('not_shown'));
+        this.pushToolResults(step);
+        return StepEndingResult.nextStep('cards_refused');
+      }
+      this.log('card_retries_used_up', { retries: this.cardRetries });
     }
     // 4. New cards replace the ones under review.
     const acceptedPresentCards = checked.filter((check) => !check.problem).map((check) => ({ name: check.call.name, args: check.call.input }) as unknown as PresentationCall);
@@ -672,10 +731,12 @@ export class Turn {
     // 5. Cards without words.
     if (acceptedPresentCards.length && !step.text.trim() && !isFinalStep) {
       this.kept.push(...acceptedPresentCards);
-      for (const check of checked) check.call.result = { type: 'tool-result', id: check.call.modelId, name: check.call.name, output: KEPT_NOTE, isError: false };
+      for (const check of checked) {
+        check.call.result = check.problem ? errorResult(check.call, check.problem) : { type: 'tool-result', id: check.call.modelId, name: check.call.name, output: KEPT_NOTE, isError: false };
+      }
       this.log('presentation_kept', { calls: acceptedPresentCards.length });
       this.pushToolResults(step);
-      return StepEndingResult.nextStep;
+      return StepEndingResult.nextStep('cards_kept');
     }
     // 6. The answer.
     return this.sendAnswer(step, checked, acceptedPresentCards);
@@ -741,6 +802,7 @@ export class Turn {
    */
   private async *callModel(): AsyncGenerator<ModelEvent> {
     const { promptPrefix } = this.services.site;
+    const { limits } = this.services;
     // The call's single off switch. Kept on the turn so supersede can abort it from outside ('superseded').
     const controller = new AbortController();
     this.modelCall = controller;
@@ -756,10 +818,11 @@ export class Turn {
     const timer = unref(setTimeout(() => {
       timedOut = true;
       controller.abort(new ModelTimeout('the model took too long'));
-    }, this.services.limits.modelTimeoutMs));
+    }, limits.modelTimeoutMs));
     // A copy of the history: run() keeps adding to the session's history while this call streams.
     const iterator = this.services.model.stream({
-      system: promptPrefix.system, tools: promptPrefix.tools, messages: [...this.session.history], maxOutputTokens: this.services.limits.maxOutputTokens, signal: controller.signal,
+      system: promptPrefix.system, tools: promptPrefix.tools, messages: [...this.session.history],
+      maxOutputTokens: this.outputLimitRaised ? limits.retryOutputTokens : limits.maxOutputTokens, signal: controller.signal,
     })[Symbol.asyncIterator]();
     let finished = false;
     try {

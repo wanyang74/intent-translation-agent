@@ -15,6 +15,10 @@ export interface BrainLimits {
   /** Model calls in one turn. The last one is told to answer with what it has. */
   stepsPerTurn: number;
   maxOutputTokens: number;
+  /** The output limit after a reply is cut off at maxOutputTokens: the step is asked for again once, with this. */
+  retryOutputTokens: number;
+  /** How often in one turn a refused card goes back to the model to fix; after that, the cards that passed are shown. */
+  cardRetriesPerTurn: number;
   /** One model call, from the request to its last event. */
   modelTimeoutMs: number;
   /** How long the brain waits for the client's results. Scripts can take minutes, so it's long. */
@@ -29,6 +33,8 @@ export interface BrainLimits {
 export const DEFAULT_LIMITS: BrainLimits = {
   stepsPerTurn: 10,
   maxOutputTokens: 4096,
+  retryOutputTokens: 16_384,
+  cardRetriesPerTurn: 2,
   modelTimeoutMs: 90_000,
   resultsTimeoutMs: 240_000,
   turnTimeoutMs: 600_000,
@@ -75,6 +81,7 @@ export const MESSAGES = {
   modelSlow: 'The assistant took too long to answer. Try again.',
   turnSlow: 'This took too long. Try a narrower question.',
   noAnswer: "I couldn't put together an answer. Try asking another way.",
+  cutOff: 'The answer came out too long to finish. Try asking for less at once.',
   outOfSteps: "I couldn't finish this within the steps I can take for one request, so I'm not showing a partial answer. Try asking for less at once.",
 } as const;
 

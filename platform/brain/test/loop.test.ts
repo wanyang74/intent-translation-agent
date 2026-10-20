@@ -524,3 +524,64 @@ test('a message for a turn that has ended, or for no turn, is too late; an empty
   const empty = brain.accept({ type: 'amend', sessionId: client.sessionId, traceId: turn.traceId, message: '' });
   assert.deepEqual(empty.ok ? 200 : empty.status, 400);
 });
+
+/** The reasons the loop went round again, in order, from the brain's log. */
+const nextSteps = (log: { kind: string; detail: unknown }[]) => log.filter((entry) => entry.kind === 'next_step').map((entry) => (entry.detail as { reason: string }).reason);
+
+test('every way round again without the client names its reason: calls the brain answered, refused cards, cards with no words', async () => {
+  const { client, log, brain } = setup([
+    { calls: [{ name: 'load_skill', input: { name: 'gift_ideas' } }] },
+    { calls: [search('shoes')] },
+    { text: 'Here.', calls: [items([99])] },
+    { calls: [items([1])] },
+    { text: 'Found one.' },
+  ]);
+  const turn = await client.turn('a gift for my dad', HOME);
+  assert.equal(turn.answer?.text, 'Found one.');
+  assert.deepEqual(nextSteps(log), ['server_calls', 'cards_refused', 'cards_kept'], 'waiting for the client is not a next step: the stream ends there');
+  assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
+});
+
+test('a refused card goes back to the model only cardRetriesPerTurn times; then the cards that passed are shown', async () => {
+  const { client, model, log, brain } = setup([
+    { calls: [search('shoes')] },
+    { text: 'Here.', calls: [items([99])] },
+    { text: 'Here.', calls: [items([98])] },
+    { text: 'Here is one.', calls: [items([97]), items([1])] },
+  ]);
+  const turn = await client.turn('shoes', HOME);
+  assert.equal(model.requests.length, 4, 'two retries, then no more');
+  assert.deepEqual(nextSteps(log), ['cards_refused', 'cards_refused']);
+  assert.ok(log.some((entry) => entry.kind === 'card_retries_used_up'));
+  assert.deepEqual(turn.answer, { type: 'answer', traceId: turn.traceId, text: 'Here is one.', present: [{ name: 'present_items', args: { entity: 'product', ids: [1] } }, notice] });
+  const history = brain.historyOf(client.sessionId)!;
+  assert.deepEqual(reasons(history.at(-1)!.content as ToolResultPart[]), ['unknown_id', 'ok'], 'the dropped card is closed with its reason');
+  assert.deepEqual(historyProblems(history), []);
+});
+
+test('a reply cut off at the output limit is dropped and asked for again once, with a larger limit; a second cut-off ends the turn', async () => {
+  const retried = setup([{ text: 'The first half of a long', finish: 'length' }, { text: 'The whole answer.' }]);
+  const turn = await retried.client.turn('compare everything', HOME);
+  assert.equal(turn.answer?.text, 'The whole answer.');
+  assert.deepEqual(retried.model.requests.map((request) => request.maxOutputTokens), [4096, 16_384]);
+  assert.deepEqual(retried.model.requests[1]!.messages, retried.model.requests[0]!.messages, 'the cut-off step never reached the history');
+  assert.deepEqual(nextSteps(retried.log), ['cut_off_retry']);
+  assert.deepEqual(historyProblems(retried.brain.historyOf(retried.client.sessionId)!), []);
+
+  const twice = setup([{ text: 'Half', finish: 'length' }, { text: 'Still half', finish: 'length' }, { text: 'Fresh start.' }]);
+  const failed = await twice.client.turn('compare everything', HOME);
+  assert.deepEqual(failed.error, { type: 'error', traceId: failed.traceId, code: 'internal', message: 'The answer came out too long to finish. Try asking for less at once.' });
+  assert.equal(failed.answer, null, 'no half-written answer is shown');
+  assert.equal((await twice.client.turn('just the price', HOME)).answer?.text, 'Fresh start.');
+  assert.deepEqual(historyProblems(twice.brain.historyOf(twice.client.sessionId)!), []);
+});
+
+test('a reply cut off after it sent calls to the client is kept: the calls are whole, and the model goes on after their results', async () => {
+  const { client, model, log, brain } = setup([{ text: 'Searching…', calls: [search('a')], finish: 'length' }, { text: 'Done.' }]);
+  const turn = await client.turn('shoes', HOME);
+  assert.deepEqual(callIds(turn), ['call_1']);
+  assert.equal(turn.answer?.text, 'Done.');
+  assert.deepEqual(model.requests.map((request) => request.maxOutputTokens), [4096, 4096]);
+  assert.ok(log.some((entry) => entry.kind === 'reply_cut_off' && (entry.detail as { outcome: string }).outcome === 'kept'));
+  assert.deepEqual(historyProblems(brain.historyOf(client.sessionId)!), []);
+});

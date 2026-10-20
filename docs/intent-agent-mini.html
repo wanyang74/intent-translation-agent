@@ -1027,6 +1027,36 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 </div>
 <div class="legend"><span><i class="lg lg-core"></i>One round, repeated</span><span><i class="lg lg-loop"></i>Goes round again</span><span><i class="lg lg-ok"></i>Ends with an answer</span><span><i class="lg lg-stop"></i>Ends with an error</span><span><i class="lg lg-ext"></i>The other side</span></div>
 <p class="note">The brain refuses results while a turn is still running (409), and accepts them only for exactly the calls it is waiting on. One <code>run()</code> ends before the client can send results, so there are never two at once for one turn.</p>
+<p class="sub"><b>Every exit.</b> A step can end only in one of the ways <code>StepEndingResult</code> lists. Four of them end the stream; <code>nextStep</code> goes round again (the next table).</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Ending</th><th>When</th><th>The client gets</th></tr></thead>
+          <tbody>
+            <tr><td><code>answered</code></td><td>The model presented, or wrote only text, and every card passed (or the retries for refused ones are used up)</td><td>The answer, with required notices added. The turn is done</td></tr>
+            <tr><td><code>awaitingResults</code></td><td>The step called site tools</td><td>A progress line if the model wrote one, then <code>await_results</code>. The stream ends; <code>/v1/results</code> resumes the turn</td></tr>
+            <tr><td><code>failed</code></td><td>The turn took too long; a quota is used up; the model failed or was too slow; the last step still needed tools or had a refused card; the reply was cut off twice</td><td>An error with a plain message. The turn is done, and the history stays valid</td></tr>
+            <tr><td><code>stopped</code></td><td>A new message replaced the turn, or the client went away</td><td>Nothing: the new turn speaks for it, or no one is listening</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sub"><b>Every loop and its guard.</b> Each way round again without the client names its reason (<code>NextStepReason</code>), and the brain logs it as <code>next_step</code>. Every one has a guard, so none can spin.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Reason</th><th>Trigger</th><th>What changes</th><th>Guard</th></tr></thead>
+          <tbody>
+            <tr><td><code>server_calls</code></td><td>The step made only calls the brain answered itself: skills, and refused calls</td><td>Their results go into the history</td><td><code>stepsPerTurn</code> (10)</td></tr>
+            <tr><td><code>cards_refused</code></td><td>A card failed its checks</td><td>The refusals go back to the model; nothing is shown yet</td><td><code>cardRetriesPerTurn</code> (2). After that, the refused cards are dropped, the model is told why, and the cards that passed are shown</td></tr>
+            <tr><td><code>cards_kept</code></td><td>Cards came with no words</td><td>The cards are held, and the model writes the text</td><td><code>stepsPerTurn</code></td></tr>
+            <tr><td><code>cut_off_retry</code></td><td>The reply hit the output limit (<code>maxOutputTokens</code>, 4,096) before it sent anything to the client</td><td>The step is dropped, so nothing half-written reaches the history, and asked for again with <code>retryOutputTokens</code> (16,384)</td><td>Once per turn; a second cut-off ends the turn. A reply cut off after it sent client calls is kept: those calls are whole, and the model goes on after their results</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Waiting for the client isn't one of these loops: the stream ends, and the client's results start a new <code>run()</code>. That wait is guarded by <code>resultsTimeoutMs</code>, and the whole turn by <code>stepsPerTurn</code> and <code>turnTimeoutMs</code>.</p>
+      <p class="sub"><b>Not built yet.</b> Two gaps found by comparing the loop with Claude Code's <code>queryLoop</code>, tracked here until we take them on.</p>
+      <div class="qs">
+        <div class="q"><b>Model fallback</b> · Today an overloaded or failed model call ends the turn with "couldn't answer". Planned: retry once, possibly on a second model, and hold the error back from the client until the retry has been tried. Calls already sent to the client (eager dispatch) mean a retry can't just discard the step: it has to keep those calls and their results.</div>
+        <div class="q"><b>History size</b> · A session's history only grows, and listing results are large, so a long search gets slower and costlier, and eventually too long to send. Planned, cheapest first: cap each tool result's size in the history, turn older turns' results into short stubs, and summarize only as a last resort. Needs a design proposal first: it changes what the model can see, has to keep the IDs it can still use, and rewriting old history breaks the prompt cache for that request.</div>
+      </div>
 </div>
 </details>
 <details class="fold lvl4" id="brain-skills" open>
