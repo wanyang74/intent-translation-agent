@@ -756,6 +756,55 @@
     "file": "search/search-no-results.json"
   },
   {
+    "id": "search-no-results-lowestprice",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, LowestPrice: no matching cars",
+    "file": "search/search-no-results-lowestprice.json"
+  },
+  {
+    "id": "search-no-results-highestprice",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, HighestPrice: no matching cars",
+    "file": "search/search-no-results-highestprice.json"
+  },
+  {
+    "id": "search-no-results-lowestmileage",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, LowestMileage: no matching cars",
+    "file": "search/search-no-results-lowestmileage.json"
+  },
+  {
+    "id": "search-no-results-newestyear",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, NewestYear: no matching cars",
+    "file": "search/search-no-results-newestyear.json"
+  },
+  {
+    "id": "search-no-results-newestinventory",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, NewestInventory: no matching cars",
+    "file": "search/search-no-results-newestinventory.json"
+  },
+  {
+    "id": "search-no-results-acquisitiontime",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, AcquisitionTime: no matching cars",
+    "file": "search/search-no-results-acquisitiontime.json"
+  },
+  {
+    "id": "search-no-results-freeshipping",
+    "endpoint": "search",
+    "kind": "synthetic",
+    "description": "Tesla · 2026 or newer · under 100 mi, page 1, FreeShipping: no matching cars",
+    "file": "search/search-no-results-freeshipping.json"
+  },
+  {
     "id": "availability-no-delivery",
     "endpoint": "availability",
     "kind": "synthetic",

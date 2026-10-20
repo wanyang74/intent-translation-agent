@@ -70,6 +70,9 @@ test("search errors: no matches, and a changed response shape, come back as Carv
   const { coreSession, log } = await session();
   const none = await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla', year_min: 2026, mileage_max: 100 });
   assert.deepEqual(!none.ok && [none.error.code, none.error.reason], ['no_results', 'no_results']);
+  // An empty list is empty in any order, so a sort the model adds must not make the request unrecorded.
+  const sorted = await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla', year_min: 2026, mileage_max: 100, sort: 'LowestPrice' });
+  assert.deepEqual(!sorted.ok && [sorted.error.code, sorted.error.reason], ['no_results', 'no_results']);
   const changed = await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla', page: 30 });
   assert.deepEqual(!changed.ok && [changed.error.code, changed.error.reason], ['format_changed', 'response_changed']);
   assert.ok(log.some((entry) => entry.kind === 'response_check'), 'the change monitor will read this');

@@ -5,8 +5,10 @@
 //   npm run evals -- --gate                exit with 1 when a gate fails
 //   npm run evals -- --save-baseline       record each site's summary as its baseline (sites/<id>/evals/baseline.json)
 //   npm run evals -- --save-references     keep each passing case's model steps for npm test to replay
-// Every trial is written to sites/<id>/evals/runs/ (git-ignored) for reading afterwards. The API key comes from
-// ANTHROPIC_API_KEY or .env.local; no site is called (FakeHost answers from the fixtures).
+// Each site's run starts with one unscored run of its first case, which warms the prompt cache so the cache hit rate
+// doesn't depend on how long ago the last run was. Every trial is written to sites/<id>/evals/runs/ (git-ignored) for
+// reading afterwards. The API key comes from ANTHROPIC_API_KEY or .env.local; no site is called (FakeHost answers from
+// the fixtures).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
@@ -77,8 +79,13 @@ for (const site of (options.site ?? listSites()).filter(hasEvals)) {
   }
   if (!cases.length) continue;
 
-  // 2. Every case, `trials` times, a few at a time.
+  // 2. Warm the prompt cache: one unscored run of the first case. Trials start several at a time, and on a cold cache
+  //    each of them would write the site's prompt prefix instead of reading it, so the cache hit rate would measure
+  //    how recently the last run happened, not the prompt.
   console.log(`\n${site}: ${cases.length} cases × ${trials} trial(s) with ${model.name}`);
+  await runCase(materials, cases[0]!, model).catch((error) => console.log(`  cache warm-up failed (${String(error).slice(0, 160)}); running anyway`));
+
+  // 3. Every case, `trials` times, a few at a time.
   const jobs = cases.flatMap((evalCase) => Array.from({ length: trials }, (_, i) => async () => {
     const trial = await runCase(materials, evalCase, model).catch((error): Trial => ({
       site, caseId: evalCase.id, category: evalCase.category, outcome: 'none', answer: null, errorMessage: null, calls: [], progress: [],
@@ -92,7 +99,7 @@ for (const site of (options.site ?? listSites()).filter(hasEvals)) {
   }));
   const graded = await pool(jobs, concurrency);
 
-  // 3. The run, kept for reading; the summary and the gates.
+  // 4. The run, kept for reading; the summary and the gates.
   const runsDir = path.join(evalsDir(site), 'runs');
   mkdirSync(runsDir, { recursive: true });
   const runFile = path.join(runsDir, `${new Date().toISOString().replace(/[:.]/g, '-')}.json`);
@@ -105,7 +112,7 @@ for (const site of (options.site ?? listSites()).filter(hasEvals)) {
   console.log(`  gates${baseline ? ` (against the baseline of ${baseline.date.slice(0, 10)})` : ''}:\n    ${result.lines.join('\n    ')}`);
   if (!result.pass) allPass = false;
 
-  // 4. What to keep: the baseline, and the steps of each case's first passing trial.
+  // 5. What to keep: the baseline, and the steps of each case's first passing trial.
   if (options['save-baseline']) {
     writeFileSync(baselineFile, JSON.stringify(summary, null, 2) + '\n');
     console.log(`  baseline saved: ${path.relative(repoRoot, baselineFile)}`);

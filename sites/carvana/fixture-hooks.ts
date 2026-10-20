@@ -1,6 +1,7 @@
 // Carvana's additions to the fixture builder (platform/testkit/scripts/build-fixtures.ts):
 //   describe: one line per recorded request, in Carvana's terms
 //   derive:   errors seen live in phase 0 (observed) and failures expected but not seen yet (synthetic)
+import { readFileSync } from 'node:fs';
 import type { DeriveContext, Fixture } from '../../platform/testkit/src/fixtures.ts';
 
 type Derived = Omit<Fixture, 'site'>;
@@ -32,6 +33,8 @@ export function describe(endpoint: string, req: Record<string, any>, res: Record
 
 const without = (body: unknown, ...keys: string[]) => Object.fromEntries(Object.entries(body as Record<string, unknown>).filter(([key]) => !keys.includes(key)));
 const PHASE0 = 'phase 0 live check, 2026-10-11';
+/** Carvana's sort orders, from search_vehicles' own schema, so a new one gets its fixtures too. */
+const SORTS: string[] = JSON.parse(readFileSync(new URL('./schemas/tools/search_vehicles.input.json', import.meta.url), 'utf8')).properties.sort.enum;
 
 export function derive({ first, placeholder }: DeriveContext): Derived[] {
   const out: Derived[] = [];
@@ -67,19 +70,26 @@ export function derive({ first, placeholder }: DeriveContext): Derived[] {
       },
     });
   }
+  // A search with no matches, once per sort order: an empty list is empty in any order, so the model's choice of
+  // sort shouldn't make the request unrecorded. The recorded sort keeps the original ID.
   {
     const fixture = first('search');
-    const body = structuredClone(fixture.request.body) as Record<string, any>;
-    body.filters = { makes: [{ name: 'Tesla' }], year: { min: 2026 }, mileage: { max: 100 } };
     const res = structuredClone(fixture.response.body) as Record<string, any>;
     res.inventory.vehicles = [];
     res.inventory.conditionalTiles = [];
     Object.assign(res.inventory.pagination, { totalMatchedInventory: 0, totalMatchedPages: 0 });
-    out.push({
-      ...fixture, id: 'search-no-results', kind: 'synthetic', source: `edited copy of ${fixture.id}`,
-      description: `${describeFilters(body.filters)}, page 1: no matching cars`,
-      request: { ...fixture.request, body }, response: { ...fixture.response, body: res },
-    });
+    const recordedSort = (fixture.request.body as Record<string, any>).sortBy;
+    for (const sort of [recordedSort, ...SORTS.filter((candidate) => candidate !== recordedSort)]) {
+      const body = structuredClone(fixture.request.body) as Record<string, any>;
+      body.filters = { makes: [{ name: 'Tesla' }], year: { min: 2026 }, mileage: { max: 100 } };
+      body.sortBy = sort;
+      out.push({
+        ...fixture, id: sort === recordedSort ? 'search-no-results' : `search-no-results-${sort.toLowerCase()}`, kind: 'synthetic',
+        source: `edited copy of ${fixture.id}`,
+        description: `${describeFilters(body.filters)}, page 1${sort === recordedSort ? '' : `, ${sort}`}: no matching cars`,
+        request: { ...fixture.request, body }, response: { ...fixture.response, body: structuredClone(res) },
+      });
+    }
   }
   {
     const fixture = first('availability');
