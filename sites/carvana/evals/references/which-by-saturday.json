@@ -1,0 +1,76 @@
+{
+  "caseId": "which-by-saturday",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "load_skill",
+          "input": {
+            "name": "delivery_and_pickup"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_delivery_dates",
+          "input": {
+            "zip5": "94402",
+            "vehicleIds": [
+              4812031,
+              4775681,
+              4695181,
+              4688468,
+              4781875,
+              4760129,
+              4795274,
+              4784285,
+              4801398,
+              4782810,
+              4730680,
+              4761249,
+              4768607,
+              4796580,
+              4799447,
+              4744652,
+              4735860,
+              4795494,
+              4794078,
+              4759131,
+              4805089
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4812031,
+              4795274,
+              4775681,
+              4695181,
+              4760129,
+              4761249
+            ],
+            "heading": "Delivered by Saturday"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Six of the 21 gray, black-interior Teslas I checked can be delivered to 94402 by Saturday, Oct 10 (Pacific time). They're on the first page of results. I didn't check the other 110 matches.\n\n- **Saturday evening delivery:** The first two are the 2023 Model Y Long Range and the 2023 Model Y Standard, both from San Jose. They arrive around 5 PM Pacific.\n- **Saturday afternoon delivery:** The other four arrive from Tracy around 2:30 PM Pacific.\n\nPickup in Daly City isn't available until Sunday at the earliest.\n\nI can check more pages for Saturday delivery if you'd like.",
+      "calls": []
+    }
+  ]
+}

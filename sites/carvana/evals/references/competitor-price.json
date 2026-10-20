@@ -1,0 +1,38 @@
+{
+  "caseId": "competitor-price",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't see CarMax's prices or inventory, so I can't tell you whether this car would be cheaper there. I can only speak to Carvana. This car is $35,590. The estimated total with taxes and fees is $39,427, and delivery is Saturday. To compare, look up the same make, model, year, trim and mileage on CarMax. Then compare the total cost, not just the sticker price.",
+      "calls": []
+    }
+  ]
+}

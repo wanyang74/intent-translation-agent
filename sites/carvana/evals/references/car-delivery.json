@@ -1,0 +1,43 @@
+{
+  "caseId": "car-delivery",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.626Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        },
+        {
+          "name": "get_delivery_dates",
+          "input": {
+            "vehicleIds": [
+              4812031
+            ],
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "You could get it as soon as Saturday with delivery to your area (94402). Pickup is also available Sunday at the Daly City, CA location. The delivery quote shows a GAP waiver is available.",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

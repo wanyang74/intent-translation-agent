@@ -1,0 +1,23 @@
+{
+  "caseId": "book-it",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:18:05.428Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "flight_offer",
+            "id": "off_7GQ2"
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't book flights. I can only show them to you. The card above is the $389.40 nonstop, Demo Air DA101. Open it on the site to book it, and sign in there if it asks. The offer expires at 18:30 UTC today. If it lapses, I can search again for a fresh price.\n\nOne correction to my earlier message: I said the cheapest flight stops in Chicago. The results don't give the connection city, so I shouldn't have said that.",
+      "calls": []
+    }
+  ]
+}

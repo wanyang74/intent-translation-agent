@@ -1,0 +1,76 @@
+{
+  "caseId": "any-color",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100
+          }
+        },
+        {
+          "name": "suggest_refinements",
+          "input": {
+            "zip5": "94402",
+            "current": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "With any colors, 480 Teslas match: 2023 or newer and under 42,100 miles. Here are the most popular.",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4691945,
+              4767068,
+              4797866,
+              4755644,
+              4798050,
+              4776106,
+              4747521,
+              4775681
+            ],
+            "heading": "Any color, under 42,100 miles",
+            "layout": "carousel"
+          }
+        },
+        {
+          "name": "present_options",
+          "input": {
+            "entity": "suggestion",
+            "ids": [
+              "ec02fc90-aeb0-481d-a3a0-164c907d466e",
+              "49dce5e5-f36f-45df-ac35-e9e48f27fd56",
+              "b9877d07-7d07-4425-9120-659afee8a78f",
+              "00fcbffa-2389-4e26-997b-8544a4d03da9",
+              "cbdd73fa-c802-4a74-a8af-a9d4b401ac08"
+            ],
+            "heading": "Narrow it down"
+          }
+        },
+        {
+          "name": "present_notice",
+          "input": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    }
+  ]
+}

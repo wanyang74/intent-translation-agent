@@ -1,0 +1,52 @@
+{
+  "caseId": "add-mileage",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4798050,
+              4788806,
+              4797866,
+              4794318,
+              4688468,
+              4747521,
+              4755213,
+              4812031,
+              4691945,
+              4795274,
+              4776106,
+              4781875
+            ],
+            "heading": "Under 42,100 miles, lowest price first",
+            "layout": "carousel"
+          }
+        }
+      ]
+    },
+    {
+      "text": "480 Teslas are 2023 or newer with under 42,100 miles. I checked the first page of 24 results and picked 12 of them. I ordered those by price, lowest first, and left out the pricier ones. I haven't checked delivery dates yet. Want me to narrow by model, such as Model 3 or Model Y, or by color or budget?",
+      "calls": []
+    }
+  ]
+}

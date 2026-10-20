@@ -1,0 +1,45 @@
+{
+  "caseId": "car-everything",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.623Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        },
+        {
+          "name": "get_owner_reviews",
+          "input": {
+            "vehicleId": 4812031
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview",
+              "reviews"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "Here's what I found for this car, quoted for delivery to 94402:\n\n- **Price:** $35,590.\n- **All-in cost:** the estimated total is $39,427, which includes about $3,837 in estimated taxes and fees. Final amounts are set at checkout.\n- **GAP waiver:** $1,195.\n- **Delivery:** the earliest is Saturday.\n\n**Owner reviews:** these cover the Tesla Model Y generally, not this exact car. 1,218 of 1,518 ratings are 4 or 5 stars, and 90 are 1 or 2 stars.\n\n- **Praise:** owners like the fun, quick drive, the safety features, the comfort, and not having to buy gas. They also like the low running costs if you can charge at home.\n- **Complaints:** some report weak climate control, no phone mirroring, a GPS that gets them lost, and wind noise. Others mention a trunk that won't close properly, cruise control that brakes for no reason, and slow service appointments.",
+      "calls": []
+    }
+  ]
+}

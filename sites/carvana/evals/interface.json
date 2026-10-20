@@ -1,0 +1,234 @@
+{
+  "category": "interface",
+  "defaults": {
+    "now": "2026-10-08T19:15:00Z",
+    "page": {
+      "url": "https://www.carvana.com/",
+      "pageType": "other",
+      "location": {
+        "postalCode": "94402"
+      },
+      "locale": "en-US"
+    }
+  },
+  "cases": [
+    {
+      "id": "no-results",
+      "quick": true,
+      "description": "A search with no matches: said plainly, nothing on screen",
+      "message": "Teslas from 2026 or newer with 100 miles or less",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2026,
+              "mileage_max": 100
+            }
+          }
+        ],
+        "showsNoItems": true,
+        "text": {
+          "matches": [
+            "no |none|couldn't find|didn't find|0 "
+          ]
+        }
+      }
+    },
+    {
+      "id": "pricing-error",
+      "description": "The site can't price a car: say so and offer its page, with no made-up price",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "99701",
+          "region": "AK"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      },
+      "fixtures": [
+        {
+          "from": "availability-07",
+          "copyAs": "availability-07-at-99701",
+          "set": {
+            "request.body.zipCode": "99701"
+          }
+        }
+      ],
+      "message": "What would this one cost me all in?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031,
+              "zip5": "99701"
+            }
+          }
+        ],
+        "text": {
+          "matches": [
+            "couldn't|could not|can't|cannot|unable|wasn't able|isn't available"
+          ],
+          "excludes": [
+            "39,427"
+          ]
+        }
+      }
+    },
+    {
+      "id": "suggestions-as-options",
+      "description": "The site's own refinements are offered as options to tap, fetched again or reused",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 1
+      },
+      "message": "What filters could narrow these down?",
+      "expect": {
+        "shows": [
+          {
+            "type": "options",
+            "entity": "suggestion",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "progress-line",
+      "description": "The user sees what the agent is doing while tools run",
+      "message": "Gray AWD Tesla, 2023 or newer, under 42,100 miles, black interior",
+      "expect": {
+        "progress": true,
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100,
+              "colors": [
+                "Gray"
+              ],
+              "interior_colors": [
+                "Black"
+              ],
+              "drive_types": [
+                "Awd"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "estimated-total-notice",
+      "description": "Estimated totals on screen always come with the notice",
+      "message": "Show me Teslas from 2023 or newer",
+      "expect": {
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          },
+          {
+            "notice": "estimated_total"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vague-car",
+      "description": "Too vague to search: ask what they're after (paired with tesla-browse, which should just search)",
+      "message": "I want a car.",
+      "expect": {
+        "noCalls": true,
+        "asks": true
+      }
+    },
+    {
+      "id": "call-budget",
+      "description": "A request beyond one page: stay within the call budget and say what was checked",
+      "message": "Check delivery dates for every Tesla Carvana has.",
+      "expect": {
+        "maxCalls": 6,
+        "text": {
+          "matches": [
+            "first|page|of the|only|checked"
+          ]
+        }
+      }
+    },
+    {
+      "id": "detail-for-one-car",
+      "description": "One car is shown as a detail card, not a list",
+      "message": "Give me the full price breakdown for this car.",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "shows": [
+          {
+            "entity": "vehicle",
+            "includes": [
+              4812031
+            ]
+          },
+          {
+            "notice": "estimated_total"
+          }
+        ]
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    }
+  ]
+}

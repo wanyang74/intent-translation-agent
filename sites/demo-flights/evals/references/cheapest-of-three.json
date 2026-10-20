@@ -1,0 +1,11 @@
+{
+  "caseId": "cheapest-of-three",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:18:05.428Z",
+  "steps": [
+    {
+      "text": "The cheapest is the one-stop flight, DA215 / DA402, at $301.20 total. It leaves at 13:00 UTC and takes 8h10m. I need to correct my last message, because I said the stop was in Chicago. The search results don't say where the stop is.\n\nThe cheapest nonstop is DA101 at $389.40. These offers expire at 18:30 UTC today.",
+      "calls": []
+    }
+  ]
+}

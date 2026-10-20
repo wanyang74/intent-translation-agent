@@ -1,0 +1,36 @@
+{
+  "caseId": "my-trips",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:18:05.428Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_trips",
+          "input": {
+            "status": "upcoming"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "trip",
+            "ids": [
+              "Q7K2LM"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "You have one upcoming trip: a confirmed flight from SFO to SEA on December 3. The card has the details.",
+      "calls": []
+    }
+  ]
+}

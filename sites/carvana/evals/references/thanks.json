@@ -1,0 +1,11 @@
+{
+  "caseId": "thanks",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "You're welcome! If you'd like, I can check the remaining 54 matches for Saturday delivery, or look at owner reviews for any of these Teslas.",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "caseId": "only-awd",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100,
+            "colors": [
+              "Gray"
+            ],
+            "interior_colors": [
+              "Black"
+            ],
+            "drive_types": [
+              "Awd"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "75 AWD Teslas match your filters. I checked the first 21 of them, and I've shown the 8 cheapest of those, cheapest first. I can check the other pages if you want.",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4681880,
+              4799447,
+              4787346,
+              4802209,
+              4694969,
+              4812031,
+              4795274,
+              4801523
+            ],
+            "heading": "AWD, gray, black interior — lowest price first",
+            "layout": "carousel"
+          }
+        },
+        {
+          "name": "present_notice",
+          "input": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    }
+  ]
+}

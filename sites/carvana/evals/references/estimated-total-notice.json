@@ -1,0 +1,48 @@
+{
+  "caseId": "estimated-total-notice",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "Searching for Teslas 2023 or newer…",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4709280,
+              4769484,
+              4782454,
+              4724980,
+              4788806,
+              4756196,
+              4797866,
+              4794318,
+              4773567,
+              4747521
+            ],
+            "heading": "Lowest-priced Teslas, 2023 or newer"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Carvana has 780 Teslas from 2023 or newer near 94402. I checked only the first page of 24 results. I'm showing the 10 cheapest from that page, lowest price first. They include Model 3 and Model Y in several trims. I haven't checked delivery dates yet. I can narrow by model, color, price or mileage, or check the remaining pages.",
+      "calls": []
+    }
+  ]
+}

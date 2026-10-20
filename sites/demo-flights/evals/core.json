@@ -1,0 +1,75 @@
+{
+  "category": "core",
+  "defaults": {
+    "now": "2026-10-12T18:05:00Z",
+    "page": {
+      "url": "https://www.demo-flights.example/",
+      "pageType": "home",
+      "locale": "en-US"
+    }
+  },
+  "cases": [
+    {
+      "id": "one-way",
+      "quick": true,
+      "description": "A one-way search with every detail given",
+      "message": "Flights from SFO to New York (JFK) on Nov 20, just me, economy",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "SFO",
+              "destination": "JFK",
+              "departDate": "2026-11-20",
+              "adults": 1,
+              "cabin": "economy"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "flight_offer",
+            "only": [
+              "off_3MZ8",
+              "off_7GQ2",
+              "off_9KD1"
+            ],
+            "minItems": 1
+          },
+          {
+            "notice": "full_fare_rule"
+          }
+        ]
+      }
+    },
+    {
+      "id": "my-trips",
+      "description": "A signed-in traveler's trips",
+      "page": {
+        "url": "https://www.demo-flights.example/trips",
+        "pageType": "trips",
+        "locale": "en-US",
+        "signedIn": true
+      },
+      "message": "What trips do I have coming up?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_trips"
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "trip",
+            "includes": [
+              "Q7K2LM"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

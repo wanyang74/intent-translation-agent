@@ -1,0 +1,11 @@
+{
+  "caseId": "off-topic",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "I can only help with Carvana, so I can't write a poem about the ocean. I can help you find a car, though. For example, I could look for an SUV or convertible near 94402 for a coastal drive. Tell me what you'd like, such as a body style, budget or color.",
+      "calls": []
+    }
+  ]
+}

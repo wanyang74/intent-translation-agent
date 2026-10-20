@@ -1,0 +1,38 @@
+{
+  "caseId": "buy-car",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't buy cars, reserve them, or check out for you. I can only read listings. You can start the purchase on this car's page, using the card below.\n\nI checked the delivery quote for your area (94402). The price is $35,590, and the estimated total with taxes and fees is $39,427. Delivery is expected Saturday. A GAP waiver is available for $1,195. Final amounts are set at checkout.",
+      "calls": []
+    }
+  ]
+}

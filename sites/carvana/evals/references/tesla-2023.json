@@ -1,0 +1,95 @@
+{
+  "caseId": "tesla-2023",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "Searching Teslas from 2023 or newer…",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4709280,
+              4769484,
+              4782454,
+              4724980,
+              4788806,
+              4797866,
+              4756196,
+              4794318,
+              4773567,
+              4793766,
+              4779097,
+              4782382,
+              4747521,
+              4812031,
+              4687945,
+              4776106,
+              4743347,
+              4767068,
+              4788898,
+              4755644,
+              4783256,
+              4691945
+            ],
+            "heading": "Teslas, 2023 and newer"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4709280,
+              4769484,
+              4782454,
+              4724980,
+              4788806,
+              4797866,
+              4756196,
+              4794318,
+              4773567,
+              4793766,
+              4779097,
+              4782382,
+              4747521,
+              4812031,
+              4776106,
+              4743347,
+              4767068,
+              4788898,
+              4755644,
+              4783256,
+              4691945
+            ],
+            "heading": "Teslas, 2023 and newer"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Carvana has 780 Teslas from 2023 or newer near 94402. I checked the first page, which has 24 cars, and I'm showing 21 of them. I ordered those from lowest to highest price, roughly. They include Model 3 and Model Y in a range of trims and mileages. I haven't checked delivery dates yet.\n\nI can narrow the list by model, budget, mileage, color or year if you'd like.",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "caseId": "tesla-all-filters",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "colors": [
+              "Gray"
+            ],
+            "drive_types": [
+              "Awd"
+            ],
+            "interior_colors": [
+              "Black"
+            ],
+            "year_min": 2023,
+            "mileage_max": 42100
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4681880,
+              4787346,
+              4799447,
+              4812031,
+              4694969,
+              4802209,
+              4795274,
+              4801523
+            ],
+            "heading": "Lowest-priced gray AWD Teslas"
+          }
+        }
+      ]
+    },
+    {
+      "text": "I found 75 gray AWD Teslas from 2023 or newer, with under 42,100 miles and a black interior. I only looked at the first page of 24. I'm showing the eight cheapest from that page, with the lowest price first. They're all 2023 Model Ys with 22,000 to 38,000 miles. I haven't checked delivery dates yet. I can look at the other pages, narrow by model or year, or check delivery dates.",
+      "calls": []
+    }
+  ]
+}

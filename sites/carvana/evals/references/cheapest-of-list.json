@@ -1,0 +1,27 @@
+{
+  "caseId": "cheapest-of-list",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4694969,
+              4812031
+            ],
+            "layout": "cards"
+          }
+        }
+      ]
+    },
+    {
+      "text": "There's a tie for cheapest. Two 2023 Model Ys are both $35,590, with an estimated total of $39,427.\n\n- **Standard trim:** 22,855 miles.\n- **Long Range trim:** 27,689 miles.\n\nBoth are gray and can be delivered by Saturday. The Standard has fewer miles. The Long Range is usually the higher trim, but I haven't compared their specs.",
+      "calls": []
+    }
+  ]
+}

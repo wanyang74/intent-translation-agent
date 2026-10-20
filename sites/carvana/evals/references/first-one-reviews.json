@@ -1,0 +1,22 @@
+{
+  "caseId": "first-one-reviews",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_owner_reviews",
+          "input": {
+            "vehicleId": 4812031
+          }
+        }
+      ]
+    },
+    {
+      "text": "Owners of the 2023 Model Y Long Range mostly like it. The star counts add up to 1,518 ratings: 727 five-star, 494 four-star, 207 three-star, 78 two-star and 12 one-star. The tool also says 308 reviews, so I'm going by the star counts.\n\n**Praise:** Owners like the quick acceleration, the comfortable and quiet ride, the safety features, the simple tech, and not having to buy gas. Several say charging at home is easy and saves money.\n\n**Complaints:** A few owners report uneven heating and cooling, wind noise at highway speeds, and a trunk that doesn't always register as closed. Others mention unreliable navigation, no phone mirroring, and cruise control or Autosteer that brakes for no clear reason. One owner says service appointments take months. One reviewer advises against buying an EV if you can't charge at home.",
+      "calls": []
+    }
+  ]
+}

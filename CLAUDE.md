@@ -17,7 +17,9 @@ platform/                  never names a site; a test fails if it does
   testkit/                 fixtures, FakeHost, FakeModel, FakeBrain, FakeClient, FakeSurface, conversation checker
   core/src/                core.js, the client tool runtime, by layer: boundary, execute, link, present, runtime, shared
   brain/src/               the agentic brain (server), by layer: agent, model, prompt, server, system
-sites/<id>/                one site pack per site: site.yaml, schemas, fixtures, conversations, skills, tools.ts, research
+  evals/                   snapshot evals: the runner (real core.js + real brain + a model), graders, gates, CLI
+sites/<id>/                one site pack per site: site.yaml, schemas, fixtures, conversations, skills, tools.ts,
+                           evals (cases by category, baseline.json, references/), research
 docs/                      local copy of the design doc
 ```
 
@@ -99,6 +101,15 @@ docs/                      local copy of the design doc
   alone and deterministically. Code paths are tested with FakeModel; answer quality only with evals.
 - Every platform test runs on every site pack. Every bug becomes a test at the lowest level that could have caught it.
 - Before calling work done: `npm test` and `npm run typecheck` both pass. Live tests are opt-in (`npm run test:live`).
+- Integration (L5) swaps one fake at a time: `platform/brain/test/integration.test.ts` runs every example conversation
+  through real core.js and the real brain (FakeHost, FakeModel), in process and over HTTP, and the link's traffic must
+  equal the saved conversation. `test:live` then runs the same turns with the real model.
+- Evals judge answer quality with the real model, so they cost money and run only on request: `npm run evals`
+  (`--quick` for what each change runs, `--gate` for CI, `--trials`, `--case`, `--site`). Cases grade the outcome, not
+  the path. A trial whose request no fixture answers is *unrecorded*: the case needs a recording, not a looser
+  expectation. Never weaken a case to make a model pass; fix the case only when the case itself is wrong.
+- A passing model run can be kept as a reference (`--save-references`); `npm test` replays every reference with a
+  FakeModel, so a code change that breaks a known-good answer fails deterministically.
 
 ## Live sites
 

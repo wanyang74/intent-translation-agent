@@ -1,0 +1,38 @@
+{
+  "caseId": "detail-for-one-car",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "Here is the breakdown for delivery to 94402:\n\n- **Price:** $35,590\n- **Estimated taxes and fees:** $3,837\n- **Estimated total:** $39,427\n- **GAP waiver (optional):** $1,195. I didn't add this to the total.\n\nThe car can arrive Saturday. Final amounts are set at checkout.",
+      "calls": []
+    }
+  ]
+}

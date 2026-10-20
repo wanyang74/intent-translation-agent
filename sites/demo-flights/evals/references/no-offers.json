@@ -1,0 +1,26 @@
+{
+  "caseId": "no-offers",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:18:05.428Z",
+  "steps": [
+    {
+      "text": "Searching first class flights for 9 adults…",
+      "calls": [
+        {
+          "name": "search_flights",
+          "input": {
+            "origin": "SFO",
+            "destination": "JFK",
+            "departDate": "2026-12-24",
+            "adults": 9,
+            "cabin": "first"
+          }
+        }
+      ]
+    },
+    {
+      "text": "I found no first class flights from SFO to JFK on December 24 for 9 adults. I only searched that date and cabin. I can try business class, another date, or a smaller group, since 9 seats in one cabin can be hard to find. Which would you like?",
+      "calls": []
+    }
+  ]
+}

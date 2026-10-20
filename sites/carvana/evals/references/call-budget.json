@@ -1,0 +1,110 @@
+{
+  "caseId": "call-budget",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "load_skill",
+          "input": {
+            "name": "batch_search"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "run_script",
+          "input": {
+            "source": "const f={zip5:'94402',make:'Tesla'};\nconst first=await tools.search_vehicles(f);\nlet cars=first.vehicles;\nfor(let p=2;p<=Math.min(first.totalPages,4);p++){cars=cars.concat((await tools.search_vehicles({...f,page:p})).vehicles);}\nconst out=[];\nfor(let i=0;i<cars.length;i+=24){const r=await tools.get_delivery_dates({vehicleIds:cars.slice(i,i+24).map(c=>c.vehicleId),zip5:'94402'});for(const d of r.dates)out.push([d.vehicleId,d.delivery&&d.delivery.date]);}\nout.sort((a,b)=>(a[1]||'z')<(b[1]||'z')?-1:1);\nreturn {ids:out.map(o=>o[0]).slice(0,24),first:out[0],last:out[out.length-1],checked:cars.length,matches:first.totalMatches,pages:first.totalPages};"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_delivery_dates",
+          "input": {
+            "vehicleIds": [
+              4811903,
+              4793766,
+              4788650,
+              4724980,
+              4788898,
+              4797866,
+              4767068,
+              4715639,
+              4691945,
+              4782454,
+              4723810,
+              4812031,
+              4781702,
+              4756196,
+              4804666,
+              4788806,
+              4783256,
+              4776106,
+              4747521,
+              4743347,
+              4762928
+            ],
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Earliest first (tomorrow), then Saturday.",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4811903,
+              4793766,
+              4788650,
+              4724980,
+              4767068,
+              4715639,
+              4691945,
+              4782454,
+              4781702,
+              4756196,
+              4747521,
+              4762928,
+              4788898,
+              4797866,
+              4723810,
+              4812031,
+              4804666,
+              4788806,
+              4783256,
+              4776106,
+              4743347
+            ],
+            "heading": "Tesla delivery dates, earliest first"
+          }
+        }
+      ]
+    }
+  ]
+}

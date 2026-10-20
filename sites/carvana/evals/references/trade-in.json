@@ -1,0 +1,11 @@
+{
+  "caseId": "trade-in",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "I can't give you a trade-in value. My tools only search and show cars for sale, so I can't appraise your Civic. Carvana's own \"Sell/Trade\" page can give you an offer, and that's where you'd take the next step.\n\nI can look up similar 2018 Honda Civics for sale near 94402 so you can see what they cost. Want me to do that?",
+      "calls": []
+    }
+  ]
+}

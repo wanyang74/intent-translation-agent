@@ -1,0 +1,11 @@
+{
+  "caseId": "no-zip",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "I need your ZIP code to search, since I can't see your location here. What's your 5-digit ZIP code?",
+      "calls": []
+    }
+  ]
+}

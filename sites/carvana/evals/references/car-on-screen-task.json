@@ -1,0 +1,45 @@
+{
+  "caseId": "car-on-screen-task",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.626Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        },
+        {
+          "name": "get_owner_reviews",
+          "input": {
+            "vehicleId": 4812031
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview",
+              "reviews"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "The price is $35,590. Estimated taxes and fees add $3,837, so the estimated total is $39,427. Final amounts are set at checkout. A GAP waiver is available for $1,195 if you want it. Delivery to 94402 is estimated for Saturday.\n\nOwners rated this Tesla Model Y 727 five-star, 494 four-star, 207 three-star, 78 two-star and 12 one-star. That's 1,221 of 1,518 ratings at 4 or 5 stars. These reviews cover the Model Y in general, not this exact car.\n\n- **Praise:** Owners like how fun and quick it is to drive, the comfortable ride, the safety features, and not having to buy gas.\n- **Complaints:** Some mention wind noise, uneven climate control, no phone mirroring, navigation errors, and long waits for service appointments.\n- **Charging:** One owner says it works best if you can charge at home.",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,558 @@
+{
+  "category": "core",
+  "defaults": {
+    "now": "2026-10-08T19:15:00Z",
+    "page": {
+      "url": "https://www.carvana.com/",
+      "pageType": "other",
+      "location": {
+        "postalCode": "94402"
+      },
+      "locale": "en-US"
+    }
+  },
+  "cases": [
+    {
+      "id": "tesla-browse",
+      "quick": true,
+      "description": "A plain search: one make, the user's zip from the page",
+      "message": "Show me Teslas",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-2023",
+      "description": "A year filter",
+      "message": "Teslas from 2023 or newer",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-mileage",
+      "description": "Year and mileage filters together",
+      "message": "A 2023 or newer Tesla with under 42,100 miles",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-gray",
+      "description": "Exterior color in the site's own spelling",
+      "message": "Gray Tesla, 2023 or newer, under 42,100 miles",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100,
+              "colors": [
+                "Gray"
+              ]
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-gray-black",
+      "description": "Exterior and interior colors",
+      "message": "Gray Tesla with a black interior, 2023 or newer, under 42,100 miles",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100,
+              "colors": [
+                "Gray"
+              ],
+              "interior_colors": [
+                "Black"
+              ]
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-all-filters",
+      "quick": true,
+      "description": "Five filters in one sentence",
+      "message": "Gray AWD Tesla, 2023 or newer, under 42,100 miles, black interior",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100,
+              "colors": [
+                "Gray"
+              ],
+              "interior_colors": [
+                "Black"
+              ],
+              "drive_types": [
+                "Awd"
+              ]
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tesla-count",
+      "description": "A question answered with a count from the search",
+      "message": "How many Teslas does Carvana have?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla"
+            }
+          }
+        ],
+        "text": {
+          "matches": [
+            "1,?871"
+          ]
+        }
+      }
+    },
+    {
+      "id": "goal-by-saturday",
+      "quick": true,
+      "description": "Fixed task: work back from a goal (search, then delivery dates, then a ranked list of only the cars that make it)",
+      "message": "Gray AWD Tesla, 2023 or newer, under 42,100 miles, black interior. I need it by Saturday. Cheapest first.",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023,
+              "mileage_max": 42100,
+              "colors": [
+                "Gray"
+              ],
+              "interior_colors": [
+                "Black"
+              ],
+              "drive_types": [
+                "Awd"
+              ]
+            }
+          },
+          {
+            "tool": "get_delivery_dates"
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "only": [
+              4812031,
+              4694969,
+              4795274,
+              4801523,
+              4760129,
+              4695181
+            ],
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "think-tesla",
+      "description": "A vague start: show what's there and the site's own ways to narrow it",
+      "message": "I'm thinking about a Tesla.",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla"
+            }
+          },
+          {
+            "tool": "suggest_refinements"
+          }
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          },
+          {
+            "type": "options",
+            "entity": "suggestion"
+          }
+        ]
+      }
+    },
+    {
+      "id": "car-all-in",
+      "quick": true,
+      "description": "The car on screen: the all-in price",
+      "message": "What would this one cost me all in?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031,
+              "zip5": "94402"
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "39,427"
+          ]
+        }
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    },
+    {
+      "id": "car-delivery",
+      "description": "The car on screen: how soon it can come",
+      "message": "How soon could I get this car?",
+      "expect": {
+        "text": {
+          "matches": [
+            "saturday|oct(ober)? 10"
+          ]
+        }
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    },
+    {
+      "id": "car-reviews",
+      "description": "The car on screen: what owners say",
+      "message": "What do owners say about this car?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_owner_reviews",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "noCalls": [
+          "get_vehicle_quote"
+        ]
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    },
+    {
+      "id": "car-on-screen-task",
+      "quick": true,
+      "description": "Fixed task: the car on screen, three questions in one message",
+      "message": "What would this one cost me all in, and how soon can I get it? Also, what do owners say?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031
+            }
+          },
+          {
+            "tool": "get_owner_reviews",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "shows": [
+          {
+            "entity": "vehicle",
+            "includes": [
+              4812031
+            ]
+          }
+        ],
+        "text": {
+          "includes": [
+            "39,427"
+          ],
+          "matches": [
+            "saturday|oct(ober)? 10"
+          ]
+        }
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    },
+    {
+      "id": "car-gap",
+      "description": "The car on screen: the GAP waiver price",
+      "message": "How much is the GAP waiver on this car?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "1,195"
+          ]
+        }
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    },
+    {
+      "id": "car-taxes",
+      "description": "The car on screen: taxes and fees, with the estimate said plainly",
+      "message": "How much are taxes and fees on this one?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "3,837"
+          ],
+          "matches": [
+            "estimat"
+          ]
+        }
+      },
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      }
+    }
+  ]
+}

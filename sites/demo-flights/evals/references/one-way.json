@@ -1,0 +1,38 @@
+{
+  "caseId": "one-way",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:18:05.428Z",
+  "steps": [
+    {
+      "text": "Searching SFO to JFK on Nov 20…",
+      "calls": [
+        {
+          "name": "search_flights",
+          "input": {
+            "origin": "SFO",
+            "destination": "JFK",
+            "departDate": "2026-11-20",
+            "adults": 1,
+            "cabin": "economy"
+          }
+        }
+      ]
+    },
+    {
+      "text": "I found 3 economy options for Nov 20. I've listed them cheapest first. The cheapest has one stop, and the other two are nonstop. These offers expire at 18:30 UTC today, so book soon or search again.",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "flight_offer",
+            "ids": [
+              "off_3MZ8",
+              "off_7GQ2",
+              "off_9KD1"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

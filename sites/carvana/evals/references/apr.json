@@ -1,0 +1,36 @@
+{
+  "caseId": "apr",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "load_skill",
+          "input": {
+            "name": "financing_questions"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4812031
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't give APRs or estimate one here. The rate you'd get depends on your own details. Carvana's page for this car shows its financing options and lets you see your terms, and the card below links to it. I can also pull the price, estimated taxes and fees, and delivery date for this car if you'd like.",
+      "calls": []
+    }
+  ]
+}

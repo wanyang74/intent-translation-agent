@@ -1,0 +1,38 @@
+{
+  "caseId": "pricing-error",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "99701"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I couldn't get a price for this car at zip 99701. Carvana's pricing returned an error, so I can't give you an estimated total with taxes and fees. I didn't try again, because the error said a retry wouldn't help. The card below links to the car's page, where you can check the price for your location.",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "caseId": "think-tesla",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.626Z",
+  "steps": [
+    {
+      "text": "Searching Teslas near 94402…",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4724980,
+              4782454,
+              4762928,
+              4788806,
+              4788650,
+              4756196,
+              4797866,
+              4781702,
+              4723810,
+              4804666,
+              4715639
+            ],
+            "heading": "Lowest-priced Teslas near you"
+          }
+        },
+        {
+          "name": "suggest_refinements",
+          "input": {
+            "zip5": "94402",
+            "current": {
+              "zip5": "94402",
+              "make": "Tesla"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4724980,
+              4782454,
+              4762928,
+              4788806,
+              4788650,
+              4756196,
+              4797866,
+              4781702
+            ],
+            "heading": "Lowest-priced Teslas on page 1"
+          }
+        },
+        {
+          "name": "present_options",
+          "input": {
+            "entity": "suggestion",
+            "ids": [
+              "38b48bf6-d2f2-4427-bd7f-1dee3014e0d6",
+              "d763110d-6e71-4037-8272-7391631e5575",
+              "f3085f7d-08b7-4b29-a238-4f8be18aa8b3",
+              "4ebc7c31-d7a5-4b83-982e-94675481bb37",
+              "e7ae549d-9685-4a96-9cd3-d5cc4c099db2"
+            ],
+            "heading": "Narrow it down"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Carvana has 1,871 Teslas near 94402, mostly Model 3 and Model Y. I looked at the first page of 24 and picked the 8 lowest-priced cars from it, cheapest first. I haven't checked the rest or looked at delivery dates yet.\n\nTo narrow things down, you can use the filters below. It would also help to know which model, budget and priority matter most to you, such as range, low mileage or AWD.",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "caseId": "car-all-in",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.626Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "The price is $35,590. Estimated taxes and fees add $3,837, so the estimated total is $39,427 with delivery to 94402. Final amounts are set at checkout. Delivery is expected Saturday. A GAP waiver is available for an extra $1,195, and that isn't in the total.",
+      "calls": []
+    }
+  ]
+}

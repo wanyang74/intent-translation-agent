@@ -1,0 +1,47 @@
+{
+  "caseId": "tesla-mileage",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4788806,
+              4798050,
+              4797866,
+              4794318,
+              4747521,
+              4812031,
+              4795274,
+              4755213
+            ],
+            "heading": "Lowest-priced Teslas on this page"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Carvana has 480 Teslas from 2023 or newer with under 42,100 miles near 94402. I checked only the first page of 21, which has 22 cars. I'm showing the 8 lowest-priced of those 22, which mix Model 3 and Model Y. They aren't sorted. I can narrow by model, trim, color or budget, or check more pages.",
+      "calls": []
+    }
+  ]
+}

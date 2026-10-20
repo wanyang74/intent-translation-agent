@@ -1,0 +1,33 @@
+{
+  "category": "interface",
+  "defaults": {
+    "now": "2026-10-12T18:05:00Z",
+    "page": {
+      "url": "https://www.demo-flights.example/",
+      "pageType": "home",
+      "locale": "en-US"
+    }
+  },
+  "cases": [
+    {
+      "id": "no-offers",
+      "description": "No offers: said plainly, nothing on screen",
+      "message": "First class from SFO to JFK on December 24 for 9 adults",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_flights",
+            "args": {
+              "origin": "SFO",
+              "destination": "JFK",
+              "departDate": "2026-12-24",
+              "adults": 9,
+              "cabin": "first"
+            }
+          }
+        ],
+        "showsNoItems": true
+      }
+    }
+  ]
+}

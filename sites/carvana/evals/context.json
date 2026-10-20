@@ -1,0 +1,254 @@
+{
+  "category": "context",
+  "cases": [
+    {
+      "id": "first-one-price",
+      "quick": true,
+      "description": "\"The first one\" after a ranked list",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "message": "What's the all-in price on the first one?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "39,427"
+          ]
+        }
+      }
+    },
+    {
+      "id": "first-one-reviews",
+      "description": "\"The first one\" again, for reviews",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "message": "What do owners think of the first one?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_owner_reviews",
+            "args": {
+              "vehicleId": 4812031
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "same-but-2023",
+      "quick": true,
+      "description": "\"Same but 2023\": keep the earlier filters, add one",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 1
+      },
+      "message": "Same, but 2023 or newer",
+      "expect": {
+        "lastCall": {
+          "tool": "search_vehicles",
+          "args": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023
+          }
+        },
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "add-mileage",
+      "description": "One more filter on top of two earlier ones",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 2
+      },
+      "message": "Under 42,100 miles",
+      "expect": {
+        "lastCall": {
+          "tool": "search_vehicles",
+          "args": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100
+          }
+        },
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "any-color",
+      "description": "The user changes their mind: drop the color, keep the rest",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 3
+      },
+      "message": "Actually, any exterior or interior color is fine.",
+      "expect": {
+        "lastCall": {
+          "tool": "search_vehicles",
+          "args": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100
+          },
+          "without": [
+            "colors",
+            "interior_colors"
+          ]
+        },
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "only-awd",
+      "description": "Narrowing with a suggestion the agent offered",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 3
+      },
+      "message": "Only the AWD ones",
+      "expect": {
+        "lastCall": {
+          "tool": "search_vehicles",
+          "args": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023,
+            "mileage_max": 42100,
+            "colors": [
+              "Gray"
+            ],
+            "interior_colors": [
+              "Black"
+            ],
+            "drive_types": [
+              "Awd"
+            ]
+          }
+        },
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "which-by-saturday",
+      "description": "A follow-up that needs a new tool on the cars already found",
+      "after": {
+        "conversation": "refine-with-suggestions",
+        "turns": 3
+      },
+      "message": "Which of these could I get by Saturday?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_delivery_dates"
+          }
+        ],
+        "noCalls": [
+          "get_vehicle_quote"
+        ]
+      }
+    },
+    {
+      "id": "thanks",
+      "description": "A thank-you needs no tool and no cards",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "message": "Perfect, thanks!",
+      "expect": {
+        "noCalls": true,
+        "showsNoItems": true
+      }
+    },
+    {
+      "id": "cheapest-of-list",
+      "description": "A question about cars already on screen needs no new search",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "message": "Which of those is the cheapest?",
+      "expect": {
+        "noCalls": [
+          "search_vehicles"
+        ],
+        "text": {
+          "includes": [
+            "35,590"
+          ]
+        }
+      }
+    },
+    {
+      "id": "drop-deadline",
+      "description": "A changed constraint: no deadline any more, so no delivery check",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "message": "Actually I don't need it by Saturday. Just show me the cheapest ones from that search.",
+      "expect": {
+        "noCalls": [
+          "get_delivery_dates"
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "vehicle",
+            "minItems": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "car-then-gap",
+      "description": "A follow-up on the car on screen after a first answer",
+      "after": {
+        "conversation": "car-on-screen",
+        "turns": 1
+      },
+      "message": "And the GAP waiver, how much was it again?",
+      "expect": {
+        "text": {
+          "includes": [
+            "1,195"
+          ]
+        }
+      }
+    }
+  ]
+}

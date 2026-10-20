@@ -1,0 +1,40 @@
+{
+  "caseId": "tesla-count",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.626Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4762928,
+              4756196,
+              4724980
+            ],
+            "heading": "Lowest-priced Teslas on page one"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Carvana has 1,871 Teslas matching your search near 94402, across 82 pages. I only looked at the first page of 21 cars, mostly Model Y and Model 3. The cards show three of the cheapest from that page. I can narrow by model, price, year or color if you'd like.",
+      "calls": []
+    }
+  ]
+}

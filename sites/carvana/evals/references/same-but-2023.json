@@ -1,0 +1,50 @@
+{
+  "caseId": "same-but-2023",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla",
+            "year_min": 2023
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4709280,
+              4769484,
+              4724980,
+              4782454,
+              4788806,
+              4756196,
+              4797866,
+              4794318,
+              4773567,
+              4779097,
+              4793766,
+              4782382
+            ],
+            "heading": "2023 or newer Teslas, lowest price first"
+          }
+        }
+      ]
+    },
+    {
+      "text": "There are 780 Teslas from 2023 or newer. I checked the first page of 24 results, which came back in popularity order. I then picked 12 of the 24 and ordered them from lowest to highest price. The two cheapest, the Model 3s at $21,990 and $25,590, have 95,732 and 90,317 miles. I can check delivery dates, narrow by Model 3 or Model Y, or look at more pages.",
+      "calls": []
+    }
+  ]
+}

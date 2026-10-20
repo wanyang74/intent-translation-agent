@@ -1,0 +1,45 @@
+{
+  "caseId": "tesla-browse",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "Searching for Teslas near 94402…",
+      "calls": [
+        {
+          "name": "search_vehicles",
+          "input": {
+            "zip5": "94402",
+            "make": "Tesla"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_items",
+          "input": {
+            "entity": "vehicle",
+            "ids": [
+              4724980,
+              4782454,
+              4762928,
+              4788806,
+              4756196,
+              4788650,
+              4797866,
+              4781702
+            ],
+            "heading": "Tesla picks near you"
+          }
+        }
+      ]
+    },
+    {
+      "text": "I found 1,871 Teslas near 94402. I checked the first page of 24 results, which came back as 22 cars. I'm showing the 8 cheapest of those, lowest estimated total first. They're mostly Model 3 and Model Y. Tell me which model, budget, color or mileage you want and I'll narrow the search. I can also check delivery dates.",
+      "calls": []
+    }
+  ]
+}

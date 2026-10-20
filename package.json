@@ -13,8 +13,9 @@
     "fixtures": "node platform/testkit/scripts/build-fixtures.ts",
     "test": "npm run check && node platform/contract/scripts/generate.ts --check && node --test \"platform/*/test/*.test.ts\" \"sites/*/test/*.test.ts\"",
     "test:live": "LIVE=1 node --test platform/brain/test/live.test.ts",
-    "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && tsc -p platform/core && tsc -p platform/core/test && tsc -p platform/brain && for d in sites/*/; do tsc -p \"$d\" || exit 1; done",
-    "brain": "node platform/brain/src/server/main.ts"
+    "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && tsc -p platform/core && tsc -p platform/core/test && tsc -p platform/brain && tsc -p platform/evals && for d in sites/*/; do tsc -p \"$d\" || exit 1; done",
+    "brain": "node platform/brain/src/server/main.ts",
+    "evals": "node platform/evals/scripts/evals.ts"
   },
   "devDependencies": {
     "@types/node": "24.19.0",

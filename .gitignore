@@ -9,3 +9,6 @@ recordings/*.har
 .env
 .env.*
 !.env.example
+
+# Eval runs: every trial of every run, for reading afterwards; baselines and references are committed
+sites/*/evals/runs/

@@ -71,9 +71,12 @@ export class FakeModel implements ModelAdapter {
   readonly problems: string[] = [];
   private script: FakeScript[];
   private ids = 0;
+  /** Made-up call IDs are toolu_<prefix>_1, _2, …; two FakeModels in one conversation need different prefixes. */
+  private readonly idPrefix: string;
 
-  constructor(script: FakeScript[]) {
+  constructor(script: FakeScript[], options: { idPrefix?: string } = {}) {
     this.script = script;
+    this.idPrefix = options.idPrefix ?? 'fake';
   }
 
   /** Steps not played yet. */
@@ -100,7 +103,7 @@ export class FakeModel implements ModelAdapter {
     }
     for (const [i, call] of (step.calls ?? []).entries()) {
       await step.beforeCall?.(i);
-      yield { type: 'tool-call', id: call.id ?? `toolu_fake_${++this.ids}`, name: call.name, input: call.input };
+      yield { type: 'tool-call', id: call.id ?? `toolu_${this.idPrefix}_${++this.ids}`, name: call.name, input: call.input };
     }
     if (step.fail) throw new Error(step.fail);
     if (step.hang === 'deaf') await new Promise(() => {});

@@ -1,0 +1,49 @@
+{
+  "caseId": "monthly-payment",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "load_skill",
+          "input": {
+            "name": "financing_questions"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't quote monthly payments here. Carvana's car page shows its own payment options and terms, and you can pre-qualify there.\n\nI can share the cost. The price is $35,590, with estimated taxes and fees of $3,837, for an estimated total of $39,427. Delivery to you is expected Saturday. An optional GAP waiver is available for $1,195.",
+      "calls": []
+    }
+  ]
+}

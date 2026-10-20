@@ -1,0 +1,38 @@
+{
+  "caseId": "first-one-price",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.624Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "For the first car, the 2023 Model Y Long Range, the estimated all-in total is $39,427. That is the $35,590 price plus $3,837 in estimated taxes and fees. Final amounts are set at checkout.\n\nDelivery to you is Saturday. A GAP waiver is available for an extra $1,195. It isn't included in the total.",
+      "calls": []
+    }
+  ]
+}

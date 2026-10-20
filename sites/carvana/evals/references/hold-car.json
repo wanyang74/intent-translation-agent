@@ -1,0 +1,38 @@
+{
+  "caseId": "hold-car",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.628Z",
+  "steps": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "get_vehicle_quote",
+          "input": {
+            "vehicleId": 4812031,
+            "zip5": "94402"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "name": "present_detail",
+          "input": {
+            "entity": "vehicle",
+            "id": 4812031,
+            "sections": [
+              "overview"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "text": "I can't hold or reserve a car. I can only read listings, so you'd need to do that on the car's page. This one is priced at $35,590 and could be delivered to you by Saturday. I've pulled up the card with the details. Cars can sell to other buyers, so it's worth moving soon if you like it.",
+      "calls": []
+    }
+  ]
+}

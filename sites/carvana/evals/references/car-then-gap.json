@@ -1,0 +1,11 @@
+{
+  "caseId": "car-then-gap",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.625Z",
+  "steps": [
+    {
+      "text": "The GAP waiver for this car is $1,195. The quote didn't include it in the estimated total of $39,427. I can't tell you what it covers beyond that, so check the car's page for the terms.",
+      "calls": []
+    }
+  ]
+}

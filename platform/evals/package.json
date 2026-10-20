@@ -2,5 +2,9 @@
   "name": "@intent/evals",
   "private": true,
   "type": "module",
-  "description": "Snapshot evals for the agent's answers. Built from phase 6."
+  "description": "Snapshot evals for the agent's answers: each site pack's cases, run through real core.js and the real brain with the real model against the site's fixtures, graded, and gated in CI.",
+  "scripts": {
+    "evals": "node scripts/evals.ts",
+    "test": "node --test test/*.test.ts"
+  }
 }

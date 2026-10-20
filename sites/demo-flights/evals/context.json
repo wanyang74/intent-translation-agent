@@ -1,0 +1,22 @@
+{
+  "category": "context",
+  "cases": [
+    {
+      "id": "cheapest-of-three",
+      "description": "A question about offers already on screen needs no new search",
+      "after": {
+        "conversation": "one-way-search",
+        "turns": 1
+      },
+      "message": "Which one is cheapest?",
+      "expect": {
+        "noCalls": true,
+        "text": {
+          "includes": [
+            "301.20"
+          ]
+        }
+      }
+    }
+  ]
+}

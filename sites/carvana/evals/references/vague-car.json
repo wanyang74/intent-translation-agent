@@ -1,0 +1,26 @@
+{
+  "caseId": "vague-car",
+  "model": "anthropic:claude-sonnet-5-5",
+  "recorded": "2026-10-19T06:17:52.627Z",
+  "steps": [
+    {
+      "text": "Happy to help you find one. I have your location as 94402, so I just need a few preferences to narrow it down.",
+      "calls": [
+        {
+          "name": "present_form",
+          "input": {
+            "form": "vehicle_search",
+            "heading": "What are you looking for?",
+            "prefill": {
+              "zip5": "94402"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "Which kind of car do you want? Tell me whatever you already know:\n\n- Make or model\n- Body style, such as SUV, sedan or truck\n- Maximum price\n- Color\n- Any must-have features\n\nIf you'd rather not narrow it down yet, I can show popular cars near 94402.",
+      "calls": []
+    }
+  ]
+}
