@@ -388,10 +388,12 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-evals">Snapshot evals</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-ci">CI gates and model choice</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-tasks">Fixed end-to-end tasks</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-snapshots">Test snapshots</a></div></li>
 </ol></li>
 <li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Build plan"></button><a href="#plan"><span class="toc-num">7</span>Build plan</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-phases">Phases and gates</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-spike">Phase 0 checks</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-backlog">Backlog</a></div></li>
 </ol></li>
 <li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Decisions and open questions"></button><a href="#decisions"><span class="toc-num">8</span>Decisions and open questions</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d1">D1 · Client calls the site</a></div></li>
@@ -1720,6 +1722,15 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
       <p class="note">Example conversations for three Carvana flows are in <code>sites/carvana/conversations</code>, built from the fixtures: one message to a ranked list, refining a search with the site's suggestions, and the car on screen. The exhaustive Model 3 task and the comparison with similar cars need more recordings: every results page of those searches, and the similar-cars request, which needs a schema and a tool first.</p>
 </div>
 </details>
+<details class="fold lvl3" id="test-snapshots" open>
+<summary><h3>Test snapshots</h3></summary>
+<div class="fold-body">
+<p class="sub">Point-in-time views of the test suite, newest first. Each is a separate page and isn't updated after its date.</p>
+      <div class="qs">
+        <div class="q"><b>2026-10-20 · <a href="https://claude.ai/artifact/Pi9joZUDRX4yTztmMkakRv" target="_blank" rel="noopener">Unit test catalog</a></b> · Every unit test (247 in 39 files), by module and file: what each file tests, how, and what has to match, then one or two sentences per test on what it checks.</div>
+      </div>
+</div>
+</details>
 </div>
 </details>
 </section>
@@ -1761,6 +1772,16 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <div class="q"><b>Split loop</b> · A server step sends a tool call to the client, the client returns the result, and the server continues, with step budgets and timeouts working.</div>
         <div class="q"><b>Sandbox</b> · A model-written script can call only registered tools, has no fetch, and is killed if it loops forever.</div>
         <div class="q"><b>Grounding</b> · A presentation call with an unknown ID is refused, and every price on screen traces to a tool result.</div>
+      </div>
+</div>
+</details>
+<details class="fold lvl3" id="plan-backlog" open>
+<summary><h3>Backlog</h3></summary>
+<div class="fold-body">
+<p class="sub">Work we've chosen to do later, tracked here until it gets a phase. Each needs a design proposal before it starts.</p>
+      <div class="qs">
+        <div class="q"><b>Sign-in mode support</b> · Tools for what a signed-in person can read on a site (on Carvana, the pickup price, favorites and orders), marked as needing sign-in. Writes stay out of scope. Needs a signed-in recording, with scrub rules for personal data and login tokens added before any fixture is built from it, and a decision on how the user's sign-in reaches core.js.</div>
+        <div class="q"><b>Per-item answers for bulk requests in FakeHost</b> · A request for several items at once (on Carvana, delivery dates for a list of cars) is matched only to the exact set that was recorded, so any other set is unrecorded even when every item in it was recorded. Planned: answer such requests item by item from the recorded responses. Changes the site-pack format.</div>
       </div>
 </div>
 </details>
