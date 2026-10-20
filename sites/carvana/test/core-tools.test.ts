@@ -1,5 +1,9 @@
-// core.js running Carvana's tools against FakeHost: what each request carries (decision D4), the failures the fixture
-// library covers, injected faults, the filter check, the rate limit, and how cards and the detail view read.
+// Tests: Carvana's tools (sites/carvana/tools.ts) run by core.js, end to end on the client: the requests they send
+// and how their results read on screen.
+// How: core.js's Execute and Respond with FakeHost answering from Carvana's fixtures; some tests inject faults.
+// Passes when: each request carries what Carvana needs and nothing more (decision D4); each failure the fixtures
+// cover becomes the right error; bad filters and sorts are refused before any request; the rate limit holds; and
+// cards and the detail view read the way Carvana shows cars.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { HostRequest } from '../../../platform/core/src/runtime/host.ts';
@@ -27,7 +31,7 @@ async function session(options: { extra?: Fixture[]; page?: object; pageData?: u
 const goalSearch = { zip5: '94402', make: 'Tesla', year_min: 2023, mileage_max: 42100, colors: ['Gray'], interior_colors: ['Black'], drive_types: ['Awd'] };
 const bodyOf = (sent: HostRequest[], path: string) => JSON.parse(sent.find((request) => request.url.includes(path))!.body!);
 
-test('each request carries only the tracking fields its endpoint needs, with one fresh visitor ID for the session (D4)', async () => {
+test('tracking fields (D4): only what each endpoint needs, with one fresh visitor ID for the session', async () => {
   const { coreSession, sent } = await session();
   assert.ok((await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla' })).ok);
   assert.ok((await runToolCall(coreSession, 'suggest_refinements', { zip5: '94402', current: { zip5: '94402', make: 'Tesla' } })).ok);
@@ -45,7 +49,7 @@ test('each request carries only the tracking fields its endpoint needs, with one
   assert.match(availability.headers.correlationid!, /^00000000-0000-4000-9000-/);
 });
 
-test('a quote sends the vehicle-page client ID and no visitor ID, and checks GAP with the estimated total and the state', async () => {
+test('get_vehicle_quote: sends the client ID, no visitor ID; checks GAP with the estimated total and the state', async () => {
   const { coreSession, sent } = await session({ page: { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4812031 }, location: { postalCode: '94402', region: 'CA' } }, pageData: carPage });
   const quote = await runToolCall(coreSession, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' });
   assert.ok(quote.ok);
@@ -55,14 +59,14 @@ test('a quote sends the vehicle-page client ID and no visitor ID, and checks GAP
   assert.equal(new URL(sent.find((request) => request.url.includes('GapWaiver'))!.url).search, '?amountFinanced=39427&homeState=CA&institutionName=Carvana&paymentType=Financing&vehicleId=4812031');
 });
 
-test('without a state, the quote leaves the GAP waiver out rather than guess', async () => {
+test('get_vehicle_quote: without a state, the GAP waiver is left out rather than guessed', async () => {
   const { coreSession, sent } = await session({ page: { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4812031 }, location: { postalCode: '94402' } }, pageData: carPage });
   const quote = await runToolCall(coreSession, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' });
   assert.deepEqual(quote.ok && quote.output.gapWaiver, null);
   assert.ok(!sent.some((request) => request.url.includes('GapWaiver')));
 });
 
-test("a search with no matches, and a search whose response changed shape, come back as Carvana's and the platform's errors", async () => {
+test("search errors: no matches, and a changed response shape, come back as Carvana's and the platform's errors", async () => {
   const { coreSession, log } = await session();
   const none = await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla', year_min: 2026, mileage_max: 100 });
   assert.deepEqual(!none.ok && [none.error.code, none.error.reason], ['no_results', 'no_results']);
@@ -71,7 +75,7 @@ test("a search with no matches, and a search whose response changed shape, come 
   assert.ok(log.some((entry) => entry.kind === 'response_check'), 'the change monitor will read this');
 });
 
-test("a car whose delivery failed: the dates show pickup only, and a delivery quote says to try pickup", async () => {
+test('delivery failed: the dates show pickup only, and a delivery quote says to try pickup', async () => {
   const { coreSession } = await session();
   assert.ok((await runToolCall(coreSession, 'search_vehicles', { zip5: '94402', make: 'Tesla' })).ok);
   const datesOutcome = await runToolCall(coreSession, 'get_delivery_dates', { vehicleIds: [4811903], zip5: '94402' });
@@ -83,7 +87,7 @@ test("a car whose delivery failed: the dates show pickup only, and a delivery qu
   assert.deepEqual(!quote.ok && [quote.error.reason, quote.error.message], ['option_unavailable', "delivery isn't available for car 4811903 at 94402. Try pickup instead."]);
 });
 
-test("a car Carvana can't price at a zip code gets Carvana's pricing error", async () => {
+test("pricing error: a car Carvana can't price at a zip code gets Carvana's error", async () => {
   const seven = fixtures.find((fixture) => fixture.id === 'availability-07')!;
   const at99701: Fixture = { ...structuredClone(seven), id: 'availability-07-at-99701', kind: 'synthetic', request: { ...structuredClone(seven.request), body: { ...(seven.request.body as object), zipCode: '99701' } } };
   const { coreSession } = await session({ extra: [at99701], page: { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4812031 }, location: { postalCode: '99701', region: 'AK' } }, pageData: carPage });
@@ -91,14 +95,14 @@ test("a car Carvana can't price at a zip code gets Carvana's pricing error", asy
   assert.deepEqual(!quote.ok && [quote.error.code, quote.error.reason, quote.error.message], ['upstream_error', 'pricing_error', "Carvana couldn't price this car for zip 99701. Tell the user and offer the car's page link."]);
 });
 
-test("a car the session has no details for can't be quoted", async () => {
+test("get_vehicle_quote: a car the session has no details for can't be quoted", async () => {
   const { coreSession } = await session();
   coreSession.ids.learn('vehicle', 4812031);
   const quote = await runToolCall(coreSession, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' });
   assert.deepEqual(!quote.ok && quote.error.reason, 'car_unknown');
 });
 
-test('network faults and status errors from Carvana become retryable errors', async () => {
+test('faults: network faults and status errors become retryable errors', async () => {
   for (const [fault, expected] of [[{ networkError: 'ECONNRESET' }, 'network_error'], [{ status: 429 }, 'site_rate_limited'], [{ status: 503 }, 'site_unavailable']] as const) {
     const { coreSession, fake } = await session();
     fake.inject({ endpoint: 'search', ...fault });
@@ -107,7 +111,7 @@ test('network faults and status errors from Carvana become retryable errors', as
   }
 });
 
-test("a filter value Carvana doesn't offer is refused before any search, listing the valid values", async () => {
+test("filter check: a value Carvana doesn't offer is refused before any search, listing the valid ones", async () => {
   const { coreSession, fake } = await session();
   const outcome = await runToolCall(coreSession, 'search_vehicles', { ...goalSearch, colors: ['Grey'] });
   assert.equal(!outcome.ok && outcome.error.reason, 'invalid_filter_value');
@@ -115,7 +119,7 @@ test("a filter value Carvana doesn't offer is refused before any search, listing
   assert.deepEqual(fake.calls.map((call) => call.endpoint), ['facets'], 'only the facts needed for the check');
 });
 
-test("a sort order Carvana doesn't have is refused before any request, listing the ones it does", async () => {
+test("sort check: an order Carvana doesn't have is refused before any request, listing the ones it does", async () => {
   const { coreSession, fake } = await session();
   const outcome = await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', sort: 'PriceLow' });
   assert.equal(!outcome.ok && outcome.error.reason, 'bad_arguments');
@@ -123,7 +127,7 @@ test("a sort order Carvana doesn't have is refused before any request, listing t
   assert.deepEqual(fake.calls, [], 'nothing reached Carvana');
 });
 
-test('each of Carvana\'s sort orders, and later pages, come back as recorded (2026-10-19 recording)', async () => {
+test('sorts and pages: each of Carvana\'s sort orders, and pages 2 to 4, come back as recorded', async () => {
   const totals = async (args: Record<string, unknown>) => {
     const { coreSession } = await session();
     const outcome = await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', ...args });
@@ -139,7 +143,7 @@ test('each of Carvana\'s sort orders, and later pages, come back as recorded (20
   for (const page of [2, 3, 4]) assert.ok((await totals({ sort: 'NewestYear', page })).length > 0, `page ${page}`);
 });
 
-test('a review written without stars has no rating, not a rating of 0', async () => {
+test('reviews: one written without stars has no rating, not a rating of 0', async () => {
   const { coreSession } = await session({ page: { ...PAGE, location: { postalCode: '94085' } } });
   assert.ok((await runToolCall(coreSession, 'search_vehicles', { zip5: '94085', make: 'Tesla', year_min: 2022, sort: 'LowestPrice' })).ok);
   const outcome = await runToolCall(coreSession, 'get_owner_reviews', { vehicleId: 4812262 });
@@ -149,14 +153,14 @@ test('a review written without stars has no rating, not a rating of 0', async ()
   assert.ok(ratings.every((rating) => rating === null || (rating >= 1 && rating <= 5)));
 });
 
-test("requests keep to Carvana's rate limit: one per second", async () => {
+test("rate limit: requests keep to Carvana's one per second", async () => {
   const { coreSession, slept, fake } = await session();
   assert.ok((await runToolCall(coreSession, 'search_vehicles', goalSearch)).ok);
   assert.equal(fake.calls.length, 2);
   assert.equal(slept(), 1000);
 });
 
-test('vehicle cards read the way Carvana shows cars, with the estimated-total notice added', async () => {
+test('vehicle cards: read the way Carvana shows cars, with the estimated-total notice added', async () => {
   const { coreSession } = await session();
   const search = await runToolCall(coreSession, 'search_vehicles', goalSearch);
   assert.ok(search.ok);
@@ -169,7 +173,7 @@ test('vehicle cards read the way Carvana shows cars, with the estimated-total no
   assert.deepEqual(components[1], { type: 'notice', notice: 'estimated_total', text: 'Estimated total adds Carvana\'s estimated taxes and fees to the price. Final amounts are set at checkout.', version: '2026-10-12' });
 });
 
-test("the car-on-screen detail view: details from the car's page, the quote, and what owners say", async () => {
+test("detail view: the car's page details, the quote, and what owners say", async () => {
   const { coreSession } = await session({ page: { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4812031 }, location: { postalCode: '94402', region: 'CA' } }, pageData: carPage });
   assert.ok((await runToolCall(coreSession, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' })).ok);
   assert.ok((await runToolCall(coreSession, 'get_owner_reviews', { vehicleId: 4812031 })).ok);

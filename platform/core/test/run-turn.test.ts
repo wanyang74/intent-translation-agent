@@ -1,6 +1,9 @@
-// L3 for Intake, Brain link and Respond together, with a scripted brain: tool calls start the moment they arrive,
-// parallel calls run together, render: direct shows a result early, the answer is filled and checked, each turn gets
-// a fresh task budget, and every way the protocol can break stops the turn with a plain message.
+// Tests: one turn on the client, runTurn: Intake (checks the user's message), the Brain link (talks to the brain),
+// and Respond (fills the answer) together (L3).
+// How: a scripted brain (a generator that yields protocol events) on the made-up shop, with a scripted network.
+// Passes when: tool calls start the moment they arrive, parallel calls run together, render: direct shows a result
+// early, the answer is filled and checked, each turn gets a fresh task budget, and every way the protocol can break
+// stops the turn with one plain message.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ClientMessage, ClientResults } from '../../contract/generated/types.ts';
@@ -35,7 +38,7 @@ async function turnWith(step: Step, message = 'shoes please', options: Parameter
   return { ...shop, ...scriptedBrain, surface, outcome };
 }
 
-test('a tool call starts the moment it arrives, before the brain finishes its step (eager dispatch)', async () => {
+test('eager dispatch: a tool call starts the moment it arrives, before the brain finishes its step', async () => {
   let reached!: () => void;
   const atSite = new Promise<void>((resolve) => { reached = resolve; });
   const network: typeof shopNetwork = (req) => { reached(); return shopNetwork(req); };
@@ -58,7 +61,7 @@ test('a tool call starts the moment it arrives, before the brain finishes its st
   assert.ok(resultsMessage.results[0]!.ok);
 });
 
-test('parallel calls run together, and results go back in the order the brain awaits them', async () => {
+test('parallel calls: run together; results go back in the order the brain awaits them', async () => {
   const { received, requests } = await turnWith(async function* (message, round) {
     if (round === 0) {
       yield call(message.traceId, 'call_1', 'search_products', { query: 'a' });
@@ -72,7 +75,7 @@ test('parallel calls run together, and results go back in the order the brain aw
   assert.equal(requests.length, 2);
 });
 
-test('a call marked render: direct is shown as soon as its result is ready, before the answer', async () => {
+test('render: direct: the result is shown as soon as it is ready, before the answer', async () => {
   const { surface } = await turnWith(async function* (message, round) {
     if (round === 0) {
       yield call(message.traceId, 'call_1', 'search_products', { query: 'shoe' }, 'direct');
@@ -86,7 +89,7 @@ test('a call marked render: direct is shown as soon as its result is ready, befo
   assert.deepEqual(early.type === 'early' && early.components.map((component) => component.type), ['items', 'notice']);
 });
 
-test('the answer is filled from tool results, checked, and given its required notices', async () => {
+test('answer: filled from tool results, checked, and given its required notices', async () => {
   const { surface } = await turnWith(async function* (message, round) {
     if (round === 0) {
       yield { type: 'progress', traceId: message.traceId, text: 'Looking…' };
@@ -101,7 +104,7 @@ test('the answer is filled from tool results, checked, and given its required no
   assert.deepEqual(reply.components.map((component) => component.type), ['items', 'notice'], 'the made-up item is left out; the notice is added');
 });
 
-test('each turn gets a fresh task budget; the session budget carries on', async () => {
+test('budgets: each turn gets a fresh task budget; the session budget carries on', async () => {
   const scriptedBrain = scripted(async function* (message, round) {
     const turn = Math.floor(round / 2);
     if (round % 2 === 0) {
@@ -136,7 +139,7 @@ const failures: [string, Step, RegExp][] = [
   }, /lost the brain link/],
 ];
 for (const [what, step, reasonPattern] of failures) {
-  test(`the turn stops with one plain message on ${what}`, async () => {
+  test(`protocol break: the turn stops with one plain message on ${what}`, async () => {
     const { outcome, surface } = await turnWith(step);
     assert.equal(outcome.ok, false);
     assert.match(!outcome.ok ? outcome.reason : '', reasonPattern);
@@ -145,7 +148,7 @@ for (const [what, step, reasonPattern] of failures) {
   });
 }
 
-test("the brain's own error reaches the user as the brain worded it", async () => {
+test('brain errors: reach the user as the brain worded them', async () => {
   const { outcome, surface } = await turnWith(async function* (message) {
     yield { type: 'error', traceId: message.traceId, code: 'budget_reached', message: "You've reached today's limit. Try again tomorrow." };
   });
@@ -153,7 +156,7 @@ test("the brain's own error reaches the user as the brain worded it", async () =
   assert.deepEqual(surface.errors.map((error) => error.message), ["You've reached today's limit. Try again tomorrow."]);
 });
 
-test('a turn needs a page context, a brain, and a message of at most 2,000 characters', async () => {
+test('turn input: needs a page context, a brain, and a message of at most 2,000 characters', async () => {
   const long = await turnWith(async function* (message) { yield answer(message.traceId, 'ok'); }, 'x'.repeat(2001));
   assert.match(long.surface.errors[0]!.message, /too long/);
   const noBrain = await exampleSession();
@@ -166,7 +169,7 @@ test('a turn needs a page context, a brain, and a message of at most 2,000 chara
   assert.equal(s2.errors.length, 1);
 });
 
-test('a brain that never stops calling tools is cut off', async () => {
+test('runaway brain: one that never stops calling tools is cut off', async () => {
   let count = 0;
   const { outcome } = await turnWith(async function* (message) {
     const id = `call_${count++}`;
@@ -176,7 +179,7 @@ test('a brain that never stops calling tools is cut off', async () => {
   assert.deepEqual(outcome, { ok: false, reason: 'too many round trips' });
 });
 
-test('a message typed while a turn runs goes to that turn; with no turn running it is too late, and nothing is sent', async () => {
+test('amend: a message typed mid-turn goes to that turn; with no turn running it is too late', async () => {
   let amended: Promise<string> | undefined;
   const holder: { session?: Parameters<typeof amendTurn>[0] } = {};
   const network: typeof shopNetwork = (req) => {
@@ -203,7 +206,7 @@ test('a message typed while a turn runs goes to that turn; with no turn running 
   assert.equal(idle.received.length, 0);
 });
 
-test("messages that missed a turn's last step come back as follow-ups and run as the next turn", async () => {
+test("follow-ups: messages that missed a turn's last step run as the next turn", async () => {
   const scriptedBrain = scripted(async function* (message) {
     if (message.type !== 'turn') return;
     if (message.message === 'shoes') yield { ...answer(message.traceId, 'Two shoes.'), followUps: ['and boots'] };

@@ -1,5 +1,8 @@
-// L1 for the small pieces: template filling, base64, derived-field formulas, deep links, and how validation problems
-// are described.
+// Tests: core.js's small helpers with no I/O (L1): template filling (fill), UTF-8 and base64, derived-field formulas,
+// deep links, and how validation problems are described to the model.
+// How: direct calls with fixed inputs, random text from a seeded generator compared with Node's own encoders, and
+// every site pack's real formulas and links.
+// Passes when: each helper returns exactly the expected value, and every site's formulas and links build.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { base64, buildLink, computeDerived, deepLink, derivedFields, fill, FormulaError, linkPlaceholders, parseFormula, utf8 } from '../src/index.ts';
@@ -10,13 +13,13 @@ import { sitePacks } from './sites.ts';
 
 const packs = [examplePack, ...sitePacks()];
 
-test('fill joins lists, writes objects as JSON, and leaves unknown names visible', () => {
+test('fill: joins lists, writes objects as JSON, and leaves unknown names visible', () => {
   assert.equal(fill('{a} and {b}', { a: 1, b: ['x', 'y'] }), '1 and x, y');
   assert.equal(fill('{o}|{n}|{u}', { o: { k: 1 }, n: null, u: undefined }), '{"k":1}||');
   assert.equal(fill('{missing} stays', {}), '{missing} stays');
 });
 
-test('UTF-8 and base64 match Node for random text, including lone surrogates', () => {
+test('utf8 and base64: match Node for random text, including lone surrogates', () => {
   const next = random(7);
   for (let i = 0; i < 500; i++) {
     const text = riskyString(next, 20);
@@ -25,7 +28,7 @@ test('UTF-8 and base64 match Node for random text, including lone surrogates', (
   }
 });
 
-test('formulas follow arithmetic precedence and give no value instead of a wrong one', () => {
+test('formulas: follow arithmetic precedence, and give no value instead of a wrong one', () => {
   const item = { a: 3, b: 4, s: 'x', n: { c: 2 } };
   const evaluate = (src: string) => parseFormula(src).evaluate(item);
   assert.equal(evaluate('a + b * 2'), 11);
@@ -38,13 +41,13 @@ test('formulas follow arithmetic precedence and give no value instead of a wrong
   assert.deepEqual(parseFormula('price.total + price.estimatedTaxesAndFees - price.total').paths, ['price.total', 'price.estimatedTaxesAndFees']);
 });
 
-test('a formula that does not parse says where', () => {
+test('formulas: one that does not parse says where', () => {
   for (const [src, msg] of [['2 * (a', /missing "\)"|ends too early/], ['a +', /ends too early/], ['3 # 4', /unexpected "#" at 2/], [')', /unexpected "\)" at 0/], ['', /empty/], ['a b', /unexpected field at 2/]] as const) {
     assert.throws(() => parseFormula(src), (error: Error) => error instanceof FormulaError && msg.test(error.message), src);
   }
 });
 
-test('every derived field in every site pack parses, and money is rounded to cents', () => {
+test('formulas, every site: every derived field parses, and money is rounded to cents', () => {
   for (const pack of packs) {
     for (const kind of Object.keys(pack.entities)) assert.doesNotThrow(() => derivedFields(pack, kind), `${pack.site.id}/${kind}`);
   }
@@ -53,7 +56,7 @@ test('every derived field in every site pack parses, and money is rounded to cen
   assert.deepEqual(computeDerived(examplePack, 'offer', { price: 1, shipping: { cost: 1 } }), {}, 'the formula applies to products only');
 });
 
-test('deep links URL-encode text and base64-encode JSON', () => {
+test('deep links: text is URL-encoded and JSON base64-encoded', () => {
   const link = deepLink(examplePack, 'search', { query: 'red shoes & socks', state: { page: 2, tags: ['é'] } });
   assert.ok(link.ok);
   const url = new URL(link.url);
@@ -62,14 +65,14 @@ test('deep links URL-encode text and base64-encode JSON', () => {
   assert.deepEqual(deepLink(examplePack, 'product', { id: 7 }), { ok: true, url: 'https://www.example.com/p/7' });
 });
 
-test('a deep link with a missing or unusable value, or an unknown name, is refused with the reason', () => {
+test('deep links: a missing or unusable value, or an unknown name, is refused with the reason', () => {
   assert.deepEqual(deepLink(examplePack, 'product', {}), { ok: false, problems: ['id is missing'] });
   assert.deepEqual(deepLink(examplePack, 'product', { id: { id: 7 } }), { ok: false, problems: ['id must be text or a number'] });
   assert.deepEqual(deepLink(examplePack, 'checkout', {}), { ok: false, problems: ['the site has no deep link named checkout'] });
   assert.deepEqual(buildLink('https://x.example/{a', {}), { ok: false, problems: ['the template has a malformed placeholder'] });
 });
 
-test("every site's deep links build once each placeholder has a value", () => {
+test('deep links, every site: each builds once its placeholders have values', () => {
   for (const pack of packs) {
     for (const [name, link] of Object.entries(pack.deepLinks ?? {})) {
       const params = Object.fromEntries(linkPlaceholders(link!.template).map((placeholder) => [placeholder.name, placeholder.encoding === 'base64json' ? { k: 1 } : 'v']));
@@ -79,7 +82,7 @@ test("every site's deep links build once each placeholder has a value", () => {
   }
 });
 
-test('a value outside a fixed list is described with the list, so the model can pick a valid one', () => {
+test('validation messages: a value outside a fixed list is described with the list', () => {
   const validator: Validator = Object.assign(() => false, {
     errors: [
       { instancePath: '/sort', keyword: 'enum', message: 'must be equal to one of the allowed values', params: { allowedValues: ['LowestPrice', 'HighestPrice'] } },

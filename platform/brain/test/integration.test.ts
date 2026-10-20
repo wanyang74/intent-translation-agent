@@ -1,8 +1,9 @@
-// L5, phase 5: the real core.js and the real brain together, with FakeHost as the site and FakeModel as the model.
-// Every site's example conversations are played from the user's side only: core.js gets the user's words and the
-// page, and everything else happens for real (Intake, Brain link, the brain's loop and checks, Execute against the
-// fixtures, Respond). The traffic on the link, both ways, must equal the saved conversation message for message,
-// first with the brain in the same process, then over HTTP the way a page reaches it.
+// Tests: the whole stack except the site and the model (L5, phase 5): the real core.js and the real brain together.
+// How: every site's example conversations (sites/<id>/conversations/) are played from the user's side only. core.js
+// gets the user's words and the page; everything else runs for real: Intake, the Brain link, the brain's loop and
+// checks, Execute against FakeHost's fixtures, and Respond. FakeModel writes what the conversation's model wrote.
+// It runs twice: with the brain in the same process, then over HTTP the way a page reaches it.
+// Passes when: the traffic on the link, both ways, equals the saved conversation message for message.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
@@ -72,7 +73,7 @@ async function playConversation(id: string, conversation: Conversation, transpor
 for (const id of listSites().filter(hasFixtures)) {
   for (const conversation of loadConversations(id)) {
     for (const transport of ['in process', 'HTTP'] as const) {
-      test(`${id}/${conversation.id}: real core.js and the real brain replay the conversation exactly (${transport})`, async () => {
+      test(`${id}/${conversation.id} (${transport}): real core.js and the real brain produce the saved traffic exactly`, async () => {
         const played = await playConversation(id, conversation, transport);
         assert.deepEqual(played.warnings, []);
         assert.ok(played.outcomes.every((outcome) => outcome.ok), JSON.stringify(played.outcomes));

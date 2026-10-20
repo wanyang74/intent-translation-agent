@@ -1,4 +1,9 @@
-// L1 for errors and boundary checks, on the made-up shop: every way a tool call or a presentation call can be refused.
+// Tests: core.js's boundary checks and errors (core/src/boundary/checks.ts and errors): every way a tool call or a
+// presentation call can be refused (L1).
+// How: calls checkToolCall, checkPresentation and missingNotices directly on the made-up shop (example-pack.ts), with
+// hand-picked good and bad inputs.
+// Passes when: each bad input is refused with the expected error code, and each good one is accepted.
+// The same checks on every site's saved conversations: checks-accept-conversations.test.ts.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateSitePack, validateToolError } from '../../contract/generated/validators.js';
@@ -29,11 +34,11 @@ function context(over: Partial<CheckContext> = {}): CheckContext {
 }
 const reason = (error: { reason?: string } | null) => error?.reason ?? null;
 
-test('the made-up shop is a valid site pack', () => {
+test('example pack: the made-up shop is a valid site pack', () => {
   assert.ok(validateSitePack(pack), JSON.stringify(validateSitePack.errors));
 });
 
-test('every platform error and every site error matches the contract, with every placeholder filled', () => {
+test('error catalogue: every platform and site error matches the contract, with every placeholder filled', () => {
   for (const platformReason of Object.keys(PLATFORM_ERRORS) as PlatformReason[]) {
     const error = platformError(platformReason, STANDARD);
     assert.ok(validateToolError(error), platformReason);
@@ -47,13 +52,13 @@ test('every platform error and every site error matches the contract, with every
   assert.equal(siteError(pack, 'get_offer', 'no_such_reason'), null);
 });
 
-test("a problem in a tool call uses the tool's own wording when it has exactly one fitting error", () => {
+test("error wording: a tool call's problem uses the tool's own error when exactly one fits", () => {
   assert.deepEqual(errorFor(pack, 'get_offer', 'expired_id', { kind: 'offer', id: 'of_old1' }),
     { code: 'expired', reason: 'offer_gone', message: 'That offer ended. Search again for a current price.', retryable: true });
   assert.equal(errorFor(pack, 'compare_products', 'expired_id', { kind: 'product', id: 1 }).reason, 'expired_id', 'no own error: the platform wording');
 });
 
-test('tool calls: unknown, switched off, writes, sign-in and bad arguments are refused in that order', () => {
+test('checkToolCall: unknown, switched off, writes, sign-in and bad arguments are refused in that order', () => {
   const ctx = context();
   assert.equal(reason(checkToolCall(ctx, 'no_such_tool', {})), 'unknown_tool');
   assert.equal(reason(checkToolCall({ ...ctx, policy: { ...ctx.policy, disabledTools: ['place_order'] } }, 'place_order', {})), 'tool_disabled');
@@ -66,7 +71,7 @@ test('tool calls: unknown, switched off, writes, sign-in and bad arguments are r
   assert.match(bad!.message, /colors must be a list/);
 });
 
-test('tool calls: IDs must be known, current and the right shape', () => {
+test('checkToolCall: IDs must be known, current and the right shape', () => {
   const ctx = context();
   assert.equal(checkToolCall(ctx, 'get_offer', { offerId: 'of_ab12' }), null);
   assert.equal(reason(checkToolCall(ctx, 'get_offer', { offerId: 'of_zz00' })), 'unknown_id');
@@ -77,7 +82,7 @@ test('tool calls: IDs must be known, current and the right shape', () => {
   assert.match(checkToolCall(ctx, 'compare_products', { productIds: [1, '2'] })!.message, /"2" isn't a valid product ID: product IDs are numbers/);
 });
 
-test('tool calls: values must be ones the site offers, listing the valid options', () => {
+test('checkToolCall: values must be ones the site offers; the error lists the valid ones', () => {
   const ctx = context();
   assert.equal(checkToolCall(ctx, 'search_products', { colors: ['Gray', 'Black'] }), null);
   const error = checkToolCall(ctx, 'search_products', { colors: ['Gray', 'Grey'] });
@@ -89,7 +94,7 @@ test('tool calls: values must be ones the site offers, listing the valid options
   assert.deepEqual(missingValueSources({ ...ctx, responses: {} }, 'search_products', {}), [], 'no colors given, nothing to check');
 });
 
-test('presentation calls: kinds, IDs, fields, sections, notices and forms must be ones the site pack declares', () => {
+test('checkPresentation: kinds, IDs, fields, sections, notices and forms must be ones the site pack declares', () => {
   const ctx = context();
   const check = (call: PresentationCall) => reason(checkPresentation(ctx, call));
   assert.equal(check({ name: 'present_items', args: { entity: 'product', ids: [1, 2] } }), null);
@@ -109,7 +114,7 @@ test('presentation calls: kinds, IDs, fields, sections, notices and forms must b
   }
 });
 
-test('a notice is required whenever a field it explains is on screen, and core.js adds it if missing', () => {
+test('missingNotices: a notice is required when a field it explains is on screen; core.js adds it if missing', () => {
   const items: PresentationCall = { name: 'present_items', args: { entity: 'product', ids: [1] } };
   const notice: PresentationCall = { name: 'present_notice', args: { notice: 'total_estimate' } };
   assert.deepEqual(missingNotices(pack, [items]), ['total_estimate']);

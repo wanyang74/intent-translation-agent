@@ -1,5 +1,10 @@
-// The generated code, for the platform and every site pack: up to date, in agreement with the runtime
-// validator, and runnable in every engine core.js targets.
+// Tests: the code generated from the JSON Schemas (contract/generated/ and sites/<id>/generated/), for the platform
+// and every site pack.
+// How: regenerates in memory and compares; runs the generated validators beside the runtime validator on every
+// schema's examples and must-reject cases; bundles them and runs them in a bare Node context, QuickJS and
+// JavaScriptCore.
+// Passes when: the committed code is up to date, every validator gives the runtime validator's verdict in every
+// engine, the bundle has no eval, and it stays within its size budget.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -41,7 +46,7 @@ for (const [id, site] of Object.entries(contract.sites)) {
   });
 }
 
-test('the committed generated code matches a fresh generation', () => {
+test('up to date: the committed generated code matches a fresh generation', () => {
   execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/generate.ts', import.meta.url)), '--check'], { stdio: 'pipe' });
 });
 
@@ -61,17 +66,17 @@ for (const scope of scopes) {
     ...scope.cases.map((rejectCase) => ({ rel: rejectCase.schema, data: rejectCase.instance })),
   ].map((testCase) => ({ ...testCase, fn: validatorName(testCase.rel), expected: scope.validator(testCase.rel)(testCase.data) as boolean }));
 
-  test(`${scope.label}: a generated validator for every schema except the shared definitions`, () => {
+  test(`${scope.label}: coverage: a generated validator for every schema except the shared definitions`, () => {
     for (const schema of exported) assert.equal(typeof generated[validatorName(schema.rel)], 'function', schema.rel);
   });
 
-  test(`${scope.label}: generated validators agree with the runtime validator on every example and must-reject case`, () => {
+  test(`${scope.label}: verdicts: generated and runtime validators agree on every example and must-reject case`, () => {
     assert.ok(cases.some((testCase) => testCase.expected), 'no valid examples');
     if (scope.cases.length) assert.ok(cases.some((testCase) => !testCase.expected), 'must-reject cases were accepted');
     for (const testCase of cases) assert.equal(generated[testCase.fn]!(testCase.data), testCase.expected, `${testCase.rel}: ${JSON.stringify(testCase.data).slice(0, 80)}`);
   });
 
-  test(`${scope.label}: each tool definition stands alone and accepts and refuses what its schema does`, () => {
+  test(`${scope.label}: tool definitions: each stands alone and accepts and refuses what its schema does`, () => {
     const defs = JSON.parse(readFileSync(path.join(scope.generatedDir, 'tools.json'), 'utf8')) as { name: string; inputSchema: object }[];
     const site = Object.values(contract.sites).find((siteInfo) => scope.generatedDir === path.join(siteInfo.dir, 'generated'));
     assert.ok(defs.length > 0);
@@ -89,15 +94,15 @@ for (const scope of scopes) {
   const expected = JSON.stringify(cases.map((testCase) => testCase.expected));
   const input = JSON.stringify(cases.map(({ fn, data }) => ({ fn, data })));
 
-  test(`${scope.label}: the bundled validators use no eval or new Function`, () => {
+  test(`${scope.label}: bundle: no eval or new Function`, () => {
     assert.doesNotMatch(bundle, /\beval\(|\bnew Function\b/);
   });
 
-  test(`${scope.label}: same verdicts in a bare Node context (no Node globals)`, () => {
+  test(`${scope.label}: engines: same verdicts in a bare Node context`, () => {
     assert.equal(vm.runInContext(`${bundle}\n__run(${input})`, vm.createContext({})), expected);
   });
 
-  test(`${scope.label}: same verdicts in QuickJS`, async () => {
+  test(`${scope.label}: engines: same verdicts in QuickJS`, async () => {
     const QuickJS = await getQuickJS();
     const ctx = QuickJS.newContext();
     try {
@@ -108,7 +113,7 @@ for (const scope of scopes) {
   });
 
   const JSC = '/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc';
-  test(`${scope.label}: same verdicts in JavaScriptCore`, { skip: !existsSync(JSC) && 'jsc not available' }, () => {
+  test(`${scope.label}: engines: same verdicts in JavaScriptCore`, { skip: !existsSync(JSC) && 'jsc not available' }, () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'validators-jsc-'));
     try {
       const file = path.join(dir, 'run.js');
@@ -125,7 +130,7 @@ for (const scope of scopes) {
 // functions at the top level of the file. If core.js needs to be smaller, generate a file with only the
 // validators it uses (it doesn't need the site-pack validator at runtime, for one).
 for (const [id, site] of Object.entries(contract.sites)) {
-  test(`platform + ${id}: the minified, gzipped validators stay within 60 KB`, async () => {
+  test(`platform + ${id}: size: minified, gzipped validators stay within 60 KB`, async () => {
     const contents = [platformGenerated, path.join(site.dir, 'generated')]
       .map((dir, i) => `import * as v${i} from ${JSON.stringify(path.join(dir, 'validators.js'))}; globalThis.v${i} = v${i};`).join('\n');
     const kb = gzipSync(await bundleOf(platformGenerated, contents, true)).length / 1024;

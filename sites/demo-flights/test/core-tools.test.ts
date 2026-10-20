@@ -1,5 +1,7 @@
-// core.js running Demo Flights' tools against FakeHost: a trips list behind sign-in, offers that expire while the
-// session goes on, and arguments the airline's form rules don't allow.
+// Tests: Demo Flights' tools run by core.js, end to end on the client: a trips list behind sign-in, offers that expire
+// while the session goes on, and arguments the airline's form rules don't allow.
+// How: core.js's Execute and Respond with FakeHost answering from Demo Flights' fixtures.
+// Passes when: refused calls send no request, and allowed ones come back and show as the site pack says.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PresentationCall } from '../../../platform/contract/generated/types.ts';
@@ -19,7 +21,7 @@ async function session(signedIn = false) {
   return { ...harness, coreSession };
 }
 
-test("the trips list is refused when signed out, without a request, and shown when signed in", async () => {
+test('sign-in: the trips list is refused when signed out, with no request, and shown when signed in', async () => {
   const out = await session(false);
   const refused = await runToolCall(out.coreSession, 'get_trips', { status: 'upcoming' });
   assert.deepEqual(!refused.ok && [refused.error.code, refused.error.reason], ['auth_required', 'signed_out']);
@@ -31,7 +33,7 @@ test("the trips list is refused when signed out, without a request, and shown wh
   assert.deepEqual(list?.type === 'items' && [list.items[0]!.title, list.items[0]!.subtitle], ['SFO to SEA', '2026-12-03T16:00:00Z']);
 });
 
-test('offers can be shown while they are current; after they expire, the card is refused', async () => {
+test('offer expiry: offers can be shown while current; after they expire, the card is refused', async () => {
   const { coreSession, clock } = await session();
   const outcome = await runToolCall(coreSession, 'search_flights', search);
   assert.ok(outcome.ok);
@@ -44,7 +46,7 @@ test('offers can be shown while they are current; after they expire, the card is
   assert.deepEqual(present(coreSession, [call]).refused.map((refusal) => refusal.error.code), ['expired']);
 });
 
-test("arguments the airline's rules don't allow are refused before any request", async () => {
+test("form rules: arguments the airline's rules don't allow are refused before any request", async () => {
   const { coreSession, fake } = await session();
   for (const args of [{ ...search, origin: 'sfo' }, { ...search, adults: 0 }, { ...search, cabin: 'luxury' }]) {
     const outcome = await runToolCall(coreSession, 'search_flights', args);

@@ -1,5 +1,7 @@
-// The brain serving Demo Flights: tools and items that need sign-in, the flight search form and what it can be
-// prefilled with, and offers that expire while the conversation goes on.
+// Tests: the brain serving Demo Flights, a made-up airline that checks the platform has no Carvana assumptions:
+// tools and items that need sign-in, the flight search form and its prefill, and offers that expire.
+// How: the real brain with the Demo Flights site pack, FakeModel as the model and FakeClient as core.js.
+// Passes when: each call or card is sent or refused as the site pack says, with the airline's own wording.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PageContext } from '../../../platform/contract/generated/types.ts';
@@ -27,7 +29,7 @@ function setup(script: FakeScript[], now: () => number = () => Date.parse('2026-
 const reasons = (model: FakeModel, i: number) => (model.requests[i]!.messages.at(-1)!.content as { isError: boolean; output: { reason: string } }[])
   .map((part) => (part.isError ? part.output.reason : 'ok'));
 
-test("trips need sign-in: refused by the brain with the airline's own wording when signed out, sent when signed in", async () => {
+test("sign-in: trips are refused in the airline's wording when signed out, and sent when signed in", async () => {
   const out = setup([{ calls: [{ name: 'get_trips', input: { status: 'upcoming' } }] }, { text: 'Please sign in.' }]);
   const turn = await out.client.turn('my trips', HOME);
   assert.deepEqual(turn.calls, []);
@@ -38,7 +40,7 @@ test("trips need sign-in: refused by the brain with the airline's own wording wh
   assert.deepEqual(t2.answer?.present, [{ name: 'present_items', args: { entity: 'trip', ids: ['Q7K2LM'] } }]);
 });
 
-test('the flight search form: prefilled with what fits it, refused with what does not', async () => {
+test('form prefill: the flight search form takes what fits it and refuses what does not', async () => {
   const { client, model } = setup([
     { text: 'When?', calls: [{ name: 'present_form', input: { form: 'flight_search', prefill: { origin: 'SFO', adults: 12 } } }] },
     { text: 'When?', calls: [{ name: 'present_form', input: { form: 'flight_search', prefill: { origin: 'SFO', seat: '1A' } } }] },
@@ -50,7 +52,7 @@ test('the flight search form: prefilled with what fits it, refused with what doe
   assert.deepEqual(turn.answer?.present, [{ name: 'present_form', args: { form: 'flight_search', prefill: { origin: 'SFO', adults: 2 } } }]);
 });
 
-test('offers expire: once the time passes, the brain refuses to show them and the model is told to search again', async () => {
+test('offer expiry: once the time passes, offers are refused and the model is told to search again', async () => {
   let now = Date.parse('2026-10-12T18:05:00Z');
   const { client, model } = setup([
     { calls: [search] },

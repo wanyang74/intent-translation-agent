@@ -1,5 +1,8 @@
-// Every site's fixture library: valid against the site's contract where it should be, scrubbed, consistent
-// with its index, and reproducible from the recording.
+// Tests: every site's fixture library (sites/<id>/fixtures/) and the fixture builder that makes it from recordings.
+// How: reads every fixture and the index, validates them against the site's endpoint schemas, scans for unscrubbed
+// identifiers, and (when the raw recordings are on this machine) rebuilds the library in memory.
+// Passes when: fixtures are valid where they should be, scrubbed, consistent with the index, and rebuilding from the
+// recordings gives byte-identical files.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -18,7 +21,7 @@ const PLACEHOLDER = /^(00000000-0000-4000-8000-\d{12})?$/;
 const filesIn = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
   .flatMap((entry) => entry.isDirectory() ? filesIn(path.join(dir, entry.name)).map((file) => `${entry.name}/${file}`) : [entry.name]).sort();
 
-test('at least two sites have fixtures', () => {
+test('coverage: at least two sites have fixtures', () => {
   assert.ok(sites.length >= 2, `sites with fixtures: ${sites.join(', ')}`);
 });
 
@@ -28,7 +31,7 @@ for (const site of sites) {
   const validator = (rel: string) => contract.siteValidator(site, rel);
   const isJson = (endpoint: string) => (pack.endpoints[endpoint]?.responseFormat ?? 'json') === 'json';
 
-  test(`${site}: fixture ids are unique, and each fixture names this site and one of its endpoints`, () => {
+  test(`${site}: ids: unique, and each fixture names this site and one of its endpoints`, () => {
     assert.equal(new Set(fixtures.map((fixture) => fixture.id)).size, fixtures.length);
     for (const fixture of fixtures) {
       assert.equal(fixture.site, site, fixture.id);
@@ -37,12 +40,12 @@ for (const site of sites) {
     }
   });
 
-  test(`${site}: the index lists exactly the fixture files on disk`, () => {
+  test(`${site}: index: lists exactly the fixture files on disk`, () => {
     const index: { file: string }[] = JSON.parse(readFileSync(path.join(fixtureDir(site), 'index.json'), 'utf8'));
     assert.deepEqual(index.map((entry) => entry.file).sort(), filesIn(fixtureDir(site)).filter((file) => file !== 'index.json'));
   });
 
-  test(`${site}: every fixture request meets the contract, except the observed errors, which must break it`, () => {
+  test(`${site}: requests: each meets the contract, except the observed errors, which must break it`, () => {
     for (const fixture of fixtures) {
       const validate = validator(pack.endpoints[fixture.endpoint]!.request);
       const ok = validate(requestValue(pack, fixture.request));
@@ -51,7 +54,7 @@ for (const site of sites) {
     }
   });
 
-  test(`${site}: every 200 response meets the contract, except deliberate shape changes`, () => {
+  test(`${site}: responses: every 200 meets the contract, except deliberate shape changes`, () => {
     for (const fixture of fixtures.filter((candidate) => candidate.response.status === 200 && isJson(candidate.endpoint))) {
       const validate = validator(pack.endpoints[fixture.endpoint]!.response);
       const ok = validate(fixture.response.body);
@@ -60,7 +63,7 @@ for (const site of sites) {
     }
   });
 
-  test(`${site}: every identifier the site pack scrubs holds a placeholder`, () => {
+  test(`${site}: scrubbing: every identifier the site pack scrubs holds a placeholder`, () => {
     const fields = new Set(pack.recording.scrubFields);
     const headers = new Set(pack.recording.scrubHeaders.map((header) => header.toLowerCase()));
     const bad: string[] = [];
@@ -84,7 +87,7 @@ for (const site of sites) {
 
   const hars = (pack.recording.hars ?? []).map((file) => path.join(repoRoot, file));
   const skip = !hars.length ? 'no recording: fixtures are hand-written' : !hars.every((file) => existsSync(file)) && 'recordings not present';
-  test(`${site}: rebuilding from the recordings gives byte-identical fixtures`, { skip }, () => {
+  test(`${site}: rebuild: the recordings give byte-identical fixtures`, { skip }, () => {
     const tmp = mkdtempSync(path.join(os.tmpdir(), 'fixtures-'));
     try {
       execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/build-fixtures.ts', import.meta.url)), site, hars.join(','), tmp], { stdio: 'pipe' });

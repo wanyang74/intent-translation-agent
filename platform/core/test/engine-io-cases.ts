@@ -1,6 +1,6 @@
-// core.js's I/O written to run in any engine: every example conversation, played through runTurn with FakeBrain as
-// the brain, FakeSurface as the surface, and the site's recorded responses as the network. engines.test.ts runs this
-// in a bare Node context, QuickJS and JavaScriptCore; each must give exactly what Node gives.
+// core.js's I/O written to run in any engine: every example conversation, played through runTurn with FakeBrain as the
+// brain, FakeSurface as the surface, and the site's recorded responses as the network. same-in-every-engine.test.ts
+// runs this in a bare Node context, QuickJS and JavaScriptCore; each must give exactly what Node gives.
 import type { SitePack } from '../../contract/generated/types.ts';
 import type { Conversation } from '../../testkit/src/conversations.ts';
 import { FakeBrain } from '../../testkit/src/fake-brain.ts';

@@ -1,7 +1,8 @@
-// The Claude adapter through AI SDK Core and the Anthropic provider, with fetch replaced: the request the API would
-// get (system prompt and last message marked for caching, tools as defined, tool calls and results paired by the
-// model's IDs), and the streamed answer turned into the brain's events (text, a tool call with parsed input, the
-// finish with cache usage). No network.
+// Tests: the Claude adapter (brain/src/model/anthropic.ts), which talks to the API through AI SDK Core.
+// How: fetch is replaced by a stub, so no network. The stub records the request and streams back a canned answer.
+// Passes when: the request has the system prompt and last message marked for caching, the tools as defined, and
+// each tool call paired with its result by the model's ID; and the streamed answer becomes the brain's events
+// (text, a tool call with parsed input, the finish with cache usage).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { anthropicModel, toModelMessages } from '../src/model/anthropic.ts';
@@ -53,7 +54,7 @@ async function collect(stream: AsyncIterable<ModelEvent>): Promise<ModelEvent[]>
   return out;
 }
 
-test('the request: cached system prompt, tools as defined, the history paired by call IDs, the last message cached', async () => {
+test('request: system prompt and last message cached, tools as defined, each call paired with its result', async () => {
   const { fakeFetch, requests } = recordingFetch(STREAM);
   const model = anthropicModel({ apiKey: 'test-key-not-real', fetch: fakeFetch, maxRetries: 0 });
   const prefix = buildPromptPrefix(shopSite());
@@ -92,19 +93,19 @@ test('the request: cached system prompt, tools as defined, the history paired by
   assert.ok(finish.type === 'finish' && finish.usage.inputTokens >= 5240, 'input tokens count the cached ones too');
 });
 
-test('a one-hour cache and a higher effort when asked for', async () => {
+test('request options: a one-hour cache and a higher effort when asked', async () => {
   const { fakeFetch, requests } = recordingFetch(STREAM);
   await collect(anthropicModel({ apiKey: 'k', fetch: fakeFetch, cacheTtl: '1h', effort: 'medium', maxRetries: 0 }).stream({ system: 'S', tools: [], messages: HISTORY.slice(0, 1), maxOutputTokens: 100, signal: new AbortController().signal }));
   assert.deepEqual(requests[0]!.body.system[0].cache_control, { type: 'ephemeral', ttl: '1h' });
   assert.deepEqual(requests[0]!.body.output_config, { effort: 'medium' });
 });
 
-test('an API error is thrown from the stream, for the loop to turn into a plain message', async () => {
+test('API errors: thrown from the stream, for the loop to turn into a plain message', async () => {
   const { fakeFetch } = recordingFetch(JSON.stringify({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }), 529);
   await assert.rejects(collect(anthropicModel({ apiKey: 'k', fetch: fakeFetch, maxRetries: 0 }).stream({ system: 'S', tools: [], messages: HISTORY.slice(0, 1), maxOutputTokens: 100, signal: new AbortController().signal })), /Overloaded/);
 });
 
-test('only the last message carries a cache breakpoint', () => {
+test('cache breakpoints: only the last message carries one', () => {
   const cache = { anthropic: { cacheControl: { type: 'ephemeral' as const } } };
   const messages = toModelMessages(HISTORY, cache);
   assert.deepEqual(messages.map((message) => 'providerOptions' in message), [false, false, false, false, true]);

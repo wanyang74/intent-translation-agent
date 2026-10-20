@@ -1,6 +1,8 @@
-// L4: core.js gives the same results in every engine it targets, with nothing Node-specific in it. The cases in
-// engine-cases.ts are bundled with core.js the way it will ship, then run in a bare Node context (no Node globals),
-// QuickJS and JavaScriptCore. Each engine must produce exactly what Node produces.
+// Tests: core.js runs the same in every JavaScript engine it targets, with nothing Node-specific in it (L4).
+// How: engine-cases.ts (the pure functions) and engine-io-cases.ts (every conversation through runTurn) are bundled
+// with core.js the way it will ship, then run in Node, a bare Node context (no Node globals), QuickJS and
+// JavaScriptCore.
+// Passes when: the bundle has no Node built-ins or eval, and each engine produces exactly what Node produces.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -29,7 +31,7 @@ const bundle = (await build({
   bundle: true, format: 'iife', platform: 'neutral', target: 'es2020', write: false, logLevel: 'silent',
 })).outputFiles[0]!.text;
 
-test('core.js bundles for the browser with no Node built-ins, eval or new Function', async () => {
+test('bundle: core.js builds for the browser with no Node built-ins, eval or new Function', async () => {
   const core = (await build({
     entryPoints: [path.join(here, '../src/index.ts')], bundle: true, format: 'iife', globalName: 'core',
     platform: 'browser', target: 'es2020', write: false, minify: true, logLevel: 'silent',
@@ -38,11 +40,11 @@ test('core.js bundles for the browser with no Node built-ins, eval or new Functi
   assert.ok(gzipSync(core).length < 15 * 1024, `core.js pure logic is ${Math.round(gzipSync(core).length / 1024)} KB gzipped`);
 });
 
-test('same results in a bare Node context (no Node globals)', () => {
+test('pure functions: same results in a bare Node context', () => {
   assert.equal(vm.runInContext(`${bundle}\n__run()`, vm.createContext({})), expected);
 });
 
-test('same results in QuickJS', async () => {
+test('pure functions: same results in QuickJS', async () => {
   const QuickJS = await getQuickJS();
   const ctx = QuickJS.newContext();
   try {
@@ -53,7 +55,7 @@ test('same results in QuickJS', async () => {
 });
 
 const JSC = '/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc';
-test('same results in JavaScriptCore', { skip: !existsSync(JSC) && 'jsc not available' }, () => {
+test('pure functions: same results in JavaScriptCore', { skip: !existsSync(JSC) && 'jsc not available' }, () => {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'core-jsc-'));
   try {
     const file = path.join(dir, 'run.js');
@@ -99,7 +101,7 @@ globalThis.__runIo = async () => JSON.stringify(await runIoCases(data.map((d) =>
   bundle: true, format: 'iife', platform: 'neutral', target: 'es2020', write: false, logLevel: 'silent',
 })).outputFiles[0]!.text;
 
-test("every conversation's client side gives the same results in Node, with no differences from the conversation", () => {
+test('conversations through runTurn: Node gives the saved results, with no differences', () => {
   const results = JSON.parse(ioExpected) as { conversation: string; differences: string[]; finished: boolean; outcomes: { ok: boolean }[] }[];
   assert.ok(results.length >= 4);
   for (const result of results) {
@@ -108,11 +110,11 @@ test("every conversation's client side gives the same results in Node, with no d
   }
 });
 
-test('the client side gives the same results in a bare Node context', async () => {
+test('conversations through runTurn: same results in a bare Node context', async () => {
   assert.equal(await vm.runInContext(`${ioBundle}\n__runIo()`, vm.createContext({})), ioExpected);
 });
 
-test('the client side gives the same results in QuickJS', async () => {
+test('conversations through runTurn: same results in QuickJS', async () => {
   const QuickJS = await getQuickJS();
   const ctx = QuickJS.newContext();
   try {
@@ -128,7 +130,7 @@ test('the client side gives the same results in QuickJS', async () => {
   }
 });
 
-test('the client side gives the same results in JavaScriptCore', { skip: !existsSync(JSC) && 'jsc not available' }, () => {
+test('conversations through runTurn: same results in JavaScriptCore', { skip: !existsSync(JSC) && 'jsc not available' }, () => {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'core-io-jsc-'));
   try {
     const file = path.join(dir, 'run.js');

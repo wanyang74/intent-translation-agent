@@ -1,6 +1,8 @@
-// L2 and L3: core.js plays the client's side of every site's example conversations, against FakeHost (the site) and
-// FakeBrain (the brain's side of the same conversation). Every result core.js sends must equal the conversation's,
-// it must call exactly the fixtures the conversation lists, and each answer must reach the surface filled in.
+// Tests: core.js's side of every example conversation (L2 and L3). core.js is real; everything around it is played.
+// How: FakeBrain plays the brain's side of the conversation, FakeHost answers the site's requests from the fixtures
+// the conversation lists, and FakeSurface stands in for the screen.
+// Passes when: every result core.js sends equals the conversation's, it calls exactly the listed fixtures, and each
+// answer reaches the surface filled in. The brain's side is tested in platform/brain/test/replay-brain-side.test.ts.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
@@ -16,7 +18,7 @@ for (const site of listSites().filter(hasFixtures)) {
   const rt = await loadSiteRuntime(site);
   const fixtures = loadFixtures(site);
   for (const conversation of loadConversations(site)) {
-    test(`${site}/${conversation.id}: core.js replays the client's side exactly`, async () => {
+    test(`${site}/${conversation.id}: core.js sends the saved results, using exactly the listed fixtures`, async () => {
       const fakeBrain = new FakeBrain(conversation);
       const { host, fake } = testHost({ site, fixtures, start: conversation.now!, pageData: conversation.pageData, brain: fakeBrain.brain });
       const { session, warnings } = await startSession({ pack: rt.pack, site: rt.code, validators: rt.validators, host });

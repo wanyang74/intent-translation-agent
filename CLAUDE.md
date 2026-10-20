@@ -93,7 +93,7 @@ docs/                      local copy of the design doc
   run directly by Node with `.ts` import paths. `import type` for types.
 - Tests use Node's built-in runner (`node --test`), with test names that state the behavior in a sentence.
 - Never type invisible characters (such as `​`) straight into a file: write them through a script with escaped
-  backslashes. `platform/contract/test/source.test.ts` fails on any raw invisible character.
+  backslashes. `platform/contract/test/no-invisible-characters.test.ts` fails on any raw invisible character.
 
 ## Testing
 

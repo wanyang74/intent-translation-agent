@@ -1,5 +1,8 @@
-// Every site's eval cases refer only to what exists (conversations, tools, entities, notices, fixtures, pages), cover
-// every category between them, and their fixture edits apply.
+// Tests: every site's eval cases (sites/<id>/evals/*.json), loaded the way the eval runner loads them.
+// How: resolves each case's references against its site pack, conversations and fixtures, and applies its fixture
+// edits.
+// Passes when: every case refers only to what exists, its fixture edits apply, every category has cases, and a case
+// that names something missing is caught.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
@@ -8,12 +11,12 @@ import { loadFixtures } from '../../testkit/src/fixtures.ts';
 import { loadSiteRuntime } from '../../testkit/src/site-runtime.ts';
 import { CATEGORIES, checkCases, editFixtures, hasEvals, loadCases } from '../src/cases.ts';
 
-test('every site pack brings eval cases', () => {
+test('coverage: every site pack brings eval cases', () => {
   assert.deepEqual(listSites().filter((site) => !hasEvals(site)), []);
 });
 
 for (const site of listSites().filter(hasEvals)) {
-  test(`${site}: every eval case refers only to what exists, and its fixture edits apply`, async () => {
+  test(`${site}: references: every case names only what exists, and its fixture edits apply`, async () => {
     const cases = loadCases(site);
     const fixtures = loadFixtures(site);
     const { pack } = await loadSiteRuntime(site);
@@ -22,13 +25,13 @@ for (const site of listSites().filter(hasEvals)) {
   });
 }
 
-test('across all sites, every category has cases, and there are about fifty to start', () => {
+test('coverage: across all sites, every category has cases, about fifty to start', () => {
   const cases = listSites().flatMap(loadCases);
   assert.deepEqual(CATEGORIES.filter((category) => !cases.some((evalCase) => evalCase.category === category)), []);
   assert.ok(cases.length >= 50, `${cases.length} cases`);
 });
 
-test('a case that names what does not exist is caught', async () => {
+test('loader: a case that names something that does not exist is caught', async () => {
   const site = listSites().find(hasEvals)!;
   const { pack } = await loadSiteRuntime(site);
   const [first] = loadCases(site);

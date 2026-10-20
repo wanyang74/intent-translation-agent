@@ -1,6 +1,9 @@
-// L3 for the remote config (off switches) and the web host: a config is used only when it is valid, for this site,
-// and signed, and it can only tighten the site pack's limits; the web host sends requests with the page's session
-// and reads the brain's newline-delimited events however the network splits them.
+// Tests: the remote config (the off switches) and core.js's web host (core/src/runtime/) (L3).
+// How: configs signed with a test key, and the web host with fetch replaced by a stub that can split the brain's
+// response into any chunks.
+// Passes when: a config is used only when it is valid, for this site, and signed, and it can only tighten the site
+// pack's limits; the web host sends requests with the page's session and reads the brain's newline-delimited events
+// correctly however the network splits them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ndjsonEvents, webHost } from '../hosts/web.ts';
@@ -14,7 +17,7 @@ const config = (over: Record<string, unknown> = {}) => ({
 });
 const signedBy = (good: string) => ({ verifyConfig: async (remoteConfig: unknown) => (remoteConfig as { signature: string }).signature === good });
 
-test('a remote config is ignored unless it is valid, for this site, and signed', async () => {
+test('remote config: ignored unless it is valid, for this site, and signed', async () => {
   const base = { pack: examplePack, validators: exampleValidators() };
   const cases: [unknown, Partial<ReturnType<typeof exampleHost>['host']>, RegExp | null][] = [
     [{ site: 'example-shop' }, signedBy('sig'), /remote config ignored/],
@@ -35,7 +38,7 @@ test('a remote config is ignored unless it is valid, for this site, and signed',
   }
 });
 
-test("an accepted config switches tools off and tightens limits, but can't loosen them", async () => {
+test("remote config: switches tools off and tightens limits, but can't loosen them", async () => {
   const { session } = await exampleSession({ host: signedBy('sig'), config: config({ disabledTools: ['my_orders'], rateLimitPerSecond: 50 }) });
   assert.deepEqual(session.policy.budgets, { perTask: 2, perSession: 8, perDay: 10 });
   assert.equal(session.policy.rateLimitPerSecond, 2, "the site pack's 2 per second stays");
@@ -48,7 +51,7 @@ test("an accepted config switches tools off and tightens limits, but can't loose
   assert.equal(!third.ok && third.error.reason, 'budget_reached');
 });
 
-test("the web host sends requests with the page's session and maps the response", async () => {
+test("web host: requests carry the page's session, and responses are mapped", async () => {
   const seen: { url: string; init: RequestInit }[] = [];
   const fakeFetch = (async (url: string, init: RequestInit) => {
     seen.push({ url, init });
@@ -77,7 +80,7 @@ function chunked(text: string, sizes: number[]): ReadableStream<Uint8Array> {
   });
 }
 
-test("the brain's events are read one per line, however the network splits them", async () => {
+test("web host: the brain's events are read one per line, however the network splits them", async () => {
   const lines = ['{"type":"progress","traceId":"trace_1","text":"Señor ✓"}', '', '{"type":"answer","traceId":"trace_1","text":"done"}'];
   const text = lines.join('\n');
   for (const sizes of [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 50, 3], [7, 33, 2], [1000]]) {
@@ -90,7 +93,7 @@ test("the brain's events are read one per line, however the network splits them"
   }
 });
 
-test('the web host posts turns and results to the brain, and fails loudly on a bad status', async () => {
+test('web host: posts turns and results to the brain, and fails loudly on a bad status', async () => {
   const urls: string[] = [];
   const fakeFetch = (async (url: string) => {
     urls.push(url);

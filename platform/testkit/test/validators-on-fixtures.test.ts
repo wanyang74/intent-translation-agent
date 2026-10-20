@@ -1,4 +1,6 @@
-// The generated validators give the same verdict as the runtime validator on every site's fixtures.
+// Tests: the generated validators (contract/generated/ and sites/<id>/generated/) on real data.
+// How: runs the generated validator and the runtime validator on every fixture request and 200 response.
+// Passes when: the two give the same verdict every time.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';

@@ -1,5 +1,7 @@
-// Source files hold no raw invisible characters. In code they're written as \u escapes, so a reader can see them and
-// no editor or tool can silently drop or add one. Generated code and recorded data are left out.
+// Tests: every hand-written source file in the repo (generated code and recorded data are left out).
+// How: scans each file for raw invisible characters (zero-width, bidirectional and the like).
+// Passes when: there are none. In code they're written as \u escapes, so a reader can see them and no editor or
+// tool can silently drop or add one.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';

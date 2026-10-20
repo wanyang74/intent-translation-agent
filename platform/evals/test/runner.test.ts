@@ -1,7 +1,11 @@
-// The runner end to end with a FakeModel in place of the model under test, on every site: a case made from an example
-// conversation's last turn (the turns before it replayed as state) passes when the model writes what the conversation
-// did; it fails when the model puts a price on screen that no tool returned; it is unrecorded when the model asks the
-// site for something no fixture answers. Then every saved reference replays and passes again.
+// Tests: the eval runner end to end (evals/src/run.ts), on every site, with a FakeModel in place of the model under
+// test.
+// How: a case is made from an example conversation's last turn, with the turns before it replayed as state. The
+// FakeModel then writes the conversation's answer, or a changed one. Then every saved reference
+// (sites/<id>/evals/references/) replays.
+// Passes when: the case passes when the model writes what the conversation did; fails when the model puts a price on
+// screen that no tool returned; is unrecorded when the model asks the site for something no fixture answers; and
+// every saved reference passes again.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
@@ -33,7 +37,7 @@ for (const site of listSites().filter(hasFixtures)) {
       },
     };
 
-    test(`${site}/${conversation.id}: a case passes when the model writes what the conversation did`, async () => {
+    test(`${site}/${conversation.id}: pass when the model writes what the conversation did`, async () => {
       const trial = await runCase(materials, evalCase, new FakeModel(lastSteps));
       const result = grade(evalCase, trial);
       assert.deepEqual(result.checks.filter((check) => !check.pass), []);
@@ -42,7 +46,7 @@ for (const site of listSites().filter(hasFixtures)) {
       assert.deepEqual(trial.modelSteps.map((step) => step.calls?.map((call) => call.name)), lastSteps.map((step) => step.calls?.map((call) => call.name)), 'what the model wrote is kept');
     });
 
-    test(`${site}/${conversation.id}: a price no tool returned fails, and a request no fixture answers is unrecorded`, async () => {
+    test(`${site}/${conversation.id}: fail on a price no tool returned; unrecorded on a request no fixture answers`, async () => {
       const madeUp: FakeStep[] = lastSteps.map((step, i) => (i === lastSteps.length - 1 ? { ...step, text: `${step.text} Only $123,457 today.` } : step));
       const failed = grade(evalCase, await runCase(materials, evalCase, new FakeModel(madeUp)));
       assert.equal(failed.status, 'fail');
@@ -60,7 +64,7 @@ for (const site of listSites().filter(hasFixtures)) {
 for (const site of listSites().filter(hasEvals)) {
   const withReferences = loadCases(site).map((evalCase) => ({ evalCase, reference: loadReference(site, evalCase.id) })).filter((entry) => entry.reference);
   for (const { evalCase, reference } of withReferences) {
-    test(`${site}/${evalCase.id}: the saved reference (${reference!.model}) replays and passes`, async () => {
+    test(`${site}/${evalCase.id}: saved reference (${reference!.model}) replays and passes`, async () => {
       const materials = await loadSiteMaterials(site);
       const result = grade(evalCase, await runCase(materials, evalCase, new FakeModel(reference!.steps)));
       assert.deepEqual(result.checks.filter((check) => !check.pass), []);

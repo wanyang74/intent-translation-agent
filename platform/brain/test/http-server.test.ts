@@ -1,6 +1,9 @@
-// The brain over HTTP, called the way core.js's web host calls it: newline-delimited JSON that streams each event as
-// it happens (a tool call reaches the client while the model is still writing), CORS for the sites' origins, plain
-// refusals for bad requests, and a client that hangs up mid-turn ends the turn.
+// Tests: the brain's HTTP server (brain/src/server/), called the way core.js's web host calls it.
+// How: a real HTTP server on a local port, with FakeModel as the model and core.js's web host (or plain fetch) as
+// the client.
+// Passes when: events stream as newline-delimited JSON as they happen (a tool call reaches the client while the model
+// is still writing), CORS answers only the sites' own origins, bad requests get plain refusals, and a client that
+// hangs up mid-turn ends the turn.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
@@ -26,7 +29,7 @@ async function serve(script: FakeScript[], options: { maxBodyBytes?: number } = 
   return { base, brain, model, log, send, close: () => new Promise<void>((resolve) => server.close(() => resolve())) };
 }
 
-test("a turn over HTTP, with core.js's web host as the client: each tool call streams out before the model's step ends", async () => {
+test("streaming: over HTTP, each tool call reaches core.js's web host before the model's step ends", async () => {
   let arrived!: () => void;
   const firstCall = new Promise<void>((resolve) => { arrived = resolve; });
   const server = await serve([
@@ -47,7 +50,7 @@ test("a turn over HTTP, with core.js's web host as the client: each tool call st
   }
 });
 
-test("CORS answers the sites' own origins and no others", async () => {
+test("CORS: answers the sites' own origins and no others", async () => {
   const server = await serve([]);
   try {
     const preflight = (origin: string) => fetch(`${server.base}/v1/turn`, { method: 'OPTIONS', headers: { origin, 'access-control-request-method': 'POST', 'access-control-request-headers': 'content-type' } });
@@ -62,7 +65,7 @@ test("CORS answers the sites' own origins and no others", async () => {
   }
 });
 
-test('bad requests get plain refusals: wrong method or path, a body that is not JSON or too large, a broken message', async () => {
+test('bad requests: wrong method or path, a non-JSON or too-large body, or a broken message get plain refusals', async () => {
   const server = await serve([], { maxBodyBytes: 10_000 });
   try {
     const post = (path: string, body: string) => fetch(`${server.base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body });
@@ -83,7 +86,7 @@ test('bad requests get plain refusals: wrong method or path, a body that is not 
   }
 });
 
-test('a client that hangs up mid-turn: the brain stops the model call and ends the turn', async () => {
+test('client hangs up: the brain stops the model call and ends the turn', async () => {
   let aborted!: () => void;
   const wasAborted = new Promise<void>((resolve) => { aborted = resolve; });
   const server = await serve([
@@ -110,7 +113,7 @@ test('a client that hangs up mid-turn: the brain stops the model call and ends t
   }
 });
 
-test('POST /v1/amend queues a message on the running turn, over HTTP', async () => {
+test('POST /v1/amend: queues a message on the running turn', async () => {
   const holder: { client?: FakeClient; reply?: unknown[] } = {};
   const served = await serve([
     { calls: [{ name: 'search_products', input: { query: 'shoes' } }] },

@@ -1,5 +1,7 @@
-// core.js on Carvana's real data: the estimated total, the search and vehicle links, review text, and the checks on
-// filter values and car IDs.
+// Tests: core.js's rules on Carvana's real data, with no tools running: the estimated-total formula, the search and
+// vehicle links, review text after the sanitizer, and the checks on filter values and car IDs.
+// How: direct calls on Carvana's site pack, its fixtures and its saved conversations.
+// Passes when: each value equals what Carvana's own site shows or what the saved conversation holds.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -21,7 +23,7 @@ const NOW = Date.parse('2026-10-08T19:15:00Z');
 // The link phase 0 opened live: it showed the 540 AWD Model Y cars.
 const PHASE0_LINK = 'https://www.carvana.com/cars/filters?cvnaid=eyJmaWx0ZXJzIjp7Im1ha2VzIjpbeyJuYW1lIjoiVGVzbGEiLCJwYXJlbnRNb2RlbHMiOlt7Im5hbWUiOiJNb2RlbCBZIn1dfV0sImRyaXZlVHlwZXMiOlsiQXdkIl19fQ==';
 
-test('the estimated total is the price plus estimated taxes and fees, for every car in every recorded search', () => {
+test('estimated total: price plus estimated taxes and fees, for every car in every recorded search', () => {
   let cars = 0;
   for (const fixture of fixtures.filter((candidate) => candidate.endpoint === 'search' && candidate.kind === 'recorded')) {
     for (const vehicle of (fixture.response.body as any).inventory.vehicles) {
@@ -34,7 +36,7 @@ test('the estimated total is the price plus estimated taxes and fees, for every 
   assert.equal(computeDerived(pack, 'vehicle', car).estimatedTotal, 39427);
 });
 
-test('search links match the one checked live in phase 0, and the conversations', () => {
+test('search links: match the one checked live in phase 0, and the conversations', () => {
   const filters = { makes: [{ name: 'Tesla', parentModels: [{ name: 'Model Y' }] }], driveTypes: ['Awd'] };
   assert.deepEqual(deepLink(pack, 'search', { cvnaid: { filters } }), { ok: true, url: PHASE0_LINK });
   const search = outputOf('goal-to-ranked-list', 'call_1');
@@ -43,12 +45,12 @@ test('search links match the one checked live in phase 0, and the conversations'
   for (const vehicle of search.vehicles) assert.deepEqual(deepLink(pack, 'vehicle', { vehicleId: vehicle.vehicleId }), { ok: true, url: vehicle.deepLink });
 });
 
-test('review text in the car-on-screen conversation is what the sanitizer makes of the recorded reviews', () => {
+test('review text: what the sanitizer makes of the recorded reviews, as in the car-on-screen conversation', () => {
   const recorded = (fixtureById('reviews-01').response.body as any).reviews.map((review: any) => fence(review.review_text, 'carvana-reviews'));
   assert.deepEqual(outputOf('car-on-screen', 'call_2').reviews.map((review: any) => review.text), recorded);
 });
 
-test("filter values must be ones Carvana's facets offer, and the error uses Carvana's wording", () => {
+test("filter check: values must be ones Carvana's facets offer, in Carvana's wording", () => {
   const ctx = { pack, policy: effectivePolicy(pack).policy, ids: new IdSet(pack.entities), now: NOW, responses: { facets: fixtureById('facets-06').response.body } };
   assert.equal(checkToolCall(ctx, 'search_vehicles', { zip5: '94402', make: 'Tesla', colors: ['Gray'], interior_colors: ['Black'], drive_types: ['Awd'] }), null);
   const error = checkToolCall(ctx, 'search_vehicles', { zip5: '94402', make: 'Tesla', colors: ['Grey'] });
@@ -57,7 +59,7 @@ test("filter values must be ones Carvana's facets offer, and the error uses Carv
   assert.equal(checkToolCall(ctx, 'search_vehicles', { zip5: '94402', drive_types: ['AWD'] })?.reason, 'invalid_filter_value', 'values are matched exactly');
 });
 
-test('a quote needs a car the session has seen, from the page the user is on or from a result', () => {
+test('quote IDs: the car must be one the session has seen, from the page or from a result', () => {
   const ids = new IdSet(pack.entities);
   const ctx = { pack, policy: effectivePolicy(pack).policy, ids, now: NOW };
   assert.equal(checkToolCall(ctx, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' })?.reason, 'unknown_id');

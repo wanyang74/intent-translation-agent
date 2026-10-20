@@ -1,4 +1,9 @@
-// L1 for the typed ID set, the call budget and the rate limiter, including random sequences and concurrent callers.
+// Tests: three small pieces of core.js's runtime (L1): the typed ID set (IdSet), the call budget and the rate limiter,
+// plus how a remote config may change the site pack's limits.
+// How: direct calls with a virtual clock, random sequences from a seeded generator checked against a simple model,
+// and concurrent callers.
+// Passes when: IDs are accepted only with the right kind, shape and age; the budget never lets more calls through
+// than it allows, even concurrently; and the rate limiter spaces calls evenly.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CallBudget, effectivePolicy, IdSet, RateLimiter } from '../src/index.ts';
@@ -9,7 +14,7 @@ import { pick, random } from './random.ts';
 const NOW = Date.UTC(2026, 9, 14, 12);
 const MIN = 60_000;
 
-test('IDs are typed: the kind must exist and the ID must have its type and pattern', () => {
+test('IdSet: the kind must exist and the ID must have its type and pattern', () => {
   const ids = new IdSet(examplePack.entities);
   assert.equal(ids.learn('product', 7), true);
   assert.equal(ids.learn('product', '7'), false, 'product IDs are numbers');
@@ -21,7 +26,7 @@ test('IDs are typed: the kind must exist and the ID must have its type and patte
   assert.equal(ids.status('offer', 7, NOW), 'unknown', 'a known ID of another kind is not known for this one');
 });
 
-test('IDs expire at their time, a while after they were shown, or at once if the time is unreadable', () => {
+test('IdSet expiry: at their time, a while after they were shown, or at once if the time is unreadable', () => {
   const ids = new IdSet(examplePack.entities);
   ids.learn('offer', 'of_ab12', { expiresAt: '2026-10-14T12:30:00Z' });
   ids.learn('coupon', 'SAVEX', { now: NOW });
@@ -34,7 +39,7 @@ test('IDs expire at their time, a while after they were shown, or at once if the
   assert.equal(ids.status('offer', 'of_ab12', NOW + 30 * MIN), 'known', 'learning an ID again takes its latest expiry');
 });
 
-test('learnFrom reads each ID with the expiry beside it, and skips IDs of the wrong shape', () => {
+test('IdSet.learnFrom: reads each ID with the expiry beside it, and skips IDs of the wrong shape', () => {
   const ids = new IdSet(examplePack.entities);
   const learned = ids.learnFrom({
     products: [{ id: 1 }, { id: 'x' }],
@@ -48,7 +53,7 @@ test('learnFrom reads each ID with the expiry beside it, and skips IDs of the wr
   assert.equal(ids.status('coupon', 'ABCDE', NOW + 11 * MIN), 'expired');
 });
 
-test("scripts get a view that can read the set but can't add to it", () => {
+test("IdSet for scripts: a view that can read the set but can't add to it", () => {
   const ids = new IdSet(examplePack.entities);
   ids.learn('product', 1);
   const view = ids.view() as unknown as Record<string, unknown>;
@@ -57,7 +62,7 @@ test("scripts get a view that can read the set but can't add to it", () => {
   assert.deepEqual(ids.view().list('product'), [1]);
 });
 
-test('random sequences of learning and checking agree with a simple model', () => {
+test('IdSet: random sequences of learning and checking agree with a simple model', () => {
   const next = random(11);
   const ids = new IdSet(examplePack.entities);
   const model = new Map<string, number | null>();
@@ -82,7 +87,7 @@ const config = (over: Partial<RemoteConfig> = {}): RemoteConfig => ({
   budgets: { perTask: 9, perSession: 6, perDay: null }, rateLimitPerSecond: 5, signature: 'x', ...over,
 });
 
-test('the remote config can only make the site pack stricter, and only for its own site', () => {
+test('remote config limits: can only make the site pack stricter, and only for its own site', () => {
   assert.deepEqual(effectivePolicy(examplePack).policy.budgets, { perTask: 5, perSession: 8, perDay: 10 });
   const { policy } = effectivePolicy(examplePack, config({ disabledTools: ['my_orders'] }));
   assert.deepEqual(policy.budgets, { perTask: 5, perSession: 6, perDay: 10 }, 'the stricter of each; null means no limit');
@@ -93,7 +98,7 @@ test('the remote config can only make the site pack stricter, and only for its o
   assert.match(other.warnings[0]!, /other-shop/);
 });
 
-test('the call budget stops at the first limit reached: task, then day, then session', () => {
+test('call budget: stops at the first limit reached: task, then day, then session', () => {
   let time = Date.UTC(2026, 9, 14, 23, 59, 58);
   const budget = new CallBudget({ perTask: 3, perSession: 10, perDay: 6 }, () => time, { day: 2, dayKey: Math.floor(time / 86_400_000) });
   assert.deepEqual([1, 2, 3, 4].map(() => budget.tryAcquire().ok), [true, true, true, false]);
@@ -111,7 +116,7 @@ test('the call budget stops at the first limit reached: task, then day, then ses
   assert.equal(session.tryAcquire().ok, false, 'a new task does not reset the session budget');
 });
 
-test('several calls at once take all of their budget or none of it', () => {
+test('call budget: several calls at once take all of their budget or none of it', () => {
   const budget = new CallBudget({ perTask: 4, perSession: null, perDay: null }, () => NOW);
   assert.equal(budget.tryAcquire(3).ok, true);
   assert.equal(budget.tryAcquire(2).ok, false);
@@ -119,7 +124,7 @@ test('several calls at once take all of their budget or none of it', () => {
   assert.deepEqual(budget.used().task, 4);
 });
 
-test('concurrent callers never take more than the budget allows', async () => {
+test('call budget: concurrent callers never take more than it allows', async () => {
   const next = random(5);
   for (let round = 0; round < 20; round++) {
     const limits = { perTask: 1 + Math.floor(next() * 30), perSession: 1 + Math.floor(next() * 30), perDay: null };
@@ -137,7 +142,7 @@ test('concurrent callers never take more than the budget allows', async () => {
   }
 });
 
-test('the rate limiter spaces parallel calls evenly and lets a call start at once when the way is clear', () => {
+test('rate limiter: spaces parallel calls evenly; a call starts at once when the way is clear', () => {
   const limiter = new RateLimiter(2);
   assert.deepEqual([0, 0, 0, 100, 2000, 5000].map((now) => limiter.reserve(now)), [0, 500, 1000, 1500, 2000, 5000]);
   const thirds = new RateLimiter(3);

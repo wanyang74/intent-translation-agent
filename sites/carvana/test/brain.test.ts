@@ -1,6 +1,8 @@
-// The brain serving Carvana: what the model is told about Carvana, the vehicle research skill loading before the first
-// model call on a car's page, and the brain's own checks with Carvana's schemas and IDs, before anything reaches the
-// client.
+// Tests: the brain serving Carvana: what the model is told, the skill that preloads on a car's page, and the brain's
+// own checks with Carvana's schemas and IDs.
+// How: the real brain with Carvana's site pack, FakeModel as the model and FakeClient as core.js.
+// Passes when: the system prompt carries Carvana's rules, vehicle research loads before the first model call on a
+// car's page, and bad calls are refused before anything reaches the client.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validatorFor } from '../../../platform/core/src/shared/validate.ts';
@@ -15,7 +17,7 @@ const bundle = await loadSite('carvana');
 const validate = validatorFor(bundle.validators.platform, 'messages.json');
 const HOME = { url: 'https://www.carvana.com/', pageType: 'other', location: { postalCode: '94402' }, locale: 'en-US' };
 
-test("the model is told Carvana's rules: hidden payment figures, the zip code, the estimated-total notice, and the four skills", () => {
+test('system prompt: hidden payment figures, the zip code, the estimated-total notice, and the four skills', () => {
   const { system, tools } = buildPromptPrefix(bundle);
   for (const line of [
     "You're the assistant inside Carvana's website and apps.",
@@ -33,7 +35,7 @@ test("the model is told Carvana's rules: hidden payment figures, the zip code, t
   assert.match(tools.find((tool) => tool.name === 'search_vehicles')!.description, /Show its results with present_items\.$/);
 });
 
-test("on a car's page, vehicle research loads before the first model call, and the conversation replays exactly", async () => {
+test("skill preload: on a car's page, vehicle research loads first, and the conversation replays exactly", async () => {
   const conversation = loadConversations('carvana').find((candidate) => candidate.id === 'car-on-screen')!;
   const model = fakeModelFor(conversation);
   const brain = new Brain({ site: bundle, model, now: () => Date.parse(conversation.now!) });
@@ -44,7 +46,7 @@ test("on a car's page, vehicle research loads before the first model call, and t
   assert.ok(skill?.role === 'tool' && String(skill.content[0]!.output).startsWith('# Vehicle research\n'));
 });
 
-test("the brain refuses what Carvana's schemas and the session's IDs don't allow, without a round trip", async () => {
+test("brain checks: what Carvana's schemas and the session's IDs don't allow is refused without a round trip", async () => {
   const model = new FakeModel([
     {
       calls: [

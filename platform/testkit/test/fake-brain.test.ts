@@ -1,5 +1,7 @@
-// FakeBrain catches what it exists to catch: a result that differs from the conversation's, a missing or extra
-// message, and a changed turn. Run on every site's first conversation, with one thing changed at a time.
+// Tests: FakeBrain (testkit/src/fake-brain.ts), the stand-in for the brain in core.js's tests.
+// How: replays every site's first conversation as saved, then with one thing changed at a time.
+// Passes when: the saved messages replay with no differences, and a changed result, a changed turn and an
+// unexpected message are each reported as a difference.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ClientMessage } from '../../contract/generated/types.ts';
@@ -16,14 +18,14 @@ async function play(fakeBrain: FakeBrain, messages: ClientMessage[]): Promise<un
 }
 const clientMessages = (conversation: (typeof conversations)[number]) => conversation.messages.filter((message): message is ClientMessage => message.type === 'turn' || message.type === 'results');
 
-test('stableJson ignores key order but nothing else', () => {
+test('stableJson: ignores key order but nothing else', () => {
   assert.equal(stableJson({ b: 1, a: [2, { d: 1, c: 2 }] }), stableJson({ a: [2, { c: 2, d: 1 }], b: 1 }));
   assert.notEqual(stableJson({ a: [1, 2] }), stableJson({ a: [2, 1] }));
   assert.notEqual(stableJson({ a: [] }), stableJson({}));
 });
 
 for (const conversation of conversations) {
-  test(`${conversation.site}/${conversation.id}: the conversation's own messages replay with no differences, and events carry the client's trace ID`, async () => {
+  test(`${conversation.site}/${conversation.id}: as saved: no differences, and events carry the client's trace ID`, async () => {
     const fakeBrain = new FakeBrain(conversation);
     const msgs = clientMessages(conversation).map((message) => ({ ...message, traceId: 'trace_from_client' }));
     const events = await play(fakeBrain, msgs);
@@ -32,7 +34,7 @@ for (const conversation of conversations) {
     assert.ok(events.length > 0 && events.every((event) => (event as { traceId: string }).traceId === 'trace_from_client'));
   });
 
-  test(`${conversation.site}/${conversation.id}: a changed result, a changed turn and an unexpected message are each reported`, async () => {
+  test(`${conversation.site}/${conversation.id}: changed: a result, a turn and an unexpected message are each reported`, async () => {
     const msgs = structuredClone(clientMessages(conversation));
     const resultsMessage = msgs.find((message) => message.type === 'results');
     if (resultsMessage && resultsMessage.type === 'results' && resultsMessage.results[0]!.ok) (resultsMessage.results[0] as { output: Record<string, unknown> }).output.extra = 1;

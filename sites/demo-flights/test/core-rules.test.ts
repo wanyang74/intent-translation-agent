@@ -1,4 +1,8 @@
-// core.js on Demo Flights: offers that expire, and a trips list that needs sign-in.
+// Tests: core.js's checks on Demo Flights' data, with no tools running: offers that expire, and a trips list that
+// needs sign-in.
+// How: direct calls to the checks with the Demo Flights site pack and a moving clock.
+// Passes when: offers are accepted until they expire, and the trips list is refused when signed out, in the site's
+// own words.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -15,7 +19,7 @@ const searchOutput: any = (() => {
 })();
 const policy = effectivePolicy(pack).policy;
 
-test('offers can be shown until they expire, and are refused after', () => {
+test('offer expiry: offers can be shown until they expire, and are refused after', () => {
   const ids = new IdSet(pack.entities);
   assert.equal(ids.learnFrom(searchOutput, pack.tools.search_flights!.ids!.output, NOW), 3);
   const show = { name: 'present_items' as const, args: { entity: 'flight_offer', ids: ['off_7GQ2'] as [string] } };
@@ -24,7 +28,7 @@ test('offers can be shown until they expire, and are refused after', () => {
   assert.equal(checkPresentation({ pack, policy, ids, now: later }, show)?.code, 'expired');
 });
 
-test("the trips list needs sign-in, and says so in the site's words", () => {
+test("sign-in: the trips list needs it, and says so in the site's words", () => {
   const ids = new IdSet(pack.entities);
   const page = { url: 'https://www.demo-flights.example/trips', pageType: 'trips' };
   const error = checkToolCall({ pack, policy, ids, now: NOW, page }, 'get_trips', { status: 'upcoming' });

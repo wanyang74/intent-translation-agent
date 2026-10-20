@@ -1,9 +1,10 @@
-// Live model calls, opt-in: LIVE=1 and an API key (ANTHROPIC_API_KEY, or .env.local at the repo root). Phase 5's last
-// step: every user turn of every example conversation goes through the whole stack with Claude as the model. core.js
-// runs the tools against the site's recorded fixtures, so no site is called. This checks the plumbing, not the quality
-// of the answers (evals judge that): each turn ends in an answer the user sees, every message follows the protocol, and
-// steps after the first read the prompt prefix from the prompt cache.
-//   LIVE=1 node --test platform/brain/test/live.test.ts
+// Tests: the whole stack with the real model (phase 5's last step). Opt-in: LIVE=1 and an API key
+// (ANTHROPIC_API_KEY, or .env.local at the repo root).
+// How: every user turn of every example conversation goes through real core.js, the real brain and Claude. core.js
+// runs the tools against the site's recorded fixtures, so no site is called.
+// Passes when: the plumbing works, not when the answers are good (evals judge that). Each turn ends in an answer the
+// user sees, every message follows the protocol, and steps after the first read the prompt prefix from the cache.
+//   LIVE=1 node --test platform/brain/test/live-model.test.ts
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
@@ -41,7 +42,7 @@ function describe(message: unknown): string {
 
 for (const id of listSites()) {
   for (const conversation of loadConversations(id)) {
-    test(`${id}/${conversation.id}: every user turn through real core.js, the real brain and the real model`, { skip, timeout: 600_000 }, async () => {
+    test(`${id}/${conversation.id}: every user turn completes through real core.js, the real brain and the real model`, { skip, timeout: 600_000 }, async () => {
       const now = Date.parse(conversation.now!);
       const log: BrainLogEntry[] = [];
       const brain = new Brain({ site: await loadSite(id), model: anthropicModel({ apiKey: apiKey! }), now: () => now, log: (entry) => log.push(entry) });

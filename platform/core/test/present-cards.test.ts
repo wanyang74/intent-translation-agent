@@ -1,6 +1,9 @@
-// L3 for Respond: presentation calls become UI components filled from tool results with the site's templates;
-// fields no tool returned read "not available"; required notices are added; a call that fails the checks is left
-// out and reported; and the fast path shows a tool result with the site's presentation.
+// Tests: Respond's presentation (core/src/present/): presentation calls become UI components filled from tool
+// results with the site's templates (L3).
+// How: runs tools on the made-up shop so the session holds records, then calls present() and formatting helpers.
+// Passes when: cards, comparisons, detail views, options, forms and notices come out as expected; fields no tool
+// returned read "not available"; required notices are added; a call that fails the checks is left out and
+// reported; and the fast path shows a tool result with the site's presentation.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PresentationCall } from '../../contract/generated/types.ts';
@@ -15,12 +18,12 @@ async function afterSearch() {
 }
 const items = (ids: number[]): PresentationCall => ({ name: 'present_items', args: { entity: 'product', ids: ids as [number, ...number[]], heading: 'Shoes' } });
 
-test('money and units read the way people write them, without Intl', () => {
+test('formatting: money and units read the way people write them, without Intl', () => {
   assert.deepEqual([0, 7, 1250, 1234567.5, -45.5, 39427, 0.1 + 0.2].map(formatMoney), ['$0', '$7', '$1,250', '$1,234,567.50', '-$45.50', '$39,427', '$0.30']);
   assert.deepEqual([27689, 1518, 999, 2023.5].map(groupDigits), ['27,689', '1,518', '999', '2,023.5']);
 });
 
-test('card text keeps what it has and drops what it lacks, part by part', () => {
+test('card text: keeps the parts it has and drops the parts it lacks', () => {
   const template = '{year} {make} {model}';
   assert.equal(displayText(template, { year: 2023, make: 'Tesla', model: 'Model Y' }), '2023 Tesla Model Y');
   assert.equal(displayText(template, { make: 'Tesla', model: 'Model Y' }), 'Tesla Model Y');
@@ -32,7 +35,7 @@ test('card text keeps what it has and drops what it lacks, part by part', () => 
   assert.equal(displayText('Plain title', {}), 'Plain title');
 });
 
-test("cards are filled from tool results with the site's templates: title, subtitle, formatted fields, link", async () => {
+test("cards: filled from tool results with the site's templates: title, subtitle, formatted fields, link", async () => {
   const { session } = await afterSearch();
   const { components, refused } = present(session, [items([1, 2])]);
   assert.deepEqual(refused, []);
@@ -48,7 +51,7 @@ test("cards are filled from tool results with the site's templates: title, subti
   assert.equal(list!.type === 'items' && list!.items[1]!.fields[0]!.text, '$1,250');
 });
 
-test('a value no tool returned reads "not available", and a template drops the missing part', async () => {
+test('missing values: read "not available", and a template drops the missing part', async () => {
   const { session } = await exampleSession();
   session.ids.learn('product', 7);
   const [list] = present(session, [items([7])]).components;
@@ -58,7 +61,7 @@ test('a value no tool returned reads "not available", and a template drops the m
   assert.deepEqual(card?.fields.map((field) => field.text), ['not available', 'not available']);
 });
 
-test("comparisons, detail views with the site's own sections, options, forms and notices", async () => {
+test("other components: comparisons, detail views with the site's sections, options, forms and notices", async () => {
   const { session } = await afterSearch();
   const shown = present(session, [
     { name: 'present_comparison', args: { entity: 'product', ids: [1, 2], attributes: ['price', 'rating'] } },
@@ -85,13 +88,13 @@ test("comparisons, detail views with the site's own sections, options, forms and
   assert.equal(shown.components.length, 4, 'the notice was already there: not added twice');
 });
 
-test('a required notice is added when a field it explains is shown', async () => {
+test('notices: a required notice is added when a field it explains is shown', async () => {
   const { session } = await afterSearch();
   const { components } = present(session, [items([1])]);
   assert.deepEqual(components.map((component) => component.type), ['items', 'notice']);
 });
 
-test('a call that fails the checks is left out and reported, and logged', async () => {
+test('refused cards: a call that fails the checks is left out, reported and logged', async () => {
   const { session, log } = await afterSearch();
   const shown = present(session, [items([1, 99]), { name: 'present_notice', args: { notice: 'made_up' } }]);
   assert.deepEqual(shown.components, []);
@@ -99,7 +102,7 @@ test('a call that fails the checks is left out and reported, and logged', async 
   assert.ok(log.some((entry) => entry.kind === 'presentation_refused'));
 });
 
-test("the fast path shows a tool's result with the presentation the site pack names for it", async () => {
+test("fast path: a tool's result is shown with the presentation the site pack names for it", async () => {
   const { session, output } = await afterSearch();
   const components = presentToolResult(session, 'search_products', output);
   assert.deepEqual(components.map((component) => component.type), ['items', 'notice']);

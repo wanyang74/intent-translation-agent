@@ -1,6 +1,9 @@
-// FakeHost, on every site's fixtures: replays them exactly, ignores per-call IDs, enforces the contract,
-// fails loudly on a request it can't answer, and injects faults. Site-specific behavior (the errors a site
-// returned live) is tested in sites/<id>/test/.
+// Tests: FakeHost (testkit/src/fake-host.ts), the stand-in for a real site, on every site's fixtures.
+// How: sends each fixture's own request, then variants: fresh per-call IDs, contract breaks, unknown requests and
+// URLs, and injected faults.
+// Passes when: fixtures replay exactly, per-call IDs are ignored, the contract is enforced, a request it can't answer
+// fails loudly, and faults apply only where injected. Site-specific behavior (the errors a site returned live) is
+// tested in sites/<id>/test/fake-host.test.ts.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadContract } from '../../contract/src/load.ts';
@@ -18,7 +21,7 @@ for (const site of sites) {
   const answering = fixtures.filter((fixture) => !fixture.trigger);
   const keyOf = (fixture: Fixture) => `${fixture.endpoint} ${matchKey(pack.endpoints[fixture.endpoint]!, requestValue(pack, fixture.request))}`;
 
-  test(`${site}: every fixture is the one that answers its own request, exactly`, async () => {
+  test(`${site}: replay: each fixture answers its own request, exactly`, async () => {
     const host = new FakeHost(site, fixtures);
     for (const fixture of answering) {
       const res = await host.request(toHostRequest(fixture));
@@ -29,7 +32,7 @@ for (const site of sites) {
     }
   });
 
-  test(`${site}: fresh per-call IDs don't change which fixture answers`, async () => {
+  test(`${site}: matching: fresh per-call IDs don't change which fixture answers`, async () => {
     const host = new FakeHost(site, fixtures);
     const fields = new Set(pack.recording.scrubFields);
     let count = 0;
@@ -45,7 +48,7 @@ for (const site of sites) {
     }
   });
 
-  test(`${site}: a request that breaks the contract gets a 400, never a recorded success`, async () => {
+  test(`${site}: contract: a request that breaks it gets a 400, never a recorded success`, async () => {
     const host = new FakeHost(site, fixtures);
     let checked = 0;
     for (const [name, endpoint] of entriesOf(pack.endpoints)) {
@@ -71,7 +74,7 @@ for (const site of sites) {
     assert.ok(checked > 0, 'no endpoint to check');
   });
 
-  test(`${site}: a request with no matching fixture fails loudly and names the endpoint`, async () => {
+  test(`${site}: no match: the request fails loudly and names the endpoint`, async () => {
     const recorded = answering[0]!;
     const others = fixtures.filter((fixture) => fixture.trigger || keyOf(fixture) !== keyOf(recorded));
     const host = new FakeHost(site, others);
@@ -84,13 +87,13 @@ for (const site of sites) {
     });
   });
 
-  test(`${site}: a URL outside the site pack is an error, not a guess`, async () => {
+  test(`${site}: unknown URL: one outside the site pack is an error, not a guess`, async () => {
     const host = new FakeHost(site, fixtures);
     const origin = pack.site.origins[0]!;
     await assert.rejects(host.request({ method: 'GET', url: `${origin}/no/such/endpoint` }), /no .* endpoint matches/);
   });
 
-  test(`${site}: injected faults apply to the next matching calls only`, async () => {
+  test(`${site}: faults: injected ones apply to the next matching calls only`, async () => {
     const host = new FakeHost(site, fixtures);
     const recorded = answering[0]!;
     const fixture = answering.find((candidate) => candidate.endpoint !== recorded.endpoint);
@@ -111,7 +114,7 @@ for (const site of sites) {
     assert.ok(Date.now() - t0 >= 110, 'delay applies');
   });
 
-  test(`${site}: the call log records each call and which fixture answered it`, async () => {
+  test(`${site}: call log: records each call and which fixture answered it`, async () => {
     const host = new FakeHost(site, fixtures);
     const picks = answering.slice(0, 2);
     for (const fixture of picks) await host.request(toHostRequest(fixture));

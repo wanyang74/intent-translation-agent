@@ -1,4 +1,6 @@
-// Every site pack is valid and complete, and the platform stays general: no platform file names a site.
+// Tests: every site pack (sites/<id>/site.yaml and what it refers to), and the platform's generality.
+// How: loads each pack against the site-pack schema, resolves every reference, and scans every platform file.
+// Passes when: each pack is valid and complete, there is more than one, and no platform file names a site.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -8,20 +10,20 @@ import { PRESENTATION_TOOLS, crossCheck, entriesOf, listSites, readSite, repoRoo
 
 const sites = listSites();
 
-test('there is more than one site pack, so the platform is tested for generality', () => {
+test('generality: there is more than one site pack, so the platform is tested on more than one site', () => {
   assert.ok(sites.length >= 2, `site packs: ${sites.join(', ')}`);
 });
 
-test('every site.yaml matches the site-pack format', () => {
+test('format: every site.yaml matches the site-pack schema', () => {
   assert.doesNotThrow(() => loadContract());
 });
 
 for (const id of sites) {
-  test(`${id}: everything the site pack refers to exists`, () => {
+  test(`${id}: references: everything the site pack refers to exists`, () => {
     assert.deepEqual(crossCheck(readSite(id)), []);
   });
 
-  test(`${id}: every tool that shows something names a platform presentation tool`, () => {
+  test(`${id}: presentation: every tool that shows something names a platform presentation tool`, () => {
     for (const [name, tool] of entriesOf(readSite(id).pack.tools)) {
       if (tool.presentation) assert.ok(PRESENTATION_TOOLS.includes(tool.presentation), `${name}: ${tool.presentation}`);
     }
@@ -43,7 +45,7 @@ function platformFiles(dir: string): string[] {
   });
 }
 
-test('no platform file names a site: site-specific facts live in sites/<id>/', () => {
+test('no site names in the platform: site-specific facts live in sites/<id>/', () => {
   const words = sites.flatMap(siteWords);
   const hits: string[] = [];
   for (const file of platformFiles(path.join(repoRoot, 'platform'))) {

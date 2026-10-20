@@ -1,6 +1,7 @@
 // core.js's cases written to run in any JavaScript engine: no Node APIs and no test framework, just results.
-// engines.test.ts bundles this with core.js and runs it in a bare Node context, QuickJS and JavaScriptCore; every
-// engine must give exactly the result Node gives. Inputs are fixed or come from a seeded generator.
+// same-in-every-engine.test.ts bundles this with core.js and runs it in a bare Node context, QuickJS and
+// JavaScriptCore; every engine must give exactly the result Node gives. Inputs are fixed or come from a seeded
+// generator.
 import type { PresentationCall, RemoteConfig, SitePack } from '../../contract/generated/types.ts';
 import * as core from '../src/index.ts';
 import { examplePack } from './example-pack.ts';
