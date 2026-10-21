@@ -9,15 +9,20 @@ export class AgentController {
   private readonly session: Session;
   private readonly surface: Surface;
   private readonly readPage: () => PageContext;
+  private readonly onIdle: (() => void) | undefined;
   private running = false;
   /** Messages that missed the running turn, in order; they run together as the next turn. */
   private waiting: string[] = [];
 
-  /** `readPage` is asked for the page context at the start of every turn, since the user may have navigated. */
-  constructor(session: Session, surface: Surface, readPage: () => PageContext) {
+  /**
+   * `readPage` is asked for the page context at the start of every turn, since the user may have navigated.
+   * `onIdle` is called each time the last turn ends, when the conversation is in a state worth saving.
+   */
+  constructor(session: Session, surface: Surface, readPage: () => PageContext, onIdle?: () => void) {
     this.session = session;
     this.surface = surface;
     this.readPage = readPage;
+    this.onIdle = onIdle;
   }
 
   /**
@@ -44,5 +49,6 @@ export class AgentController {
     } finally {
       this.running = false;
     }
+    this.onIdle?.();
   }
 }

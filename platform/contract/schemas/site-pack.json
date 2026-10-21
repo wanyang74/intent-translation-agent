@@ -144,6 +144,73 @@
         "additionalProperties": false
       }
     },
+    "destinations": {
+      "type": "object",
+      "description": "Pages the agent may send the user to with a Take me there button. The model names one and its parameters; core.js builds the URL, always on the site's own origins.",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,31}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "What the button names, such as \"Search results on the site\"."
+          },
+          "description": {
+            "type": "string",
+            "description": "What's on the page, for the model; with no reader, all the model may say about it."
+          },
+          "argsOf": {
+            "type": "string",
+            "description": "The destination takes this tool's arguments, checked as a call to that tool would be."
+          },
+          "params": {
+            "type": "object",
+            "description": "The destination's own parameters, all required. An entity's ID must be one this session knows.",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "string",
+                    "integer"
+                  ]
+                },
+                "entity": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "link": {
+            "type": "string",
+            "description": "The deep link whose template builds the URL from the parameters. Without one, the site code's destinations builder does."
+          },
+          "reader": {
+            "type": "string",
+            "description": "A tool that reads what the page shows, taking the same parameters, so the model can answer from it."
+          },
+          "app": {
+            "type": "string",
+            "description": "The app's own route for the page, a template like deep links'; apps without it open the web URL."
+          }
+        },
+        "required": [
+          "title",
+          "description"
+        ],
+        "additionalProperties": false
+      }
+    },
     "skills": {
       "type": "object",
       "propertyNames": {
@@ -295,6 +362,10 @@
         "internal": {
           "type": "boolean",
           "description": "Never shown to the user (e.g. routing tokens)."
+        },
+        "noPage": {
+          "type": "boolean",
+          "description": "Items with no page of their own on the site, such as filter suggestions; their cards need no link."
         },
         "expires": {
           "type": "object",
@@ -477,7 +548,8 @@
             "present_detail",
             "present_options",
             "present_form",
-            "present_notice"
+            "present_notice",
+            "present_destination"
           ]
         },
         "ids": {

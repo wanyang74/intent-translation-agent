@@ -117,7 +117,40 @@ function formProblem(ctx: CheckContext, form: string, prefill: Record<string, un
   return null;
 }
 
+/**
+ * A destination's params:
+ *   1. The destination must be one the site pack lists.
+ *   2. Params that are a tool's arguments are checked as a call to that tool would be, allowed values included.
+ *   3. Otherwise each declared param must be there, of its type, and an item ID must be one this session knows;
+ *      nothing undeclared is accepted.
+ */
+function destinationProblem(ctx: CheckContext, name: string, params: Record<string, unknown>): ToolError | null {
+  // 1. Listed.
+  const destination = ctx.pack.destinations?.[name];
+  if (!destination) return platformError('unknown_destination', { destination: name, destinations: Object.keys(ctx.pack.destinations ?? {}).join(', ') || 'none' });
+  // 2. A tool's arguments.
+  if (destination.argsOf) {
+    const problem = checkToolCall(ctx, destination.argsOf, params);
+    return problem ? platformError('bad_destination_params', { destination: name, details: problem.message }) : null;
+  }
+  // 3. Its own params.
+  const declared = destination.params ?? {};
+  const bad = (details: string) => platformError('bad_destination_params', { destination: name, details });
+  for (const key of Object.keys(params)) if (!declared[key]) return bad(`it has no param ${key}`);
+  for (const [key, spec] of Object.entries(declared)) {
+    const value = params[key];
+    if (value === undefined || value === null || value === '') return bad(`${key} is missing`);
+    if (spec!.type === 'integer' ? !Number.isInteger(value) : typeof value !== 'string') return bad(`${key} must be ${spec!.type === 'integer' ? 'a whole number' : 'text'}`);
+    if (spec!.entity) {
+      const problem = idProblem(ctx, null, spec!.entity, value);
+      if (problem) return problem;
+    }
+  }
+  return null;
+}
+
 export function checkPresentation(ctx: CheckContext, call: PresentationCall): ToolError | null {
+  if (call.name === 'present_destination') return destinationProblem(ctx, call.args.destination, (call.args.params ?? {}) as Record<string, unknown>);
   if (call.name === 'present_notice') {
     return ctx.pack.notices?.[call.args.notice] ? null : platformError('unknown_notice', { notice: call.args.notice });
   }

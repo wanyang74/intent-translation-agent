@@ -1,6 +1,7 @@
 // A made-up shop, used only by core.js's own tests. It's small enough to read, and it has what the checks look at:
 // integer and text IDs, IDs that expire at a time or a while after they're shown, an internal kind, a kind that needs
-// sign-in, a write tool, a form, a notice, an allowed-value rule and both kinds of deep-link placeholder.
+// sign-in, a write tool, a form, a notice, an allowed-value rule, both kinds of deep-link placeholder, and a destination
+// of each kind (own params with an app route, a tool's arguments built by site code, none, and one off the site).
 import type { SitePack } from '../../contract/generated/types.ts';
 
 export const examplePack: SitePack = {
@@ -107,6 +108,18 @@ export const examplePack: SitePack = {
   deepLinks: {
     product: { template: 'https://www.example.com/p/{id}' },
     search: { template: 'https://www.example.com/s?q={query}&state={base64json:state}' },
+    product_by_id: { template: 'https://www.example.com/p/{productId}' },
+    help: { template: 'https://www.example.com/help' },
+    elsewhere: { template: 'https://elsewhere.example/landing' },
+  },
+  destinations: {
+    product_page: {
+      title: 'This product', description: "The product's own page", params: { productId: { type: 'integer', entity: 'product' } },
+      link: 'product_by_id', reader: 'read_product_page', app: 'shop://products/{productId}',
+    },
+    search_page: { title: 'These results', description: 'The search results page', argsOf: 'search_products', reader: 'search_products' },
+    help_center: { title: 'Help', description: 'Answers to common questions', link: 'help' },
+    partner: { title: 'Partner offer', description: 'A page off the site', link: 'elsewhere' },
   },
   recording: { scrubFields: [], scrubHeaders: [], keepHeaders: [] },
 };

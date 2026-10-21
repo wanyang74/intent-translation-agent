@@ -10,7 +10,7 @@ interface Template { code: Code; message: string; retryable: boolean }
 /**
  * Platform reasons and their messages, for core.js and the brain alike. The values each one is filled with are the
  * standard names a site's own message can use too: tool, details, value, field, options, kind, id, idType, what,
- * scope, limit, section, sections, fields, notice, form, status, skill, skills.
+ * scope, limit, section, sections, fields, notice, form, status, skill, skills, destination, destinations.
  */
 export const PLATFORM_ERRORS = {
   unknown_tool: { code: 'invalid_value', message: "{tool} isn't a tool on this site. Use one of the tools you were given.", retryable: false },
@@ -30,6 +30,9 @@ export const PLATFORM_ERRORS = {
   unknown_notice: { code: 'invalid_value', message: "{notice} isn't a notice on this site.", retryable: false },
   unknown_form: { code: 'invalid_value', message: "{form} isn't a form on this site.", retryable: false },
   bad_prefill: { code: 'invalid_value', message: "{field} in {form} can't be prefilled with '{value}': {details}.", retryable: true },
+  unknown_destination: { code: 'invalid_value', message: "{destination} isn't a page you can send the user to. The pages are: {destinations}.", retryable: true },
+  bad_destination_params: { code: 'invalid_value', message: 'The params for {destination} are invalid: {details}. Fix them and call present_destination again.', retryable: true },
+  destination_unavailable: { code: 'invalid_value', message: "The link to {destination} couldn't be built from these params. Answer without the button.", retryable: false },
   // Problems reaching the site or reading its answer.
   network_error: { code: 'upstream_error', message: "The site didn't respond to {tool}. Try again in a moment, or answer without it.", retryable: true },
   site_unavailable: { code: 'upstream_error', message: 'The site had a problem answering {tool} (status {status}). Try again in a moment, or answer without it.', retryable: true },

@@ -3,7 +3,7 @@
 import type { RemoteConfig, SitePack } from '../../../contract/generated/types.ts';
 import type { Host } from './host.ts';
 import { effectivePolicy } from '../boundary/limits.ts';
-import { Session } from './session.ts';
+import { Session, type SessionSnapshot } from './session.ts';
 import type { SiteCode } from '../execute/site-code.ts';
 import { describeProblems, validatorFor, type Validators } from '../shared/validate.ts';
 
@@ -15,6 +15,8 @@ export interface CoreOptions {
   /** The remote config as fetched; it is checked before use. */
   config?: unknown;
   usedToday?: { day: number; dayKey: number };
+  /** A session saved on an earlier page of the same site, to carry on from (Session.snapshot()). */
+  restore?: SessionSnapshot;
 }
 
 /** The remote config, or null with the reason it was ignored: malformed, for another site, or not signed. */
@@ -32,7 +34,7 @@ export async function acceptConfig(options: Pick<CoreOptions, 'pack' | 'host' | 
 export async function startSession(options: CoreOptions): Promise<{ session: Session; warnings: string[] }> {
   const accepted = await acceptConfig(options);
   const { policy, warnings } = effectivePolicy(options.pack, accepted.config);
-  const session = new Session({ pack: options.pack, site: options.site, validators: options.validators, host: options.host, policy, ...(options.usedToday ? { usedToday: options.usedToday } : {}) });
+  const session = new Session({ pack: options.pack, site: options.site, validators: options.validators, host: options.host, policy, ...(options.usedToday ? { usedToday: options.usedToday } : {}), ...(options.restore ? { restore: options.restore } : {}) });
   const all = [...accepted.warnings, ...warnings];
   for (const warning of all) session.log('config', warning);
   return { session, warnings: all };

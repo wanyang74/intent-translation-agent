@@ -193,6 +193,10 @@ export function checkConversation(contract: Contract, conversation: Conversation
             for (const field of Object.keys(presentation.args.prefill ?? {})) if (!form.fields[field]) add(at, `form ${presentation.args.form} has no field ${field}`);
             continue;
           }
+          if (presentation.name === 'present_destination') {
+            if (!pack.destinations?.[presentation.args.destination]) add(at, `unknown destination ${presentation.args.destination}`);
+            continue;
+          }
           const kind = presentation.args.entity;
           const entity = pack.entities[kind];
           if (!entity) { add(at, `unknown entity kind ${kind}`); continue; }

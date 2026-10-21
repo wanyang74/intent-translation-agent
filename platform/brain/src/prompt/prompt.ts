@@ -85,6 +85,19 @@ function formLines(pack: Pack): string[] {
   });
 }
 
+/** The pages the model may send the user to: what each is, what it takes, and how to read it first. */
+function destinationLines(pack: Pack): string[] {
+  return entriesOf(pack.destinations).map(([name, destination]) => {
+    const params = destination.argsOf
+      ? `Params: the same arguments as ${destination.argsOf}.`
+      : Object.keys(destination.params ?? {}).length
+        ? `Params: ${entriesOf(destination.params).map(([key, spec]) => (spec.entity ? `${key} (a ${spec.entity} ID)` : key)).join(', ')}.`
+        : 'No params.';
+    const reading = destination.reader ? `Read it with ${destination.reader}.` : 'No reader: say only what the page is for.';
+    return `- ${name} ("${destination.title}"): ${destination.description.replace(/\.?$/, '.')} ${params} ${reading}`;
+  });
+}
+
 function ruleLines(pack: Pack): string[] {
   const policies = pack.policies;
   const lines: string[] = [];
@@ -96,6 +109,9 @@ function ruleLines(pack: Pack): string[] {
   if (policies.priceDisplay === 'total_including_taxes') lines.push('- Prices are totals, including all taxes and fees.');
   if (policies.priceDisplay === 'as_returned') lines.push('- Give prices as the tools return them.');
   if (policies.pageSize) lines.push(`- Searches return ${policies.pageSize} results a page.`);
+  if (Object.keys(pack.destinations ?? {}).length) {
+    lines.push("- When the user wants to go to a page of the site, or the site already has a page for what they ask, answer in two or three sentences and add that page's button with present_destination. If the page has a reader, first call the reader with the same params, then answer with what it found (such as how many results there are); if not, say only what the page is for. When the site has no page for what they want, such as a comparison of the items they picked, show cards instead. Nothing opens until the user taps the button: never say you opened a page.");
+  }
   lines.push(`- Each request can make at most ${policies.callBudget.perTask} calls to the site, ${policies.rateLimitPerSecond} per second.`);
   return lines;
 }
@@ -116,6 +132,8 @@ export function siteSection(bundle: SiteBundle): string {
   }
   const forms = formLines(pack);
   if (forms.length) out.push('', '## Forms', ...forms);
+  const destinations = destinationLines(pack);
+  if (destinations.length) out.push('', '## Pages you can send the user to', ...destinations);
   out.push('', '## Rules', ...ruleLines(pack));
   const skills = entriesOf(pack.skills);
   if (skills.length) {

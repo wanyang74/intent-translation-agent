@@ -77,6 +77,8 @@ function expectations(component: UiComponent): { texts: string[]; cards: number;
       return { texts: [component.heading ?? '', ...component.fields.map((field) => field.label)], cards: 0, links: 0 };
     case 'notice':
       return { texts: [component.text], cards: 0, links: 0 };
+    case 'destination':
+      return { texts: [component.title, 'Take me there'], cards: 0, links: 0 };
   }
 }
 
@@ -125,7 +127,7 @@ for (const [name, fixtures] of [...listSites().map((site) => [site, loadUiFixtur
   });
 }
 
-test('clicks: an option sends its title, a form sends its values, and site markup never runs', { skip }, async () => {
+test('clicks: an option sends its title, a form sends its values, Take me there opens its page, and site markup never runs', { skip }, async () => {
   const page = await openGallery('clicks', UI_STATES);
   try {
     const root = (id: string) => `document.querySelector('[data-fixture="${id}"]').shadowRoot`;
@@ -136,6 +138,8 @@ test('clicks: an option sends its title, a form sends its values, and site marku
       { fixture: 'state-form', message: 'Postal code: 94402\nSize: Medium' },
     ]);
     assert.equal(await page.evaluate(`${root('state-options')}.querySelectorAll('.user').length`), 2, 'the picked option shows as the user’s message');
+    await page.evaluate(`${root('state-destination')}.querySelector('.destination .btn').click()`);
+    assert.deepEqual(await page.evaluate('window.navigated'), [{ fixture: 'state-destination', url: 'https://shop.example/help/returns' }]);
     assert.equal(await page.evaluate('window.hacked'), undefined);
   } finally {
     await page.close();

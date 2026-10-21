@@ -3,10 +3,11 @@
 // through the site pack's card templates and field definitions. A notice is added whenever a field it explains is on
 // screen. A call that fails the boundary checks is left out, never shown half-checked.
 import type { PresentationCall, SitePack, ToolError } from '../../../contract/generated/types.ts';
+import { platformError } from '../boundary/errors.ts';
 import { select } from '../../../contract/src/paths.ts';
 import { checkPresentation, withRequiredNotices } from '../boundary/checks.ts';
 import { checkContext } from '../execute/execute.ts';
-import { deepLink } from './links.ts';
+import { buildLink, deepLink } from './links.ts';
 import type { Session } from '../runtime/session.ts';
 import type { EntityView, SectionContent } from '../execute/site-code.ts';
 import { fill } from '../shared/text.ts';
@@ -54,7 +55,9 @@ export type UiComponent =
   | { type: 'comparison'; entity: string; items: { id: string | number; title: string; link?: string }[]; rows: { key: string; label: string; cells: FieldView[] }[] }
   | { type: 'detail'; entity: string; card: CardView; sections: DetailSection[] }
   | { type: 'form'; form: string; heading?: string; submitTool?: string; fields: FormFieldView[] }
-  | { type: 'notice'; notice: string; text: string; version?: string };
+  | { type: 'notice'; notice: string; text: string; version?: string }
+  /** A Take me there button: a page on the site, and the app's own route to it when the site pack has one. */
+  | { type: 'destination'; destination: string; title: string; url: string; appRoute?: string };
 
 export interface Presented {
   components: UiComponent[];
@@ -282,21 +285,71 @@ function componentFor(session: Session, call: PresentationCall): UiComponent {
       const notice = pack.notices![call.args.notice]!;
       return { type: 'notice', notice: call.args.notice, text: notice.text, ...(notice.version ? { version: notice.version } : {}) };
     }
+    case 'present_destination':
+      // Built and checked in present(), which never sends a destination here.
+      throw new Error('a destination is built in present()');
   }
 }
 
-/** UI components for an answer: every call checked, filled from tool results, with required notices added. */
+/** Whether a URL is one of the pages where the agent appears (the site pack's Chrome-style match patterns). */
+function onSitePages(pack: SitePack, url: string): boolean {
+  return pack.site.pages.some((page) => new RegExp(`^${page.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`).test(url));
+}
+
+/**
+ * A destination's button, from checked params:
+ *   1. The URL: the destination's deep link, or the site code's builder when a template can't express it.
+ *   2. Only a page where the agent appears is accepted, so the button never leaves the site and the conversation
+ *      carries over to the page it opens.
+ *   3. The app's route, when the site pack has one.
+ */
+function destinationOf(session: Session, name: string, params: Record<string, unknown>): UiComponent | ToolError {
+  const { pack } = session;
+  const destination = pack.destinations![name]!;
+  const unavailable = platformError('destination_unavailable', { destination: name });
+  // 1. The URL.
+  const linkOf = (link: string, values: Record<string, unknown>) => {
+    const built = deepLink(pack, link, values);
+    return built.ok ? built.url : undefined;
+  };
+  const url = destination.link ? linkOf(destination.link, params) : session.site.destinations?.[name]?.(params, linkOf);
+  // 2. On the site.
+  if (!url || !onSitePages(pack, url)) return unavailable;
+  // 3. The app's route.
+  const appRoute = destination.app ? buildLink(destination.app, params) : undefined;
+  return { type: 'destination', destination: name, title: destination.title, url, ...(appRoute?.ok ? { appRoute: appRoute.url } : {}) };
+}
+
+/**
+ * UI components for an answer:
+ *   1. Check every call; a destination is also refused when its URL can't be built on the site.
+ *   2. Fill the rest from tool results, with required notices added.
+ */
 export function present(session: Session, calls: readonly PresentationCall[]): Presented {
+  // 1. Check.
   const ctx = checkContext(session);
   const refused: Presented['refused'] = [];
   const accepted: PresentationCall[] = [];
+  const destinations = new Map<PresentationCall, UiComponent>();
   for (const call of calls) {
     const error = checkPresentation(ctx, call);
-    if (error) refused.push({ call, error });
-    else accepted.push(call);
+    if (error) {
+      refused.push({ call, error });
+      continue;
+    }
+    if (call.name === 'present_destination') {
+      const built = destinationOf(session, call.args.destination, (call.args.params ?? {}) as Record<string, unknown>);
+      if ('code' in built) {
+        refused.push({ call, error: built });
+        continue;
+      }
+      destinations.set(call, built);
+    }
+    accepted.push(call);
   }
   if (refused.length) session.log('presentation_refused', refused);
-  return { components: withRequiredNotices(session.pack, accepted).map((presentation) => componentFor(session, presentation)), refused };
+  // 2. Fill.
+  return { components: withRequiredNotices(session.pack, accepted).map((presentation) => destinations.get(presentation) ?? componentFor(session, presentation)), refused };
 }
 
 /**

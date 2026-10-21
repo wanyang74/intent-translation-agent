@@ -17,7 +17,7 @@ import { sitePacks } from './sites.ts';
 
 const NOW = Date.UTC(2026, 9, 14, 12);
 const STANDARD = { tool: 't', details: 'd', value: 'v', field: 'f', options: ['a', 'b'], kind: 'k', id: 1, idType: 'numbers', what: 'w',
-  scope: 'task', limit: 5, section: 's', sections: ['x'], fields: ['y'], notice: 'n', form: 'fm', status: 503, skill: 'sk', skills: ['a'] };
+  scope: 'task', limit: 5, section: 's', sections: ['x'], fields: ['y'], notice: 'n', form: 'fm', status: 503, skill: 'sk', skills: ['a'], destination: 'ds', destinations: 'p, q' };
 
 function context(over: Partial<CheckContext> = {}): CheckContext {
   const ids = new IdSet(pack.entities);

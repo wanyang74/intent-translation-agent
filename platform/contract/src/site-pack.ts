@@ -82,11 +82,14 @@ export function idsIn(value: unknown, idPaths: { kind: string; path: string }[] 
 
 // ---------------------------------------------------------------- cross-checks the schema can't express
 
-export const PRESENTATION_TOOLS = ['present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice'];
+export const PRESENTATION_TOOLS = ['present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice', 'present_destination'];
 /** The platform's own tools: scripts (run on the client) and skills (loaded by the brain). */
 export const PLATFORM_TOOLS = ['run_script', 'load_skill'];
 /** Tool names the platform keeps for itself. */
 export const RESERVED_TOOLS = [...PRESENTATION_TOOLS, ...PLATFORM_TOOLS];
+
+/** The names in a link template's {name} and {base64json:name} placeholders. */
+const placeholdersIn = (template: string) => [...template.matchAll(/\{(?:base64json:)?([A-Za-z_][A-Za-z0-9_]*)\}/g)].map((match) => match[1]!);
 
 /** Problems with a site pack beyond its schema: references to things that don't exist. */
 export function crossCheck(site: Site): string[] {
@@ -113,6 +116,24 @@ export function crossCheck(site: Site): string[] {
   for (const [kind, entity] of entriesOf(pack.entities)) {
     for (const field of entity.card?.fields ?? []) if (!entity.fields?.[field]) add(`entities.${kind}.card`, `unknown field ${field}`);
     if (entity.card?.link && !pack.deepLinks?.[entity.card.link]) add(`entities.${kind}.card.link`, `unknown deep link ${entity.card.link}`);
+    // A card is where the user goes on from: every kind shown on cards links to its item's page, unless it has none.
+    if (entity.card && !entity.internal && !entity.noPage && !entity.card.link) add(`entities.${kind}.card`, 'needs a link to the item\'s page');
+  }
+  for (const [name, destination] of entriesOf(pack.destinations)) {
+    const where = `destinations.${name}`;
+    if (destination.argsOf && !pack.tools[destination.argsOf]) add(`${where}.argsOf`, `unknown tool ${destination.argsOf}`);
+    if (destination.argsOf && destination.params) add(where, 'takes either argsOf or params, not both');
+    if (destination.reader && !pack.tools[destination.reader]) add(`${where}.reader`, `unknown tool ${destination.reader}`);
+    for (const [param, spec] of entriesOf(destination.params)) if (spec.entity && !kinds.has(spec.entity)) add(`${where}.params.${param}`, `unknown entity kind ${spec.entity}`);
+    if (destination.link) {
+      const link = pack.deepLinks?.[destination.link];
+      if (!link) add(`${where}.link`, `unknown deep link ${destination.link}`);
+      // A template's values come from the destination's own parameters (a tool's arguments go through site code).
+      else for (const placeholder of placeholdersIn(link.template)) if (!destination.params?.[placeholder]) add(`${where}.link`, `the template's {${placeholder}} isn't one of the destination's params`);
+    }
+    if (destination.app && destination.params) {
+      for (const placeholder of placeholdersIn(destination.app)) if (!destination.params[placeholder]) add(`${where}.app`, `the route's {${placeholder}} isn't one of the destination's params`);
+    }
   }
   for (const [name, notice] of entriesOf(pack.notices)) {
     for (const field of notice.showWith ?? []) if (!fieldKeys.has(field)) add(`notices.${name}.showWith`, `unknown field ${field}`);

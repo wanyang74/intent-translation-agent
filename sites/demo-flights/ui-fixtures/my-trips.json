@@ -26,7 +26,8 @@
                   "id": "Q7K2LM",
                   "title": "SFO to SEA",
                   "fields": [],
-                  "subtitle": "2026-12-03T16:00:00Z"
+                  "subtitle": "2026-12-03T16:00:00Z",
+                  "link": "https://www.demo-flights.example/trips/Q7K2LM"
                 }
               ]
             }

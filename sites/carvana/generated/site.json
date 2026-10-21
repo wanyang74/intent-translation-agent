@@ -115,6 +115,7 @@
       "id": {
         "type": "string"
       },
+      "noPage": true,
       "card": {
         "title": "{label}",
         "subtitle": "{matches} cars"
@@ -552,6 +553,26 @@
     },
     "vehicle": {
       "template": "https://www.carvana.com/vehicle/{vehicleId}"
+    }
+  },
+  "destinations": {
+    "search_results": {
+      "title": "These cars on Carvana",
+      "description": "Carvana's search results page with these filters applied, where the user can browse, sort and filter further",
+      "argsOf": "search_vehicles",
+      "reader": "search_vehicles"
+    },
+    "vehicle_page": {
+      "title": "This car on Carvana",
+      "description": "The car's own page, with its photos, features, price, delivery options and the button to start buying it",
+      "params": {
+        "vehicleId": {
+          "type": "integer",
+          "entity": "vehicle"
+        }
+      },
+      "link": "vehicle",
+      "reader": "vehicle_details"
     }
   },
   "skills": {

@@ -77,6 +77,9 @@ export const OVERLAY_CSS = `
 .form input, .form select { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
 .btn { all: unset; cursor: pointer; background: var(--accent); color: #fff; border-radius: 8px; padding: 6px 14px; font-weight: 600; font-size: 13px; align-self: flex-start; }
 .btn[disabled] { opacity: 0.5; cursor: default; }
+.destination { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+.destination .dest-title { flex: 1; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.destination .btn { align-self: center; padding: 8px 16px; }
 .notice { font-size: 12px; color: var(--muted); background: var(--bg-soft); border-radius: 8px; padding: 6px 10px; }
 .compose { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
 .compose textarea { flex: 1; resize: none; font: inherit; color: var(--text); background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; height: 40px; max-height: 120px; }

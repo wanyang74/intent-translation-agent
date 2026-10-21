@@ -61,6 +61,8 @@ export async function buildExtension(options: ExtensionOptions): Promise<void> {
     description: `Ask for what you want on ${pack.site.name}; the agent searches and compares for you. Read-only.`,
     background: { service_worker: 'background.js' },
     content_scripts: [{ matches: pack.site.pages, js: ['content.js'], run_at: 'document_idle' }],
+    // storage: the saved conversation, so it follows the user from page to page of the site (session storage only).
+    permissions: ['storage'],
     host_permissions: [`${new URL(brainUrl).origin}/*`],
   };
   writeFileSync(path.join(options.outDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');

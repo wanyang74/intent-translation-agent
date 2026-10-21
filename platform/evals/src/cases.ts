@@ -26,11 +26,15 @@ export interface CallExpect {
   without?: string[];
 }
 
-/** Something that must be on screen after the turn: a component of a type, or showing an entity's IDs, or a notice. */
+/**
+ * Something on screen after the turn: a component of a type, or showing an entity's IDs, or a notice, or a Take me
+ * there button to a destination.
+ */
 export interface ShowExpect {
-  type?: 'items' | 'options' | 'comparison' | 'detail' | 'form' | 'notice';
+  type?: 'items' | 'options' | 'comparison' | 'detail' | 'form' | 'notice' | 'destination';
   entity?: string;
   notice?: string;
+  destination?: string;
   /** Every one of these IDs is shown. */
   includes?: IdValue[];
   /** The component starts with these IDs, in this order. */
@@ -51,6 +55,8 @@ export interface Expect {
   noCalls?: string[] | true;
   maxCalls?: number;
   shows?: ShowExpect[];
+  /** None of these is on screen. */
+  notShown?: ShowExpect[];
   /** No item, option, comparison or detail component (a notice alone is fine). */
   showsNoItems?: boolean;
   text?: {
@@ -129,7 +135,7 @@ export interface CaseContext {
   fixtures: readonly Fixture[];
 }
 
-const SHOW_TYPES = new Set(['items', 'options', 'comparison', 'detail', 'form', 'notice']);
+const SHOW_TYPES = new Set(['items', 'options', 'comparison', 'detail', 'form', 'notice', 'destination']);
 
 /** Problems with a site's cases, or none. Each is named by its case. */
 export function checkCases(cases: readonly EvalCase[], ctx: CaseContext): string[] {
@@ -169,11 +175,12 @@ export function checkCases(cases: readonly EvalCase[], ctx: CaseContext): string
     const tools = [...(expect.calls ?? []), ...(expect.lastCall ? [expect.lastCall] : [])].map((call) => call.tool);
     if (Array.isArray(expect.noCalls)) tools.push(...expect.noCalls);
     for (const tool of tools) if (!pack.tools[tool]) add(`${tool} isn't one of the site's tools`);
-    for (const show of expect.shows ?? []) {
+    for (const show of [...(expect.shows ?? []), ...(expect.notShown ?? [])]) {
       if (show.type && !SHOW_TYPES.has(show.type)) add(`unknown component type ${show.type}`);
       if (show.entity && !pack.entities[show.entity]) add(`unknown entity ${show.entity}`);
       if (show.notice && !pack.notices?.[show.notice]) add(`unknown notice ${show.notice}`);
-      if (!show.type && !show.entity && !show.notice) add('a shows expectation needs a type, an entity or a notice');
+      if (show.destination && !pack.destinations?.[show.destination]) add(`unknown destination ${show.destination}`);
+      if (!show.type && !show.entity && !show.notice && !show.destination) add('a shows expectation needs a type, an entity, a notice or a destination');
     }
     for (const pattern of [...(expect.text?.matches ?? []), ...(expect.text?.excludes ?? [])]) {
       try {

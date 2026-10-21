@@ -220,6 +220,8 @@ export const site: SiteCode = {
   },
 
   valueSources: { facets: facetsRequest },
+  // The results page carries its filters as base64 JSON, in the same shape the search request sends them.
+  destinations: { search_results: (args: SearchArgs, link) => link('search', { cvnaid: { filters: filtersFrom(args) } }) },
 
   sections: {
     reviews(view: EntityView) {

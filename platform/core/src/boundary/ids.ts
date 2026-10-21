@@ -7,6 +7,8 @@ import { valuesAt } from '../../../contract/src/paths.ts';
 type Entity = NonNullable<SitePack['entities'][string]>;
 export type IdValue = string | number;
 export type IdStatus = 'known' | 'unknown' | 'expired';
+/** One known ID: its kind, and when it expires (null: never). */
+export interface KnownId { kind: string; id: IdValue; expiresAt: number | null }
 
 export interface IdPathSpec {
   kind: string;
@@ -80,6 +82,19 @@ export class IdSet {
 
   get size(): number {
     return this.known.size;
+  }
+
+  /** Every ID with its expiry, for a saved session (see Session.snapshot). */
+  entries(): KnownId[] {
+    return [...this.known.values()].map((entry) => ({ ...entry }));
+  }
+
+  /** Puts back IDs saved with entries(); an ID the site pack no longer accepts is skipped. */
+  restore(entries: readonly KnownId[]): void {
+    for (const entry of entries) {
+      const entity = this.entities[entry.kind];
+      if (entity && idShapeOk(entity, entry.id)) this.known.set(key(entry.kind, entry.id), { kind: entry.kind, id: entry.id, expiresAt: entry.expiresAt });
+    }
   }
 
   view(): IdView {

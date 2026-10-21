@@ -1,4 +1,5 @@
-// Demo Flights' tools: offers from a search form's fields, and the signed-in traveler's trips.
+// Demo Flights' tools: offers from a search form's fields, and the signed-in traveler's trips; and the URL of the
+// results page for a search, for the flight_search destination.
 import type { SiteCode } from '../../platform/core/src/index.ts';
 
 interface Segment { carrier: string; flightNumber: string; from: string; to: string; departs: string; arrives: string }
@@ -37,4 +38,6 @@ export const site: SiteCode = {
       };
     },
   },
+  // The results page takes the whole search, as base64 JSON.
+  destinations: { flight_search: (args, link) => link('search', { search: args }) },
 };

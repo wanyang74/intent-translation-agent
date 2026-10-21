@@ -4,7 +4,7 @@ export { base64, fill, hasPlaceholder, show, utf8 } from './shared/text.ts';
 export type { Host, HostRequest, HostResponse, LogEntry, ScriptResult, ScriptRunner } from './runtime/host.ts';
 export { describeProblems, problemsWith, validatorFor, type Validator, type Validators } from './shared/validate.ts';
 export { ToolFailure, type EndpointRequest, type EntityView, type SectionContent, type SiteCode, type ToolContext, type ToolImpl } from './execute/site-code.ts';
-export { Session, type SessionOptions } from './runtime/session.ts';
+export { Session, type SessionOptions, type SessionSnapshot } from './runtime/session.ts';
 export { callEndpoint, matchKey } from './execute/endpoints.ts';
 export { checkContext, runToolCall, SCRIPT_LIMITS, SCRIPT_TOOL, type CallOutcome } from './execute/execute.ts';
 export {

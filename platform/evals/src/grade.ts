@@ -62,6 +62,7 @@ const ITEM_TYPES = new Set(['items', 'options', 'comparison', 'detail']);
 export function showMatches(expected: ShowExpect, component: UiComponent): boolean {
   if (expected.type && component.type !== expected.type) return false;
   if (expected.notice && (component.type !== 'notice' || component.notice !== expected.notice)) return false;
+  if (expected.destination && (component.type !== 'destination' || component.destination !== expected.destination)) return false;
   if (expected.entity && (!('entity' in component) || component.entity !== expected.entity)) return false;
   const ids = idsShown(component);
   if (expected.includes && !expected.includes.every((id) => ids.some((shown) => sameId(shown, id)))) return false;
@@ -159,9 +160,12 @@ export function grade(evalCase: EvalCase, trial: Trial): Grade {
   else for (const tool of expect.noCalls ?? []) check(`no ${tool}`, !trial.calls.some((call) => call.name === tool), `called ${tool}`);
   if (expect.maxCalls !== undefined) check(`at most ${expect.maxCalls} calls`, trial.calls.length <= expect.maxCalls, `${trial.calls.length} calls`);
   const madeForbiddenCall = checks.slice(forbiddenStart).some((item) => !item.pass);
-  const onScreen = components.map((component) => `${component.type}${'entity' in component ? ` ${component.entity}` : ''} [${idsShown(component).join(', ')}]`).join('; ');
+  const onScreen = components.map((component) => `${component.type}${'entity' in component ? ` ${component.entity}` : ''}${component.type === 'destination' ? ` ${component.destination}` : ''} [${idsShown(component).join(', ')}]`).join('; ');
   for (const expected of expect.shows ?? []) {
-    check(`shows ${expected.type ?? expected.notice ?? expected.entity}`, components.some((component) => showMatches(expected, component)), `on screen: ${onScreen || 'nothing'}`);
+    check(`shows ${expected.destination ?? expected.type ?? expected.notice ?? expected.entity}`, components.some((component) => showMatches(expected, component)), `on screen: ${onScreen || 'nothing'}`);
+  }
+  for (const expected of expect.notShown ?? []) {
+    check(`doesn't show ${expected.destination ?? expected.type ?? expected.notice ?? expected.entity}`, !components.some((component) => showMatches(expected, component)), `on screen: ${onScreen}`);
   }
   const showsItems = components.some((component) => ITEM_TYPES.has(component.type));
   if (expect.showsNoItems) check('shows no items', !showsItems, `on screen: ${onScreen}`);

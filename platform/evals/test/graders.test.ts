@@ -22,13 +22,18 @@ test('call arguments: match as a subset: arrays as sets, strings ignoring case, 
 
 const items: UiComponent = { type: 'items', entity: 'car', layout: 'cards', items: [1, 2, 3].map((id) => ({ id, title: `Car ${id}`, fields: [] })) };
 
-test('on screen: type, entity, IDs included, first in order, only from a set, and how many', () => {
+test('on screen: type, entity, IDs included, first in order, only from a set, how many, and which page a button opens', () => {
   assert.ok(showMatches({ type: 'items', entity: 'car', includes: [2], first: [1, 2], only: [1, 2, 3, 4], minItems: 3, maxItems: 3 }, items));
   assert.ok(showMatches({ entity: 'car', includes: ['3'] }, items), 'IDs compare as text');
   assert.ok(!showMatches({ first: [2] }, items));
   assert.ok(!showMatches({ only: [1, 2] }, items));
   assert.ok(!showMatches({ type: 'detail' }, items));
   assert.ok(showMatches({ notice: 'total' }, { type: 'notice', notice: 'total', text: 'Estimated.' }));
+  const button: UiComponent = { type: 'destination', destination: 'help', title: 'Help', url: 'https://www.example.com/help' };
+  assert.ok(showMatches({ destination: 'help' }, button));
+  assert.ok(showMatches({ type: 'destination' }, button));
+  assert.ok(!showMatches({ destination: 'returns' }, button), 'another page');
+  assert.ok(!showMatches({ destination: 'help' }, items), 'cards are not a button');
 });
 
 test('money reading: amounts in the text are read with commas, cents and "k"', () => {
@@ -67,6 +72,9 @@ test('status: pass when every check does, fail on any, unrecorded when a request
   const forbidden = trial({ calls: [{ name: 'get_quote', args: { zip: '00000' } }], fixtureMisses: ['FakeHost: no quote fixture matches'] });
   assert.equal(grade(evalCase({ noCalls: ['get_quote'] }), forbidden).status, 'fail');
   assert.equal(grade(evalCase(expect), trial({ crash: 'boom' })).status, 'crash');
+  // notShown: the turn must not show it (a button where cards were wanted, or the other way round).
+  assert.deepEqual(grade(evalCase({ notShown: [{ type: 'items' }] }), trial()).checks.filter((check) => !check.pass).map((check) => check.name), ["doesn't show items"]);
+  assert.equal(grade(evalCase({ notShown: [{ type: 'destination' }] }), trial()).status, 'pass');
 });
 
 test('universal checks: outcome, cards on screen, grounded money and no internal IDs, on every case', () => {

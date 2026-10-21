@@ -1,5 +1,5 @@
 // UI states no site's conversations or references produce yet: a comparison table, a form, an error, a turn still
-// running, early results and a reached call budget. Written by hand in the UI fixture format, with a made-up "item"
+// running, early results, a reached call budget and a Take me there button. Written by hand in the UI fixture format, with a made-up "item"
 // entity, so the overlay is built and screenshot-tested for every component and state, not only the ones that
 // recorded traffic happens to reach. Replace each one with a made fixture once a site produces it.
 import type { UiFixture } from '../src/ui-fixture.ts';
@@ -90,6 +90,16 @@ export const UI_STATES: UiFixture[] = [
     turns: [{
       message: 'Check every page', page,
       events: [{ type: 'answer', budgetReached: true, text: 'I checked 5 of the 40 pages:\n- 120 items matched\n- the cheapest is **$980**\n\nAsk me to narrow it down and I can look further.', components: [] }],
+    }],
+  },
+  {
+    id: 'state-destination', site: 'platform', source: 'conversation', description: 'A short answer with a Take me there button to a page on the site',
+    turns: [{
+      message: 'Take me to the returns policy', page,
+      events: [{
+        type: 'answer', budgetReached: false, text: 'Returns are free within 30 days of delivery. The policy page has the details.',
+        components: [{ type: 'destination', destination: 'returns_policy', title: 'Returns policy', url: 'https://shop.example/help/returns' }],
+      }],
     }],
   },
 ];

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/schemas/presentation/present_destination.json",
+  "title": "present_destination: a Take me there button",
+  "description": "Shows a button that takes the user to one of the site's own pages, from the destinations listed in the system prompt. Use it when the user wants to go somewhere on the site, or when the site already has a page for what they asked. Name the destination and its parameters; the URL is built for you. Nothing opens until the user taps the button.",
+  "type": "object",
+  "properties": {
+    "destination": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,31}$"
+    },
+    "params": {
+      "type": "object",
+      "description": "The destination's parameters, as the system prompt lists them."
+    }
+  },
+  "required": [
+    "destination"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "destination": "product_page",
+      "params": {
+        "productId": 7
+      }
+    }
+  ]
+}

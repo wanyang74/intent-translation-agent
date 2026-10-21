@@ -30,6 +30,7 @@ entities:
       title: "{carrier} {flightNumbers}"
       subtitle: "{departs} to {arrives}"
       fields: [totalPrice, stops, duration]
+      link: offer
     sections: [itinerary, fare_rules]
   trip:
     description: A booked trip, identified by its record locator
@@ -39,7 +40,7 @@ entities:
       route: { label: Route, type: text, from: route }
       departs: { label: Departs, type: datetime, from: departs }
       status: { label: Status, type: text, from: status }
-    card: { title: "{route}", subtitle: "{departs}" }
+    card: { title: "{route}", subtitle: "{departs}", link: trip }
 
 endpoints:
   offers:
@@ -112,6 +113,30 @@ policies:
   callBudget: { perTask: 40, perSession: null, perDay: null }
   priceDisplay: total_including_taxes
   writes: none
+
+deepLinks:
+  offer: { template: "https://www.demo-flights.example/offers/{offerId}" }
+  trip: { template: "https://www.demo-flights.example/trips/{recordLocator}" }
+  search: { template: "https://www.demo-flights.example/search?q={base64json:search}" }
+  baggage: { template: "https://www.demo-flights.example/help/baggage" }
+
+destinations:
+  flight_search:
+    title: These flights on Demo Flights
+    description: The site's flight results page for this search, with every fare and filter
+    argsOf: search_flights
+    reader: search_flights
+  trip_page:
+    title: Your trip
+    description: A booked trip's page, where the traveler can change seats, add bags or cancel
+    params: { recordLocator: { type: string, entity: trip } }
+    link: trip
+    app: "demoflights://trips/{recordLocator}"
+  baggage_help:
+    title: Baggage rules
+    description: The help page on carry-on and checked bag sizes, weights and fees
+    link: baggage
+    app: "demoflights://help/baggage"
 
 skills:
   trip_planning:

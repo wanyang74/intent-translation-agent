@@ -229,6 +229,192 @@
         "vehicleInventoryType": 1,
         "locationId": 300
       }
+    },
+    {
+      "id": "take-me-to-search",
+      "quick": true,
+      "description": "The user wants the site's own results page: a short answer from the search that reads it, and a Take me there button to that page",
+      "message": "Take me to the Carvana page with Teslas from 2023 or newer.",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_vehicles",
+            "args": {
+              "zip5": "94402",
+              "make": "Tesla",
+              "year_min": 2023
+            }
+          }
+        ],
+        "shows": [
+          {
+            "destination": "search_results"
+          }
+        ],
+        "text": {
+          "includes": [
+            "780"
+          ]
+        }
+      }
+    },
+    {
+      "id": "compare-gets-cards",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1
+      },
+      "description": "The site has no page comparing the user's picks, so the agent builds one as cards, not a button. Delivery dates for the two cars come from the recorded 21-car lookup, cut to those two (FakeHost matches only the exact set)",
+      "fixtures": [
+        {
+          "from": "availability-06",
+          "copyAs": "availability-06-first-two",
+          "set": {
+            "request.body.vehicles": [
+              {
+                "vehicleId": 4812031,
+                "vehicleInventoryType": "Core",
+                "vehicleLocationId": 300,
+                "vehicleSaleStatus": "Available"
+              },
+              {
+                "vehicleId": 4694969,
+                "vehicleInventoryType": "Core",
+                "vehicleLocationId": 300,
+                "vehicleSaleStatus": "Available"
+              }
+            ],
+            "response.body.content": [
+              {
+                "vehicleId": 4812031,
+                "closestLocationId": {
+                  "content": 301,
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                },
+                "soonestDelivery": {
+                  "content": {
+                    "activityType": "LocalDelivery",
+                    "utcSoonestDateTime": 1791677700000,
+                    "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+                    "drivingMiles": 36,
+                    "isRestrictedLocation": false,
+                    "asSoonAsText": "Saturday",
+                    "daysToAvailability": 2,
+                    "secondsUntilCutoff": 9888,
+                    "localTimeZone": "America/Los_Angeles",
+                    "servicingLocationId": 335,
+                    "locationCity": "San Jose",
+                    "locationState": "CA",
+                    "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+                  },
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                },
+                "soonestPickup": {
+                  "content": {
+                    "activityType": "Pickup",
+                    "utcSoonestDateTime": 1791753300000,
+                    "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+                    "drivingMiles": 17,
+                    "isRestrictedLocation": false,
+                    "asSoonAsText": "Sunday",
+                    "daysToAvailability": 3,
+                    "secondsUntilCutoff": 9888,
+                    "localTimeZone": "America/Los_Angeles",
+                    "servicingLocationId": 301,
+                    "locationCity": "Daly City",
+                    "locationState": "CA",
+                    "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+                  },
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                }
+              },
+              {
+                "vehicleId": 4694969,
+                "closestLocationId": {
+                  "content": 301,
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                },
+                "soonestDelivery": {
+                  "content": {
+                    "activityType": "LocalDelivery",
+                    "utcSoonestDateTime": 1791677700000,
+                    "utcSoonestDateTimeIso": "2026-10-11T00:15:00Z",
+                    "drivingMiles": 36,
+                    "isRestrictedLocation": false,
+                    "asSoonAsText": "Saturday",
+                    "daysToAvailability": 2,
+                    "secondsUntilCutoff": 9888,
+                    "localTimeZone": "America/Los_Angeles",
+                    "servicingLocationId": 335,
+                    "locationCity": "San Jose",
+                    "locationState": "CA",
+                    "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjY21VFKTC5RsjLSUSpLgdAFRclKVtVKyTmZSlbGBoY6SgWVuUpWhrU6SilFuUpWxmY6SmWpRWAtycUlSlZKzo5KOkrJVQVKVkqWJiYGRkq1AEx5iiVsAAAA"
+                  },
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                },
+                "soonestPickup": {
+                  "content": {
+                    "activityType": "Pickup",
+                    "utcSoonestDateTime": 1791753300000,
+                    "utcSoonestDateTimeIso": "2026-10-11T21:15:00Z",
+                    "drivingMiles": 17,
+                    "isRestrictedLocation": false,
+                    "asSoonAsText": "Sunday",
+                    "daysToAvailability": 3,
+                    "secondsUntilCutoff": 9888,
+                    "localTimeZone": "America/Los_Angeles",
+                    "servicingLocationId": 301,
+                    "locationCity": "Daly City",
+                    "locationState": "CA",
+                    "routeId": "H4sIAAAAAAAEA6tWSk_NV7IyMrA0MzHRUcrJT1ayMjYw1FFKTC5RsjLVUSpLKVGyMtJRKihKVrKqVkrOyYQqKKjMVbIyrNVRSikCMcx1lMpSi8BKk6sKlKyULE1MDIyUagGImEj-YQAAAA"
+                  },
+                  "status": "Succeeded",
+                  "errorMessage": ""
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "message": "Put the first two side by side for me.",
+      "expect": {
+        "shows": [
+          {
+            "type": "comparison",
+            "includes": [
+              4812031
+            ]
+          }
+        ],
+        "notShown": [
+          {
+            "type": "destination"
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-such-page",
+      "description": "A page the site doesn't have: said plainly, with no button to some other page",
+      "message": "Take me to the page where I can book a test drive.",
+      "expect": {
+        "notShown": [
+          {
+            "type": "destination"
+          }
+        ],
+        "showsNoItems": true,
+        "text": {
+          "matches": [
+            "test drive"
+          ]
+        }
+      }
     }
   ]
 }

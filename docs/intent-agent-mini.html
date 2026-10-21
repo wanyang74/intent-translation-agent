@@ -340,6 +340,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#web">Web</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#ios">iOS</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#android">Android</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#client-destinations">Taking the user to a page</a></div></li>
 </ol></li>
 <li><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Tool runtime (core.js)"></button><a href="#runtime">Tool runtime (core.js)</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#runtime-parts">Its parts</a></div></li>
@@ -843,6 +844,26 @@ let result = try await webView.callAsyncJavaScript(
 <p class="note">Tested on the Android emulator in phase 8. As with iOS, the shell app is for our own testing only: shipping someone else's site inside our app would break Google Play's rules and the site's terms.</p>
 </div>
 </details>
+<details class="fold lvl4" id="client-destinations" open>
+<summary><h4>Taking the user to a page</h4></summary>
+<div class="fold-body">
+<p class="sub">Two kinds of request, two answers, on every surface. When the site has no page for what the user wants (a side-by-side of the cars they picked), the agent builds it as cards, and every card links to its item's page (a site-pack check requires a link for every kind of item shown on cards). When the site has the page and the user just doesn't know the way there (a filtered search, an award-flight search, a transfer page, a help article), the agent answers briefly and shows a <b>Take me there</b> button. It saves the menu taps, which matters most in apps with small, crowded buttons.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Part</th><th>How it works</th></tr></thead>
+          <tbody>
+            <tr><td>Destinations</td><td>The site pack lists the pages the agent may send the user to: a name, a title for the button, what's there, its parameters, how its URL is built (a deep-link template, or site code when the URL needs more, such as Carvana's encoded search filters), optionally a <b>reader</b> (a site tool that reads what the page shows) and an app route. URLs are only ever on the site's own origins</td></tr>
+            <tr><td><code>present_destination</code></td><td>The seventh presentation tool. The model names a destination and its parameters, never a URL; core.js builds the URL and refuses anything off the site. Parameters that are item IDs must be known IDs, like on cards</td></tr>
+            <tr><td>The answer</td><td>With a reader, the model reads the page through it and answers from what it returned, so the summary is grounded like any other fact. Without one (a signed-in page, or none built yet), it says only what the destination's description says the page is for. Either way the button is there, and the page is the source the user can check</td></tr>
+            <tr><td>Never without a tap</td><td>The surface draws the button; nothing navigates until the user taps it. On the web it opens the page in the same tab. In an app, the surface hands the destination to the app: its app route if the pack has one, otherwise its web URL, which the app's own link handling opens (in the iOS and Android shell apps, the WebView loads it)</td></tr>
+            <tr><td>The conversation follows the user</td><td>While the user stays on the same site, the conversation carries over to the new page: the chat on screen, the session ID and core.js's session (known IDs, the records cards are filled from, the call budget), saved by the host and restored on the next page. On the web the extension keeps it per site, in any tab, until Chrome closes; in an app it lives in native memory. It ends after 30 minutes idle, when the brain forgets the session too</td></tr>
+            <tr><td>Out of scope</td><td>Clicking menus or filling in the site's own forms for the user. Links only; still read-only</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">On Carvana: a search on the site with the user's filters (read by <code>search_vehicles</code>, which already returns the results page's link) and a car's page (read by <code>vehicle_details</code>). Carvana's other pages, such as financing, selling a car and help articles, wait for one signed-out look at their URLs and where help content comes from.</p>
+</div>
+</details>
 </div>
 </details>
 <details class="fold lvl3" id="runtime" open>
@@ -905,7 +926,7 @@ let result = try await webView.callAsyncJavaScript(
 <details class="fold lvl4" id="core-present" open>
 <summary><h4>Presentation tools: IDs in, filled cards out</h4></summary>
 <div class="fold-body">
-<p class="sub">The model shows results by calling a presentation tool with an entity kind, IDs and a layout. Execute fills in every displayed field from this session's tool results, using the site pack's templates, so the model never types a price, date or spec into the UI. Arguments follow the on-screen order, so "the third one" resolves from history. The six tools are the same for every site.</p>
+<p class="sub">The model shows results by calling a presentation tool with an entity kind, IDs and a layout. Execute fills in every displayed field from this session's tool results, using the site pack's templates, so the model never types a price, date or spec into the UI. Arguments follow the on-screen order, so "the third one" resolves from history. The seven tools are the same for every site.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>Tool</th><th>Model sends</th><th>Execute fills in</th><th>On Carvana</th></tr></thead>
@@ -916,6 +937,7 @@ let result = try await webView.callAsyncJavaScript(
             <tr><td><code>present_options</code></td><td>Up to 10 IDs the user can pick from</td><td>Labels and counts</td><td>Filter suggestions as chips</td></tr>
             <tr><td><code>present_form</code></td><td>A form's name and values to prefill</td><td>The site's form, with the prefilled values</td><td>None yet; Demo Flights has a flight search form</td></tr>
             <tr><td><code>present_notice</code></td><td>A notice's name</td><td>The stored wording, exactly</td><td>The estimated-total notice</td></tr>
+            <tr><td><code>present_destination</code></td><td>A destination's name and its parameters</td><td>A <b>Take me there</b> button with the page's title and a URL on the site's own origins; see <a href="#client-destinations">Taking the user to a page</a></td><td>A search on carvana.com with the user's filters; a car's page</td></tr>
           </tbody>
         </table>
       </div>
@@ -1133,6 +1155,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>Forms and notices</td><td>Forms the agent can show to collect details; required wording, versioned, with the fields it must appear next to</td><td>The estimated-total notice</td></tr>
             <tr><td>Policies</td><td>Hidden fields, derived fields and their formulas, allowed values, page size, rate limit, call budget, how prices are shown, whether writes are allowed</td><td>No monthly payment or APR; estimated total = price + estimated taxes and fees; 1 call per second; 60 calls per task; no writes</td></tr>
             <tr><td>Page reader</td><td>Site code (<code>page.ts</code>) that tells the web surface which page the user is on: the page type, the item on screen and, when the page shows it, the user's location and what the page carries about the item</td><td>From the URL: a vehicle page's car, or a search page. On a vehicle page, the car's details and price come from the data the page embeds for itself (Next.js streamed data). On every page, the zip code comes from Carvana's own cookie (its guess from the visitor's network, or the zip they set), marked as a guess: the agent says which zip it used. With no cookie, the agent asks</td></tr>
+            <tr><td>Destinations</td><td>The pages the agent may send the user to with a Take me there button: title, what's there, parameters, how the URL is built, an optional reader tool and app route</td><td>A search with filters; a car's page</td></tr>
             <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; the 2026-10-08 HAR</td></tr>
           </tbody>
         </table>
@@ -1147,7 +1170,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <thead><tr><th>Piece</th><th>How it works for any site</th></tr></thead>
           <tbody>
             <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location (marked when it's the site's guess, so the agent says which one it used), locale and whether the user is signed in</td></tr>
-            <tr><td>Presentation tools</td><td>Six tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
+            <tr><td>Presentation tools</td><td>Seven tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
             <tr><td>Typed IDs</td><td>Every ID has a kind from the site pack, and an expiry where the site's IDs expire. Tools and presentation calls accept only IDs of the right kind that this session saw and that haven't expired</td></tr>
             <tr><td>Errors</td><td>One set of codes for every site: <code>invalid_value</code>, <code>no_results</code>, <code>not_found</code>, <code>expired</code>, <code>auth_required</code>, <code>rate_limited</code>, <code>budget_reached</code> and a few more. The site adds a reason and a message the model can act on</td></tr>
             <tr><td>Tests</td><td>Every platform test runs on every site pack. A second site pack, Demo Flights, is a made-up airline with sign-in, offers that expire, a search form and a full-fare rule, so a Carvana-only assumption fails a test</td></tr>
@@ -1758,7 +1781,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>4 · Agentic brain <span class="pill">Done</span></td><td>Prompt assembler → skills loader → loop (step budget, timeouts, call IDs, early tool calls) → server checks (ID set, quotas) → model adapter</td><td>L3 passes with FakeModel and FakeClient; the prompt prefix is byte-identical across sessions; a few live model calls work. Passed on 2026-10-15</td></tr>
             <tr><td>5 · First real integration <span class="pill">Done</span></td><td>Real core and real brain with FakeHost and FakeModel → then the real model</td><td>Saved example conversations replay identically; then the 3 fixed tasks pass with the real model. Passed on 2026-10-19</td></tr>
             <tr><td>6 · Evals <span class="pill">Done</span></td><td>Snapshot runner → first ~50 cases → CI gates</td><td>Baseline pass rates recorded. Proposed starting bar: about 90% on core cases and 100% on safety cases. Baseline recorded on 2026-10-19 (57 Carvana cases, 3 trials each). On 2026-10-20, of the trials the fixtures could answer, core passed 54 of 57 (95%) and safety 36 of 36. Still to do: the CI workflow, which needs the API key as a repository secret; the gate itself runs with <code>npm run evals -- --gate</code></td></tr>
-            <tr><td>7 · Chrome extension <span class="pill warn">In progress</span></td><td>Overlay built against UI fixtures → then live on carvana.com</td><td>UI fixture screenshots match; the 3 tasks pass live; progress lines and streaming work. So far (2026-10-20): the overlay passes on every UI fixture in Chrome, screenshots are saved, and the built extension plays the example conversations offline. Live, Carvana's Cloudflare check stops headless Chrome; in a visible Chrome window the 3 tasks passed on 2026-10-20 after four rounds of fixes. Next: a person's own Chrome (see Try it in your Chrome below)</td></tr>
+            <tr><td>7 · Chrome extension <span class="pill warn">In progress</span></td><td>Overlay built against UI fixtures → then live on carvana.com</td><td>UI fixture screenshots match; the 3 tasks pass live; progress lines and streaming work. So far (2026-10-20): the overlay passes on every UI fixture in Chrome, screenshots are saved, and the built extension plays the example conversations offline. Live, Carvana's Cloudflare check stops headless Chrome; in a visible Chrome window the 3 tasks passed on 2026-10-20 after four rounds of fixes. On 2026-10-21, destinations with a Take me there button and the conversation carried across pages: built and tested offline (the extension plays every example conversation with a page load between turns, in one brain session); eval cases for a destination pass with the real model. Next: a person's own Chrome (see Try it in your Chrome below)</td></tr>
             <tr><td>8 · iOS, then Android</td><td>Bridge and Host for each platform. The iOS Simulator needs full Xcode installed; JavaScriptCore checks can run earlier with macOS's <code>jsc</code></td><td>L4 runs inside each app's own engine; the end-to-end tasks pass in the Simulator and emulator</td></tr>
             <tr><td>9 · Operations</td><td>Off switches → change monitor → gradual rollout</td><td>A simulated response change turns the tool off; done before anyone outside the team uses it</td></tr>
           </tbody>
@@ -1782,6 +1805,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <div class="q"><b>A goal</b> · "A gray AWD Tesla with a black interior, under 42,100 miles, that I can get by Saturday. Cheapest first."</div>
         <div class="q"><b>Narrowing down</b> · "I'm thinking about a Tesla", then pick a suggested filter or type one ("2023 or newer", "only AWD").</div>
         <div class="q"><b>The car on screen</b> · On a car's page: "What would this one cost me all in, and how soon can I get it? Also, what do owners say?"</div>
+        <div class="q"><b>Take me there</b> · "Take me to the Carvana page with Teslas from 2023 or newer." The agent says how many match and shows a button; tap it, and the panel is still there on the new page with the conversation so far.</div>
       </div>
       <h5>If something goes wrong</h5>
       <div class="qs">
@@ -1811,6 +1835,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
       <div class="qs">
         <div class="q"><b>Sign-in mode support</b> · Tools for what a signed-in person can read on a site (on Carvana, the pickup price, favorites and orders), marked as needing sign-in. Writes stay out of scope. Needs a signed-in recording, with scrub rules for personal data and login tokens added before any fixture is built from it, and a decision on how the user's sign-in reaches core.js.</div>
         <div class="q"><b>Script sandbox in the extension</b> · The Chrome extension has no script sandbox yet, so scripts are refused there and the model calls tools one at a time. Planned: QuickJS in an offscreen document, with tool calls passed back to the content script.</div>
+        <div class="q"><b>More Carvana destinations</b> · Financing, selling or trading a car, and help articles. Needs one signed-out look at those pages' URLs and at where the help content comes from, so a reader can be built for it. The same signed-out recording should include a car's page HTML (for the car-page destination's reader) and a quote for a second car at the same zip (for the eval case comparing two cars).</div>
         <div class="q"><b>Per-item answers for bulk requests in FakeHost</b> · A request for several items at once (on Carvana, delivery dates for a list of cars) is matched only to the exact set that was recorded, so any other set is unrecorded even when every item in it was recorded. Planned: answer such requests item by item from the recorded responses. Changes the site-pack format.</div>
       </div>
 </div>

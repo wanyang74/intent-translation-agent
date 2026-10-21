@@ -10,15 +10,19 @@ declare global {
     uiFixtures: UiFixture[];
     /** What the user sent from any overlay (a picked option, a submitted form), with the fixture it came from. */
     sent: { fixture: string; message: string }[];
+    /** The pages a Take me there button would have opened; the gallery never navigates. */
+    navigated: { fixture: string; url: string }[];
   }
 }
 
 window.sent = [];
+window.navigated = [];
 
 /** Plays one fixture into a fresh overlay: each message, then exactly the events the surface received. */
 function replay(fixture: UiFixture, mountPoint: HTMLElement): void {
   const onSend = (message: string) => window.sent.push({ fixture: fixture.id, message });
-  const overlay = new Overlay(document, mountPoint, { title: `Ask ${fixture.site}`, staticLayout: true, onSend });
+  const onNavigate = (url: string) => window.navigated.push({ fixture: fixture.id, url });
+  const overlay = new Overlay(document, mountPoint, { title: `Ask ${fixture.site}`, staticLayout: true, onSend, onNavigate });
   for (const turn of fixture.turns) {
     overlay.userMessage(turn.message);
     for (const event of turn.events) {

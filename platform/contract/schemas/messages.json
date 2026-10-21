@@ -288,6 +288,22 @@
             "args"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "const": "present_destination"
+            },
+            "args": {
+              "$ref": "/schemas/presentation/present_destination.json"
+            }
+          },
+          "required": [
+            "name",
+            "args"
+          ],
+          "additionalProperties": false
         }
       ]
     },

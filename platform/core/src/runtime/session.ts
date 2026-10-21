@@ -3,7 +3,7 @@
 // fills cards from. Sessions share nothing.
 import type { PageContext, SitePack } from '../../../contract/generated/types.ts';
 import type { Host } from './host.ts';
-import { IdSet } from '../boundary/ids.ts';
+import { IdSet, type KnownId } from '../boundary/ids.ts';
 import { CallBudget, RateLimiter, type Policy } from '../boundary/limits.ts';
 import type { SiteCode } from '../execute/site-code.ts';
 import type { Validators } from '../shared/validate.ts';
@@ -17,6 +17,24 @@ export interface SessionOptions {
   /** Restores today's call count kept by the host from earlier sessions. */
   usedToday?: { day: number; dayKey: number };
   id?: string;
+  /** A session saved on an earlier page of the same site (snapshot()), to carry on from. */
+  restore?: SessionSnapshot;
+}
+
+/**
+ * What a session needs to carry on after the page changes: when the user follows a Take me there button, or opens
+ * another page of the site, the host saves this and starts the next page's session from it. Plain JSON, so any host
+ * can keep it. The response cache isn't kept: a repeated request is simply made again.
+ */
+export interface SessionSnapshot {
+  id: string;
+  ids: KnownId[];
+  /** Each item's records by tool, in the order they were kept. */
+  records: { kind: string; id: string | number; byTool: [string, unknown][] }[];
+  tracking: [string, string][];
+  store: [string, unknown][];
+  responses: Record<string, unknown>;
+  used: { session: number; day: number; dayKey: number };
 }
 
 export class Session {
@@ -50,10 +68,40 @@ export class Session {
     this.validators = options.validators;
     this.host = options.host;
     this.policy = options.policy;
-    this.id = options.id ?? `sess_${options.host.randomId()}`;
+    const saved = options.restore;
+    this.id = saved?.id ?? options.id ?? `sess_${options.host.randomId()}`;
     this.ids = new IdSet(options.pack.entities);
-    this.budget = new CallBudget(options.policy.budgets, () => options.host.now(), options.usedToday ? { day: options.usedToday.day, dayKey: options.usedToday.dayKey } : {});
+    const used = saved ? saved.used : options.usedToday ? { day: options.usedToday.day, dayKey: options.usedToday.dayKey } : {};
+    this.budget = new CallBudget(options.policy.budgets, () => options.host.now(), used);
     this.limiter = new RateLimiter(options.policy.rateLimitPerSecond);
+    if (saved) {
+      this.ids.restore(saved.ids);
+      for (const record of saved.records) for (const [tool, value] of record.byTool) this.putRecord(record.kind, record.id, tool, value);
+      for (const [name, id] of saved.tracking) this.tracking.set(name, id);
+      for (const [name, value] of saved.store) this.store.set(name, value);
+      Object.assign(this.responses, saved.responses);
+    }
+  }
+
+  /**
+   * The session as plain JSON, to carry on from on the next page (SessionOptions.restore). The round trip through
+   * JSON drops anything that wouldn't survive being stored, so what's restored is exactly what was saved.
+   */
+  snapshot(): SessionSnapshot {
+    const { session, day, dayKey } = this.budget.used();
+    const records = [...this.records.entries()].map(([recordKey, byTool]) => {
+      const cut = recordKey.indexOf('\u0000');
+      const kind = recordKey.slice(0, cut);
+      const rawId = recordKey.slice(cut + 1);
+      // Keys hold the ID as text; the kind's ID type says whether it was a number.
+      const id = this.pack.entities[kind]?.id.type === 'integer' ? Number(rawId) : rawId;
+      return { kind, id, byTool: [...byTool.entries()] };
+    });
+    const snapshot: SessionSnapshot = {
+      id: this.id, ids: this.ids.entries(), records, tracking: [...this.tracking.entries()], store: [...this.store.entries()],
+      responses: this.responses, used: { session, day, dayKey },
+    };
+    return JSON.parse(JSON.stringify(snapshot)) as SessionSnapshot;
   }
 
   /** The page the user is on. The item on screen counts as a known ID. */

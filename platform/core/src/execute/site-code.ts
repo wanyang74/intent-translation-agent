@@ -65,6 +65,11 @@ export interface SiteCode {
   valueSources?: Record<string, (args: any) => EndpointRequest>;
   /** Readers for endpoints whose response is a page (responseFormat: html): page text in, data out. */
   parsers?: Record<string, (html: string) => unknown>;
+  /**
+   * URL builders for destinations whose URL a deep-link template can't express, by destination name: the checked
+   * params in, a URL out (or undefined), built with the site pack's deep links. Only URLs on the site's origins are used.
+   */
+  destinations?: Record<string, (params: any, link: (name: string, values: Record<string, unknown>) => string | undefined) => string | undefined>;
   /** Builders for detail-view sections beyond the overview, by section name. */
   sections?: Record<string, (view: EntityView) => SectionContent | null>;
 }

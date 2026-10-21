@@ -105,6 +105,7 @@ export const exampleCode: SiteCode = {
     },
   },
   valueSources: { filters: (args) => ({ query: { query: args.query ?? '' } }) },
+  destinations: { search_page: (args, link) => link('search', { query: args.query ?? '', state: { colors: args.colors ?? [] } }) },
   parsers: { page: (html) => ({ name: /data-name="([^"]*)"/.exec(html)?.[1] ?? null }) },
   sections: {
     reviews: (view) => (view.values.rating === undefined ? null : { summary: `Rated ${String(view.values.rating)} of 5.` }),

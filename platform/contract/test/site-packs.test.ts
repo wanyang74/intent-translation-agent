@@ -1,6 +1,7 @@
 // Tests: every site pack (sites/<id>/site.yaml and what it refers to), and the platform's generality.
 // How: loads each pack against the site-pack schema, resolves every reference, and scans every platform file.
-// Passes when: each pack is valid and complete, there is more than one, and no platform file names a site.
+// Passes when: each pack is valid and complete, a pack with broken references is caught, there is more than one, and
+// no platform file names a site.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -29,6 +30,30 @@ for (const id of sites) {
     }
   });
 }
+
+test("references: a destination's tool, reader, deep link and params, and every card's link, are checked", () => {
+  // A real site pack with mistakes added, so only the added mistakes are reported.
+  const site = readSite(sites[0]!);
+  const broken = structuredClone(site.pack);
+  const [kind] = entriesOf(broken.entities).find(([, entity]) => entity.card && !entity.internal && !entity.noPage)!;
+  delete broken.entities[kind]!.card!.link;
+  broken.deepLinks = { ...broken.deepLinks, by_slug: { template: 'https://example.invalid/{slug}' } };
+  broken.destinations = {
+    both: { title: 'T', description: 'D', argsOf: 'no_such_tool', params: { slug: { type: 'string' } }, reader: 'no_reader' },
+    no_link: { title: 'T', description: 'D', link: 'no_such_link' },
+    wrong_param: { title: 'T', description: 'D', params: { id: { type: 'string', entity: 'no_kind' } }, link: 'by_slug', app: 'app://{slug}' },
+  };
+  assert.deepEqual(crossCheck({ ...site, pack: broken }).map((problem) => problem.slice(problem.indexOf(': ') + 2)), [
+    `entities.${kind}.card: needs a link to the item's page`,
+    'destinations.both.argsOf: unknown tool no_such_tool',
+    'destinations.both: takes either argsOf or params, not both',
+    'destinations.both.reader: unknown tool no_reader',
+    'destinations.no_link.link: unknown deep link no_such_link',
+    'destinations.wrong_param.params.id: unknown entity kind no_kind',
+    "destinations.wrong_param.link: the template's {slug} isn't one of the destination's params",
+    "destinations.wrong_param.app: the route's {slug} isn't one of the destination's params",
+  ]);
+});
 
 // The words that would tie platform code to a site: its id and its hostnames.
 function siteWords(id: string): string[] {

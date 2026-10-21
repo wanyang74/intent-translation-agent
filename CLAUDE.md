@@ -105,7 +105,8 @@ docs/                      local copy of the design doc
 - Every platform test runs on every site pack. Every bug becomes a test at the lowest level that could have caught it.
 - Before calling work done: `npm test` and `npm run typecheck` both pass. Live tests are opt-in (`npm run test:live`).
 - The web surface is tested in headless Chrome (skipped where Chrome isn't installed): every UI fixture drawn in the
-  overlay, and the built extension playing the example conversations offline. Screenshots are opt-in
+  overlay, and the built extension playing the example conversations offline, with a page load between turns (the
+  conversation must carry over). Screenshots are opt-in
   (`npm run test:screenshots`; `UPDATE=1` keeps new ones after a look). Rebuild UI fixtures with `npm run ui-fixtures`.
 - Integration (L5) swaps one fake at a time: `platform/brain/test/integration.test.ts` runs every example conversation
   through real core.js and the real brain (FakeHost, FakeModel), in process and over HTTP, and the link's traffic must

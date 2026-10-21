@@ -3,8 +3,10 @@
 // calling a local server; the worker runs as the extension, whose host permission for the brain lifts both. It
 // forwards each request and relays the brain's newline-delimited JSON events one by one, so tool calls still start
 // the moment they arrive.
+// It also keeps each site's saved conversation, in the extension's session storage: shared by every tab, gone when
+// Chrome closes, and out of the site's reach (a page can't read an extension's storage).
 import { ndjsonEvents } from '../../core/hosts/web.ts';
-import { BRAIN_PORT, type FromWorker, type ToWorker } from './messages.ts';
+import { BRAIN_PORT, type ConversationRequest, type FromWorker, type ToWorker } from './messages.ts';
 
 /** Set by the build: the brain's base URL. */
 declare const BRAIN_URL: string;
@@ -39,4 +41,18 @@ chrome.runtime.onConnect.addListener((port) => {
       post({ type: 'fail', error: String(error) });
     }
   });
+});
+
+/** The saved conversation: `load` answers with it (or null), `save` replaces it. Keyed by site, so any tab finds it. */
+chrome.runtime.onMessage.addListener((request: ConversationRequest, _sender, respond) => {
+  const key = `conversation:${request.site}`;
+  if (request.type === 'load') {
+    chrome.storage.session.get(key).then((items) => respond(items[key] ?? null), () => respond(null));
+    return true;
+  }
+  if (request.type === 'save') {
+    chrome.storage.session.set({ [key]: request.conversation }).then(() => respond(true), () => respond(false));
+    return true;
+  }
+  return undefined;
 });

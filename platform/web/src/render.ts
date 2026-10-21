@@ -8,6 +8,8 @@ import { NOT_AVAILABLE, NOT_CHECKED } from '../../core/src/present/present.ts';
 export interface ComponentActions {
   /** Sends a message as if the user typed it: a picked option, or a submitted form. */
   send(message: string): void;
+  /** Takes the user to a page on the site, after they tapped Take me there. */
+  navigate(url: string): void;
 }
 
 type Children = (Node | string | null | undefined | false)[];
@@ -145,6 +147,14 @@ export function renderComponent(doc: Document, component: UiComponent, actions: 
       return form(doc, component, actions);
     case 'notice':
       return element(doc, 'div', 'notice', [component.text]);
+    case 'destination': {
+      // Nothing navigates until the user taps; core.js already kept the URL on the site's own pages.
+      const go = element(doc, 'button', 'btn', ['Take me there']) as HTMLButtonElement;
+      go.type = 'button';
+      if (/^https?:\/\//i.test(component.url)) go.addEventListener('click', () => actions.navigate(component.url));
+      else go.disabled = true;
+      return element(doc, 'div', 'destination', [element(doc, 'div', 'dest-title', [component.title]), go]);
+    }
   }
 }
 

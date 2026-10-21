@@ -4,8 +4,11 @@
 // How: the brain runs in this process with a FakeModel that writes what an example conversation's model wrote.
 // Chrome's requests to the site are intercepted: the site's pages get an empty page, and its API calls are answered
 // by FakeHost from the fixtures. The user's turns are typed into the overlay. Skipped without Chrome.
-// Passes when: each answer shows in the overlay with no error, and the site was called for exactly the fixtures the
-// conversation lists. Conversations whose page carries data the page reader can't read yet are left out.
+// The page is loaded again before every turn after the first, as when the user follows a link on the site, so the
+// conversation must carry over: the overlay draws it again and the next turn goes on in the same brain session.
+// Passes when: each answer shows in the overlay with no error, the conversation survives every page load in one
+// brain session, and the site was called for exactly the fixtures the conversation lists. Conversations whose page
+// carries data the page reader can't read yet are left out.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -40,6 +43,9 @@ const AWAIT_REPLY = `new Promise((resolve, reject) => {
   };
   check();
 })`;
+
+/** Waits for the content script, which starts at document_idle, a moment after the load event. */
+const OVERLAY_READY = `new Promise((resolve) => { const wait = () => document.querySelector('#intent-agent-overlay') ? resolve(true) : setTimeout(wait, 50); wait(); })`;
 
 /** Types a message into the overlay and presses Enter, the way a user would. */
 const typeMessage = (message: string) => `(() => {
@@ -81,6 +87,13 @@ for (const site of listSites().filter(hasFixtures)) {
       // The brain, with the conversation's model steps, on a free port.
       const now = Date.parse(conversation.now!);
       const brain = new Brain({ site: await loadSite(site), model: fakeModelFor(conversation), now: () => now });
+      // Every session the brain is asked about: a conversation that survived its page loads uses one.
+      const sessionIds = new Set<string>();
+      const accept = brain.accept.bind(brain);
+      brain.accept = (message, options) => {
+        sessionIds.add((message as { sessionId: string }).sessionId);
+        return accept(message, options);
+      };
       const server = createBrainServer({ brain, allowedOrigins: [] });
       await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
       const outDir = path.join(workDir, `${site}-${conversation.id}`);
@@ -93,10 +106,16 @@ for (const site of listSites().filter(hasFixtures)) {
       try {
         await page.intercept(readSite(site).pack.site.origins.map((origin) => `${origin}/*`), siteAnswers(site, fake, new URL(firstPage).origin));
         await page.goto(firstPage);
-        // The content script starts at document_idle, a moment after the load event.
-        await page.evaluate(`new Promise((resolve) => { const wait = () => document.querySelector('#intent-agent-overlay') ? resolve(true) : setTimeout(wait, 50); wait(); })`);
+        await page.evaluate(OVERLAY_READY);
         const answers = conversation.messages.flatMap((message) => (message.type === 'answer' ? [message] : []));
         for (const [i, turn] of turns.entries()) {
+          if (i > 0) {
+            // A new page of the site: the overlay comes back with the conversation so far, open as it was.
+            await page.goto(turn.pageContext.url);
+            await page.evaluate(OVERLAY_READY);
+            const restored = await page.evaluate<{ users: number; open: boolean }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; return { users: root.querySelectorAll('.user').length, open: !root.querySelector('.panel').hidden }; })()`);
+            assert.deepEqual(restored, { users: i, open: true }, `before turn ${i + 1}: the conversation carried over to the new page`);
+          }
           await page.evaluate(typeMessage(turn.message));
           await page.evaluate(AWAIT_REPLY);
           const shown = await page.evaluate<{ text: string; errors: string[] }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; const last = [...root.querySelectorAll('.agent')].at(-1); return { text: last.innerText, errors: [...root.querySelectorAll('.error')].map((node) => node.textContent) }; })()`);
@@ -104,6 +123,7 @@ for (const site of listSites().filter(hasFixtures)) {
           assert.ok(squash(shown.text).includes(squash(answers[i]!.text)), `turn ${i + 1}: the answer isn't shown:\n${shown.text}`);
         }
         assert.deepEqual([...new Set(fake.calls.map((call) => call.fixtureId))].sort(), [...conversation.fixtures].sort(), 'calls exactly the fixtures the conversation lists');
+        assert.equal(sessionIds.size, 1, 'one brain session for the whole conversation');
       } finally {
         await page.close();
         await new Promise<void>((resolve) => server.close(() => resolve()));

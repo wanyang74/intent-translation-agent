@@ -56,14 +56,21 @@ test('system prompt: the platform rules, then what the site pack says, including
     '- Each request can make at most 5 calls to the site, 2 per second.',
     'Load a skill with load_skill when its topic comes up, before you answer about it.',
     '- product_research: Comparing products and reading reviews. Load: on demand; preloaded on product pages.',
+    '## Pages you can send the user to',
+    `- product_page ("This product"): The product's own page. Params: productId (a product ID). Read it with read_product_page.`,
+    '- search_page ("These results"): The search results page. Params: the same arguments as search_products. Read it with search_products.',
+    '- help_center ("Help"): Answers to common questions. No params. No reader: say only what the page is for.',
+    '- When the user wants to go to a page of the site, or the site already has a page for what they ask, answer in two or three sentences and add that page\'s button with present_destination. If the page has a reader, first call the reader with the same params',
   ]) assert.ok(section.includes(line), `missing: ${line}`);
+  const noPages = siteSection(shopSite({ pack: { ...shopPack, destinations: {} } }));
+  assert.ok(!noPages.includes('present_destination') && !noPages.includes('Pages you can send'), 'no destinations: nothing about them');
 });
 
 test("tool list: the site's tools in pack order (no writes when off), then presentation, scripts and skills", () => {
   const tools = toolSpecs(shopSite());
   assert.deepEqual(tools.map((tool) => tool.name), [
     'search_products', 'get_offer', 'compare_products', 'my_orders', 'read_product_page',
-    'present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice', 'run_script', 'load_skill',
+    'present_items', 'present_comparison', 'present_detail', 'present_options', 'present_form', 'present_notice', 'present_destination', 'run_script', 'load_skill',
   ]);
   const byName = Object.fromEntries(tools.map((tool) => [tool.name, tool]));
   assert.equal(byName.search_products!.description, 'Search products. Show its results with present_items.');

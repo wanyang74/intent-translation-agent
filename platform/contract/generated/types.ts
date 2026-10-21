@@ -131,6 +131,10 @@ export type PresentationCall =
   | {
       name: 'present_notice';
       args: PresentNoticeArgs;
+    }
+  | {
+      name: 'present_destination';
+      args: PresentDestinationArgs;
     };
 /**
  * A field of that kind of item, as the site pack declares it.
@@ -470,6 +474,19 @@ export interface PresentNoticeArgs {
   entity?: EntityRef;
 }
 /**
+ * present_destination: a Take me there button. Shows a button that takes the user to one of the site's own pages, from the destinations listed in the system prompt. Use it when the user wants to go somewhere on the site, or when the site already has a page for what they asked. Name the destination and its parameters; the URL is built for you. Nothing opens until the user taps the button.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "PresentDestinationArgs".
+ */
+export interface PresentDestinationArgs {
+  destination: string;
+  /**
+   * The destination's parameters, as the system prompt lists them.
+   */
+  params?: {};
+}
+/**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "ToolCallEvent".
  */
@@ -598,6 +615,10 @@ export interface Entity {
    * Never shown to the user (e.g. routing tokens).
    */
   internal?: boolean;
+  /**
+   * Items with no page of their own on the site, such as filter suggestions; their cards need no link.
+   */
+  noPage?: boolean;
   expires?: {
     afterSeconds?: number;
     field?: Path;
@@ -666,7 +687,13 @@ export interface Tool {
   sideEffect: 'read' | 'write';
   signIn?: boolean;
   presentation?:
-    'present_items' | 'present_comparison' | 'present_detail' | 'present_options' | 'present_form' | 'present_notice';
+    | 'present_items'
+    | 'present_comparison'
+    | 'present_detail'
+    | 'present_options'
+    | 'present_form'
+    | 'present_notice'
+    | 'present_destination';
   ids?: {
     input?: IdPath[];
     output?: IdPath[];
@@ -829,6 +856,51 @@ export interface SitePack {
            */
           template: string;
           description?: string;
+        }
+      | undefined;
+  };
+  /**
+   * Pages the agent may send the user to with a Take me there button. The model names one and its parameters; core.js builds the URL, always on the site's own origins.
+   */
+  destinations?: {
+    [k: string]:
+      | {
+          /**
+           * What the button names, such as "Search results on the site".
+           */
+          title: string;
+          /**
+           * What's on the page, for the model; with no reader, all the model may say about it.
+           */
+          description: string;
+          /**
+           * The destination takes this tool's arguments, checked as a call to that tool would be.
+           */
+          argsOf?: string;
+          /**
+           * The destination's own parameters, all required. An entity's ID must be one this session knows.
+           */
+          params?: {
+            [k: string]:
+              | {
+                  type: 'string' | 'integer';
+                  entity?: string;
+                  description?: string;
+                }
+              | undefined;
+          };
+          /**
+           * The deep link whose template builds the URL from the parameters. Without one, the site code's destinations builder does.
+           */
+          link?: string;
+          /**
+           * A tool that reads what the page shows, taking the same parameters, so the model can answer from it.
+           */
+          reader?: string;
+          /**
+           * The app's own route for the page, a template like deep links'; apps without it open the web URL.
+           */
+          app?: string;
         }
       | undefined;
   };
