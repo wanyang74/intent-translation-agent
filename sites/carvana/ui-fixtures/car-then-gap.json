@@ -1,0 +1,187 @@
+{
+  "id": "car-then-gap",
+  "site": "carvana",
+  "source": "reference",
+  "description": "A follow-up on the car on screen after a first answer",
+  "turns": [
+    {
+      "message": "What would this one cost me all in, and how soon can I get it? Also, what do owners say?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Getting the quote and owner reviews…"
+        },
+        {
+          "type": "answer",
+          "text": "The estimated total is $39,427: the $35,590 price plus $3,837 in estimated taxes and fees. Delivery to 94402 can be as soon as Saturday. If you finance, a GAP waiver is available for $1,195.\n\nOwners mostly like it: 1,221 of 1,518 ratings are 4 or 5 stars. Reviewers praise the comfort, safety features and technology, and low running costs if you can charge at home. The complaints: cruise control and autosteer braking for no reason, uneven heating and cooling, wind noise above 45 mph, and long waits for Tesla service.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "vehicle",
+              "card": {
+                "id": 4812031,
+                "title": "2023 Tesla Model Y",
+                "fields": [
+                  {
+                    "key": "price",
+                    "label": "Price",
+                    "value": 35590,
+                    "text": "$35,590"
+                  },
+                  {
+                    "key": "estimatedTotal",
+                    "label": "Estimated total",
+                    "value": 39427,
+                    "text": "$39,427",
+                    "estimate": true
+                  },
+                  {
+                    "key": "delivery",
+                    "label": "Delivery",
+                    "value": "Saturday",
+                    "text": "Saturday"
+                  }
+                ],
+                "subtitle": "Long Range · 27,689 mi",
+                "link": "https://www.carvana.com/vehicle/4812031"
+              },
+              "sections": [
+                {
+                  "name": "overview",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 35590,
+                      "text": "$35,590"
+                    },
+                    {
+                      "key": "estimatedTaxesAndFees",
+                      "label": "Est. taxes and fees",
+                      "value": 3837,
+                      "text": "$3,837",
+                      "estimate": true
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 39427,
+                      "text": "$39,427",
+                      "estimate": true
+                    },
+                    {
+                      "key": "year",
+                      "label": "Year",
+                      "value": 2023,
+                      "text": "2023"
+                    },
+                    {
+                      "key": "trim",
+                      "label": "Trim",
+                      "value": "Long Range",
+                      "text": "Long Range"
+                    },
+                    {
+                      "key": "mileage",
+                      "label": "Mileage",
+                      "value": 27689,
+                      "text": "27,689 mi"
+                    },
+                    {
+                      "key": "color",
+                      "label": "Color",
+                      "value": "Gray",
+                      "text": "Gray"
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": "Saturday",
+                      "text": "Saturday"
+                    },
+                    {
+                      "key": "gapWaiver",
+                      "label": "GAP waiver",
+                      "value": 1195,
+                      "text": "$1,195"
+                    }
+                  ]
+                },
+                {
+                  "name": "reviews",
+                  "summary": "1,221 of 1,518 owner ratings are 4 or 5 stars.",
+                  "lines": [
+                    {
+                      "text": "I was hesitant about owning an EV and especially Tesla since I have heard stories about quality issues. However, my Tesla has been amazing and it's one of the best purchases I have made in the car realm.  Extremely comfortable to drive, amazing safety features. Constant over the air updates. Solid warranty on power train and battery.",
+                      "meta": "2025-12-01"
+                    },
+                    {
+                      "text": "Don't listen to the haters. The Tesla Model Y is safe, reliable, and has all the tech you want but simplified in an easy to understand interface.",
+                      "meta": "2025-08-12"
+                    },
+                    {
+                      "text": "I use this car to drive rideshare (my retirement job). I drive most of the day 5 days a week everyone loves my car, including me. Completely problem free.",
+                      "meta": "2025-05-10"
+                    },
+                    {
+                      "text": "Love it, don't miss pumping gas, love how quickly it accelerates.",
+                      "meta": "2025-05-10"
+                    },
+                    {
+                      "text": "Don't buy it. AC or heating system is a failure. Air doesn't distribute uniformly. No phone mirroring; Difficult to control using small font screen. Service is aweful; You won't get an appointment in the next 2 months. Navigation system doesn't always find the superchargers;",
+                      "meta": "2024-09-03"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    },
+    {
+      "message": "And the GAP waiver, how much was it again?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "The GAP waiver for this car is $1,195. The quote didn't include it in the estimated total of $39,427. I can't tell you what it covers beyond that, so check the car's page for the terms.",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

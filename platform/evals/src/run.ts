@@ -114,7 +114,7 @@ function replayScript(conversation: Conversation, turns: number): FakeStep[] {
 const NO_STEPS: StepUsage = { steps: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 };
 
 /**
- * Runs one case once:
+ * Runs one case once. The surface sees every turn, the earlier ones too; pass one to keep what the user saw.
  *   1. The state: the conversation's earlier turns (if any), the clock, the page, and the fixtures with the case's edits.
  *   2. The brain, with the replaying model in front of the model under test, and a log.
  *   3. core.js on a test host, its link to the brain recorded, and requests no fixture answers noted.
@@ -122,7 +122,7 @@ const NO_STEPS: StepUsage = { steps: 0, inputTokens: 0, outputTokens: 0, cacheRe
  *   5. The case's message, on its page, through runTurn.
  *   6. The Trial, from what crossed the link, what the user saw, and the brain's log, for the new turn only.
  */
-export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: ModelAdapter): Promise<Trial> {
+export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: ModelAdapter, surface = new FakeSurface()): Promise<Trial> {
   // 1. The state.
   const conversation = evalCase.after ? site.conversations.find((candidate) => candidate.id === evalCase.after!.conversation) : undefined;
   if (evalCase.after && !conversation) throw new Error(`${evalCase.id}: no example conversation ${evalCase.after.conversation}`);
@@ -154,7 +154,6 @@ export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: Mo
   };
   const { runtime } = site;
   const { session } = await startSession({ pack: runtime.pack, site: runtime.code, validators: runtime.validators, host: harness.host });
-  const surface = new FakeSurface();
 
   // 4. The earlier turns, as saved.
   for (const turn of earlier) {

@@ -4,7 +4,8 @@
 //     in the text.
 //   - The case's own expectations: the calls it must (or must not) make, what must be on screen, and the text.
 // A trial passes when every check does. A trial whose requests had no fixture is "unrecorded": the model took a path
-// the recordings don't cover, so its answer says nothing about the agent, only that the case needs a recording.
+// the recordings don't cover, so its answer says nothing about the agent, only that the case needs a recording. The
+// exception is a call the case forbids: making it is already the failure, whatever the site would have answered.
 import type { UiComponent } from '../../core/src/present/present.ts';
 import type { CallExpect, EvalCase, IdValue, ShowExpect } from './cases.ts';
 import type { Trial } from './run.ts';
@@ -152,9 +153,12 @@ export function grade(evalCase: EvalCase, trial: Trial): Grade {
     const last = trial.calls.filter((call) => call.name === expect.lastCall!.tool).at(-1);
     check(`last ${expect.lastCall.tool}`, Boolean(last && callMatches(expect.lastCall, last)), `last: ${JSON.stringify(last ?? null).slice(0, 300)}`);
   }
+  // Forbidden calls fail the trial even when unrecorded: they were made before any response could matter.
+  const forbiddenStart = checks.length;
   if (expect.noCalls === true) check('no site calls', trial.calls.length === 0, `called ${trial.calls.map((call) => call.name).join(', ')}`);
   else for (const tool of expect.noCalls ?? []) check(`no ${tool}`, !trial.calls.some((call) => call.name === tool), `called ${tool}`);
   if (expect.maxCalls !== undefined) check(`at most ${expect.maxCalls} calls`, trial.calls.length <= expect.maxCalls, `${trial.calls.length} calls`);
+  const madeForbiddenCall = checks.slice(forbiddenStart).some((item) => !item.pass);
   const onScreen = components.map((component) => `${component.type}${'entity' in component ? ` ${component.entity}` : ''} [${idsShown(component).join(', ')}]`).join('; ');
   for (const expected of expect.shows ?? []) {
     check(`shows ${expected.type ?? expected.notice ?? expected.entity}`, components.some((component) => showMatches(expected, component)), `on screen: ${onScreen || 'nothing'}`);
@@ -172,5 +176,5 @@ export function grade(evalCase: EvalCase, trial: Trial): Grade {
   }
 
   const passed = checks.every((item) => item.pass);
-  return { status: passed ? 'pass' : trial.fixtureMisses.length ? 'unrecorded' : 'fail', checks };
+  return { status: passed ? 'pass' : trial.fixtureMisses.length && !madeForbiddenCall ? 'unrecorded' : 'fail', checks };
 }

@@ -100,19 +100,32 @@ export function viewOf(session: Session, kind: string, id: string | number): Ent
 }
 
 /** A field's value: from the tool its definition names (tool or tool.path), from the record field it names, or by key. */
+/** One source's value for a field: a tool's output path, or a key of the item's merged record. */
+function sourceValue(pack: SitePack, key: string, from: string, view: EntityView): unknown {
+  const dot = from.indexOf('.');
+  const tool = dot < 0 ? from : from.slice(0, dot);
+  if (pack.tools[tool]) {
+    const record = view.byTool[tool];
+    if (record === undefined || record === null) return undefined;
+    return dot < 0 ? (record as Record<string, unknown>)[key] : select(record, from.slice(dot + 1));
+  }
+  return view.values[from];
+}
+
+/**
+ * A field's value for one item. A field may name several sources, in order: the first that has a value wins, so a
+ * value more than one tool returns (a delivery date from a dates lookup or from a quote) shows whichever was called.
+ * When none has one: nothing if a source is a tool (that tool's answer is the only one that counts), otherwise the
+ * item's merged record under the field's own key.
+ */
 export function fieldValue(pack: SitePack, kind: string, key: string, view: EntityView): unknown {
   const from = pack.entities[kind]?.fields?.[key]?.from;
-  if (from && from !== 'derived') {
-    const dot = from.indexOf('.');
-    const tool = dot < 0 ? from : from.slice(0, dot);
-    if (pack.tools[tool]) {
-      const record = view.byTool[tool];
-      if (record === undefined || record === null) return undefined;
-      return dot < 0 ? (record as Record<string, unknown>)[key] : select(record, from.slice(dot + 1));
-    }
-    if (view.values[from] !== undefined) return view.values[from];
+  const sources = (typeof from === 'string' ? [from] : from ?? []).filter((candidate) => candidate !== 'derived');
+  for (const source of sources) {
+    const value = sourceValue(pack, key, source, view);
+    if (value !== undefined && value !== null && value !== '') return value;
   }
-  return view.values[key];
+  return sources.some((source) => pack.tools[source.split('.')[0]!]) ? undefined : view.values[key];
 }
 
 function fieldView(pack: SitePack, kind: string, key: string, view: EntityView): FieldView {

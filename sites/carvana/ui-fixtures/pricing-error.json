@@ -1,0 +1,100 @@
+{
+  "id": "pricing-error",
+  "site": "carvana",
+  "source": "reference",
+  "description": "The site can't price a car: say so and offer its page, with no made-up price",
+  "turns": [
+    {
+      "message": "What would this one cost me all in?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "99701",
+          "region": "AK"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I couldn't get a price for this car at zip 99701. Carvana's pricing returned an error, so I can't give you an estimated total with taxes and fees. I didn't try again, because the error said a retry wouldn't help. The card below links to the car's page, where you can check the price for your location.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "vehicle",
+              "card": {
+                "id": 4812031,
+                "title": "2023 Tesla Model Y",
+                "fields": [
+                  {
+                    "key": "price",
+                    "label": "Price",
+                    "value": null,
+                    "text": "not available"
+                  },
+                  {
+                    "key": "estimatedTotal",
+                    "label": "Estimated total",
+                    "value": null,
+                    "text": "not available",
+                    "estimate": true
+                  },
+                  {
+                    "key": "delivery",
+                    "label": "Delivery",
+                    "value": null,
+                    "text": "not available"
+                  }
+                ],
+                "subtitle": "Long Range · 27,689 mi"
+              },
+              "sections": [
+                {
+                  "name": "overview",
+                  "fields": [
+                    {
+                      "key": "year",
+                      "label": "Year",
+                      "value": 2023,
+                      "text": "2023"
+                    },
+                    {
+                      "key": "trim",
+                      "label": "Trim",
+                      "value": "Long Range",
+                      "text": "Long Range"
+                    },
+                    {
+                      "key": "mileage",
+                      "label": "Mileage",
+                      "value": 27689,
+                      "text": "27,689 mi"
+                    },
+                    {
+                      "key": "color",
+                      "label": "Color",
+                      "value": "Gray",
+                      "text": "Gray"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

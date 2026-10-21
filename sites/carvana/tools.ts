@@ -41,6 +41,8 @@ interface CarRecord {
   kbbTrim?: string;
   mileage?: number;
   color?: string;
+  /** The listed price, when the car came from its own page. */
+  price?: number;
   vehicleInventoryType: number;
   locationId: number;
 }
@@ -90,7 +92,7 @@ function carRecord(ctx: ToolContext, vehicleId: number): CarRecord {
   if (found) return found;
   const page = ctx.pageData() as CarRecord | null;
   if (page && page.vehicleId === vehicleId) {
-    ctx.keep('vehicle', vehicleId, { year: page.year, make: page.make, model: page.model, trim: page.trim, mileage: page.mileage, color: page.color });
+    ctx.keep('vehicle', vehicleId, { year: page.year, make: page.make, model: page.model, trim: page.trim, mileage: page.mileage, color: page.color, ...(page.price !== undefined ? { price: page.price } : {}) });
     return page;
   }
   return ctx.fail('car_unknown', { vehicleId });
@@ -155,7 +157,8 @@ export const site: SiteCode = {
   tools: {
     async search_vehicles(ctx) {
       const args = ctx.args as SearchArgs;
-      const body = searchBody(args, SEARCH_FEATURES);
+      // Carvana refuses Sprinkles with any sort but MostPopular (400, seen live); its own pages leave it out then.
+      const body = searchBody(args, (args.sort ?? 'MostPopular') === 'MostPopular' ? SEARCH_FEATURES : SEARCH_FEATURES.filter((feature) => feature !== 'Sprinkles'));
       const res = await ctx.call('search', { body });
       const inv = res.inventory;
       if (!inv.vehicles.length) ctx.fail('no_results');

@@ -7,6 +7,7 @@ site:
   id: demo-flights
   name: Demo Flights (synthetic test site)
   origins: [https://www.demo-flights.example, https://api.demo-flights.example]
+  pages: ["https://www.demo-flights.example/*"]
   locale: en-US
   pageTypes: [home, results, trips]
   requires:

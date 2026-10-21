@@ -176,6 +176,15 @@ test('vehicle cards: read the way Carvana shows cars, with the estimated-total n
   assert.deepEqual(components[1], { type: 'notice', notice: 'estimated_total', text: 'Estimated total adds Carvana\'s estimated taxes and fees to the price. Final amounts are set at checkout.', version: '2026-10-12' });
 });
 
+test("car on its page: the page's price shows on the card before any quote", async () => {
+  const page = { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle' as const, id: 4812031 } };
+  const { coreSession } = await session({ page, pageData: { ...(carPage as object), price: 35590 } });
+  assert.ok((await runToolCall(coreSession, 'get_owner_reviews', { vehicleId: 4812031 })).ok);
+  const [detail] = present(coreSession, [{ name: 'present_detail', args: { entity: 'vehicle', id: 4812031, sections: ['reviews'] } }]).components;
+  assert.ok(detail?.type === 'detail');
+  assert.equal(detail.card.fields.find((field) => field.key === 'price')?.text, '$35,590');
+});
+
 test("detail view: the car's page details, the quote, and what owners say", async () => {
   const { coreSession } = await session({ page: { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4812031 }, location: { postalCode: '94402', region: 'CA' } }, pageData: carPage });
   assert.ok((await runToolCall(coreSession, 'get_vehicle_quote', { vehicleId: 4812031, zip5: '94402' })).ok);
@@ -184,7 +193,9 @@ test("detail view: the car's page details, the quote, and what owners say", asyn
   assert.ok(detail?.type === 'detail');
   assert.deepEqual([detail.card.title, detail.card.subtitle], ['2023 Tesla Model Y', 'Long Range · 27,689 mi']);
   const overview = Object.fromEntries(detail.sections[0]!.fields!.map((field) => [field.key, field.text]));
-  assert.deepEqual(overview, { price: '$35,590', estimatedTaxesAndFees: '$3,837', estimatedTotal: '$39,427', year: '2023', trim: 'Long Range', mileage: '27,689 mi', color: 'Gray', gapWaiver: '$1,195' });
+  assert.deepEqual(overview, { price: '$35,590', estimatedTaxesAndFees: '$3,837', estimatedTotal: '$39,427', year: '2023', trim: 'Long Range', mileage: '27,689 mi', color: 'Gray', delivery: 'Saturday', gapWaiver: '$1,195' });
+  // Only the quote was called, not get_delivery_dates: the card still shows the quote's delivery day.
+  assert.equal(detail.card.fields.find((field) => field.key === 'delivery')?.text, 'Saturday');
   assert.equal(detail.sections[1]!.summary, '1,221 of 1,518 owner ratings are 4 or 5 stars.');
   assert.equal(detail.sections[1]!.lines!.length, 5);
   assert.ok(!detail.sections[1]!.lines!.some((line) => line.text.includes('<untrusted')), 'the fence is for the model only');

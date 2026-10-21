@@ -1,0 +1,28 @@
+{
+  "id": "no-offers",
+  "site": "demo-flights",
+  "source": "reference",
+  "description": "No offers: said plainly, nothing on screen",
+  "turns": [
+    {
+      "message": "First class from SFO to JFK on December 24 for 9 adults",
+      "page": {
+        "url": "https://www.demo-flights.example/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Searching first class flights for 9 adults…"
+        },
+        {
+          "type": "answer",
+          "text": "I found no first class flights from SFO to JFK on December 24 for 9 adults. I only searched that date and cabin. I can try business class, another date, or a smaller group, since 9 seats in one cabin can be hard to find. Which would you like?",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

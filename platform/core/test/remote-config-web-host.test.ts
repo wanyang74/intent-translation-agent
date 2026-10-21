@@ -51,7 +51,7 @@ test("remote config: switches tools off and tightens limits, but can't loosen th
   assert.equal(!third.ok && third.error.reason, 'budget_reached');
 });
 
-test("web host: requests carry the page's session, and responses are mapped", async () => {
+test("web host: requests carry the page's cookies to its own origin only, and responses are mapped", async () => {
   const seen: { url: string; init: RequestInit }[] = [];
   const fakeFetch = (async (url: string, init: RequestInit) => {
     seen.push({ url, init });
@@ -60,7 +60,8 @@ test("web host: requests carry the page's session, and responses are mapped", as
   const host = webHost({ brainUrl: 'https://agent.example.com/', fetch: fakeFetch, readPage: () => ({ vehicleId: 7 }) });
   const res = await host.request({ method: 'POST', url: 'https://api.example.com/search', headers: { 'content-type': 'application/json' }, body: '{"q":1}' });
   assert.deepEqual(res, { status: 201, headers: { 'content-type': 'application/json', 'x-trace': 'abc' }, body: '{"ok":true}' });
-  assert.equal(seen[0]!.init.credentials, 'include');
+  // Not 'include': a cross-origin API that doesn't allow credentials would fail its CORS preflight.
+  assert.equal(seen[0]!.init.credentials, 'same-origin');
   assert.equal(seen[0]!.init.method, 'POST');
   assert.equal(seen[0]!.init.body, '{"q":1}');
   assert.match(host.randomId(), /^[0-9a-f-]{36}$/);

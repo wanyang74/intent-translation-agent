@@ -8,6 +8,7 @@ site:
   id: carvana
   name: Carvana
   origins: [https://www.carvana.com, https://apik.carvana.io, https://apimpub.carvana.com]
+  pages: ["https://www.carvana.com/*"]
   locale: en-US
   pageTypes: [search, vehicle, other]
   requires:
@@ -26,7 +27,7 @@ entities:
       trim: { label: Trim, type: text, from: trim }
       mileage: { label: Mileage, type: integer, unit: mi, from: mileage }
       color: { label: Color, type: text, from: color }
-      delivery: { label: Delivery, type: text, from: get_delivery_dates.delivery.text }
+      delivery: { label: Delivery, type: text, from: [get_delivery_dates.delivery.text, get_vehicle_quote.when] }   # a quote carries the date too
       gapWaiver: { label: GAP waiver, type: money, from: get_vehicle_quote.gapWaiver.price }
       ownerRating: { label: Owner rating, type: number, from: get_owner_reviews }
     card:

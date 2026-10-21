@@ -1,0 +1,39 @@
+{
+  "id": "my-trips",
+  "site": "demo-flights",
+  "source": "reference",
+  "description": "A signed-in traveler's trips",
+  "turns": [
+    {
+      "message": "What trips do I have coming up?",
+      "page": {
+        "url": "https://www.demo-flights.example/trips",
+        "pageType": "trips",
+        "locale": "en-US",
+        "signedIn": true
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "You have one upcoming trip: a confirmed flight from SFO to SEA on December 3. The card has the details.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "trip",
+              "layout": "cards",
+              "items": [
+                {
+                  "id": "Q7K2LM",
+                  "title": "SFO to SEA",
+                  "fields": [],
+                  "subtitle": "2026-12-03T16:00:00Z"
+                }
+              ]
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

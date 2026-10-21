@@ -1,0 +1,24 @@
+{
+  "id": "no-zip",
+  "site": "carvana",
+  "source": "reference",
+  "description": "No location on the page: ask for the zip code, never guess it",
+  "turns": [
+    {
+      "message": "Show me Teslas near me",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I need your ZIP code to search, since I can't see your location here. What's your 5-digit ZIP code?",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

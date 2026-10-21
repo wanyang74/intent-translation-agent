@@ -1,0 +1,123 @@
+{
+  "id": "tesla-count",
+  "site": "carvana",
+  "source": "reference",
+  "description": "A question answered with a count from the search",
+  "turns": [
+    {
+      "message": "How many Teslas does Carvana have?",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "Carvana has 1,871 Teslas matching your search near 94402, across 82 pages. I only looked at the first page of 21 cars, mostly Model Y and Model 3. The cards show three of the cheapest from that page. I can narrow by model, price, year or color if you'd like.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "vehicle",
+              "layout": "cards",
+              "heading": "Lowest-priced Teslas on page one",
+              "items": [
+                {
+                  "id": 4762928,
+                  "title": "2021 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 27590,
+                      "text": "$27,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 30623,
+                      "text": "$30,623",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Long Range · 77,086 mi",
+                  "link": "https://www.carvana.com/vehicle/4762928"
+                },
+                {
+                  "id": 4756196,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 28990,
+                      "text": "$28,990"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 32164,
+                      "text": "$32,164",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 72,901 mi",
+                  "link": "https://www.carvana.com/vehicle/4756196"
+                },
+                {
+                  "id": 4724980,
+                  "title": "2023 Tesla Model 3",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 26990,
+                      "text": "$26,990"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 29963,
+                      "text": "$29,963",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 61,404 mi",
+                  "link": "https://www.carvana.com/vehicle/4724980"
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

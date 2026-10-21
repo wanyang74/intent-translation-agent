@@ -575,7 +575,10 @@ export interface Field {
   type: 'money' | 'number' | 'integer' | 'text' | 'date' | 'datetime' | 'boolean' | 'duration';
   unit?: string;
   estimate?: boolean;
-  from?: string;
+  /**
+   * Where the value comes from: a key of the item's merged record, 'derived' (a formula), or a tool's output path (tool.path). A list names several sources in order; the first with a value is shown, for a value more than one tool returns (such as a delivery date from both a dates lookup and a quote).
+   */
+  from?: string | [string, ...string[]];
 }
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -785,6 +788,12 @@ export interface SitePack {
      * @minItems 1
      */
     origins: [Url, ...Url[]];
+    /**
+     * The site's pages where the agent appears, as Chrome match patterns (scheme, host, path; * matches anything). The web surface's content script runs on these.
+     *
+     * @minItems 1
+     */
+    pages: [string, ...string[]];
     locale?: Locale;
     pageTypes?: PageType1[];
     requires?: {

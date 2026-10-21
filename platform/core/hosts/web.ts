@@ -1,12 +1,15 @@
 // The web host: core.js inside a page on the site (a content script or an embedded SDK). Requests go out from the
 // page with its own cookies and origin (decision D1). The brain is reached over HTTP, and its events stream back as
-// newline-delimited JSON, one event per line, so each tool call can start the moment it arrives.
+// newline-delimited JSON, one event per line, so each tool call can start the moment it arrives. A surface that
+// reaches the brain another way (the extension, through its background worker) passes its own brain link instead. A surface that
+// reaches the brain another way (the extension, through its background worker) passes its own brain link instead.
 import type { ClientMessage } from '../../contract/generated/types.ts';
 import type { Host, ScriptRunner } from '../src/runtime/host.ts';
 
 export interface WebHostOptions {
-  /** The agentic brain, such as https://agent.example.com */
-  brainUrl: string;
+  /** The agentic brain, such as https://agent.example.com; or `brain`, a link to it supplied by the surface. */
+  brainUrl?: string;
+  brain?: Host['brain'];
   /** Reads what the current page carries about the item on screen (the site's page reader). */
   readPage?: () => unknown;
   scripts?: ScriptRunner;
@@ -42,13 +45,16 @@ export async function* ndjsonEvents(body: ReadableStream<Uint8Array>): AsyncGene
 
 export function webHost(options: WebHostOptions): Host {
   const fetcher = options.fetch ?? fetch.bind(globalThis);
-  const brainBase = options.brainUrl.replace(/\/+$/, '');
+  const brainBase = (options.brainUrl ?? '').replace(/\/+$/, '');
   const host: Host = {
     async request(req) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), options.requestTimeoutMs ?? 15_000);
       try {
-        const res = await fetcher(req.url, { method: req.method, headers: req.headers, body: req.body, credentials: 'include', signal: controller.signal });
+        // Cookies go only to the page's own origin, as the browser's default. A site's API on another host answers
+        // its frontend without them, and a server that doesn't allow credentials rejects a request that sends them
+        // (seen live: the CORS preflight fails), so 'include' would break exactly the calls the site itself makes.
+        const res = await fetcher(req.url, { method: req.method, headers: req.headers, body: req.body, credentials: 'same-origin', signal: controller.signal });
         const headers: Record<string, string> = {};
         res.headers.forEach((value, key) => { headers[key] = value; });
         return { status: res.status, headers, body: await res.text() };
@@ -59,7 +65,7 @@ export function webHost(options: WebHostOptions): Host {
     now: () => Date.now(),
     sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
     randomId: () => crypto.randomUUID(),
-    async *brain(message: ClientMessage) {
+    brain: options.brain ?? async function* brain(message: ClientMessage) {
       const res = await fetcher(`${brainBase}/v1/${message.type}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', accept: 'application/x-ndjson' },

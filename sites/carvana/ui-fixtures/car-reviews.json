@@ -1,0 +1,97 @@
+{
+  "id": "car-reviews",
+  "site": "carvana",
+  "source": "reference",
+  "description": "The car on screen: what owners say",
+  "turns": [
+    {
+      "message": "What do owners say about this car?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "Owners rate this car well. Of the 1,518 ratings, 1,221 are 4 or 5 stars (727 five-star, 494 four-star), and 90 are 1 or 2 stars. These reviews cover the Tesla Model Y in general, not this exact car.\n\nOwners praise the fun, quick acceleration, the comfortable ride, the safety, the tech, and the savings from charging at home and skipping gas stations.\n\nThe complaints are:\n- Wind noise at speed.\n- A large screen that's hard to use.\n- No phone mirroring.\n- Navigation errors.\n- Driver-assist braking that's too eager.\n- Slow service appointments.\n\nOne owner says that without home charging, a gas car is the better choice.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "vehicle",
+              "card": {
+                "id": 4812031,
+                "title": "2023 Tesla Model Y",
+                "fields": [
+                  {
+                    "key": "price",
+                    "label": "Price",
+                    "value": null,
+                    "text": "not available"
+                  },
+                  {
+                    "key": "estimatedTotal",
+                    "label": "Estimated total",
+                    "value": null,
+                    "text": "not available",
+                    "estimate": true
+                  },
+                  {
+                    "key": "delivery",
+                    "label": "Delivery",
+                    "value": null,
+                    "text": "not available"
+                  }
+                ],
+                "subtitle": "Long Range · 27,689 mi"
+              },
+              "sections": [
+                {
+                  "name": "reviews",
+                  "summary": "1,221 of 1,518 owner ratings are 4 or 5 stars.",
+                  "lines": [
+                    {
+                      "text": "I was hesitant about owning an EV and especially Tesla since I have heard stories about quality issues. However, my Tesla has been amazing and it's one of the best purchases I have made in the car realm.  Extremely comfortable to drive, amazing safety features. Constant over the air updates. Solid warranty on power train and battery.",
+                      "meta": "2025-12-01"
+                    },
+                    {
+                      "text": "Don't listen to the haters. The Tesla Model Y is safe, reliable, and has all the tech you want but simplified in an easy to understand interface.",
+                      "meta": "2025-08-12"
+                    },
+                    {
+                      "text": "I use this car to drive rideshare (my retirement job). I drive most of the day 5 days a week everyone loves my car, including me. Completely problem free.",
+                      "meta": "2025-05-10"
+                    },
+                    {
+                      "text": "Love it, don't miss pumping gas, love how quickly it accelerates.",
+                      "meta": "2025-05-10"
+                    },
+                    {
+                      "text": "Don't buy it. AC or heating system is a failure. Air doesn't distribute uniformly. No phone mirroring; Difficult to control using small font screen. Service is aweful; You won't get an appointment in the next 2 months. Navigation system doesn't always find the superchargers;",
+                      "meta": "2024-09-03"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

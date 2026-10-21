@@ -82,7 +82,9 @@ export async function callEndpoint(session: Session, tool: string, name: string,
     session.log('network_error', { endpoint: name, error: String(error) });
     return fail('network_error', { tool });
   }
-  session.log('call', { endpoint: name, status: res.status });
+  // A refused call keeps what was sent and the start of what came back, so the development log shows why.
+  const refused = res.status >= 400 ? { request: (body ?? url).slice(0, 1500), response: res.body.slice(0, 500) } : {};
+  session.log('call', { endpoint: name, status: res.status, ...refused });
 
   if (res.status === 401) throw new ToolFailure(errorFor(pack, tool, 'needs_sign_in', { tool, what: tool }));
   if (res.status === 404) fail('site_not_found', { tool });

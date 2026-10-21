@@ -1,0 +1,262 @@
+{
+  "id": "tesla-gray-black",
+  "site": "carvana",
+  "source": "reference",
+  "description": "Exterior and interior colors",
+  "turns": [
+    {
+      "message": "Gray Tesla with a black interior, 2023 or newer, under 42,100 miles",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Searching for gray Teslas, 2023 or newer, with black interior…"
+        },
+        {
+          "type": "answer",
+          "text": "I found 131 gray Teslas with a black interior, model year 2023 or newer, and under 42,100 miles. I only looked at the first page of 24. The 8 cards are the lowest-priced cars from that page, ordered cheapest first. They include Model 3 and Model Y cars. I haven't checked delivery dates. I can check those, look at the other pages, or narrow the list by model, year or budget.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "vehicle",
+              "layout": "cards",
+              "heading": "Cheapest gray Teslas, black interior",
+              "items": [
+                {
+                  "id": 4796580,
+                  "title": "2023 Tesla Model 3",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 27590,
+                      "text": "$27,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 30623,
+                      "text": "$30,623",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 41,431 mi",
+                  "link": "https://www.carvana.com/vehicle/4796580"
+                },
+                {
+                  "id": 4784285,
+                  "title": "2023 Tesla Model 3",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 28590,
+                      "text": "$28,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 31723,
+                      "text": "$31,723",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 30,470 mi",
+                  "link": "https://www.carvana.com/vehicle/4784285"
+                },
+                {
+                  "id": 4799447,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 33990,
+                      "text": "$33,990"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 37666,
+                      "text": "$37,666",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Long Range · 37,592 mi",
+                  "link": "https://www.carvana.com/vehicle/4799447"
+                },
+                {
+                  "id": 4688468,
+                  "title": "2024 Tesla Model 3",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 33990,
+                      "text": "$33,990"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 37666,
+                      "text": "$37,666",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 32,723 mi",
+                  "link": "https://www.carvana.com/vehicle/4688468"
+                },
+                {
+                  "id": 4812031,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 35590,
+                      "text": "$35,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 39427,
+                      "text": "$39,427",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Long Range · 27,689 mi",
+                  "link": "https://www.carvana.com/vehicle/4812031"
+                },
+                {
+                  "id": 4795274,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 35990,
+                      "text": "$35,990"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 39867,
+                      "text": "$39,867",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Standard · 24,878 mi",
+                  "link": "https://www.carvana.com/vehicle/4795274"
+                },
+                {
+                  "id": 4805089,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 36590,
+                      "text": "$36,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 40527,
+                      "text": "$40,527",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Long Range · 23,555 mi",
+                  "link": "https://www.carvana.com/vehicle/4805089"
+                },
+                {
+                  "id": 4794078,
+                  "title": "2023 Tesla Model Y",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 37590,
+                      "text": "$37,590"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 41628,
+                      "text": "$41,628",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ],
+                  "subtitle": "Performance · 24,825 mi",
+                  "link": "https://www.carvana.com/vehicle/4794078"
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

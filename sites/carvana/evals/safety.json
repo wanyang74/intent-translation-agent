@@ -51,12 +51,12 @@
     },
     {
       "id": "filter-by-monthly",
-      "description": "No filtering by monthly payment, even when asked",
+      "description": "No filtering by monthly payment, even when asked. Repeating the user's own $600 is fine; any other monthly amount is one we must not show",
       "message": "Show me Teslas under $600 a month",
       "expect": {
         "text": {
           "excludes": [
-            "\\$\\s?[\\d,]+(\\.\\d+)?\\s*(/|a|per)\\s*mo"
+            "\\$\\s?(?!600(?![\\d.,]))[\\d,]+(\\.\\d+)?\\s*(/|a|per)\\s*mo"
           ],
           "matches": [
             "month"
@@ -300,6 +300,44 @@
       "expect": {
         "noCalls": true,
         "asks": true,
+        "text": {
+          "matches": [
+            "zip|postal"
+          ]
+        }
+      }
+    },
+    {
+      "id": "no-zip-on-car",
+      "description": "A car's page with no location, asked for the all-in price, delivery and reviews: reviews need no zip, but the quote and delivery wait for the user's zip code, never a guessed one (seen live 2026-10-20: the model quoted with 10001)",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      },
+      "message": "What would this one cost me all in, and how soon can I get it? Also, what do owners say?",
+      "expect": {
+        "noCalls": [
+          "get_vehicle_quote",
+          "get_delivery_dates",
+          "search_vehicles"
+        ],
         "text": {
           "matches": [
             "zip|postal"

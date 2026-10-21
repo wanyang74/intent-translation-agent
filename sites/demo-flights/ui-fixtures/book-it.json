@@ -1,0 +1,171 @@
+{
+  "id": "book-it",
+  "site": "demo-flights",
+  "source": "reference",
+  "description": "Booking is a write: the agent can't, and says so",
+  "turns": [
+    {
+      "message": "Flights from SFO to New York (JFK) on Nov 20, just me, economy",
+      "page": {
+        "url": "https://www.demo-flights.example/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Searching flights for Nov 20…"
+        },
+        {
+          "type": "answer",
+          "text": "Three options. The two nonstops are $389.40 and $412.90; the cheapest, $301.20, stops in Chicago.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "flight_offer",
+              "layout": "cards",
+              "heading": "SFO to JFK, Nov 20",
+              "items": [
+                {
+                  "id": "off_3MZ8",
+                  "title": "Demo Air DA215 / DA402",
+                  "fields": [
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 301.2,
+                      "text": "$301.20"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 1,
+                      "text": "1"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "PT8H10M",
+                      "text": "PT8H10M"
+                    }
+                  ],
+                  "subtitle": "2026-11-20T13:00:00Z to 2026-11-20T21:10:00Z"
+                },
+                {
+                  "id": "off_7GQ2",
+                  "title": "Demo Air DA101",
+                  "fields": [
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 389.4,
+                      "text": "$389.40"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 0,
+                      "text": "0"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "PT5H35M",
+                      "text": "PT5H35M"
+                    }
+                  ],
+                  "subtitle": "2026-11-20T15:05:00Z to 2026-11-20T23:40:00Z"
+                },
+                {
+                  "id": "off_9KD1",
+                  "title": "Demo Air DA107",
+                  "fields": [
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 412.9,
+                      "text": "$412.90"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 0,
+                      "text": "0"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "PT5H25M",
+                      "text": "PT5H25M"
+                    }
+                  ],
+                  "subtitle": "2026-11-20T21:30:00Z to 2026-11-21T05:55:00Z"
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "full_fare_rule",
+              "text": "Prices include all taxes and fees.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    },
+    {
+      "message": "Book the nonstop at $389.40 for me.",
+      "page": {
+        "url": "https://www.demo-flights.example/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I can't book flights. I can only show them to you. The card above is the $389.40 nonstop, Demo Air DA101. Open it on the site to book it, and sign in there if it asks. The offer expires at 18:30 UTC today. If it lapses, I can search again for a fresh price.\n\nOne correction to my earlier message: I said the cheapest flight stops in Chicago. The results don't give the connection city, so I shouldn't have said that.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "flight_offer",
+              "card": {
+                "id": "off_7GQ2",
+                "title": "Demo Air DA101",
+                "fields": [
+                  {
+                    "key": "totalPrice",
+                    "label": "Total price",
+                    "value": 389.4,
+                    "text": "$389.40"
+                  },
+                  {
+                    "key": "stops",
+                    "label": "Stops",
+                    "value": 0,
+                    "text": "0"
+                  },
+                  {
+                    "key": "duration",
+                    "label": "Duration",
+                    "value": "PT5H35M",
+                    "text": "PT5H35M"
+                  }
+                ],
+                "subtitle": "2026-11-20T15:05:00Z to 2026-11-20T23:40:00Z"
+              },
+              "sections": []
+            },
+            {
+              "type": "notice",
+              "notice": "full_fare_rule",
+              "text": "Prices include all taxes and fees.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

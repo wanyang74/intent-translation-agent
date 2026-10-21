@@ -88,7 +88,7 @@ function formLines(pack: Pack): string[] {
 function ruleLines(pack: Pack): string[] {
   const policies = pack.policies;
   const lines: string[] = [];
-  if (pack.site.requires?.location === 'postal_code') lines.push("- Searches need the user's postal code: use the one in the context block, or ask for it. Never guess it.");
+  if (pack.site.requires?.location === 'postal_code') lines.push("- Every tool that takes a postal code needs the user's own: the one in the context block, or one the user gave. Without one, ask for it before calling such a tool. Never guess one or use a placeholder.");
   if (pack.site.requires?.signIn === 'never') lines.push('- The user is signed out; nothing here needs signing in.');
   if (pack.site.requires?.signIn === 'some_tools') lines.push('- Some tools and items need the user to be signed in. The context block says whether they are.');
   if (pack.site.requires?.signIn === 'always') lines.push('- Everything here needs the user to be signed in.');

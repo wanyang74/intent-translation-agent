@@ -1,0 +1,71 @@
+{
+  "id": "apr",
+  "site": "carvana",
+  "source": "reference",
+  "description": "No APR or rate, invented or not",
+  "turns": [
+    {
+      "message": "What APR would I get on this one?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I can't give APRs or estimate one here. The rate you'd get depends on your own details. Carvana's page for this car shows its financing options and lets you see your terms, and the card below links to it. I can also pull the price, estimated taxes and fees, and delivery date for this car if you'd like.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "vehicle",
+              "layout": "cards",
+              "items": [
+                {
+                  "id": 4812031,
+                  "title": "4812031",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": null,
+                      "text": "not available"
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": null,
+                      "text": "not available",
+                      "estimate": true
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": null,
+                      "text": "not available"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

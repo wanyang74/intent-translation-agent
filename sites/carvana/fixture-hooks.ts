@@ -83,6 +83,8 @@ export function derive({ first, placeholder }: DeriveContext): Derived[] {
       const body = structuredClone(fixture.request.body) as Record<string, any>;
       body.filters = { makes: [{ name: 'Tesla' }], year: { min: 2026 }, mileage: { max: 100 } };
       body.sortBy = sort;
+      // As Carvana's own pages send it: Sprinkles only with MostPopular (any other sort with it gets a 400).
+      if (sort !== 'MostPopular') body.requestedFeatures = body.requestedFeatures.filter((feature: string) => feature !== 'Sprinkles');
       out.push({
         ...fixture, id: sort === recordedSort ? 'search-no-results' : `search-no-results-${sort.toLowerCase()}`, kind: 'synthetic',
         source: `edited copy of ${fixture.id}`,

@@ -22,6 +22,15 @@
           },
           "minItems": 1
         },
+        "pages": {
+          "description": "The site's pages where the agent appears, as Chrome match patterns (scheme, host, path; * matches anything). The web surface's content script runs on these.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^https://[a-z0-9.-]+/[^\\s]*$"
+          },
+          "minItems": 1
+        },
         "locale": {
           "$ref": "/schemas/common.json#/$defs/Locale"
         },
@@ -56,7 +65,8 @@
       "required": [
         "id",
         "name",
-        "origins"
+        "origins",
+        "pages"
       ],
       "additionalProperties": false
     },
@@ -236,7 +246,20 @@
           "type": "boolean"
         },
         "from": {
-          "type": "string"
+          "description": "Where the value comes from: a key of the item's merged record, 'derived' (a formula), or a tool's output path (tool.path). A list names several sources in order; the first with a value is shown, for a value more than one tool returns (such as a delivery date from both a dates lookup and a quote).",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ]
         }
       },
       "required": [

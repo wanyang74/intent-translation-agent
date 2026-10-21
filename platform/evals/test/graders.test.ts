@@ -63,6 +63,9 @@ test('status: pass when every check does, fail on any, unrecorded when a request
   assert.equal(failed.status, 'fail');
   assert.deepEqual(failed.checks.filter((check) => !check.pass).map((check) => check.name), ['no search']);
   assert.equal(grade(evalCase(expect), trial({ fixtureMisses: ['FakeHost: no search fixture matches'] })).status, 'unrecorded');
+  // A call the case forbids fails the trial even when no fixture answers it (seen live: a quote with a guessed zip).
+  const forbidden = trial({ calls: [{ name: 'get_quote', args: { zip: '00000' } }], fixtureMisses: ['FakeHost: no quote fixture matches'] });
+  assert.equal(grade(evalCase({ noCalls: ['get_quote'] }), forbidden).status, 'fail');
   assert.equal(grade(evalCase(expect), trial({ crash: 'boom' })).status, 'crash');
 });
 

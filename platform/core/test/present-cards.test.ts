@@ -7,7 +7,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PresentationCall } from '../../contract/generated/types.ts';
-import { displayText, formatMoney, groupDigits, present, presentToolResult, runToolCall } from '../src/index.ts';
+import { displayText, fieldValue, formatMoney, groupDigits, present, presentToolResult, runToolCall } from '../src/index.ts';
+import { examplePack } from './example-pack.ts';
 import { exampleSession } from './example-site.ts';
 
 async function afterSearch() {
@@ -59,6 +60,17 @@ test('missing values: read "not available", and a template drops the missing par
   assert.equal(card?.title, '7', 'no name: the ID stands in');
   assert.equal(card?.subtitle, undefined, 'no rating: no subtitle rather than " stars"');
   assert.deepEqual(card?.fields.map((field) => field.text), ['not available', 'not available']);
+});
+
+test('field sources: a field with several sources shows the first one a tool returned, whichever tool was called', () => {
+  // The same value can come from two tools: a date from a dates lookup, or from a quote. Only one may have been called.
+  const pack = structuredClone(examplePack);
+  pack.entities.product!.fields!.shipsBy = { label: 'Ships by', type: 'text', from: ['search_products.shipsBy', 'read_product_page.shipping.date'] };
+  const view = (byTool: Record<string, unknown>) => ({ kind: 'product', id: 1, values: Object.assign({}, ...Object.values(byTool)), byTool });
+  assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ read_product_page: { shipping: { date: 'Friday' } } })), 'Friday', 'only the second source was called');
+  assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ search_products: { shipsBy: 'Monday' }, read_product_page: { shipping: { date: 'Friday' } } })), 'Monday', 'both: the first wins');
+  assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ search_products: { shipsBy: null }, read_product_page: { shipping: { date: 'Friday' } } })), 'Friday', 'an empty first source is skipped');
+  assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ get_offer: { shipsBy: 'from another tool' } })), undefined, 'neither source has it: not available, not some other tool\'s value under the same key');
 });
 
 test("other components: comparisons, detail views with the site's sections, options, forms and notices", async () => {

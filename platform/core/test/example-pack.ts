@@ -5,7 +5,7 @@ import type { SitePack } from '../../contract/generated/types.ts';
 
 export const examplePack: SitePack = {
   site: {
-    id: 'example-shop', name: 'Example Shop', origins: ['https://www.example.com', 'https://api.example.com'],
+    id: 'example-shop', name: 'Example Shop', origins: ['https://www.example.com', 'https://api.example.com'], pages: ['https://www.example.com/*'],
     locale: 'en-US', pageTypes: ['home', 'product', 'account'], requires: { location: 'none', signIn: 'some_tools' },
   },
   entities: {

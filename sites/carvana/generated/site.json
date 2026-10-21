@@ -7,6 +7,9 @@
       "https://apik.carvana.io",
       "https://apimpub.carvana.com"
     ],
+    "pages": [
+      "https://www.carvana.com/*"
+    ],
     "locale": "en-US",
     "pageTypes": [
       "search",
@@ -66,7 +69,10 @@
         "delivery": {
           "label": "Delivery",
           "type": "text",
-          "from": "get_delivery_dates.delivery.text"
+          "from": [
+            "get_delivery_dates.delivery.text",
+            "get_vehicle_quote.when"
+          ]
         },
         "gapWaiver": {
           "label": "GAP waiver",

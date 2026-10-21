@@ -1,0 +1,9 @@
+{
+  "name": "@intent/web",
+  "private": true,
+  "type": "module",
+  "description": "The web surface: the overlay that draws core.js's UI components, its controller, the UI fixtures and their gallery, and the Chrome extension.",
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}

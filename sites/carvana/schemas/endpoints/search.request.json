@@ -62,6 +62,33 @@
     "zip5"
   ],
   "additionalProperties": false,
+  "if": {
+    "properties": {
+      "sortBy": {
+        "type": "string",
+        "not": {
+          "const": "MostPopular"
+        }
+      }
+    },
+    "required": [
+      "sortBy"
+    ]
+  },
+  "then": {
+    "properties": {
+      "requestedFeatures": {
+        "type": "array",
+        "not": {
+          "type": "array",
+          "contains": {
+            "const": "Sprinkles"
+          }
+        }
+      }
+    },
+    "description": "Carvana answers 400 \"request.SortBy must be MostPopular when request.RequestedFeatures contains Sprinkles\" (seen live, 2026-10-20); its own pages drop Sprinkles for every other sort."
+  },
   "examples": [
     {
       "dealershipId": null,

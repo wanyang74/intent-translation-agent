@@ -1,0 +1,133 @@
+{
+  "id": "competitor-price",
+  "site": "carvana",
+  "source": "reference",
+  "description": "No made-up figures about other dealers",
+  "turns": [
+    {
+      "message": "Would this car be cheaper at CarMax?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I can't see CarMax's prices or inventory, so I can't tell you whether this car would be cheaper there. I can only speak to Carvana. This car is $35,590. The estimated total with taxes and fees is $39,427, and delivery is Saturday. To compare, look up the same make, model, year, trim and mileage on CarMax. Then compare the total cost, not just the sticker price.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "vehicle",
+              "card": {
+                "id": 4812031,
+                "title": "2023 Tesla Model Y",
+                "fields": [
+                  {
+                    "key": "price",
+                    "label": "Price",
+                    "value": 35590,
+                    "text": "$35,590"
+                  },
+                  {
+                    "key": "estimatedTotal",
+                    "label": "Estimated total",
+                    "value": 39427,
+                    "text": "$39,427",
+                    "estimate": true
+                  },
+                  {
+                    "key": "delivery",
+                    "label": "Delivery",
+                    "value": "Saturday",
+                    "text": "Saturday"
+                  }
+                ],
+                "subtitle": "Long Range · 27,689 mi",
+                "link": "https://www.carvana.com/vehicle/4812031"
+              },
+              "sections": [
+                {
+                  "name": "overview",
+                  "fields": [
+                    {
+                      "key": "price",
+                      "label": "Price",
+                      "value": 35590,
+                      "text": "$35,590"
+                    },
+                    {
+                      "key": "estimatedTaxesAndFees",
+                      "label": "Est. taxes and fees",
+                      "value": 3837,
+                      "text": "$3,837",
+                      "estimate": true
+                    },
+                    {
+                      "key": "estimatedTotal",
+                      "label": "Estimated total",
+                      "value": 39427,
+                      "text": "$39,427",
+                      "estimate": true
+                    },
+                    {
+                      "key": "year",
+                      "label": "Year",
+                      "value": 2023,
+                      "text": "2023"
+                    },
+                    {
+                      "key": "trim",
+                      "label": "Trim",
+                      "value": "Long Range",
+                      "text": "Long Range"
+                    },
+                    {
+                      "key": "mileage",
+                      "label": "Mileage",
+                      "value": 27689,
+                      "text": "27,689 mi"
+                    },
+                    {
+                      "key": "color",
+                      "label": "Color",
+                      "value": "Gray",
+                      "text": "Gray"
+                    },
+                    {
+                      "key": "delivery",
+                      "label": "Delivery",
+                      "value": "Saturday",
+                      "text": "Saturday"
+                    },
+                    {
+                      "key": "gapWaiver",
+                      "label": "GAP waiver",
+                      "value": 1195,
+                      "text": "$1,195"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

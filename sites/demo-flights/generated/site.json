@@ -6,6 +6,9 @@
       "https://www.demo-flights.example",
       "https://api.demo-flights.example"
     ],
+    "pages": [
+      "https://www.demo-flights.example/*"
+    ],
     "locale": "en-US",
     "pageTypes": [
       "home",

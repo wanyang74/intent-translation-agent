@@ -1,0 +1,113 @@
+// Tests: the Chrome extension works end to end with nothing live (L5, the surface step): the built extension in
+// headless Chrome, its content script on the site's page, its background worker carrying the brain link, and the
+// real brain over HTTP.
+// How: the brain runs in this process with a FakeModel that writes what an example conversation's model wrote.
+// Chrome's requests to the site are intercepted: the site's pages get an empty page, and its API calls are answered
+// by FakeHost from the fixtures. The user's turns are typed into the overlay. Skipped without Chrome.
+// Passes when: each answer shows in the overlay with no error, and the site was called for exactly the fixtures the
+// conversation lists. Conversations whose page carries data the page reader can't read yet are left out.
+import { test, after } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import type { AddressInfo } from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { Brain } from '../../brain/src/agent/brain.ts';
+import { loadSite } from '../../brain/src/prompt/site.ts';
+import { createBrainServer } from '../../brain/src/server/server.ts';
+import { listSites, readSite } from '../../contract/src/site-pack.ts';
+import { loadConversations, type Conversation } from '../../testkit/src/conversations.ts';
+import { FakeHost } from '../../testkit/src/fake-host.ts';
+import { fakeModelFor } from '../../testkit/src/fake-model.ts';
+import { hasFixtures, loadFixtures } from '../../testkit/src/fixtures.ts';
+import { chromePath, openChrome, type InterceptedRequest } from '../build/chrome.ts';
+import { buildExtension } from '../build/extension.ts';
+
+const skip = !chromePath() && 'Chrome not installed';
+const workDir = mkdtempSync(path.join(os.tmpdir(), 'extension-test-'));
+after(() => rmSync(workDir, { recursive: true, force: true }));
+
+/** Waits in the page until the overlay's latest reply is finished: an answer or an error, no progress line. */
+const AWAIT_REPLY = `new Promise((resolve, reject) => {
+  const started = Date.now();
+  const check = () => {
+    const root = document.querySelector('#intent-agent-overlay')?.shadowRoot;
+    const replies = root ? [...root.querySelectorAll('.agent')] : [];
+    const last = replies.at(-1);
+    if (last && !last.querySelector('.progress') && last.childNodes.length) return resolve(true);
+    if (Date.now() - started > 30000) return reject(new Error('no reply within 30 s'));
+    setTimeout(check, 100);
+  };
+  check();
+})`;
+
+/** Types a message into the overlay and presses Enter, the way a user would. */
+const typeMessage = (message: string) => `(() => {
+  const root = document.querySelector('#intent-agent-overlay').shadowRoot;
+  root.querySelector('.launcher').click();
+  const input = root.querySelector('textarea');
+  input.value = ${JSON.stringify(message)};
+  input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+})()`;
+
+const squash = (text: string) => text.replace(/\*\*/g, '').replace(/^\s*[-*•]\s+/gm, '').replace(/\s+/g, ' ').trim();
+
+/**
+ * The site's API calls answered from fixtures, with the CORS headers a cross-origin call from the page needs. Like
+ * the live site's API, they don't allow credentials, so a request that sends cookies cross-origin fails here as it
+ * did live.
+ */
+function siteAnswers(site: string, fake: FakeHost, pageOrigin: string) {
+  const cors = { 'access-control-allow-origin': pageOrigin, 'access-control-allow-methods': 'GET, POST' };
+  const pages = readSite(site).pack.site.pages.map((page) => new RegExp(`^${page.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`));
+  return async (request: InterceptedRequest) => {
+    // The preflight: it allows exactly the headers asked for.
+    const asked = Object.entries(request.headers).find(([name]) => name.toLowerCase() === 'access-control-request-headers')?.[1];
+    if (request.method === 'OPTIONS') return { status: 204, headers: { ...cors, ...(asked ? { 'access-control-allow-headers': asked } : {}) }, body: '' };
+    if (request.method === 'GET' && pages.some((page) => page.test(request.url)) && !new URL(request.url).pathname.includes('.')) {
+      return { status: 200, headers: { 'content-type': 'text/html' }, body: '<!doctype html><html><head><title>site page</title></head><body><h1>A page on the site</h1></body></html>' };
+    }
+    const response = await fake.request({ method: request.method as 'GET' | 'POST', url: request.url, headers: request.headers, body: request.body });
+    return { status: response.status, headers: { ...response.headers, ...cors }, body: response.body };
+  };
+}
+
+/** A conversation the extension can play today: every turn on a page whose data the page reader doesn't need. */
+const playable = (conversation: Conversation) => conversation.pageData === undefined || conversation.pageData === null;
+
+for (const site of listSites().filter(hasFixtures)) {
+  for (const conversation of loadConversations(site).filter(playable)) {
+    test(`${site}/${conversation.id}: the extension plays the conversation in Chrome, with the brain over HTTP`, { skip, timeout: 90_000 }, async () => {
+      // The brain, with the conversation's model steps, on a free port.
+      const now = Date.parse(conversation.now!);
+      const brain = new Brain({ site: await loadSite(site), model: fakeModelFor(conversation), now: () => now });
+      const server = createBrainServer({ brain, allowedOrigins: [] });
+      await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+      const outDir = path.join(workDir, `${site}-${conversation.id}`);
+      await buildExtension({ site, brainUrl: `http://127.0.0.1:${(server.address() as AddressInfo).port}`, outDir });
+
+      const fake = new FakeHost(site, loadFixtures(site));
+      const turns = conversation.messages.flatMap((message) => (message.type === 'turn' ? [message] : []));
+      const firstPage = turns[0]!.pageContext.url;
+      const page = await openChrome({ width: 1200, height: 900, extension: outDir });
+      try {
+        await page.intercept(readSite(site).pack.site.origins.map((origin) => `${origin}/*`), siteAnswers(site, fake, new URL(firstPage).origin));
+        await page.goto(firstPage);
+        // The content script starts at document_idle, a moment after the load event.
+        await page.evaluate(`new Promise((resolve) => { const wait = () => document.querySelector('#intent-agent-overlay') ? resolve(true) : setTimeout(wait, 50); wait(); })`);
+        const answers = conversation.messages.flatMap((message) => (message.type === 'answer' ? [message] : []));
+        for (const [i, turn] of turns.entries()) {
+          await page.evaluate(typeMessage(turn.message));
+          await page.evaluate(AWAIT_REPLY);
+          const shown = await page.evaluate<{ text: string; errors: string[] }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; const last = [...root.querySelectorAll('.agent')].at(-1); return { text: last.innerText, errors: [...root.querySelectorAll('.error')].map((node) => node.textContent) }; })()`);
+          assert.deepEqual(shown.errors, [], `turn ${i + 1}; console:\n${page.console.slice(-20).join('\n')}`);
+          assert.ok(squash(shown.text).includes(squash(answers[i]!.text)), `turn ${i + 1}: the answer isn't shown:\n${shown.text}`);
+        }
+        assert.deepEqual([...new Set(fake.calls.map((call) => call.fixtureId))].sort(), [...conversation.fixtures].sort(), 'calls exactly the fixtures the conversation lists');
+      } finally {
+        await page.close();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+    });
+  }
+}

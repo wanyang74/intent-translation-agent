@@ -97,6 +97,7 @@ export function crossCheck(site: Site): string[] {
   const schemaExists = (rel: string) => existsSync(path.join(site.schemasDir, rel));
 
   if (pack.site.id !== site.id) add('site.id', `should be the folder name "${site.id}"`);
+  for (const page of pack.site.pages) if (!pack.site.origins.some((origin) => page.startsWith(`${origin}/`))) add('site.pages', `${page} is not under any of site.origins`);
   for (const [name, endpoint] of entriesOf(pack.endpoints)) {
     for (const rel of [endpoint.request, endpoint.response]) if (!schemaExists(rel)) add(`endpoints.${name}`, `schema ${rel} not found`);
     for (const id of endpoint.ids ?? []) if (!kinds.has(id.kind)) add(`endpoints.${name}.ids`, `unknown entity kind ${id.kind}`);

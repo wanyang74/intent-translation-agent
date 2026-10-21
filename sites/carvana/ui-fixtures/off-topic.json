@@ -1,0 +1,27 @@
+{
+  "id": "off-topic",
+  "site": "carvana",
+  "source": "reference",
+  "description": "Off-topic requests are declined briefly, with no tools or cards",
+  "turns": [
+    {
+      "message": "Write me a poem about the ocean.",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I can only help with Carvana, so I can't write a poem about the ocean. I can help you find a car, though. For example, I could look for an SUV or convertible near 94402 for a coastal drive. Tell me what you'd like, such as a body style, budget or color.",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

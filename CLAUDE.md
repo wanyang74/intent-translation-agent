@@ -18,8 +18,11 @@ platform/                  never names a site; a test fails if it does
   core/src/                core.js, the client tool runtime, by layer: boundary, execute, link, present, runtime, shared
   brain/src/               the agentic brain (server), by layer: agent, model, prompt, server, system
   evals/                   snapshot evals: the runner (real core.js + real brain + a model), graders, gates, CLI
+  web/                     the web surface: the overlay (src/), UI fixture and extension builds (build/), the Chrome
+                           extension (extension/), and a headless Chrome driver for its tests
 sites/<id>/                one site pack per site: site.yaml, schemas, fixtures, conversations, skills, tools.ts,
-                           evals (cases by category, baseline.json, references/), research
+                           page.ts (the page reader), ui-fixtures/ (made), evals (cases by category, baseline.json,
+                           references/), research
 docs/                      local copy of the design doc
 ```
 
@@ -101,6 +104,9 @@ docs/                      local copy of the design doc
   alone and deterministically. Code paths are tested with FakeModel; answer quality only with evals.
 - Every platform test runs on every site pack. Every bug becomes a test at the lowest level that could have caught it.
 - Before calling work done: `npm test` and `npm run typecheck` both pass. Live tests are opt-in (`npm run test:live`).
+- The web surface is tested in headless Chrome (skipped where Chrome isn't installed): every UI fixture drawn in the
+  overlay, and the built extension playing the example conversations offline. Screenshots are opt-in
+  (`npm run test:screenshots`; `UPDATE=1` keeps new ones after a look). Rebuild UI fixtures with `npm run ui-fixtures`.
 - Integration (L5) swaps one fake at a time: `platform/brain/test/integration.test.ts` runs every example conversation
   through real core.js and the real brain (FakeHost, FakeModel), in process and over HTTP, and the link's traffic must
   equal the saved conversation. `test:live` then runs the same turns with the real model.

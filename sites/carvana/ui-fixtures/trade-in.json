@@ -1,0 +1,27 @@
+{
+  "id": "trade-in",
+  "site": "carvana",
+  "source": "reference",
+  "description": "No tool for trade-in values: say so, don't invent a figure",
+  "turns": [
+    {
+      "message": "What's my 2018 Honda Civic with 60,000 miles worth as a trade-in?",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "I can't give you a trade-in value. My tools only search and show cars for sale, so I can't appraise your Civic. Carvana's own \"Sell/Trade\" page can give you an offer, and that's where you'd take the next step.\n\nI can look up similar 2018 Honda Civics for sale near 94402 so you can see what they cost. Want me to do that?",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "vague-car",
+  "site": "carvana",
+  "source": "reference",
+  "description": "Too vague to search: ask what they're after (paired with tesla-browse, which should just search)",
+  "turns": [
+    {
+      "message": "I want a car.",
+      "page": {
+        "url": "https://www.carvana.com/",
+        "pageType": "other",
+        "location": {
+          "postalCode": "94402"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "answer",
+          "text": "Which kind of car do you want? Tell me whatever you already know:\n\n- Make or model\n- Body style, such as SUV, sedan or truck\n- Maximum price\n- Color\n- Any must-have features\n\nIf you'd rather not narrow it down yet, I can show popular cars near 94402.",
+          "components": [],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}
