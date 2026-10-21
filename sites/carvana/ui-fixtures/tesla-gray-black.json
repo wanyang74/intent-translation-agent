@@ -50,7 +50,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Standard · 41,431 mi",
@@ -77,7 +77,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Standard · 30,470 mi",
@@ -104,7 +104,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Long Range · 37,592 mi",
@@ -131,7 +131,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Standard · 32,723 mi",
@@ -158,7 +158,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Long Range · 27,689 mi",
@@ -185,7 +185,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Standard · 24,878 mi",
@@ -212,7 +212,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Long Range · 23,555 mi",
@@ -239,7 +239,7 @@
                       "key": "delivery",
                       "label": "Delivery",
                       "value": null,
-                      "text": "not available"
+                      "text": "not checked"
                     }
                   ],
                   "subtitle": "Performance · 24,825 mi",

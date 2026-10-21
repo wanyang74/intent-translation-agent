@@ -8,7 +8,7 @@ export { Session, type SessionOptions } from './runtime/session.ts';
 export { callEndpoint, matchKey } from './execute/endpoints.ts';
 export { checkContext, runToolCall, SCRIPT_LIMITS, SCRIPT_TOOL, type CallOutcome } from './execute/execute.ts';
 export {
-  cardOf, displayText, fieldValue, formatMoney, formatValue, groupDigits, NOT_AVAILABLE, present, presentToolResult, viewOf,
+  cardOf, displayText, fieldValue, formatMoney, formatValue, groupDigits, NOT_AVAILABLE, NOT_CHECKED, present, presentToolResult, viewOf,
   type CardView, type DetailSection, type FieldView, type FormFieldView, type Presented, type UiComponent,
 } from './present/present.ts';
 export { amendTurn, makeTurn, runTurn, type AmendOutcome, type Surface, type TurnOutcome } from './link/link.ts';

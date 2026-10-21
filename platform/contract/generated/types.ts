@@ -185,6 +185,10 @@ export interface Location {
   postalCode?: string;
   region?: string;
   country?: string;
+  /**
+   * The site's own guess at where the user is (from their network address, say), not a place the user gave; the agent says which one it used, so the user can correct it.
+   */
+  estimated?: boolean;
 }
 /**
  * Remote config for one site: off switches and budgets. Signed; core.js checks the signature before using it (signing scheme to be decided in phase 9). Tool and skill names are checked against the site pack.

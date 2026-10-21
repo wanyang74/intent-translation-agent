@@ -2,7 +2,7 @@
 // did that); this file only lays them out. It never parses HTML: all text goes in through textContent, so a review or
 // a car description that contains markup shows as text and can't run. Links are kept only when they're http(s).
 import type { CardView, DetailSection, FieldView, FormFieldView, UiComponent } from '../../core/src/present/present.ts';
-import { NOT_AVAILABLE } from '../../core/src/present/present.ts';
+import { NOT_AVAILABLE, NOT_CHECKED } from '../../core/src/present/present.ts';
 
 /** What a component can ask of the overlay when the user acts on it. */
 export interface ComponentActions {
@@ -33,10 +33,13 @@ function siteLink(doc: Document, href: string | undefined, label: string): HTMLE
   return link;
 }
 
+/** A field with no value (unfetched or missing), drawn muted and never marked as an estimate. */
+const missing = (text: string) => text === NOT_AVAILABLE || text === NOT_CHECKED;
+
 function fieldList(doc: Document, fields: FieldView[]): HTMLElement {
   const list = element(doc, 'dl', 'fields');
   for (const field of fields) {
-    const value = element(doc, 'dd', field.text === NOT_AVAILABLE ? 'na' : undefined, [field.text, field.estimate && field.text !== NOT_AVAILABLE ? element(doc, 'span', 'est', ['est.']) : null]);
+    const value = element(doc, 'dd', missing(field.text) ? 'na' : undefined, [field.text, field.estimate && !missing(field.text) ? element(doc, 'span', 'est', ['est.']) : null]);
     list.append(element(doc, 'dt', undefined, [field.label]), value);
   }
   return list;
@@ -129,7 +132,7 @@ export function renderComponent(doc: Document, component: UiComponent, actions: 
       const headRow = element(doc, 'tr', undefined, [element(doc, 'th'), ...component.items.map((item) => element(doc, 'th', undefined, [siteLink(doc, item.link, item.title) ?? item.title]))]);
       const rows = component.rows.map((row) => element(doc, 'tr', undefined, [
         element(doc, 'td', undefined, [row.label]),
-        ...row.cells.map((cell) => element(doc, 'td', cell.text === NOT_AVAILABLE ? 'na' : undefined, [cell.text, cell.estimate && cell.text !== NOT_AVAILABLE ? element(doc, 'span', 'est', ['est.']) : null])),
+        ...row.cells.map((cell) => element(doc, 'td', missing(cell.text) ? 'na' : undefined, [cell.text, cell.estimate && !missing(cell.text) ? element(doc, 'span', 'est', ['est.']) : null])),
       ]));
       return element(doc, 'div', 'compare', [element(doc, 'table', undefined, [element(doc, 'thead', undefined, [headRow]), element(doc, 'tbody', undefined, rows)])]);
     }

@@ -1,5 +1,6 @@
 // The made-up shop as a running site, for core.js's I/O tests: its code, simple validators, and a host whose network
 // is a function the test writes. Time is virtual: sleeping moves the clock at once.
+import type { SitePack } from '../../contract/generated/types.ts';
 import * as platformValidators from '../../contract/generated/validators.js';
 import { validatorName } from '../../contract/src/names.ts';
 import { VirtualClock } from '../../testkit/src/virtual-clock.ts';
@@ -110,9 +111,9 @@ export const exampleCode: SiteCode = {
   },
 };
 
-export async function exampleSession(options: { network?: (req: HostRequest) => HostResponse | Promise<HostResponse>; code?: SiteCode; validators?: Validators; host?: Partial<Host>; config?: unknown } = {}): Promise<ExampleHost & { session: Session }> {
+export async function exampleSession(options: { pack?: SitePack; network?: (req: HostRequest) => HostResponse | Promise<HostResponse>; code?: SiteCode; validators?: Validators; host?: Partial<Host>; config?: unknown } = {}): Promise<ExampleHost & { session: Session }> {
   const shop = exampleHost(options.network ?? shopNetwork, options.host);
-  const { session } = await startSession({ pack: examplePack, site: options.code ?? exampleCode, validators: options.validators ?? exampleValidators(), host: shop.host, config: options.config });
+  const { session } = await startSession({ pack: options.pack ?? examplePack, site: options.code ?? exampleCode, validators: options.validators ?? exampleValidators(), host: shop.host, config: options.config });
   session.setPage({ url: 'https://www.example.com/', pageType: 'home' });
   return { ...shop, session };
 }

@@ -249,6 +249,55 @@
           ]
         }
       }
+    },
+    {
+      "id": "guessed-zip-on-car",
+      "description": "A car's page where the site guessed the visitor's zip (from their network): the agent quotes with that zip and says which zip it used, so the user can correct it",
+      "now": "2026-10-08T19:15:00Z",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4812031",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4812031
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA",
+          "country": "US",
+          "estimated": true
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4812031,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range",
+        "kbbTrim": "Long Range Sport Utility 4D",
+        "mileage": 27689,
+        "color": "Gray",
+        "vehicleInventoryType": 1,
+        "locationId": 300
+      },
+      "message": "What would this one cost me all in?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_vehicle_quote",
+            "args": {
+              "vehicleId": 4812031,
+              "zip5": "94402"
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "94402"
+          ]
+        }
+      }
     }
   ]
 }

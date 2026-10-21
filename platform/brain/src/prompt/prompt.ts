@@ -172,7 +172,9 @@ export function contextBlock(page: PageContext, now: number): string {
   const loc = page.location;
   if (loc) {
     const parts = [loc.postalCode && `postal code ${loc.postalCode}`, loc.region && `region ${loc.region}`, loc.country && `country ${loc.country}`];
-    lines.push(`Location: ${parts.filter(Boolean).join(', ')}`);
+    // A guessed location is still the user's (the site's own guess), but the user should see which one was used.
+    const guessed = loc.estimated ? " (the site's guess, not given by the user: say which postal code you used, so they can correct it)" : '';
+    lines.push(`Location: ${parts.filter(Boolean).join(', ')}${guessed}`);
   }
   if (page.locale) lines.push(`Language: ${page.locale}`);
   if (page.signedIn !== undefined) lines.push(`Signed in: ${page.signedIn ? 'yes' : 'no'}`);

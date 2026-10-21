@@ -2,7 +2,8 @@
 // chunks, seen live on 2026-10-20), and only the car on screen.
 // How: a made-up page in the live format: the car split across two chunks, next to other objects that carry the same
 // vehicle ID (the site's own request bodies), escaped quotes and braces inside strings.
-// Passes when: the car's record has the fields the tools use, and a page without the car gives no data.
+// Passes when: the car's record has the fields the tools use, a page without the car gives no data, and the visitor's
+// zip from Carvana's cookies is the context's location, marked as a guess.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readPage } from '../page.ts';
@@ -25,4 +26,12 @@ test("vehicle page: the car's record comes from the page's streamed data", () =>
 test('vehicle page: no data for a car the page does not carry, or on other pages', () => {
   assert.equal(readPage(view('https://www.carvana.com/vehicle/999', [push(flight)])).data, null);
   assert.equal(readPage(view('https://www.carvana.com/cars/tesla', [push(flight)])).data, null);
+});
+
+test("any page: Carvana's zip cookie is the visitor's location, marked as the site's guess", () => {
+  const withCookies = (cookie: string) => readPage({ ...view('https://www.carvana.com/cars/tesla', []), cookie }).context.location;
+  assert.deepEqual(withCookies('other=1; CVCurrentCity=San%20Mateo; CVCurrentState=CA; CVCurrentZip=94402'), { postalCode: '94402', region: 'CA', country: 'US', estimated: true });
+  assert.deepEqual(readPage({ ...view('https://www.carvana.com/vehicle/4812031', []), cookie: 'CVCurrentZip=94402' }).context.location, { postalCode: '94402', country: 'US', estimated: true });
+  assert.equal(withCookies(''), undefined, 'no cookie, no location: the agent asks');
+  assert.equal(withCookies('CVCurrentZip=null; CVCurrentState=CA'), undefined, 'a zip that is not five digits is not used');
 });

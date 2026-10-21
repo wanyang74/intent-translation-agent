@@ -12,7 +12,7 @@ site:
   locale: en-US
   pageTypes: [search, vehicle, other]
   requires:
-    location: postal_code   # every call passes the zip code explicitly: page context or asked; never the browser's location
+    location: postal_code   # every call passes the zip explicitly: the page context (Carvana's zip cookie, a guess) or asked; never the browser's location
     signIn: never           # the mini version is signed out
 
 entities:

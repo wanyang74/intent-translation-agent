@@ -1,13 +1,14 @@
 // Tests: Respond's presentation (core/src/present/): presentation calls become UI components filled from tool
 // results with the site's templates (L3).
 // How: runs tools on the made-up shop so the session holds records, then calls present() and formatting helpers.
-// Passes when: cards, comparisons, detail views, options, forms and notices come out as expected; fields no tool
-// returned read "not available"; required notices are added; a call that fails the checks is left out and
+// Passes when: cards, comparisons, detail views, options, forms and notices come out as expected; a field whose tools
+// weren't called for the item reads "not checked", and one they didn't return reads "not available"; required notices
+// are added; a call that fails the checks is left out and
 // reported; and the fast path shows a tool result with the site's presentation.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { PresentationCall } from '../../contract/generated/types.ts';
-import { displayText, fieldValue, formatMoney, groupDigits, present, presentToolResult, runToolCall } from '../src/index.ts';
+import { cardOf, displayText, fieldValue, formatMoney, groupDigits, present, presentToolResult, runToolCall } from '../src/index.ts';
 import { examplePack } from './example-pack.ts';
 import { exampleSession } from './example-site.ts';
 
@@ -71,6 +72,19 @@ test('field sources: a field with several sources shows the first one a tool ret
   assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ search_products: { shipsBy: 'Monday' }, read_product_page: { shipping: { date: 'Friday' } } })), 'Monday', 'both: the first wins');
   assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ search_products: { shipsBy: null }, read_product_page: { shipping: { date: 'Friday' } } })), 'Friday', 'an empty first source is skipped');
   assert.equal(fieldValue(pack, 'product', 'shipsBy', view({ get_offer: { shipsBy: 'from another tool' } })), undefined, 'neither source has it: not available, not some other tool\'s value under the same key');
+});
+
+test('missing values: "not checked" when the field\'s tools weren\'t called for the item, "not available" when they gave nothing', async () => {
+  // A delivery date that was never looked up must not read like "can't be delivered".
+  const pack = structuredClone(examplePack);
+  pack.entities.product!.fields!.shipsBy = { label: 'Ships by', type: 'text', from: ['search_products.shipsBy', 'read_product_page.shipping.date'] };
+  pack.entities.product!.card!.fields = ['shipsBy', 'rating'];
+  const { session } = await exampleSession({ pack });
+  assert.ok((await runToolCall(session, 'search_products', { query: 'shoe' })).ok);
+  session.ids.learn('product', 7);
+  const texts = (id: number) => cardOf(session, 'product', id).fields.map((field) => field.text);
+  assert.deepEqual(texts(1), ['not available', '4.5'], 'the search returned the item without a date');
+  assert.deepEqual(texts(7), ['not checked', 'not available'], 'no tool returned the item; a record field stays "not available"');
 });
 
 test("other components: comparisons, detail views with the site's sections, options, forms and notices", async () => {

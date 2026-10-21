@@ -78,6 +78,8 @@ export function formatMoney(amount: number): string {
 }
 
 export const NOT_AVAILABLE = 'not available';
+/** A field whose tools haven't been called for this item yet: "not available" would read as a no. */
+export const NOT_CHECKED = 'not checked';
 
 export function formatValue(field: Field | undefined, value: unknown): string {
   if (value === undefined || value === null || value === '') return NOT_AVAILABLE;
@@ -128,14 +130,29 @@ export function fieldValue(pack: SitePack, kind: string, key: string, view: Enti
   return sources.some((source) => pack.tools[source.split('.')[0]!]) ? undefined : view.values[key];
 }
 
+/** The tools a field's value comes from; empty when it comes from the item's record. */
+function sourceTools(pack: SitePack, from: string | string[] | undefined): string[] {
+  return (typeof from === 'string' ? [from] : from ?? []).map((source) => source.split('.')[0]!).filter((tool) => !!pack.tools[tool]);
+}
+
+/**
+ * A field as the user reads it:
+ *   1. Its value, from the first source that has one.
+ *   2. With no value: "not checked" when it comes from tools and none of them has been called for this item, so the
+ *      user doesn't read an unfetched delivery date as "can't be delivered"; otherwise "not available".
+ */
 function fieldView(pack: SitePack, kind: string, key: string, view: EntityView): FieldView {
   const field = pack.entities[kind]?.fields?.[key];
+  // 1. The value.
   const value = fieldValue(pack, kind, key, view);
+  // 2. Why there's none.
+  const tools = sourceTools(pack, field?.from);
+  const unchecked = !hasValue(value) && tools.length > 0 && tools.every((tool) => view.byTool[tool] === undefined || view.byTool[tool] === null);
   return {
     key,
     label: field?.label ?? key,
     value: value ?? null,
-    text: formatValue(field, value),
+    text: unchecked ? NOT_CHECKED : formatValue(field, value),
     ...(field?.estimate ? { estimate: true } : {}),
   };
 }
