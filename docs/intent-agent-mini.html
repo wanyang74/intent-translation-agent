@@ -410,7 +410,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 
 <main>
     <header class="top">
-      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-20</div>
+      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-28</div>
       <h1>Intent Agent Mini</h1>
       <p class="lede">The smallest first version: take what a person can already do on a consumer site's frontend and turn it into a conversational agent flow that can loop and compare at scale. It only sends requests the frontend already sends. It doesn't touch the backend and doesn't place orders. The platform is general: everything it knows about a site comes from that site's pack, and Carvana is the first.</p>
       <div class="chips">
@@ -962,6 +962,9 @@ const picks = vehicles
   .slice(0, 5);
 return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <span class="c">// IDs, not content</span></pre>
       <p class="note">The model then calls <code>present_items</code> with the returned IDs, and Execute fills in each card. Scripts can read the session's ID set but can't add to it.</p>
+<div class="col">
+        <p><b>Only where a sandbox exists.</b> A device with the script sandbox says so in its turn (<code>capabilities.scripts</code>), and its first turn fixes that for the conversation. Without it, the agentic brain doesn't offer <code>run_script</code>, the system prompt doesn't mention it, and skills load without their script parts (marked in the skill's file). A script the model writes anyway is refused before it's sent. No surface has the sandbox yet (see the backlog), so today every conversation, and every eval run, works one call at a time; <code>npm run evals -- --scripts</code> tries the sandbox path.</p>
+      </div>
 </div>
 </details>
 </div>
@@ -1096,7 +1099,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <tbody>
             <tr><td>System prompt</td><td>The platform's rules (grounding by ID, presentation tools, safety, read-only scope, deep-link handoff) plus the site pack's tools, notices and brand rules, and basic search</td><td>Always</td></tr>
             <tr><td>Skill: vehicle research</td><td>Comparing cars, reading specs and owner reviews, finding similar cars</td><td>On demand; preloaded when step ② comes from a vehicle page</td></tr>
-            <tr><td>Skill: batch search</td><td>Exhaustive and multi-condition searches written as scripts</td><td>When a request needs many calls</td></tr>
+            <tr><td>Skill: batch search</td><td>Requests that need many calls: planning them, and the script for them on a device that can run one</td><td>When a request needs many calls</td></tr>
             <tr><td>Skill: delivery and pickup</td><td>Delivery and pickup dates, locations, and when to refresh a route</td><td>On demand</td></tr>
             <tr><td>Skill: financing questions</td><td>What the agent can and can't say, and when to send the user to Carvana's own financing pages</td><td>When financing comes up</td></tr>
           </tbody>
@@ -1112,7 +1115,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <table>
           <thead><tr><th>Segment</th><th>Contents</th><th>Changes</th><th>Caching</th></tr></thead>
           <tbody>
-            <tr><td>1 · Prompt prefix</td><td>System prompt (grounding, presentation, safety and brand rules) and all tool and presentation-tool definitions</td><td>Only when we release</td><td>Identical for every session; cache breakpoint at its end</td></tr>
+            <tr><td>1 · Prompt prefix</td><td>System prompt (grounding, presentation, safety and brand rules) and all tool and presentation-tool definitions</td><td>Only when we release</td><td>Two per site, with and without <code>run_script</code>; each identical for every session on such a device; cache breakpoint at its end</td></tr>
             <tr><td>2 · Session</td><td>Conversation so far, tool results, and skills, which load as tool results</td><td>Grows during the session</td><td>Breakpoint moves to the end of each new user turn</td></tr>
             <tr><td>3 · Volatile</td><td>Page context and current time</td><td>Every turn</td><td>Not cached; a tagged block at the end of the newest user turn</td></tr>
           </tbody>
@@ -1169,7 +1172,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <table>
           <thead><tr><th>Piece</th><th>How it works for any site</th></tr></thead>
           <tbody>
-            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location (marked when it's the site's guess, so the agent says which one it used), locale and whether the user is signed in</td></tr>
+            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location (marked when it's the site's guess, so the agent says which one it used), locale and whether the user is signed in. A device with the script sandbox says so in its turn</td></tr>
             <tr><td>Presentation tools</td><td>Seven tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
             <tr><td>Typed IDs</td><td>Every ID has a kind from the site pack, and an expiry where the site's IDs expire. Tools and presentation calls accept only IDs of the right kind that this session saw and that haven't expired</td></tr>
             <tr><td>Errors</td><td>One set of codes for every site: <code>invalid_value</code>, <code>no_results</code>, <code>not_found</code>, <code>expired</code>, <code>auth_required</code>, <code>rate_limited</code>, <code>budget_reached</code> and a few more. The site adds a reason and a message the model can act on</td></tr>
@@ -1834,7 +1837,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 <p class="sub">Work we've chosen to do later, tracked here until it gets a phase. Each needs a design proposal before it starts.</p>
       <div class="qs">
         <div class="q"><b>Sign-in mode support</b> · Tools for what a signed-in person can read on a site (on Carvana, the pickup price, favorites and orders), marked as needing sign-in. Writes stay out of scope. Needs a signed-in recording, with scrub rules for personal data and login tokens added before any fixture is built from it, and a decision on how the user's sign-in reaches core.js.</div>
-        <div class="q"><b>Script sandbox in the extension</b> · The Chrome extension has no script sandbox yet, so scripts are refused there and the model calls tools one at a time. Planned: QuickJS in an offscreen document, with tool calls passed back to the content script.</div>
+        <div class="q"><b>Script sandbox in the extension</b> · The Chrome extension has no script sandbox yet, so the agentic brain doesn't offer scripts there and the model calls tools one at a time. Planned: QuickJS in an offscreen document, with tool calls passed back to the content script.</div>
         <div class="q"><b>More Carvana destinations</b> · Financing, selling or trading a car, and help articles. Needs one signed-out look at those pages' URLs and at where the help content comes from, so a reader can be built for it. The same signed-out recording should include a car's page HTML (for the car-page destination's reader) and a quote for a second car at the same zip (for the eval case comparing two cars).</div>
         <div class="q"><b>Per-item answers for bulk requests in FakeHost</b> · A request for several items at once (on Carvana, delivery dates for a list of cars) is matched only to the exact set that was recorded, so any other set is unrecorded even when every item in it was recorded. Planned: answer such requests item by item from the recorded responses. Changes the site-pack format.</div>
       </div>

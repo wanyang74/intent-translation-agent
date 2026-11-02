@@ -53,6 +53,20 @@
         },
         "pageContext": {
           "$ref": "/schemas/messages.json#/$defs/PageContext"
+        },
+        "capabilities": {
+          "description": "What this device can run beyond the site's tools. Absent means none: the brain then offers only what every device has.",
+          "type": "object",
+          "properties": {
+            "scripts": {
+              "description": "The device has the platform's script sandbox, so the brain may offer run_script.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scripts"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

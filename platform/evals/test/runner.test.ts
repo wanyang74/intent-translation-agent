@@ -4,8 +4,9 @@
 // FakeModel then writes the conversation's answer, or a changed one. Then every saved reference
 // (sites/<id>/evals/references/) replays.
 // Passes when: the case passes when the model writes what the conversation did; fails when the model puts a price on
-// screen that no tool returned; is unrecorded when the model asks the site for something no fixture answers; and
-// every saved reference passes again.
+// screen that no tool returned; is unrecorded when the model asks the site for something no fixture answers; the
+// device matches users' (no script sandbox, so no run_script) unless a run asks for scripts; and every saved
+// reference passes again.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
@@ -16,6 +17,8 @@ import type { EvalCase } from '../src/cases.ts';
 import { hasEvals, loadCases } from '../src/cases.ts';
 import { grade } from '../src/grade.ts';
 import { loadReference } from '../src/references.ts';
+import type { ModelRequest } from '../../brain/src/model/model.ts';
+import { FakeSurface } from '../../testkit/src/fake-surface.ts';
 import { loadSiteMaterials, runCase } from '../src/run.ts';
 
 for (const site of listSites().filter(hasFixtures)) {
@@ -62,6 +65,25 @@ for (const site of listSites().filter(hasFixtures)) {
 }
 
 for (const site of listSites().filter(hasEvals)) {
+  test(`${site}: the eval device has no script sandbox unless the run asks for one, and then a script runs`, async () => {
+    const materials = await loadSiteMaterials(site);
+    const evalCase = loadCases(site).find((candidate) => !candidate.after)!;
+    const script = { name: 'run_script', input: { source: 'return { checked: 0 };' } };
+    const scriptRun = (seen: ModelRequest[]) => new FakeModel([{ calls: [script] }, (request) => { seen.push(request); return { text: 'Done.' }; }]);
+    // Users' device: run_script isn't offered, and a script the model tries anyway is refused.
+    const offSeen: ModelRequest[] = [];
+    const off = await runCase(materials, evalCase, scriptRun(offSeen));
+    assert.equal(off.scripts, false);
+    assert.ok(!offSeen[0]!.tools.some((tool) => tool.name === 'run_script'));
+    assert.match(JSON.stringify(offSeen[0]!.messages.at(-1)), /scripts_off/);
+    // With scripts: offered, and the script runs in the sandbox.
+    const onSeen: ModelRequest[] = [];
+    const on = await runCase(materials, evalCase, scriptRun(onSeen), new FakeSurface(), { scripts: true });
+    assert.equal(on.scripts, true);
+    assert.ok(onSeen[0]!.tools.some((tool) => tool.name === 'run_script'));
+    assert.match(JSON.stringify(onSeen[0]!.messages.at(-1)), /"checked":0/);
+  });
+
   const withReferences = loadCases(site).map((evalCase) => ({ evalCase, reference: loadReference(site, evalCase.id) })).filter((entry) => entry.reference);
   for (const { evalCase, reference } of withReferences) {
     test(`${site}/${evalCase.id}: saved reference (${reference!.model}) replays and passes`, async () => {

@@ -361,12 +361,31 @@ test('scripts: a bad source is refused; only the IDs a script returns can be sho
     { calls: [{ name: 'run_script', input: { source: "const found = await tools.search_products({ query: 'x' }); return { ids: [found.products[0].id] };" } }] },
     { text: 'Two.', calls: [items([1, 2])] },
     { text: 'One.', calls: [items([1])] },
-  ]);
+  ], { scripts: true });
   const turn = await client.turn('cheap shoes', HOME);
   assert.deepEqual(turn.calls.map((call) => [call.id, call.name]), [['call_1', 'run_script']], 'the empty script never reached the client');
   assert.deepEqual(reasons(lastResults(model, 1)), ['bad_arguments']);
   assert.deepEqual(reasons(lastResults(model, 3)), ['unknown_id'], 'product 2 was never returned');
   assert.equal(turn.answer?.text, 'One.');
+});
+
+test('scripts: offered only to a client that says it has a sandbox; without one a script is refused before it is sent', async () => {
+  const script = { name: 'run_script', input: { source: 'return { ids: [] };' } };
+  const without = setup([{ calls: [script] }, { text: 'One at a time, then.' }]);
+  const turn = await without.client.turn('every shoe', HOME);
+  assert.ok(!without.model.requests[0]!.tools.some((tool) => tool.name === 'run_script'), 'not offered');
+  assert.deepEqual(turn.calls, [], 'never sent to the client');
+  assert.deepEqual(reasons(lastResults(without.model, 1)), ['scripts_off']);
+  assert.equal(turn.answer?.text, 'One at a time, then.');
+  // The first turn decides: a later turn that claims a sandbox doesn't change the tools mid-conversation.
+  const later = setup([{ text: 'Hi.' }, { text: 'Hi again.' }]);
+  await later.client.turn('hi', HOME);
+  for await (const event of later.send({ type: 'turn', site: 'example-shop', sessionId: later.client.sessionId, traceId: 'trace_claims_1', message: 'hi', pageContext: HOME, capabilities: { scripts: true } })) void event;
+  assert.equal(later.model.requests.length, 2);
+  assert.ok(!later.model.requests[1]!.tools.some((tool) => tool.name === 'run_script'), 'still not offered in the same conversation');
+  const withSandbox = setup([{ text: 'Hi.' }], { scripts: true });
+  await withSandbox.client.turn('hi', HOME);
+  assert.ok(withSandbox.model.requests[0]!.tools.some((tool) => tool.name === 'run_script'), 'offered with a sandbox');
 });
 
 test('quotas: turns, model calls and tokens per session, and model calls per day for the site', async () => {

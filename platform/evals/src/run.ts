@@ -19,6 +19,7 @@ import { loadFixtures, type Fixture } from '../../testkit/src/fixtures.ts';
 import { LinkRecorder } from '../../testkit/src/link-recorder.ts';
 import { loadSiteRuntime, type SiteRuntime } from '../../testkit/src/site-runtime.ts';
 import { testHost } from '../../testkit/src/test-host.ts';
+import { quickJsRunner } from '../../core/hosts/quickjs.ts';
 import { editFixtures, type Category, type EvalCase } from './cases.ts';
 
 /** Everything about one site that every case of it uses, loaded once. */
@@ -69,9 +70,21 @@ export interface Trial {
   ms: number;
   /** What the model wrote in the new turn, step by step: replayable as a FakeModel script. */
   modelSteps: FakeStep[];
+  /** Whether the device in this trial had a script sandbox. */
+  scripts: boolean;
   /** A failure of the harness itself, not of the agent. */
   crash?: string;
 }
+
+/**
+ * The device a case runs on. By default it matches the one users have today: no script sandbox, as in the Chrome
+ * extension, so run_script isn't offered. With scripts on, core.js gets the QuickJS sandbox and the brain offers it.
+ */
+export interface Device {
+  scripts: boolean;
+}
+
+export const USERS_DEVICE: Device = { scripts: false };
 
 /**
  * The model for a case: it replays the conversation's model steps for the earlier turns, then hands each later
@@ -117,12 +130,13 @@ const NO_STEPS: StepUsage = { steps: 0, inputTokens: 0, outputTokens: 0, cacheRe
  * Runs one case once. The surface sees every turn, the earlier ones too; pass one to keep what the user saw.
  *   1. The state: the conversation's earlier turns (if any), the clock, the page, and the fixtures with the case's edits.
  *   2. The brain, with the replaying model in front of the model under test, and a log.
- *   3. core.js on a test host, its link to the brain recorded, and requests no fixture answers noted.
+ *   3. core.js on a test host (with the script sandbox when the device has one), its link to the brain recorded, and
+ *      requests no fixture answers noted.
  *   4. The earlier turns, replayed; they must go as saved, or the harness is broken.
  *   5. The case's message, on its page, through runTurn.
  *   6. The Trial, from what crossed the link, what the user saw, and the brain's log, for the new turn only.
  */
-export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: ModelAdapter, surface = new FakeSurface()): Promise<Trial> {
+export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: ModelAdapter, surface = new FakeSurface(), device: Device = USERS_DEVICE): Promise<Trial> {
   // 1. The state.
   const conversation = evalCase.after ? site.conversations.find((candidate) => candidate.id === evalCase.after!.conversation) : undefined;
   if (evalCase.after && !conversation) throw new Error(`${evalCase.id}: no example conversation ${evalCase.after.conversation}`);
@@ -140,7 +154,7 @@ export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: Mo
 
   // 3. core.js, its recorded link, and fixture misses.
   const recorder = new LinkRecorder(inProcess(brain));
-  const harness = testHost({ site: site.id, fixtures, start: now, pageData, brain: recorder.send });
+  const harness = testHost({ site: site.id, fixtures, start: now, pageData, brain: recorder.send, ...(device.scripts ? { scripts: quickJsRunner() } : {}) });
   const fixtureMisses: string[] = [];
   const request = harness.host.request;
   harness.host.request = async (req) => {
@@ -209,6 +223,7 @@ export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: Mo
     usage,
     ms,
     modelSteps: caseModel.written,
+    scripts: device.scripts,
     ...(crash ? { crash } : {}),
   };
 }

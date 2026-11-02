@@ -6,7 +6,7 @@
 import type { ClientAmend, ClientResults, ClientTurn } from '../../../contract/generated/types.ts';
 import { IdSet } from '../../../core/src/boundary/ids.ts';
 import type { ChatMessage } from '../model/model.ts';
-import { contextBlock, SKILL_TOOL } from '../prompt/prompt.ts';
+import { contextBlock, SKILL_TOOL, type PromptPrefix } from '../prompt/prompt.ts';
 import { loadSkill, skillsForPage } from '../prompt/skills.ts';
 import type { SessionUsage } from '../system/quotas.ts';
 import { MESSAGES, once, type ServerResponse, type BrainServices } from './types.ts';
@@ -20,6 +20,11 @@ export class AgentSession {
   /** Every ID a tool returned in this conversation, so later calls and cards can use only those. */
   readonly ids: IdSet;
   readonly skills = new Set<string>();
+  /**
+   * Whether the device has a script sandbox, as its first turn said. It picks the prompt prefix (run_script offered
+   * or not) and stays fixed, so every request in the conversation has the same tools and the history stays valid.
+   */
+  readonly scripts: boolean;
   readonly usage: SessionUsage = { turns: 0, modelCalls: 0, tokens: 0 };
   /** The turn that's running or waiting for results; null between turns. */
   turn: Turn | null = null;
@@ -28,12 +33,19 @@ export class AgentSession {
   /** Tells the brain this session was just used, so it keeps its sessions in order of last use. */
   private readonly onUse: () => void;
 
-  constructor(id: string, services: BrainServices, onUse: () => void) {
+  constructor(id: string, services: BrainServices, scripts: boolean, onUse: () => void) {
     this.id = id;
     this.services = services;
+    this.scripts = scripts;
     this.ids = new IdSet(services.site.bundle.pack.entities);
     this.lastSeen = services.now();
     this.onUse = onUse;
+  }
+
+  /** The site's prompt prefix for this session's device. */
+  get promptPrefix(): PromptPrefix {
+    const { promptPrefixes } = this.services.site;
+    return this.scripts ? promptPrefixes.withScripts : promptPrefixes.withoutScripts;
   }
 
   /** The brain's own ID for the next call sent to the client: call_1, call_2, … for the whole conversation. */
@@ -75,7 +87,7 @@ export class AgentSession {
     this.log(turn.traceId, 'turn', { message: turnMessage.message.length, pageType: page.pageType });
     // 4. Context up front: each preloaded skill goes in as a skill call and its result, the shape the model knows.
     for (const name of skillsForPage(site.bundle, page.pageType, this.skills, site.policy.disabledSkills)) {
-      const loaded = loadSkill(site.bundle, name, this.skills, site.policy.disabledSkills);
+      const loaded = loadSkill(site.bundle, name, this.skills, site.policy.disabledSkills, this.scripts);
       if (!loaded.ok) continue;
       const id = `preload_${name}`;
       this.history.push({ role: 'assistant', content: [{ type: 'tool-call', id, name: SKILL_TOOL, input: { name } }] });

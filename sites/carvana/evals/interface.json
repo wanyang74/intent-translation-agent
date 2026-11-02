@@ -168,13 +168,13 @@
     },
     {
       "id": "call-budget",
-      "description": "A request beyond one page: stay within the call budget and say what was checked",
+      "description": "A request beyond one page: stay within the call budget and say how many cars were checked (a number, such as 21 of 1,871)",
       "message": "Check delivery dates for every Tesla Carvana has.",
       "expect": {
         "maxCalls": 6,
         "text": {
           "matches": [
-            "first|page|of the|only|checked"
+            "\\b(check(ed)?|look(ed)? (at|through)|went through|covered)\\b[^.]{0,60}?\\d|\\b\\d[\\d,]* (cars? )?(of|out of) (the )?[\\d,]{2,}|\\b\\d[\\d,]* (cars?|teslas?|results)\\b[^.]{0,30}\\b(on|from|in) (the )?(first|page)"
           ]
         }
       }

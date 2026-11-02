@@ -5,6 +5,9 @@
 //   npm run evals -- --gate                exit with 1 when a gate fails
 //   npm run evals -- --save-baseline       record each site's summary as its baseline (sites/<id>/evals/baseline.json)
 //   npm run evals -- --save-references     keep each passing case's model steps for npm test to replay
+//   npm run evals -- --scripts             give the device the script sandbox, so the brain offers run_script; by
+//                                          default the device is the one users have (no sandbox yet), and a --scripts
+//                                          run saves no baseline or references, since npm test replays without one
 // Each site's run starts with one unscored run of its first case, which warms the prompt cache so the cache hit rate
 // doesn't depend on how long ago the last run was. Every trial is written to sites/<id>/evals/runs/ (git-ignored) for
 // reading afterwards. The API key comes from ANTHROPIC_API_KEY or .env.local; no site is called (FakeHost answers from
@@ -33,8 +36,14 @@ const { values: options } = parseArgs({
     gate: { type: 'boolean', default: false },
     'save-baseline': { type: 'boolean', default: false },
     'save-references': { type: 'boolean', default: false },
+    scripts: { type: 'boolean', default: false },
   },
 });
+if (options.scripts && (options['save-baseline'] || options['save-references'])) {
+  console.error('--scripts runs on a device users don\'t have yet: it saves no baseline or references.');
+  process.exit(1);
+}
+const device = { scripts: options.scripts };
 
 const envFile = path.join(repoRoot, '.env.local');
 const apiKey = setting('ANTHROPIC_API_KEY', envFile);
@@ -82,15 +91,15 @@ for (const site of (options.site ?? listSites()).filter(hasEvals)) {
   // 2. Warm the prompt cache: one unscored run of the first case. Trials start several at a time, and on a cold cache
   //    each of them would write the site's prompt prefix instead of reading it, so the cache hit rate would measure
   //    how recently the last run happened, not the prompt.
-  console.log(`\n${site}: ${cases.length} cases × ${trials} trial(s) with ${model.name}`);
-  await runCase(materials, cases[0]!, model).catch((error) => console.log(`  cache warm-up failed (${String(error).slice(0, 160)}); running anyway`));
+  console.log(`\n${site}: ${cases.length} cases × ${trials} trial(s) with ${model.name}, scripts ${device.scripts ? 'on' : 'off'}`);
+  await runCase(materials, cases[0]!, model, undefined, device).catch((error) => console.log(`  cache warm-up failed (${String(error).slice(0, 160)}); running anyway`));
 
   // 3. Every case, `trials` times, a few at a time.
   const jobs = cases.flatMap((evalCase) => Array.from({ length: trials }, (_, i) => async () => {
-    const trial = await runCase(materials, evalCase, model).catch((error): Trial => ({
+    const trial = await runCase(materials, evalCase, model, undefined, device).catch((error): Trial => ({
       site, caseId: evalCase.id, category: evalCase.category, outcome: 'none', answer: null, errorMessage: null, calls: [], progress: [],
       fixtureMisses: [], protocolProblems: [], refusals: [], sources: [], userMessages: [], knownIds: [],
-      usage: { steps: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 }, ms: 0, modelSteps: [], crash: String(error),
+      usage: { steps: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 }, ms: 0, modelSteps: [], scripts: device.scripts, crash: String(error),
     }));
     const result = grade(evalCase, trial);
     const failed = result.checks.filter((check) => !check.pass).map((check) => `${check.name}${check.detail ? ` (${check.detail.slice(0, 160)})` : ''}`);

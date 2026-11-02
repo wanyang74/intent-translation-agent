@@ -1,9 +1,9 @@
 // Tests: one turn on the client, runTurn: Intake (checks the user's message), the Brain link (talks to the brain),
 // and Respond (fills the answer) together (L3).
 // How: a scripted brain (a generator that yields protocol events) on the made-up shop, with a scripted network.
-// Passes when: tool calls start the moment they arrive, parallel calls run together, render: direct shows a result
-// early, the answer is filled and checked, each turn gets a fresh task budget, and every way the protocol can break
-// stops the turn with one plain message.
+// Passes when: a turn says whether the device can run scripts, tool calls start the moment they arrive, parallel
+// calls run together, render: direct shows a result early, the answer is filled and checked, each turn gets a fresh
+// task budget, and every way the protocol can break stops the turn with one plain message.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ClientMessage, ClientResults } from '../../contract/generated/types.ts';
@@ -217,4 +217,13 @@ test("follow-ups: messages that missed a turn's last step run as the next turn",
   assert.deepEqual(await runTurn(shop.session, 'shoes', surface), { ok: true });
   assert.deepEqual(surface.answers.map((shown) => shown.text), ['Two shoes.', 'Boots, for: and boots']);
   assert.equal(shop.session.activeTurn, undefined, 'no turn is running afterwards');
+});
+
+test('capabilities: a turn says the device has a script sandbox only when its host has one', async () => {
+  const reply = async function* (message: ClientMessage) { yield answer(message.traceId, 'Hi.'); };
+  const without = await turnWith(reply);
+  assert.equal((without.received[0] as { capabilities?: unknown }).capabilities, undefined, 'no sandbox: the field is left out');
+  const sandbox = { run: async () => ({ ok: true as const, value: {} }) };
+  const withSandbox = await turnWith(reply, 'shoes please', { host: { scripts: sandbox } });
+  assert.deepEqual((withSandbox.received[0] as { capabilities?: unknown }).capabilities, { scripts: true });
 });

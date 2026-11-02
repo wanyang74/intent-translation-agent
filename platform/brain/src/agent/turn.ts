@@ -376,7 +376,7 @@ export class Turn {
   /** What the server checks need: the site, its policy, this session's known IDs, the time, and the page. */
   private checks(): ServerContext {
     const { site } = this.services;
-    return { bundle: site.bundle, policy: site.policy, ids: this.session.ids, now: this.services.now(), page: this.page };
+    return { bundle: site.bundle, policy: site.policy, ids: this.session.ids, now: this.services.now(), page: this.page, scripts: this.session.scripts };
   }
 
   // ------------------------------------------------------------------ steps
@@ -656,7 +656,7 @@ export class Turn {
         continue;
       }
       // 3. A skill.
-      const loaded = loadSkill(site.bundle, call.input.name, session.skills, site.policy.disabledSkills);
+      const loaded = loadSkill(site.bundle, call.input.name, session.skills, site.policy.disabledSkills, session.scripts);
       if (!loaded.ok) {
         this.refuse(call, loaded.error);
         continue;
@@ -801,7 +801,7 @@ export class Turn {
    * the client hanging up, and a new turn (supersede aborts this.modelCall). Whichever way it ends, `finally` cleans up.
    */
   private async *callModel(): AsyncGenerator<ModelEvent> {
-    const { promptPrefix } = this.services.site;
+    const { promptPrefix } = this.session;
     const { limits } = this.services;
     // The call's single off switch. Kept on the turn so supersede can abort it from outside ('superseded').
     const controller = new AbortController();

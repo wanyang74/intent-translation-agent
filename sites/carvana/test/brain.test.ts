@@ -18,7 +18,7 @@ const validate = validatorFor(bundle.validators.platform, 'messages.json');
 const HOME = { url: 'https://www.carvana.com/', pageType: 'other', location: { postalCode: '94402' }, locale: 'en-US' };
 
 test('system prompt: hidden payment figures, the zip code, the estimated-total notice, and the four skills', () => {
-  const { system, tools } = buildPromptPrefix(bundle);
+  const { system, tools } = buildPromptPrefix(bundle, { scripts: true });
   for (const line of [
     "You're the assistant inside Carvana's website and apps.",
     '- Carvana sells used cars online.',

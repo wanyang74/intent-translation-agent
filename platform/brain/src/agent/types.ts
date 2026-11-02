@@ -49,11 +49,12 @@ export interface BrainLogEntry {
   detail: unknown;
 }
 
-/** The site as this brain serves it: the site pack's ID, its bundle, its cached prompt prefix, and its policy. */
+/** The site as this brain serves it: the site pack's ID, its bundle, its cached prompt prefixes, and its policy. */
 export interface ServedSite {
   id: string;
   bundle: SiteBundle;
-  promptPrefix: PromptPrefix;
+  /** One prefix for devices with a script sandbox and one for devices without, each built once and shared. */
+  promptPrefixes: { withScripts: PromptPrefix; withoutScripts: PromptPrefix };
   policy: Policy;
 }
 

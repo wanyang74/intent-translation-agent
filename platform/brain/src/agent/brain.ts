@@ -43,7 +43,10 @@ export class Brain {
     const now = options.now ?? Date.now;
     const logger = options.log;
     this.services = {
-      site: { id: siteId, bundle, promptPrefix: buildPromptPrefix(bundle), policy: effectivePolicy(bundle.pack, options.config ?? null).policy },
+      site: {
+        id: siteId, bundle, policy: effectivePolicy(bundle.pack, options.config ?? null).policy,
+        promptPrefixes: { withScripts: buildPromptPrefix(bundle, { scripts: true }), withoutScripts: buildPromptPrefix(bundle, { scripts: false }) },
+      },
       model: options.model,
       limits: this.limits,
       quotas: new Quotas({ ...DEFAULT_QUOTAS, ...options.quotas }, now),
@@ -53,9 +56,10 @@ export class Brain {
     this.validateMessage = validatorFor(bundle.validators.platform, 'messages.json');
   }
 
-  /** The site's prompt prefix: the same object for every session, so every request shares its bytes. */
-  get promptPrefix(): PromptPrefix {
-    return this.services.site.promptPrefix;
+  /** The site's prompt prefix for devices that can (or can't) run scripts: the same object for every such session, so their requests share its bytes. */
+  promptPrefixFor(scripts: boolean): PromptPrefix {
+    const { promptPrefixes } = this.services.site;
+    return scripts ? promptPrefixes.withScripts : promptPrefixes.withoutScripts;
   }
 
   /** How many sessions the brain is holding. */
@@ -101,7 +105,8 @@ export class Brain {
     this.evict();
     let session = this.sessions.get(turnMessage.sessionId);
     if (!session) {
-      const opened = new AgentSession(turnMessage.sessionId, this.services, () => this.markUsed(opened));
+      // What the device can run is fixed by its first turn: the tool list then stays the same for the whole conversation.
+      const opened = new AgentSession(turnMessage.sessionId, this.services, turnMessage.capabilities?.scripts === true, () => this.markUsed(opened));
       session = opened;
       session.log(turnMessage.traceId, 'session_start', { site: turnMessage.site });
     }

@@ -18,6 +18,8 @@ export interface ServerContext {
   ids: IdSet;
   now: number;
   page: CheckContext['page'];
+  /** Whether the session's device can run scripts. */
+  scripts: boolean;
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -30,9 +32,13 @@ function coreContext(ctx: ServerContext): CheckContext {
   };
 }
 
-/** A call the client would run: a site tool or a script. The allowed-value rules need site responses, so core.js keeps those. */
+/**
+ * A call the client would run: a site tool or a script. The allowed-value rules need site responses, so core.js keeps
+ * those. A script for a device without a sandbox is refused here: run_script wasn't offered, so the model guessed it.
+ */
 export function checkClientCall(ctx: ServerContext, name: string, args: unknown): ToolError | null {
   if (name === SCRIPT_TOOL) {
+    if (!ctx.scripts) return platformError('scripts_off');
     const bad = problemsWith(ctx.bundle.validators.platform, 'platform-tools/run_script.json', args);
     return bad ? platformError('bad_arguments', { tool: name, details: bad }) : null;
   }

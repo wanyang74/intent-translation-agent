@@ -45,6 +45,8 @@ export interface FakeClientOptions {
   results?: ResultFor;
   /** Changes the results before they're sent, to test what the brain accepts. */
   tamper?: (results: ToolResult[]) => ToolResult[];
+  /** Says the client has a script sandbox, as a device with one does in every turn. */
+  scripts?: boolean;
 }
 
 const MAX_ROUNDS = 30;
@@ -77,7 +79,10 @@ export class FakeClient {
     const traceId = `trace_${this.sessionId}_${++this.turns}`;
     this.current = traceId;
     const record: TurnRecord = { traceId, events: [], answer: null, error: null, calls: [], problems: [] };
-    let outgoing: ClientMessage = { type: 'turn', site: this.options.site, sessionId: this.sessionId, traceId, message, pageContext: page };
+    let outgoing: ClientMessage = {
+      type: 'turn', site: this.options.site, sessionId: this.sessionId, traceId, message, pageContext: page,
+      ...(this.options.scripts ? { capabilities: { scripts: true } } : {}),
+    };
     const running = new Map<string, Promise<ResultBody | typeof DROP>>();
     for (let round = 0; round < MAX_ROUNDS; round++) {
       this.sent.push(outgoing);

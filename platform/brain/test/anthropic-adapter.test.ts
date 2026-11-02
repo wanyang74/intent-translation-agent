@@ -57,7 +57,7 @@ async function collect(stream: AsyncIterable<ModelEvent>): Promise<ModelEvent[]>
 test('request: system prompt and last message cached, tools as defined, each call paired with its result', async () => {
   const { fakeFetch, requests } = recordingFetch(STREAM);
   const model = anthropicModel({ apiKey: 'test-key-not-real', fetch: fakeFetch, maxRetries: 0 });
-  const prefix = buildPromptPrefix(shopSite());
+  const prefix = buildPromptPrefix(shopSite(), { scripts: true });
   const events = await collect(model.stream({ system: prefix.system, tools: prefix.tools, messages: HISTORY, maxOutputTokens: 4096, signal: new AbortController().signal }));
   assert.equal(requests.length, 1);
   const { url, headers, body } = requests[0]!;

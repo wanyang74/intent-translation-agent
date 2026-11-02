@@ -57,7 +57,7 @@ const trial = (over: Partial<Trial> = {}): Trial => ({
   answer: { text: 'Here is car 1 at $100.', present: [{ name: 'present_items', args: { entity: 'car', ids: [1, 2, 3] } }], components: [items] },
   errorMessage: null, calls: [{ name: 'search', args: { make: 'Tesla' } }], progress: ['Searching…'], fixtureMisses: [], protocolProblems: [], refusals: [],
   sources: [{ price: 100 }], userMessages: ['cars'], knownIds: [1, 2, 3], usage: { steps: 1, inputTokens: 10, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
-  ms: 1, modelSteps: [], ...over,
+  ms: 1, modelSteps: [], scripts: false, ...over,
 });
 const evalCase = (expect: EvalCase['expect']): EvalCase => ({ id: 'case', category: 'core', description: 'd', message: 'cars', expect });
 

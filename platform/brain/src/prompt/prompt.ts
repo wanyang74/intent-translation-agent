@@ -1,7 +1,8 @@
 // The prompt assembler. A request is laid out from most stable to least, so prompt caching works:
 //   1 · Prefix: the system prompt (the platform's rules, then the site's section) and every tool definition. Built
 //       once per site from the site pack, with no time, page or session in it, so it is byte-identical for every
-//       session; the adapter puts a cache breakpoint at its end.
+//       session; the adapter puts a cache breakpoint at its end. There are two per site, one for devices with a
+//       script sandbox (run_script offered) and one for devices without; each is shared by every session of its kind.
 //   2 · Session: the conversation so far, tool results, and skills (which load as tool results).
 //   3 · Volatile: the page context and the time, as a <context> block at the end of the newest user turn.
 import type { PageContext } from '../../../contract/generated/types.ts';
@@ -18,7 +19,12 @@ export interface PromptPrefix {
 export const SCRIPT_TOOL = 'run_script';
 export const SKILL_TOOL = 'load_skill';
 
-const platformRules = (name: string) => `You're the assistant inside ${name}'s website and apps. People tell you what they're looking for; you find it with ${name}'s own tools and show it to them as cards that open on the site.
+/** What the device can run, which decides the prefix: without a sandbox, run_script is neither offered nor mentioned. */
+export interface PrefixOptions {
+  scripts: boolean;
+}
+
+const platformRules = (name: string, options: PrefixOptions) => `You're the assistant inside ${name}'s website and apps. People tell you what they're looking for; you find it with ${name}'s own tools and show it to them as cards that open on the site.
 
 # Each message you write
 - When you call the site's tools: first one short line for the user saying what you're doing, under 80 characters, such as "Checking delivery dates for 21 cars…"; then the calls. The user sees the line while the tools run.
@@ -30,7 +36,7 @@ const platformRules = (name: string) => `You're the assistant inside ${name}'s w
 - Make independent tool calls in the same message, slowest first; they run in parallel.
 - A <system-reminder> saying the user sent a new message while you were working carries the user's own words. Adjust what you're doing to it, and cover it in your answer.
 - A tool error tells you what to do next; follow it. Don't repeat a call whose error says retryable: false.
-- Calls to the site are limited per request. Prefer one call that covers many items to many calls; for more than a few calls, use ${SCRIPT_TOOL}.
+- Calls to the site are limited per request. Prefer one call that covers many items to many calls${options.scripts ? `; for more than a few calls, use ${SCRIPT_TOOL}` : ''}.
 
 # Answering
 - Presentation tools take IDs exactly as tools returned them, never text. Every field on a card is filled in from tool results, so don't repeat what the cards show. Say what they can't: how many matched, how you chose and ordered them, what you checked and what you didn't.
@@ -154,8 +160,11 @@ function siteToolSpec(pack: Pack, spec: ToolSpec): ToolSpec {
   return { name: spec.name, description, inputSchema: spec.inputSchema };
 }
 
-/** Every tool the model can call: the site's (write tools only when the site allows writes), then the platform's. */
-export function toolSpecs(bundle: SiteBundle): ToolSpec[] {
+/**
+ * Every tool the model can call: the site's (write tools only when the site allows writes), then the platform's.
+ * run_script only for a device that can run it: offered anyway, the model would try it and get a refusal back.
+ */
+export function toolSpecs(bundle: SiteBundle, options: PrefixOptions): ToolSpec[] {
   const { pack } = bundle;
   const siteTools = bundle.siteTools
     .filter((tool) => pack.tools[tool.name] && !(pack.tools[tool.name]!.sideEffect === 'write' && pack.policies.writes === 'none'))
@@ -166,7 +175,7 @@ export function toolSpecs(bundle: SiteBundle): ToolSpec[] {
     if (!tool) throw new Error(`no platform tool definition for ${name}; run npm run generate`);
     return tool;
   };
-  const tools = [...siteTools, ...PRESENTATION_TOOLS.map(take), take(SCRIPT_TOOL)];
+  const tools = [...siteTools, ...PRESENTATION_TOOLS.map(take), ...(options.scripts ? [take(SCRIPT_TOOL)] : [])];
   const skills = Object.keys(pack.skills ?? {});
   if (skills.length) {
     const tool = take(SKILL_TOOL);
@@ -177,8 +186,8 @@ export function toolSpecs(bundle: SiteBundle): ToolSpec[] {
   return tools;
 }
 
-export function buildPromptPrefix(bundle: SiteBundle): PromptPrefix {
-  return { system: `${platformRules(bundle.pack.site.name)}\n\n${siteSection(bundle)}\n`, tools: toolSpecs(bundle) };
+export function buildPromptPrefix(bundle: SiteBundle, options: PrefixOptions): PromptPrefix {
+  return { system: `${platformRules(bundle.pack.site.name, options)}\n\n${siteSection(bundle)}\n`, tools: toolSpecs(bundle, options) };
 }
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

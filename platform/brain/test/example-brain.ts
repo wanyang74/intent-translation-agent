@@ -91,6 +91,8 @@ export interface SetupOptions {
   results?: ResultFor;
   bundle?: SiteBundle;
   sessionId?: string;
+  /** The client says it has a script sandbox. */
+  scripts?: boolean;
 }
 
 export const NOW = Date.UTC(2026, 9, 14, 12);
@@ -103,6 +105,7 @@ export function setup(script: FakeScript[], options: SetupOptions = {}) {
   });
   const client = new FakeClient(inProcess(brain), {
     site: 'example-shop', validate: validateMessage, results: options.results ?? shopResults, ...(options.sessionId ? { sessionId: options.sessionId } : {}),
+    ...(options.scripts ? { scripts: true } : {}),
   });
   return { brain, model, client, log, send: inProcess(brain) };
 }

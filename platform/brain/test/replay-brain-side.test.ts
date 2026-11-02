@@ -23,7 +23,8 @@ for (const id of listSites()) {
       const { differences } = await replayConversation(inProcess(brain), conversation);
       assert.deepEqual(differences, []);
       assert.equal(model.remaining, 0, 'every model step was used');
-      const promptPrefix = brain.promptPrefix;
+      // The saved conversations come from a device without a sandbox: their turns carry no capabilities.
+      const promptPrefix = brain.promptPrefixFor(false);
       for (const request of model.requests) {
         assert.equal(request.system, promptPrefix.system);
         assert.equal(request.tools, promptPrefix.tools);

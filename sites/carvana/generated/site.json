@@ -584,7 +584,7 @@
       ]
     },
     "batch_search": {
-      "description": "Exhaustive and multi-condition searches written as scripts",
+      "description": "Requests that need many calls, such as every page of a search or delivery dates for many cars",
       "load": "when a request needs many calls"
     },
     "delivery_and_pickup": {

@@ -261,6 +261,15 @@ export interface ClientTurn {
   traceId: TraceId;
   message: string;
   pageContext: PageContext;
+  /**
+   * What this device can run beyond the site's tools. Absent means none: the brain then offers only what every device has.
+   */
+  capabilities?: {
+    /**
+     * The device has the platform's script sandbox, so the brain may offer run_script.
+     */
+    scripts: boolean;
+  };
 }
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema

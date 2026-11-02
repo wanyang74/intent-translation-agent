@@ -18,13 +18,17 @@ export interface SiteBundle {
   validators: Validators;
   /** sites/<id>/prompt.md as the model sees it; '' if the site has none. */
   prompt: string;
-  /** Each skill's guidance as the model sees it, by name: sites/<id>/skills/<name>.md. */
+  /** Each skill's guidance as the model sees it, by name: sites/<id>/skills/<name>.md, script markers still in. */
   skills: Record<string, string>;
 }
 
-/** Markdown as the model sees it: HTML comments (authoring notes) removed, blank runs collapsed, ends trimmed. */
+/**
+ * Markdown as the model sees it: HTML comments (authoring notes) removed, blank runs collapsed, ends trimmed. The
+ * script markers (<!-- scripts --> … <!-- /scripts -->) stay: the skills loader keeps or drops what's between them,
+ * by whether the device can run scripts (skills.ts).
+ */
 export function forModel(markdown: string): string {
-  return markdown.replace(/<!--[\s\S]*?-->/g, '').replace(/\n{3,}/g, '\n\n').trim();
+  return markdown.replace(/<!--(?! \/?scripts -->)[\s\S]*?-->/g, '').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 const platformGenerated = new URL('../../../contract/generated/', import.meta.url);

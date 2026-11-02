@@ -28,12 +28,16 @@ export type AmendOutcome = 'queued' | 'too_late' | 'failed';
 const MAX_ROUNDS = 25;
 const SERVER_EVENTS = new Set(['tool_call', 'progress', 'await_results', 'answer', 'error']);
 
-/** Intake: the user's words and the page they're on, as a protocol turn. */
+/**
+ * Intake: the user's words and the page they're on, as a protocol turn. A host with a script sandbox says so, so the
+ * brain offers run_script; without one the field is left out, and the brain offers only the site's tools.
+ */
 export function makeTurn(session: Session, message: string): ClientTurn {
   if (!session.page) throw new Error('the surface must set the page context before a turn');
   return {
     type: 'turn', site: session.pack.site.id, sessionId: session.id,
     traceId: `trace_${session.host.randomId()}`, message, pageContext: session.page,
+    ...(session.host.scripts ? { capabilities: { scripts: true } } : {}),
   };
 }
 
