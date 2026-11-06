@@ -47,6 +47,10 @@ function readBody(req: IncomingMessage, limit: number): Promise<string> {
   });
 }
 
+/**
+ * The brain's one HTTP server, built once per process (main.ts creates it and calls listen). Everything per request
+ * happens in handleRequest, which Node calls once for each request that arrives; requests share only the Brain.
+ */
 export function createBrainServer(options: ServerOptions): Server {
   const allowed = new Set(options.allowedOrigins);
   const cors = (req: IncomingMessage, res: ServerResponse) => {
@@ -61,7 +65,17 @@ export function createBrainServer(options: ServerOptions): Server {
     res.end(JSON.stringify(body));
   };
 
-  return createServer(async (req, res) => {
+  /**
+   * One request, from its first byte to the end of its response. Several run at once on the one thread (a turn's
+   * stream and an amend, say): each gets its own call with its own variables, and they meet only in the Brain.
+   *   1. CORS, the preflight, the health check, and which endpoint this is.
+   *   2. Read the body as JSON.
+   *   3. Watch for the client hanging up, so the brain can stop the step it's running.
+   *   4. Hand the message to the brain; a refusal goes back as a JSON error.
+   *   5. Stream the brain's events back, one line each, until the brain ends the stream or the client goes away.
+   */
+  async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    // 1. Routing.
     cors(req, res);
     const path = (req.url ?? '/').split('?')[0];
     if (req.method === 'OPTIONS') {
@@ -78,6 +92,7 @@ export function createBrainServer(options: ServerOptions): Server {
     if (!endpoint) return json(res, 404, { error: 'not found' });
     if (req.method !== 'POST') return json(res, 405, { error: 'use POST' });
 
+    // 2. The body.
     let message: unknown;
     try {
       message = JSON.parse(await readBody(req, options.maxBodyBytes ?? MAX_BODY));
@@ -85,7 +100,7 @@ export function createBrainServer(options: ServerOptions): Server {
       if (error instanceof TooLarge) return json(res, 413, { error: 'the message is too large' }, { connection: 'close' });
       return json(res, 400, { error: 'the body is not JSON' });
     }
-    // If the client goes away before the stream ends, the brain stops the step that's running and ends the turn.
+    // 3. If the client goes away before the stream ends, the brain stops the step that's running and ends the turn.
     const hangUp = new AbortController();
     let gone = false;
     res.on('close', () => {
@@ -94,6 +109,7 @@ export function createBrainServer(options: ServerOptions): Server {
         hangUp.abort();
       }
     });
+    // 4. The brain finds the message's session (or opens one) and answers with a stream of events, or refuses.
     options.tap?.received(message);
     const accepted = options.brain.accept(message, { endpoint, signal: hangUp.signal });
     if (!accepted.ok) {
@@ -101,6 +117,8 @@ export function createBrainServer(options: ServerOptions): Server {
       return json(res, accepted.status, { error: accepted.error });
     }
 
+    // 5. The events. Each `await events.next()` may wait on the model or the network; while it does, Node runs
+    //    other requests' handleRequest calls, which is how an amend reaches a turn that's still streaming.
     req.socket.setNoDelay(true);
     res.writeHead(200, { 'content-type': 'application/x-ndjson', 'cache-control': 'no-store', 'x-accel-buffering': 'no' });
     const events = accepted.events[Symbol.asyncIterator]();
@@ -120,5 +138,7 @@ export function createBrainServer(options: ServerOptions): Server {
     } finally {
       if (!gone) res.end();
     }
-  });
+  }
+
+  return createServer(handleRequest);
 }
