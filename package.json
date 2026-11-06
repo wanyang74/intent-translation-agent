@@ -15,6 +15,7 @@
     "test:live": "LIVE=1 node --test platform/brain/test/live-model.test.ts",
     "typecheck": "tsc -p platform/contract && tsc -p platform/testkit && tsc -p platform/core && tsc -p platform/core/test && tsc -p platform/brain && tsc -p platform/evals && tsc -p platform/web && tsc -p platform/web/test && tsc -p platform/web/extension && for d in sites/*/; do tsc -p \"$d\" || exit 1; done",
     "brain": "node platform/brain/src/server/main.ts",
+    "carvana": "npm run extension -- --site carvana && BRAIN_SITE=carvana npm run brain",
     "evals": "node platform/evals/scripts/evals.ts",
     "traces": "node platform/evals/scripts/traces.ts",
     "test:screenshots": "SCREENSHOTS=1 node --test platform/web/test/screenshots.test.ts",
