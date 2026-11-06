@@ -1,7 +1,8 @@
 // The brain over HTTP, as core.js's web host calls it: POST /v1/turn, /v1/results and /v1/amend take one protocol message
 // as JSON and answer with newline-delimited JSON, one event per line, written the moment each event exists, so every
 // tool call reaches the client while the model is still writing. A message that breaks the protocol gets 400 and a
-// JSON error. Browsers call it from the site's own pages, so it answers CORS for the site's origins.
+// JSON error. Browsers call it from the site's own pages, so it answers CORS for the site's origins. An optional tap
+// sees every message on the link, both ways, for real-session traces (traces.ts).
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { Brain } from '../agent/brain.ts';
 
@@ -11,6 +12,16 @@ export interface ServerOptions {
   allowedOrigins: readonly string[];
   /** The largest request body accepted. Results carry tool outputs, so this is generous. */
   maxBodyBytes?: number;
+  /** Sees every message on the link: each one the client sends, any refusal, and each event sent back. */
+  tap?: LinkTap;
+}
+
+/** Watches the link without changing it. */
+export interface LinkTap {
+  /** Called before the brain takes the message, so the message comes before anything the brain logs about it. */
+  received(message: unknown): void;
+  refused(message: unknown, refusal: { status: number; error: string }): void;
+  sent(event: unknown): void;
 }
 
 const MAX_BODY = 2 * 1024 * 1024;
@@ -83,8 +94,12 @@ export function createBrainServer(options: ServerOptions): Server {
         hangUp.abort();
       }
     });
+    options.tap?.received(message);
     const accepted = options.brain.accept(message, { endpoint, signal: hangUp.signal });
-    if (!accepted.ok) return json(res, accepted.status, { error: accepted.error });
+    if (!accepted.ok) {
+      options.tap?.refused(message, { status: accepted.status, error: accepted.error });
+      return json(res, accepted.status, { error: accepted.error });
+    }
 
     req.socket.setNoDelay(true);
     res.writeHead(200, { 'content-type': 'application/x-ndjson', 'cache-control': 'no-store', 'x-accel-buffering': 'no' });
@@ -98,6 +113,7 @@ export function createBrainServer(options: ServerOptions): Server {
           break;
         }
         res.write(JSON.stringify(next.value) + '\n');
+        options.tap?.sent(next.value);
       }
     } catch {
       // The brain turns every failure it expects into an error event; anything else just ends the stream.
