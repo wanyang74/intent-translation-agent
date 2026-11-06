@@ -21,7 +21,9 @@
     "ui-fixtures": "node platform/web/scripts/ui-fixtures.ts",
     "gallery": "node platform/web/scripts/gallery.ts",
     "extension": "node platform/web/scripts/extension.ts",
-    "live": "node platform/web/scripts/live.ts"
+    "live": "node platform/web/scripts/live.ts",
+    "record-pages": "node platform/web/scripts/record-pages.ts",
+    "scan-api": "node platform/web/scripts/scan-api.ts"
   },
   "devDependencies": {
     "@types/node": "24.19.0",
