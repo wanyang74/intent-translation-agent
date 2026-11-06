@@ -315,9 +315,21 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 .fold-body > .lvl3:first-child,.fold-body > .lvl4:first-child{margin-top:0}
 .tab-num{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--muted);margin-right:10px}
 @media (prefers-reduced-motion:reduce){details.fold > summary::before,.toc-tog::before{transition:none}}
+.audit-site{margin:18px 0 6px;font-size:15px}
+.audit-item{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 14px;margin:8px 0}
+.audit-item.done{background:var(--ok-soft)}
+.audit-item label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.audit-item input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:var(--accent)}
+.audit-item .t{font-weight:600}
+.audit-sub{list-style:none;margin:8px 0 0 26px;padding:0;font-size:13px}
+.audit-sub li{margin:4px 0}
+.audit-sub label{gap:8px}
+.audit-item .why{margin:6px 0 0 26px;font-size:13px;color:var(--muted)}
+.audit-count{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
+
 <div class="layout">
 <nav class="outline" aria-label="Outline">
 <div class="outline-head"><span class="eyebrow">Outline</span><button type="button" class="toc-menu" aria-expanded="false">Show</button></div>
@@ -381,7 +393,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-steps">Fewer, faster steps</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#latency-feel">Feeling fast</a></div></li>
 </ol></li>
-<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Evaluation"></button><a href="#test"><span class="toc-num">6</span>Evaluation</a></div><ol>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Testing and Evaluation"></button><a href="#test"><span class="toc-num">6</span>Testing and Evaluation</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-fakes">Fakes</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-levels">Test levels</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#verify-daily">From day one</a></div></li>
@@ -389,15 +401,19 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-evals">Snapshot evals</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-ci">CI gates and model choice</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-tasks">Fixed end-to-end tasks</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-traces">Real-session traces</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#test-snapshots">Test snapshots</a></div></li>
 </ol></li>
 <li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Build plan"></button><a href="#plan"><span class="toc-num">7</span>Build plan</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-phases">Phases and gates</a></div></li>
-<li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-try">Try it in your Chrome</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#arch-spike">Phase 0 checks</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-backlog">Backlog</a></div></li>
 </ol></li>
-<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Decisions and open questions"></button><a href="#decisions"><span class="toc-num">8</span>Decisions and open questions</a></div><ol>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Try it in Chrome"></button><a href="#chrome"><span class="toc-num">8</span>Try it in Chrome</a></div><ol>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-try">Try it in your Chrome</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#plan-audit">Chrome extension audit checklist</a></div></li>
+</ol></li>
+<li class="toc-main"><div class="toc-row"><button type="button" class="toc-tog" aria-expanded="false" aria-label="Show the sections in Decisions and open questions"></button><a href="#decisions"><span class="toc-num">9</span>Decisions and open questions</a></div><ol>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d1">D1 · Client calls the site</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d2">D2 · Combining calls on the client</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d3">D3 · Client and server checks</a></div></li>
@@ -410,7 +426,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 
 <main>
     <header class="top">
-      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-10-28</div>
+      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-11-05</div>
       <h1>Intent Agent Mini</h1>
       <p class="lede">The smallest first version: take what a person can already do on a consumer site's frontend and turn it into a conversational agent flow that can loop and compare at scale. It only sends requests the frontend already sends. It doesn't touch the backend and doesn't place orders. The platform is general: everything it knows about a site comes from that site's pack, and Carvana is the first.</p>
       <div class="chips">
@@ -1159,7 +1175,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>Policies</td><td>Hidden fields, derived fields and their formulas, allowed values, page size, rate limit, call budget, how prices are shown, whether writes are allowed</td><td>No monthly payment or APR; estimated total = price + estimated taxes and fees; 1 call per second; 60 calls per task; no writes</td></tr>
             <tr><td>Page reader</td><td>Site code (<code>page.ts</code>) that tells the web surface which page the user is on: the page type, the item on screen and, when the page shows it, the user's location and what the page carries about the item</td><td>From the URL: a vehicle page's car, or a search page. On a vehicle page, the car's details and price come from the data the page embeds for itself (Next.js streamed data). On every page, the zip code comes from Carvana's own cookie (its guess from the visitor's network, or the zip they set), marked as a guess: the agent says which zip it used. With no cookie, the agent asks</td></tr>
             <tr><td>Destinations</td><td>The pages the agent may send the user to with a Take me there button: title, what's there, parameters, how the URL is built, an optional reader tool and app route</td><td>A search with filters; a car's page</td></tr>
-            <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; the 2026-10-08 HAR</td></tr>
+            <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; HARs from 2026-10-08 and 2026-10-19, and five car pages from 2026-11-05 (a page's fixture keeps only the car's own data)</td></tr>
           </tbody>
         </table>
       </div>
@@ -1190,14 +1206,14 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <table>
           <thead><tr><th>Endpoint</th><th>Frontend request</th><th>Main data returned</th><th>Type</th></tr></thead>
           <tbody>
-            <tr><td><code>search</code></td><td><code>POST /merch/search/api/v2/search</code></td><td>Vehicle list: price, estimated taxes and fees, mileage (plus monthly payment and APR, which the mini version doesn't show)</td><td><span class="pill">Read</span></td></tr>
+            <tr><td><code>search</code></td><td><code>POST /merch/search/api/v2/search</code></td><td>Vehicle list: VIN, price, estimated taxes and fees, mileage (plus monthly payment and APR, which the mini version doesn't show)</td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>facets</code></td><td><code>POST …/search/facets</code></td><td>Valid values and counts for each filter</td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>suggest</code></td><td><code>POST …/suggest/filters</code></td><td>Suggested next filters. Needs a visitor ID and a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>availability</code></td><td><code>POST /merch/buffering/…/soonestavailabilitybulk</code></td><td>Earliest delivery and pickup times, <code>routeId</code></td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>pricing</code></td><td><code>POST /merch/search/api/v2/pricing/vehicle</code></td><td>Full quote with estimated taxes and fees. Needs a client ID (D4)</td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>gap</code></td><td><code>GET /ancillary-products-api/…/GapWaiver/availability</code></td><td>Whether a GAP waiver is offered, and its price</td><td><span class="pill">Read</span></td></tr>
             <tr><td><code>reviews</code></td><td><code>POST /merch/reviews/api/review/sv</code></td><td>Owner reviews (third-party text, must be sanitized)</td><td><span class="pill warn">Read · sanitize</span></td></tr>
-            <tr><td><code>vehicle_page</code></td><td><code>GET /vehicle/{vehicleId}</code> (the vehicle page's HTML)</td><td>VIN, features, imperfections, options, packages and highlights, read from the page's embedded data. Validated against the contract and watched by the change monitor from day one, because the format is the site framework's own</td><td><span class="pill warn">Read · sanitize</span></td></tr>
+            <tr><td><code>vehicle_page</code></td><td><code>GET /vehicle/{vehicleId}</code> (the vehicle page's HTML)</td><td>VIN, the accident report, prior use, inspection results, imperfections, recalls, keys, warranty left, features, options, packages and highlights, read from the car's object in the page's embedded data (five car pages recorded 2026-11-05). Checked against the contract on every read, because the format is the site framework's own: a missing or reshaped field is a format change, never a guess</td><td><span class="pill warn">Read · sanitize</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1263,7 +1279,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 <div class="fold-body">
 <p>Three steps run for each site before anything ships:</p>
 <ul class="plain">
-  <li><b>Discovery.</b> A person drafts the site pack from a HAR recording of the site, then checks the risky assumptions live (phase 0). Carvana's was drafted this way. A tool that drafts a site pack from a recording, for a person to review, is future work.</li>
+  <li><b>Discovery.</b> A person drafts the site pack from a HAR recording of the site, then checks the risky assumptions live (phase 0). Carvana's was drafted this way. An API map read from the site's own scripts in a person's recordings (<code>npm run scan-api</code>) lists the addresses the frontend can call, for a person to choose the next tools from; it calls none of them. A tool that drafts a site pack from a recording, for a person to review, is future work.</li>
   <li><b>Contract.</b> JSON Schemas for the platform's formats and for each site's requests, responses and tools. A check runs every site pack against the site-pack format, every example against its schema, and every recorded request and response against its endpoint's schemas.</li>
   <li><b>Generated code.</b> Types and validators produced from the contract, so every part checks messages the same way. The validators run unchanged in a web page, QuickJS and JavaScriptCore. TypeScript comes first; Swift and Kotlin types follow when those platforms start.</li>
 </ul>
@@ -1630,7 +1646,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 
 <section id="test">
 <details class="fold lvl2" open>
-<summary><h2><span class="tab-num">6</span>Evaluation</h2></summary>
+<summary><h2><span class="tab-num">6</span>Testing and Evaluation</h2></summary>
 <div class="fold-body">
 <p class="sub">Two kinds of checks: functional tests that the code works, and evals that the agent's answers are right. Each site's recorded fixtures make both repeatable without touching the site's servers.</p>
 
@@ -1752,6 +1768,24 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
       <p class="note">Example conversations for three Carvana flows are in <code>sites/carvana/conversations</code>, built from the fixtures: one message to a ranked list, refining a search with the site's suggestions, and the car on screen. The exhaustive Model 3 task and the comparison with similar cars need more recordings: every results page of those searches, and the similar-cars request, which needs a schema and a tool first.</p>
 </div>
 </details>
+<details class="fold lvl3" id="test-traces" open>
+<summary><h3>Real-session traces</h3></summary>
+<div class="fold-body">
+<p class="sub">Real use in a browser is the best source of new tests and the truest benchmark. The brain run locally keeps a full record of every session, so what people ask, and where the agent falls short, can be measured over time and turned into tests.</p>
+<div class="tbl">
+        <table>
+          <thead><tr><th>Part</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>Trace</td><td>The brain's HTTP server writes every protocol message on the link, both ways, and the brain's log entries (model steps, timing, tokens, cache use), one line each as it happens, to <code>traces/&lt;site&gt;/&lt;date&gt;/&lt;sessionId&gt;.jsonl</code>. The messages are the same ones the example conversations hold, so the existing checker and replay code read them. On for the local brain (<code>npm run brain</code>); <code>BRAIN_TRACE_DIR=off</code> turns it off. A trace that can't be written never stops serving</td></tr>
+            <tr><td>Privacy</td><td>Traces hold the user's messages, the zip the site guessed and page URLs, so they stay on the machine that ran the brain: <code>traces/</code> is git-ignored and date folders older than 30 days are deleted (<code>BRAIN_TRACE_DAYS</code>). Nothing is removed at write time, so a trace stays a faithful record. A deployed brain needs its own privacy review before it keeps anything</td></tr>
+            <tr><td>Report</td><td><code>npm run traces</code>: for each session and turn, the steps, tool calls, failed results, refusals, time to the first event and to the answer, tokens, cache hit rate and cost (with prices supplied), then medians, p90s and totals. Tools the device said aren't available are listed as what people asked for that the agent can't do yet</td></tr>
+            <tr><td>Promote</td><td><code>npm run traces -- promote &lt;file&gt;</code> makes a conversation draft and an eval case stub per turn, for a person to review before they become tests. The user's zip becomes the site's standard test zip, page URLs lose their query, IP addresses are blanked, and encoded values that still hold the zip are listed. core.js replays the draft against the fixtures to find the ones that answer and the requests that still need a recording</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="note">A trace keeps tool results, not the site's raw responses, so a session can be replayed exactly but not re-run with a model that calls different tools. Saving the raw responses is in the <a href="#plan-backlog">backlog</a>.</p>
+</div>
+</details>
 <details class="fold lvl3" id="test-snapshots" open>
 <summary><h3>Test snapshots</h3></summary>
 <div class="fold-body">
@@ -1784,7 +1818,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>4 · Agentic brain <span class="pill">Done</span></td><td>Prompt assembler → skills loader → loop (step budget, timeouts, call IDs, early tool calls) → server checks (ID set, quotas) → model adapter</td><td>L3 passes with FakeModel and FakeClient; the prompt prefix is byte-identical across sessions; a few live model calls work. Passed on 2026-10-15</td></tr>
             <tr><td>5 · First real integration <span class="pill">Done</span></td><td>Real core and real brain with FakeHost and FakeModel → then the real model</td><td>Saved example conversations replay identically; then the 3 fixed tasks pass with the real model. Passed on 2026-10-19</td></tr>
             <tr><td>6 · Evals <span class="pill">Done</span></td><td>Snapshot runner → first ~50 cases → CI gates</td><td>Baseline pass rates recorded. Proposed starting bar: about 90% on core cases and 100% on safety cases. Baseline recorded on 2026-10-19 (57 Carvana cases, 3 trials each). On 2026-10-20, of the trials the fixtures could answer, core passed 54 of 57 (95%) and safety 36 of 36. Still to do: the CI workflow, which needs the API key as a repository secret; the gate itself runs with <code>npm run evals -- --gate</code></td></tr>
-            <tr><td>7 · Chrome extension <span class="pill warn">In progress</span></td><td>Overlay built against UI fixtures → then live on carvana.com</td><td>UI fixture screenshots match; the 3 tasks pass live; progress lines and streaming work. So far (2026-10-20): the overlay passes on every UI fixture in Chrome, screenshots are saved, and the built extension plays the example conversations offline. Live, Carvana's Cloudflare check stops headless Chrome; in a visible Chrome window the 3 tasks passed on 2026-10-20 after four rounds of fixes. On 2026-10-21, destinations with a Take me there button and the conversation carried across pages: built and tested offline (the extension plays every example conversation with a page load between turns, in one brain session); eval cases for a destination pass with the real model. Next: a person's own Chrome (see Try it in your Chrome below)</td></tr>
+            <tr><td>7 · Chrome extension <span class="pill warn">In progress</span></td><td>Overlay built against UI fixtures → then live on carvana.com</td><td>UI fixture screenshots match; the 3 tasks pass live; progress lines and streaming work. So far (2026-10-20): the overlay passes on every UI fixture in Chrome, screenshots are saved, and the built extension plays the example conversations offline. Live, Carvana's Cloudflare check stops headless Chrome; in a visible Chrome window the 3 tasks passed on 2026-10-20 after four rounds of fixes. On 2026-10-21, destinations with a Take me there button and the conversation carried across pages: built and tested offline (the extension plays every example conversation with a page load between turns, in one brain session); eval cases for a destination pass with the real model. Next: a person's own Chrome (see <a href="#chrome">Try it in Chrome</a>)</td></tr>
             <tr><td>8 · iOS, then Android</td><td>Bridge and Host for each platform. The iOS Simulator needs full Xcode installed; JavaScriptCore checks can run earlier with macOS's <code>jsc</code></td><td>L4 runs inside each app's own engine; the end-to-end tasks pass in the Simulator and emulator</td></tr>
             <tr><td>9 · Operations</td><td>Off switches → change monitor → gradual rollout</td><td>A simulated response change turns the tool off; done before anyone outside the team uses it</td></tr>
           </tbody>
@@ -1793,6 +1827,43 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
       <p class="note">Optional at any point after phase 0: capture the official Carvana app's traffic on a device to confirm the app and the website use the same backend endpoints.</p>
 </div>
 </details>
+<details class="fold lvl3" id="arch-spike" open>
+<summary><h3>Phase 0: the assumptions we checked first</h3></summary>
+<div class="fold-body">
+<p class="sub">The riskiest assumptions, checked live before building on them. All of them passed on 2026-10-11.</p>
+      <div class="qs">
+        <div class="q"><b>Portability</b> · The same core.js bundle runs unchanged in a Chrome page, under QuickJS in CI, and in JavaScriptCore in the iOS Simulator.</div>
+        <div class="q"><b>Split loop</b> · A server step sends a tool call to the client, the client returns the result, and the server continues, with step budgets and timeouts working.</div>
+        <div class="q"><b>Sandbox</b> · A model-written script can call only registered tools, has no fetch, and is killed if it loops forever.</div>
+        <div class="q"><b>Grounding</b> · A presentation call with an unknown ID is refused, and every price on screen traces to a tool result.</div>
+      </div>
+</div>
+</details>
+<details class="fold lvl3" id="plan-backlog" open>
+<summary><h3>Backlog</h3></summary>
+<div class="fold-body">
+<p class="sub">Work we've chosen to do later, tracked here until it gets a phase. Each needs a design proposal before it starts.</p>
+      <div class="qs">
+        <div class="q"><b>Sign-in mode support</b> · Tools for what a signed-in person can read on a site (on Carvana, the pickup price, favorites and orders), marked as needing sign-in. Writes stay out of scope. Needs a signed-in recording, with scrub rules for personal data and login tokens added before any fixture is built from it, and a decision on how the user's sign-in reaches core.js.</div>
+        <div class="q"><b>Script sandbox in the extension</b> · The Chrome extension has no script sandbox yet, so the agentic brain doesn't offer scripts there and the model calls tools one at a time. Planned: QuickJS in an offscreen document, with tool calls passed back to the content script.</div>
+        <div class="q"><b>More Carvana destinations</b> · Financing, selling or trading a car, and help articles. Needs one signed-out look at those pages' URLs and at where the help content comes from, so a reader can be built for it. The same signed-out recording should include a car's page HTML (for the car-page destination's reader) and a quote for a second car at the same zip (for the eval case comparing two cars).</div>
+        <div class="q"><b>Raw site responses in real-session traces</b> · Traces keep tool results, so a real session can't be re-run with a new model or prompt that calls different tools. Planned: the extension also saves the site's responses to its requests, with identifiers removed as fixtures are, one small file per session beside the trace, so a promoted session becomes fixtures too.</div>
+        <div class="q"><b>Session memory: condense, store, restore</b> · The brain forgets a conversation after 30 minutes idle and starts an empty session under the same ID. The overlay still shows the earlier messages, but the model doesn't have them. Seen 2026-11-05: after a 40-minute pause, "the five cars you suggested" got "this is the start of our chat". The 30-minute limit stays as it is. Instead, the brain keeps a condensed memory of each session and reloads it when that session ID comes back. Agreed 2026-11-05; not built. Key decisions:<ul class="plain"><li><b>Condensed by code, not by the model.</b> When the brain forgets an idle session, <code>condense(history, sitePack)</code> builds the memory from the session's own history. There's no model call, so it adds no cost or delay, and IDs, VINs and prices come through exactly. For each turn it keeps the user's message, each tool call (tool and arguments) and the agent's answer, cut to 300 characters.</li><li><b>Every returned ID, in full.</b> For each tool call the memory stores every ID the tool returned, with its kind, found through the site pack's <code>ids.output</code> paths, and never cut by an item limit. The IDs matter most: with them, the model can refer to earlier items and call tools on them again ("the five cars you suggested") without repeating the search. Each item also gets one line of its key values from the site pack's card template (title, subtitle and card fields), so this works for any site; the result's own summary values, such as total matches and page, are kept as well. Item lines stop at 30 per call; the ID list does not.</li><li><b>Stored on disk, by session ID.</b> A file per session under <code>sites/&lt;site&gt;/session_log/</code>, behind a <code>MemoryStore</code> interface, with a fake for tests. Memories survive brain restarts and are deleted after 24 hours. The folder is git-ignored, since memories hold what the user typed.</li><li><b>Restored when the ID returns.</b> A new turn for a session ID the brain doesn't have, but that has a memory, starts the session from it: a context block after the cached system prompt, saying the memory is condensed and how old it is. It is logged as <code>session_restored</code>, so it shows in traces.</li><li><b>IDs restored to the checks.</b> The memory's IDs go back into the new session's known IDs, so the brain accepts them. The extension's core.js still knows them, since it keeps the conversation's IDs across pages.</li><li><b>Stale values are fetched again.</b> The block tells the model to call the tools again before stating a price, delivery date or anything else that can change, rather than repeat old numbers.</li><li><b>Trusted because it's server-side.</b> The memory is built from the brain's own history and never sent from the device, so a tampered extension can't invent earlier tool results. Fenced third-party text, such as reviews, is left out.</li><li><b>Tests and an eval.</b> Unit tests for <code>condense</code> on every site pack: card lines, the 30-item limit, every ID kept, no fenced text. A brain test: forgotten at 30 minutes, the next turn starts from the memory with its IDs. An integration test replays a saved conversation with a 40-minute gap. An eval case for the scenario above: top 5, a gap, then "which of the five have imperfections?", which passes only if <code>vehicle_details</code> is called for those cars and no new search is run.</li><li><b>Design doc on build.</b> Update the Brain and AgentSession rows (forgotten after 30 minutes idle, memory kept 24 hours on disk), and describe the memory in the server section.</li></ul></div>
+        <div class="q"><b>Answers from outside the site</b> · For questions the site's own data can't answer. Example: whether a Tesla on Carvana has HW3 or HW4. Carvana's page doesn't say, but a public VIN lookup (hw4checker.com) estimates it. Discussed 2026-11-05; not built. The design so far:<ul class="plain"><li><b>Off unless a site turns it on, and only with the user's permission.</b> The agent first says the site doesn't show this and offers to look at public sources. Permission comes from a button click and is enforced by the brain, so the model can't search on its own. Open: whether to ask once per conversation (recommended) or per question.</li><li><b>Our own search tool, not the model provider's.</b> A <code>public_search</code> tool on the brain uses a search API behind a platform interface, with a fake for tests. It returns titles, links and snippets, cleaned and fenced, at most 3 searches per turn. Our code checks each query before it's sent, so it never holds the user's zip or other personal data. Anthropic's built-in web search and web fetch were the alternative: they can find and read pages, but they can't fill in a form, and their results can't be recorded or replayed in evals. Before choosing a provider, about 10 real questions would be run on 2–3 providers to see which finds a useful answer in the top 5.</li><li><b>Lookup-first queries.</b> For a fact about one item, search first for a lookup by its ID, such as <code>tesla hw check vin</code>, and alongside it for the general rule. Queries are 3–6 keywords, as a person types them, with 2–3 phrasings in one step.</li><li><b>Shown as outside information.</b> Such answers are text only, never on a card. Each is labeled "from public sources, not the site", with links, says "likely" where the sources only suggest something, and says how to confirm.</li><li><b>Vetted external lookups run inline; anything else is a link.</b> After a person has checked a service's terms, accuracy and caveats, it gets its own tool, built like a site-pack endpoint, with a contract, fixtures, the change monitor and an off switch. hw4checker would be the first (<code>hardware_estimate</code>, by VIN), once its terms allow automated use. A site that search finds but nobody has checked is offered only as a link, with the VIN ready to copy. The agent never operates it.</li><li><b>Evals that hold up.</b> Search recordings are matched by keywords, so a reworded query still finds its recording. Eval runs save the results of new queries. Cases check that the agent asks first, says so when search is off, and cites and hedges what it found.</li><li><b>Clues from the site's own data.</b> <code>vehicle_details</code> adds the in-service date and the factory decoded from the VIN.</li></ul>Needs a design proposal and a new decision ("Answers from outside the site, with consent") before it starts.</div>
+        <div class="q"><b>Sold and pending car pages</b> · <code>vehicle_details</code> reads only available cars so far: the recorded pages are all for sale. What a sold or pending car's page holds (its sale status, or a redirect to search) is unrecorded, so the tool's answer for one is untested. Needs one such page, recorded signed out.</div>
+        <div class="q"><b>Per-item answers for bulk requests in FakeHost</b> · A request for several items at once (on Carvana, delivery dates for a list of cars) is matched only to the exact set that was recorded, so any other set is unrecorded even when every item in it was recorded. Planned: answer such requests item by item from the recorded responses. Changes the site-pack format.</div>
+      </div>
+</div>
+</details>
+</div>
+</details>
+</section>
+
+<section id="chrome">
+<details class="fold lvl2" open>
+<summary><h2><span class="tab-num">8</span>Try it in Chrome</h2></summary>
+<div class="fold-body">
+<p class="sub">Run the Carvana extension in your own Chrome, then work through the audit checklist.</p>
 <details class="fold lvl3" id="plan-try" open>
 <summary><h3>Try it in your own Chrome</h3></summary>
 <div class="fold-body">
@@ -1819,28 +1890,55 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
       </div>
 </div>
 </details>
-<details class="fold lvl3" id="arch-spike" open>
-<summary><h3>Phase 0: the assumptions we checked first</h3></summary>
+<details class="fold lvl3" id="plan-audit" open>
+<summary><h3>Chrome extension audit checklist <span class="pill warn">Draft</span></h3></summary>
 <div class="fold-body">
-<p class="sub">The riskiest assumptions, checked live before building on them. All of them passed on 2026-10-11.</p>
-      <div class="qs">
-        <div class="q"><b>Portability</b> · The same core.js bundle runs unchanged in a Chrome page, under QuickJS in CI, and in JavaScriptCore in the iOS Simulator.</div>
-        <div class="q"><b>Split loop</b> · A server step sends a tool call to the client, the client returns the result, and the server continues, with step budgets and timeouts working.</div>
-        <div class="q"><b>Sandbox</b> · A model-written script can call only registered tools, has no fetch, and is killed if it loops forever.</div>
-        <div class="q"><b>Grounding</b> · A presentation call with an unknown ID is refused, and every price on screen traces to a tool result.</div>
-      </div>
-</div>
-</details>
-<details class="fold lvl3" id="plan-backlog" open>
-<summary><h3>Backlog</h3></summary>
-<div class="fold-body">
-<p class="sub">Work we've chosen to do later, tracked here until it gets a phase. Each needs a design proposal before it starts.</p>
-      <div class="qs">
-        <div class="q"><b>Sign-in mode support</b> · Tools for what a signed-in person can read on a site (on Carvana, the pickup price, favorites and orders), marked as needing sign-in. Writes stay out of scope. Needs a signed-in recording, with scrub rules for personal data and login tokens added before any fixture is built from it, and a decision on how the user's sign-in reaches core.js.</div>
-        <div class="q"><b>Script sandbox in the extension</b> · The Chrome extension has no script sandbox yet, so the agentic brain doesn't offer scripts there and the model calls tools one at a time. Planned: QuickJS in an offscreen document, with tool calls passed back to the content script.</div>
-        <div class="q"><b>More Carvana destinations</b> · Financing, selling or trading a car, and help articles. Needs one signed-out look at those pages' URLs and at where the help content comes from, so a reader can be built for it. The same signed-out recording should include a car's page HTML (for the car-page destination's reader) and a quote for a second car at the same zip (for the eval case comparing two cars).</div>
-        <div class="q"><b>Per-item answers for bulk requests in FakeHost</b> · A request for several items at once (on Carvana, delivery dates for a list of cars) is matched only to the exact set that was recorded, so any other set is unrecorded even when every item in it was recorded. Planned: answer such requests item by item from the recorded responses. Changes the site-pack format.</div>
-      </div>
+<p class="sub">Nine things to check in your own Chrome across Carvana, United Airlines and Fidelity. Ticks are saved in this browser only. <span class="audit-count" id="audit-count"></span></p>
+<h5>Before you start</h5>
+<div class="audit-item"><ul class="audit-sub" style="margin-left:0">
+<li><label><input type="checkbox" data-k="pre-brain"> Brain running: <code>BRAIN_SITE=carvana npm run brain</code></label></li>
+<li><label><input type="checkbox" data-k="pre-ext"> Extension built: <code>npm run extension -- --site carvana</code></label></li>
+<li><label><input type="checkbox" data-k="pre-chrome"> Loaded in visible Chrome (headless trips Cloudflare)</label></li>
+</ul></div>
+
+<h4 class="audit-site">Carvana</h4>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="cv-hw4"><span><span class="t">HW4 check</span> <span class="pill warn">Blocked</span></span></label>
+<div class="why">Needs <code>vehicle_details</code> (features and options), which isn't built yet. It waits for a recording of a vehicle page.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="cv-hw4-rec"> Vehicle page HTML recorded</label></li><li><label><input type="checkbox" data-k="cv-hw4-tool"> <code>vehicle_details</code> built and tested</label></li><li><label><input type="checkbox" data-k="cv-hw4-chrome"> Answers correctly in Chrome, and says "not listed" when the page doesn't show it</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="cv-scratch"><span><span class="t">Scratch check</span> <span class="pill warn">Blocked</span></span></label>
+<div class="why">Needs the imperfections section of <code>vehicle_details</code>. Today the agent says it can't see them and points to the car's page.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="cv-scr-tool"> Imperfections read from the page</label></li><li><label><input type="checkbox" data-k="cv-scr-chrome"> Matches the page on 3+ cars</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="cv-inc"><span><span class="t">Incidents check</span> <span class="pill warn">Unclear</span></span></label>
+<div class="why">No accident or incident handling found in the pack yet. Decide first where Carvana shows it (vehicle page, history report) and whether it's readable.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="cv-inc-where"> Source located on the site</label></li><li><label><input type="checkbox" data-k="cv-inc-tool"> Tool or section added</label></li><li><label><input type="checkbox" data-k="cv-inc-chrome"> Passes in Chrome, with a negative case</label></li></ul></div>
+
+<h4 class="audit-site">United Airlines</h4>
+<p class="note">No site pack or recording yet. Start with a phase 0 recording and a pack, as for Carvana. The four items below all depend on that.</p>
+<div class="audit-item"><label><input type="checkbox" data-k="ua-pack"><span><span class="t">Prerequisite: United site pack</span> <span class="pill warn">Not started</span></span></label>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-rec"> HAR recorded</label></li><li><label><input type="checkbox" data-k="ua-pack-built"> Pack built and checked</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-book"><span><span class="t">Ticket booking</span> <span class="pill warn">Write</span></span></label>
+<div class="why">A write action, outside the read-only mini scope. Per D3: stage the choice and hand off to United's own page; the user approves there.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-book-search"> Flight search and results correct</label></li><li><label><input type="checkbox" data-k="ua-book-hand"> Hands off to United's checkout without submitting</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-seat"><span><span class="t">Seat selection</span> <span class="pill warn">Write</span></span></label>
+<div class="why">Same handoff rule: read the seat map, never assign a seat.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-seat-read"> Seat map read correctly</label></li><li><label><input type="checkbox" data-k="ua-seat-hand"> Handoff, no seat assigned by the agent</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-policy"><span><span class="t">Ticket canceling policy</span> <span class="pill warn">Needs retrieval</span></span></label>
+<div class="why">Answers must come from United's policy text, so this needs retrieval (RAG isn't built yet).</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-pol-src"> Policy source chosen and indexed</label></li><li><label><input type="checkbox" data-k="ua-pol-chrome"> Grounded answer with a link; declines when the policy doesn't say</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-cancel"><span><span class="t">Ticket canceling operation</span> <span class="pill warn">Write</span></span></label>
+<div class="why">A write action. Hand off to United's manage-trip page; never cancel for the user.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-can-hand"> "Take me there" button reaches the right page</label></li><li><label><input type="checkbox" data-k="ua-can-none"> Nothing cancelled by the agent</label></li></ul></div>
+
+<h4 class="audit-site">Fidelity</h4>
+<p class="note">No site pack or recording yet, and the site needs sign-in for most pages. Money moves here, so servers guard it (D3).</p>
+<div class="audit-item"><label><input type="checkbox" data-k="fd-pack"><span><span class="t">Prerequisite: Fidelity site pack</span> <span class="pill warn">Not started</span></span></label>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="fd-rec"> HAR recorded</label></li><li><label><input type="checkbox" data-k="fd-pack-built"> Pack built and checked</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="fd-auto"><span><span class="t">Auto-invest set-up</span> <span class="pill warn">Write</span></span></label>
+<div class="why">A write action. The agent may explain and take the user to the set-up page; it must not create the plan.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="fd-auto-hand"> Handoff to the set-up page works</label></li><li><label><input type="checkbox" data-k="fd-auto-none"> No plan created or changed by the agent</label></li></ul></div>
+<div class="audit-item" data-nine><label><input type="checkbox" data-k="fd-qa"><span><span class="t">Q&amp;A (RAG)</span> <span class="pill warn">Needs retrieval</span></span></label>
+<div class="why">Answers from Fidelity's help content. Retrieval isn't built yet.</div>
+<ul class="audit-sub"><li><label><input type="checkbox" data-k="fd-qa-src"> Help content source chosen and indexed</label></li><li><label><input type="checkbox" data-k="fd-qa-chrome"> Grounded answers with links; declines out-of-scope questions</label></li></ul></div>
 </div>
 </details>
 </div>
@@ -1849,7 +1947,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 
 <section id="decisions">
 <details class="fold lvl2" open>
-<summary><h2><span class="tab-num">8</span>Decisions and open questions</h2></summary>
+<summary><h2><span class="tab-num">9</span>Decisions and open questions</h2></summary>
 <div class="fold-body">
 <p class="sub">A log of questions we've settled, with the reasoning and what would make us revisit them.</p>
 <details class="fold lvl3 dec" id="d1" open>
@@ -2088,6 +2186,34 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
   window.addEventListener('resize', update);
   if (location.hash.length > 1) go(location.hash.slice(1), false);
   update();
+})();
+</script>
+<script>
+(function(){
+  var KEY = 'intent-agent-mini.audit';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#plan-audit input[type=checkbox]'));
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  function paint(){
+    var items = Array.prototype.slice.call(document.querySelectorAll('#plan-audit .audit-item'));
+    var nine = items.filter(function(it){ return it.hasAttribute('data-nine'); });
+    items.forEach(function(it){
+      var top = it.querySelector(':scope > label input');
+      it.classList.toggle('done', !!(top && top.checked));
+    });
+    var n = nine.filter(function(it){ return it.querySelector(':scope > label input').checked; }).length;
+    var c = document.getElementById('audit-count');
+    if (c) c.textContent = n + ' of ' + nine.length + ' items ticked';
+  }
+  boxes.forEach(function(b){
+    b.checked = !!state[b.dataset.k];
+    b.addEventListener('change', function(){
+      state[b.dataset.k] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      paint();
+    });
+  });
+  paint();
 })();
 </script>
 </body>

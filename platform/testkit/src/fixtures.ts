@@ -86,4 +86,10 @@ export interface FixtureHooks {
   describe?(endpoint: string, request: any, response: any): string;
   /** Extra fixtures: errors seen live (observed) and failures expected but not seen yet (synthetic). */
   derive?(ctx: DeriveContext): Omit<Fixture, 'site'>[];
+  /**
+   * For a page endpoint (responseFormat: html): the part of a recorded page its fixture keeps, as a page the site's
+   * parser reads the same way, or null to leave the page out. A page can carry the visitor's own data (location,
+   * sign-in state, device), so pages become fixtures only through this hook, keeping only what the parser needs.
+   */
+  page?(endpoint: string, html: string): string | null;
 }

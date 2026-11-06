@@ -14,6 +14,13 @@ export type VehicleId = number;
  */
 export type StockNumber = number;
 /**
+ * The car's 17-character vehicle identification number, as Carvana lists it (no I, O or Q).
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "Vin".
+ */
+export type Vin = string;
+/**
  * Opaque and server-issued. Gzip-compressed, base64url-encoded JSON of servicing location and zip code. Never built by us.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -529,6 +536,7 @@ export interface SearchResponse {
     vehicles: {
       vehicleId: VehicleId;
       stockNumber: StockNumber;
+      vin: Vin;
       year: number;
       make: string;
       model: string;
@@ -620,14 +628,63 @@ export interface VehiclePageRequest {
   vehicleId: string;
 }
 /**
- * What Carvana's vehicle page parser extracts (GET /vehicle/{vehicleId}). Read from the Next.js data embedded in the page's HTML. The format is the site framework's own, so this is validated on every read and watched by the change monitor.
+ * What Carvana's vehicle page parser extracts (GET /vehicle/{vehicleId}). Read from the vehicleDetails object in the Next.js data the page embeds (recorded 2026-11-05, five cars). The format is the site framework's own, so this is checked on every read: a missing or reshaped field fails the check rather than showing wrong data.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "VehiclePageResponse".
  */
 export interface VehiclePageResponse {
   vehicleId: VehicleId;
-  vin: string;
+  vin: Vin;
+  year: number;
+  make: string;
+  model: string;
+  trim: string;
+  mileage: number;
+  /**
+   * Carvana's sale status for the car, such as Available
+   */
+  saleStatus: string;
+  /**
+   * The highlight tags the car's page shows, in its order, with Carvana's explanation when it gives one (such as No Reported Accidents, according to CARFAX and AutoCheck)
+   */
+  highlights: {
+    name: string;
+    description: string;
+  }[];
+  /**
+   * Whether the AutoCheck report Carvana uses shows an accident
+   */
+  accidentReported: boolean;
+  /**
+   * How the car was used before, such as Personal
+   */
+  priorUse: string[];
+  /**
+   * How many keys come with the car
+   */
+  keys: number | null;
+  /**
+   * How many recalls Carvana lists for the car
+   */
+  recalls: number;
+  /**
+   * Manufacturer warranty left, by coverage; null where the car has none or Carvana doesn't say
+   */
+  warranty: {
+    basic: {
+      months: number | null;
+      miles: number | null;
+    };
+    drivetrain: {
+      months: number | null;
+      miles: number | null;
+    };
+    battery: {
+      months: number | null;
+      miles: number | null;
+    };
+  };
   features: {
     category: string;
     /**
@@ -635,14 +692,44 @@ export interface VehiclePageResponse {
      */
     names: [string, ...string[]];
   }[];
+  /**
+   * Factory options installed
+   */
+  options: string[];
+  /**
+   * Factory packages installed
+   */
+  packages: string[];
+  /**
+   * Imperfections Carvana's inspectors photographed
+   */
   imperfections: {
     title: string;
     description: string;
+    /**
+     * exterior or interior
+     */
     location: string;
+    /**
+     * Where on the car, such as Front Bumper
+     */
+    area: string;
   }[];
-  options: string[];
-  packages: string[];
-  highlights: string[];
+  /**
+   * Carvana's inspection report: when, how many points, and every point not simply passed
+   */
+  inspection: {
+    date: string;
+    points: number;
+    notPassed: {
+      category: string;
+      point: string;
+      /**
+       * Such as FixedOrReplaced
+       */
+      status: string;
+    }[];
+  } | null;
 }
 /**
  * compare_vehicles: input
@@ -2544,6 +2631,7 @@ export interface SearchVehiclesOutput {
   vehicles: {
     vehicleId: VehicleId;
     stockNumber?: StockNumber;
+    vin: Vin;
     year: number;
     make: string;
     model: string;
@@ -2601,7 +2689,57 @@ export interface VehicleDetailsInput {
  * via the `definition` "VehicleDetailsOutput".
  */
 export interface VehicleDetailsOutput {
-  vin: string;
+  vehicleId: VehicleId;
+  vin: Vin;
+  year: number;
+  make: string;
+  model: string;
+  trim: string;
+  mileage: number;
+  /**
+   * Carvana's sale status for the car, such as Available
+   */
+  saleStatus: string;
+  /**
+   * The highlight tags the car's page shows, in its order, with Carvana's explanation when it gives one (such as No Reported Accidents, according to CARFAX and AutoCheck)
+   */
+  highlights: {
+    name: string;
+    description: string;
+  }[];
+  /**
+   * Whether the AutoCheck report Carvana uses shows an accident
+   */
+  accidentReported: boolean;
+  /**
+   * How the car was used before, such as Personal
+   */
+  priorUse: string[];
+  /**
+   * How many keys come with the car
+   */
+  keys: number | null;
+  /**
+   * How many recalls Carvana lists for the car
+   */
+  recalls: number;
+  /**
+   * Manufacturer warranty left, by coverage; null where the car has none or Carvana doesn't say
+   */
+  warranty: {
+    basic: {
+      months: number | null;
+      miles: number | null;
+    };
+    drivetrain: {
+      months: number | null;
+      miles: number | null;
+    };
+    battery: {
+      months: number | null;
+      miles: number | null;
+    };
+  };
   features: {
     category: string;
     /**
@@ -2609,12 +2747,44 @@ export interface VehicleDetailsOutput {
      */
     names: [string, ...string[]];
   }[];
+  /**
+   * Factory options installed
+   */
+  options: string[];
+  /**
+   * Factory packages installed
+   */
+  packages: string[];
+  /**
+   * Imperfections Carvana's inspectors photographed
+   */
   imperfections: {
     title: string;
     description: Fenced;
+    /**
+     * exterior or interior
+     */
     location: string;
+    /**
+     * Where on the car, such as Front Bumper
+     */
+    area: string;
   }[];
-  options: string[];
-  packages: string[];
-  highlights: string[];
+  /**
+   * Carvana's inspection report: when, how many points, and every point not simply passed
+   */
+  inspection: {
+    date: string;
+    points: number;
+    notPassed: {
+      category: string;
+      point: string;
+      /**
+       * Such as FixedOrReplaced
+       */
+      status: string;
+    }[];
+  } | null;
+  deepLink: string;
+  nextStep?: string;
 }

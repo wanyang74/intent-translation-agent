@@ -1,8 +1,13 @@
 // Carvana's additions to the fixture builder (platform/testkit/scripts/build-fixtures.ts):
 //   describe: one line per recorded request, in Carvana's terms
 //   derive:   errors seen live in phase 0 (observed) and failures expected but not seen yet (synthetic)
+//   page:     from a recorded car page, only the car's own data (the vehicleDetails object, word for word), as a page
+//             streaming it the way Carvana's pages do; the rest of a page is the visitor's (location, sign-in state,
+//             device, analytics IDs) and never kept
 import { readFileSync } from 'node:fs';
 import type { DeriveContext, Fixture } from '../../platform/testkit/src/fixtures.ts';
+import { flightData, flightScript, namedObjectText, scriptsIn } from './flight.ts';
+import { parseVehiclePage } from './tools.ts';
 
 type Derived = Omit<Fixture, 'site'>;
 
@@ -18,6 +23,8 @@ function describeFilters(filters: Record<string, any> = {}): string {
   return parts.join(' · ') || 'no filters';
 }
 
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`;
+
 export function describe(endpoint: string, req: Record<string, any>, res: Record<string, any>): string {
   switch (endpoint) {
     case 'search': return `${describeFilters(req.filters)}, page ${req.pagination?.page}: ${res.inventory?.vehicles?.length} cars of ${res.inventory?.pagination?.totalMatchedInventory}`;
@@ -27,6 +34,10 @@ export function describe(endpoint: string, req: Record<string, any>, res: Record
     case 'pricing': return `car ${req.vehicleId}, delivery route, zip ${req.zip5}`;
     case 'reviews': return `${req.year} ${req.make} ${req.model} ${req.trim}`;
     case 'gap': return `car ${req.vehicleId}, ${req.amountFinanced} financed`;
+    case 'vehicle_page': {
+      const car = parseVehiclePage(res as unknown as string);
+      return car ? `car ${car.vehicleId}: ${car.year} ${car.make} ${car.model}, ${count(car.imperfections.length, 'imperfection')}, ${count(car.inspection?.notPassed.length ?? 0, 'inspection point')} not passed` : `car ${req.vehicleId}`;
+    }
     default: return endpoint;
   }
 }
@@ -132,4 +143,18 @@ export function derive({ first, placeholder }: DeriveContext): Derived[] {
     });
   }
   return out;
+}
+
+/**
+ * A recorded car page cut down to the car: the vehicleDetails object exactly as streamed, in two chunks (live pages
+ * split their data across many, so the parser's joining stays exercised), under the page's title.
+ */
+export function page(endpoint: string, html: string): string | null {
+  if (endpoint !== 'vehicle_page') return null;
+  const car = namedObjectText(flightData(scriptsIn(html)), 'vehicleDetails');
+  if (!car) return null;
+  const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '';
+  const data = `{"vehicleDetails":${car}}`;
+  const half = Math.floor(data.length / 2);
+  return `<!DOCTYPE html><html><head><title>${title}</title></head><body>${flightScript(data.slice(0, half))}${flightScript(data.slice(half))}</body></html>`;
 }

@@ -15,6 +15,9 @@
           "stockNumber": {
             "$ref": "/sites/carvana/schemas/common.json#/$defs/StockNumber"
           },
+          "vin": {
+            "$ref": "/sites/carvana/schemas/common.json#/$defs/Vin"
+          },
           "year": {
             "type": "integer"
           },
@@ -52,6 +55,7 @@
         },
         "required": [
           "vehicleId",
+          "vin",
           "year",
           "make",
           "model",
@@ -101,6 +105,7 @@
         {
           "vehicleId": 4812031,
           "stockNumber": 3006794022,
+          "vin": "7SAYGDEE1PA000000",
           "year": 2023,
           "make": "Tesla",
           "model": "Model Y",

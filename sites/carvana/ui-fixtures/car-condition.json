@@ -1,0 +1,144 @@
+{
+  "id": "car-condition",
+  "site": "carvana",
+  "source": "conversation",
+  "description": "The user is on a car's page and asks about damage and accident history. The agent reads the car's own page with vehicle_details and shows its condition and imperfections, saying where each fact comes from.",
+  "turns": [
+    {
+      "message": "Has this one been in an accident? Any damage I should know about?",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4853120",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4853120
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Reading this car's page…"
+        },
+        {
+          "type": "answer",
+          "text": "No accident is reported: Carvana says the AutoCheck report shows none, and its CARFAX-based tag says there was one previous owner.\n\nCarvana's inspectors photographed three imperfections: a light scratch on the front bumper, visible past repair work on the rear bumper, and a scratch on a hard surface in the trunk. In the 150-point inspection on Oct 21, 11 items were fixed or replaced, including the rear bumper, the wheels and the spare tire.",
+          "components": [
+            {
+              "type": "detail",
+              "entity": "vehicle",
+              "card": {
+                "id": 4853120,
+                "title": "2023 Tesla Model Y",
+                "fields": [
+                  {
+                    "key": "price",
+                    "label": "Price",
+                    "value": 33990,
+                    "text": "$33,990"
+                  },
+                  {
+                    "key": "estimatedTotal",
+                    "label": "Estimated total",
+                    "value": null,
+                    "text": "not available",
+                    "estimate": true
+                  },
+                  {
+                    "key": "delivery",
+                    "label": "Delivery",
+                    "value": null,
+                    "text": "not checked"
+                  }
+                ],
+                "subtitle": "Long Range Sport Utility 4D · 39,914 mi",
+                "link": "https://www.carvana.com/vehicle/4853120"
+              },
+              "sections": [
+                {
+                  "name": "condition",
+                  "summary": "No accident on the AutoCheck report Carvana uses.",
+                  "lines": [
+                    {
+                      "text": "Prior use: Personal"
+                    },
+                    {
+                      "text": "No Reported Accidents",
+                      "meta": "This vehicle has no reported accidents, fire, flood, or frame damage according to CARFAX™ and AutoCheck®."
+                    },
+                    {
+                      "text": "Single Owner",
+                      "meta": "This vehicle’s CarFax history report shows it has had only one previous owner."
+                    },
+                    {
+                      "text": "Great Deal",
+                      "meta": "This car is priced at least $1,500 below its Kelley Blue Book® Suggested Retail Value."
+                    },
+                    {
+                      "text": "Inspected Oct 21, 2026: 150 points",
+                      "meta": "11 fixed or replaced"
+                    },
+                    {
+                      "text": "Under the hood: Wheels/Rims (check for damage); Spare tire (or inflator kit)",
+                      "meta": "fixed or replaced"
+                    },
+                    {
+                      "text": "Interior: Steering wheel tilt/lock; Luggage compartment (jack and tool present)",
+                      "meta": "fixed or replaced"
+                    },
+                    {
+                      "text": "How it looks: Driver’s side (front/rear); Passenger side (front/rear); Rear bumper condition",
+                      "meta": "fixed or replaced"
+                    },
+                    {
+                      "text": "Detailing: Complete premium detail (wash, wax and high speed buff); Complete premium interior detail including odor test; Clean engine compartment; Clean all windows",
+                      "meta": "fixed or replaced"
+                    },
+                    {
+                      "text": "Recalls listed: none"
+                    },
+                    {
+                      "text": "Keys: 1"
+                    },
+                    {
+                      "text": "Warranty left: basic 2 mo or 9,800 mi; drivetrain 50 mo or 79,800 mi; battery 50 mo or 59,800 mi"
+                    }
+                  ]
+                },
+                {
+                  "name": "imperfections",
+                  "summary": "Carvana's inspectors photographed 3 imperfections.",
+                  "lines": [
+                    {
+                      "text": "Light Scratch, front bumper",
+                      "meta": "Scratches in the clear coat that are clearly visible with virtually no depth. A fingernail won't catch on the scratch."
+                    },
+                    {
+                      "text": "Visible Repair, rear bumper",
+                      "meta": "Past repair work is visible."
+                    },
+                    {
+                      "text": "Scratch, trunk",
+                      "meta": "Scratches on internal hard surfaces."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "estimated_total",
+              "text": "Estimated total adds Carvana's estimated taxes and fees to the price. Final amounts are set at checkout.",
+              "version": "2026-10-12"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

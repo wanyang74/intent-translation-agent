@@ -81,6 +81,7 @@
               {
                 "vehicleId": 4811903,
                 "stockNumber": 3006796550,
+                "vin": "7SAYGDEF4NF410671",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -96,6 +97,7 @@
               {
                 "vehicleId": 4793766,
                 "stockNumber": 3006699773,
+                "vin": "7SAYGDED8RF107624",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -111,6 +113,7 @@
               {
                 "vehicleId": 4788650,
                 "stockNumber": 3006696128,
+                "vin": "5YJ3E1EA3NF373340",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -126,6 +129,7 @@
               {
                 "vehicleId": 4724980,
                 "stockNumber": 3006530631,
+                "vin": "5YJ3E1EA4PF479413",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -141,6 +145,7 @@
               {
                 "vehicleId": 4788898,
                 "stockNumber": 3006648283,
+                "vin": "7SAYGDEE0RA221655",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -156,6 +161,7 @@
               {
                 "vehicleId": 4797866,
                 "stockNumber": 3006711913,
+                "vin": "5YJ3E1EA8PF514194",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -171,6 +177,7 @@
               {
                 "vehicleId": 4767068,
                 "stockNumber": 3006609690,
+                "vin": "7SAYGDEE7PA023037",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -186,6 +193,7 @@
               {
                 "vehicleId": 4715639,
                 "stockNumber": 3006397025,
+                "vin": "5YJ3E1EB1NF294614",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -201,6 +209,7 @@
               {
                 "vehicleId": 4691945,
                 "stockNumber": 3006401105,
+                "vin": "7SAYGDEE2PA078706",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -216,6 +225,7 @@
               {
                 "vehicleId": 4782454,
                 "stockNumber": 2004848771,
+                "vin": "5YJ3E1EAXPF447369",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -231,6 +241,7 @@
               {
                 "vehicleId": 4723810,
                 "stockNumber": 3006494223,
+                "vin": "7SAYGDEE1NF432439",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -246,6 +257,7 @@
               {
                 "vehicleId": 4812031,
                 "stockNumber": 3006794022,
+                "vin": "7SAYGDEE6PF624412",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -261,6 +273,7 @@
               {
                 "vehicleId": 4781702,
                 "stockNumber": 3006636352,
+                "vin": "5YJ3E1EB7NF329771",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -276,6 +289,7 @@
               {
                 "vehicleId": 4756196,
                 "stockNumber": 3006655986,
+                "vin": "7SAYGDEE4PA125654",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -291,6 +305,7 @@
               {
                 "vehicleId": 4804666,
                 "stockNumber": 3006729439,
+                "vin": "7SAYGDEF8NF361264",
                 "year": 2022,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -306,6 +321,7 @@
               {
                 "vehicleId": 4788806,
                 "stockNumber": 3006699335,
+                "vin": "5YJ3E1EA7PF454649",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -321,6 +337,7 @@
               {
                 "vehicleId": 4783256,
                 "stockNumber": 3006654032,
+                "vin": "7SAYGDED4SF225868",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -336,6 +353,7 @@
               {
                 "vehicleId": 4776106,
                 "stockNumber": 3006675923,
+                "vin": "7SAYGDEF1PF606733",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -351,6 +369,7 @@
               {
                 "vehicleId": 4747521,
                 "stockNumber": 3006631184,
+                "vin": "7SAYGDEE7PF584275",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -366,6 +385,7 @@
               {
                 "vehicleId": 4743347,
                 "stockNumber": 3006567783,
+                "vin": "7SAYGDEE0PF777383",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -381,6 +401,7 @@
               {
                 "vehicleId": 4762928,
                 "stockNumber": 3006623738,
+                "vin": "5YJYGDEE1MF270162",
                 "year": 2021,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -572,6 +593,7 @@
               {
                 "vehicleId": 4691945,
                 "stockNumber": 3006401105,
+                "vin": "7SAYGDEE2PA078706",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -587,6 +609,7 @@
               {
                 "vehicleId": 4793766,
                 "stockNumber": 3006699773,
+                "vin": "7SAYGDED8RF107624",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -602,6 +625,7 @@
               {
                 "vehicleId": 4797866,
                 "stockNumber": 3006711913,
+                "vin": "5YJ3E1EA8PF514194",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -617,6 +641,7 @@
               {
                 "vehicleId": 4767068,
                 "stockNumber": 3006609690,
+                "vin": "7SAYGDEE7PA023037",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -632,6 +657,7 @@
               {
                 "vehicleId": 4782454,
                 "stockNumber": 2004848771,
+                "vin": "5YJ3E1EAXPF447369",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -647,6 +673,7 @@
               {
                 "vehicleId": 4724980,
                 "stockNumber": 3006530631,
+                "vin": "5YJ3E1EA4PF479413",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -662,6 +689,7 @@
               {
                 "vehicleId": 4776106,
                 "stockNumber": 3006675923,
+                "vin": "7SAYGDEF1PF606733",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -677,6 +705,7 @@
               {
                 "vehicleId": 4755644,
                 "stockNumber": 3006615791,
+                "vin": "7SAYGDEE0SA357175",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -692,6 +721,7 @@
               {
                 "vehicleId": 4788898,
                 "stockNumber": 3006648283,
+                "vin": "7SAYGDEE0RA221655",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -707,6 +737,7 @@
               {
                 "vehicleId": 4747521,
                 "stockNumber": 3006631184,
+                "vin": "7SAYGDEE7PF584275",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -722,6 +753,7 @@
               {
                 "vehicleId": 4756196,
                 "stockNumber": 3006655986,
+                "vin": "7SAYGDEE4PA125654",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -737,6 +769,7 @@
               {
                 "vehicleId": 4709280,
                 "stockNumber": 3006453707,
+                "vin": "5YJ3E1EA1PF510651",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -752,6 +785,7 @@
               {
                 "vehicleId": 4779097,
                 "stockNumber": 3006698277,
+                "vin": "7SAYGDEFXPF751205",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -767,6 +801,7 @@
               {
                 "vehicleId": 4794318,
                 "stockNumber": 3006727519,
+                "vin": "5YJ3E1EB8PF471369",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -782,6 +817,7 @@
               {
                 "vehicleId": 4743347,
                 "stockNumber": 3006567783,
+                "vin": "7SAYGDEE0PF777383",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -797,6 +833,7 @@
               {
                 "vehicleId": 4783256,
                 "stockNumber": 3006654032,
+                "vin": "7SAYGDED4SF225868",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -812,6 +849,7 @@
               {
                 "vehicleId": 4812031,
                 "stockNumber": 3006794022,
+                "vin": "7SAYGDEE6PF624412",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -827,6 +865,7 @@
               {
                 "vehicleId": 4773567,
                 "stockNumber": 3006673661,
+                "vin": "7SAYGDED3RF055187",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -842,6 +881,7 @@
               {
                 "vehicleId": 4788806,
                 "stockNumber": 3006699335,
+                "vin": "5YJ3E1EA7PF454649",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -857,6 +897,7 @@
               {
                 "vehicleId": 4769484,
                 "stockNumber": 3006683860,
+                "vin": "5YJ3E1EB6PF668945",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -872,6 +913,7 @@
               {
                 "vehicleId": 4782382,
                 "stockNumber": 3006654209,
+                "vin": "7SAYGDEE0PA102520",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1077,6 +1119,7 @@
               {
                 "vehicleId": 4812031,
                 "stockNumber": 3006794022,
+                "vin": "7SAYGDEE6PF624412",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1092,6 +1135,7 @@
               {
                 "vehicleId": 4775681,
                 "stockNumber": 3006595293,
+                "vin": "5YJ3E1EA3TF145092",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1107,6 +1151,7 @@
               {
                 "vehicleId": 4695181,
                 "stockNumber": 3006423613,
+                "vin": "7SAYGDEE2TA672397",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1122,6 +1167,7 @@
               {
                 "vehicleId": 4688468,
                 "stockNumber": 3006515296,
+                "vin": "5YJ3E1EA4RF735875",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1137,6 +1183,7 @@
               {
                 "vehicleId": 4781875,
                 "stockNumber": 3006649362,
+                "vin": "7SAYGDEF2PF777300",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1152,6 +1199,7 @@
               {
                 "vehicleId": 4760129,
                 "stockNumber": 3006632252,
+                "vin": "7SAYGDEE2SF283292",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1167,6 +1215,7 @@
               {
                 "vehicleId": 4795274,
                 "stockNumber": 3006727828,
+                "vin": "7SAYGDEE8PA055947",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1182,6 +1231,7 @@
               {
                 "vehicleId": 4784285,
                 "stockNumber": 3006698164,
+                "vin": "5YJ3E1EA9PF647868",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1197,6 +1247,7 @@
               {
                 "vehicleId": 4801398,
                 "stockNumber": 3006513478,
+                "vin": "5YJ3E1ET0TF130065",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1212,6 +1263,7 @@
               {
                 "vehicleId": 4782810,
                 "stockNumber": 3006703237,
+                "vin": "7SAYGDED9SF257117",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1227,6 +1279,7 @@
               {
                 "vehicleId": 4730680,
                 "stockNumber": 3006573539,
+                "vin": "5YJ3E1ET4SF006685",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1242,6 +1295,7 @@
               {
                 "vehicleId": 4761249,
                 "stockNumber": 3006611544,
+                "vin": "7SAYGDED8TA603446",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1257,6 +1311,7 @@
               {
                 "vehicleId": 4768607,
                 "stockNumber": 3006668095,
+                "vin": "7SAYGDEF4SF303339",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1272,6 +1327,7 @@
               {
                 "vehicleId": 4796580,
                 "stockNumber": 3006710983,
+                "vin": "5YJ3E1EAXPF484907",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1287,6 +1343,7 @@
               {
                 "vehicleId": 4799447,
                 "stockNumber": 3006760554,
+                "vin": "7SAYGDEE6PA059429",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1302,6 +1359,7 @@
               {
                 "vehicleId": 4744652,
                 "stockNumber": 3006560661,
+                "vin": "5YJ3E1EB4TF166817",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model 3",
@@ -1317,6 +1375,7 @@
               {
                 "vehicleId": 4735860,
                 "stockNumber": 3006605481,
+                "vin": "7SAYGDED0TA606390",
                 "year": 2026,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1332,6 +1391,7 @@
               {
                 "vehicleId": 4795494,
                 "stockNumber": 3006751358,
+                "vin": "7SAYGDEE0RA251335",
                 "year": 2024,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1347,6 +1407,7 @@
               {
                 "vehicleId": 4794078,
                 "stockNumber": 3006742657,
+                "vin": "7SAYGDEF9PF911848",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1362,6 +1423,7 @@
               {
                 "vehicleId": 4759131,
                 "stockNumber": 3006624455,
+                "vin": "7SAYGDEE7SF240521",
                 "year": 2025,
                 "make": "Tesla",
                 "model": "Model Y",
@@ -1377,6 +1439,7 @@
               {
                 "vehicleId": 4805089,
                 "stockNumber": 3006651006,
+                "vin": "7SAYGAEE9PF798831",
                 "year": 2023,
                 "make": "Tesla",
                 "model": "Model Y",

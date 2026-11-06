@@ -2,6 +2,7 @@
 // model sees. Everything goes through the ToolContext, so the platform's checks, budget, rate limit and cache apply.
 // Constant values here are copied from what the frontend sends (boundary rule: only values the frontend produces).
 import { groupDigits, unfence, type EntityView, type SiteCode, type ToolContext } from '../../platform/core/src/index.ts';
+import { flightData, namedObjectText, scriptsIn } from './flight.ts';
 
 const PAGE_SIZE = 24;
 const SEARCH_FEATURES = ['EarliestAcquisitionBoosting', 'ExcludeFacetData', 'HideImpossibleCombos', 'LoanTermPricing', 'LocationBasedPrefiltering', 'Personalization', 'ConditionalTiles', 'Sprinkles', 'ApplyTradeIn'];
@@ -86,16 +87,19 @@ const facetsRequest = (args: SearchArgs) => ({
   body: searchBody({ ...args, colors: [], interior_colors: [], drive_types: [], body_styles: [], tag_ids: [], page: 1 }, FACETS_FEATURES),
 });
 
+/** The car on the user's screen, if it's this one; kept for display, so its card shows what its page shows. */
+function carOnScreen(ctx: ToolContext, vehicleId: number): CarRecord | null {
+  const page = ctx.pageData() as CarRecord | null;
+  if (!page || page.vehicleId !== vehicleId) return null;
+  ctx.keep('vehicle', vehicleId, { year: page.year, make: page.make, model: page.model, trim: page.trim, mileage: page.mileage, color: page.color, ...(page.price !== undefined ? { price: page.price } : {}) });
+  return page;
+}
+
 /** The car's record: from a search earlier in this session, or from the page of the car the user is on. */
 function carRecord(ctx: ToolContext, vehicleId: number): CarRecord {
   const found = ctx.store.get(`vehicle:${vehicleId}`) as CarRecord | undefined;
   if (found) return found;
-  const page = ctx.pageData() as CarRecord | null;
-  if (page && page.vehicleId === vehicleId) {
-    ctx.keep('vehicle', vehicleId, { year: page.year, make: page.make, model: page.model, trim: page.trim, mileage: page.mileage, color: page.color, ...(page.price !== undefined ? { price: page.price } : {}) });
-    return page;
-  }
-  return ctx.fail('car_unknown', { vehicleId });
+  return carOnScreen(ctx, vehicleId) ?? ctx.fail('car_unknown', { vehicleId });
 }
 
 const availabilityCar = (car: CarRecord) => ({
@@ -153,6 +157,88 @@ interface Reviews {
   reviews: { text: string; rating: number | null; date: string }[];
 }
 
+/** Manufacturer warranty left on one coverage; null where Carvana doesn't say. */
+interface Remaining { months: number | null; miles: number | null }
+
+/** A car's own page, as its parser reads it (endpoints/vehicle-page.response.json). */
+interface VehiclePage {
+  vehicleId: number;
+  vin: string;
+  year: number;
+  make: string;
+  model: string;
+  trim: string;
+  mileage: number;
+  saleStatus: string;
+  highlights: { name: string; description: string }[];
+  accidentReported: boolean;
+  priorUse: string[];
+  keys: number | null;
+  recalls: number;
+  warranty: { basic: Remaining; drivetrain: Remaining; battery: Remaining };
+  features: { category: string; names: string[] }[];
+  options: string[];
+  packages: string[];
+  imperfections: { title: string; description: string; location: string; area: string }[];
+  inspection: { date: string; points: number; notPassed: { category: string; point: string; status: string }[] } | null;
+}
+
+/** vehicle_details' output: the page, with the inspectors' notes fenced and a link to the page. */
+type VehicleDetails = VehiclePage & { deepLink: string };
+
+const remaining = (months: unknown, miles: unknown): Remaining => ({ months: (months ?? null) as number | null, miles: (miles ?? null) as number | null });
+
+/**
+ * Reads a car's page (vehicle_page). The page streams its data as Next.js chunks; the car is the vehicleDetails object
+ * in them (recorded 2026-11-05):
+ *   1. Find the object; without one there's nothing to read, and null fails the response check.
+ *   2. Copy the fields vehicle_details returns, under our names. Nothing is filled in for a field Carvana drops or
+ *      reshapes: it comes out missing or mistyped, and the response check fails rather than showing wrong data.
+ *      Only fields Carvana may leave out by design (warranty a car doesn't have, a highlight without an explanation)
+ *      get a null or empty value.
+ */
+export function parseVehiclePage(html: string): VehiclePage | null {
+  // 1. The object.
+  const text = namedObjectText(flightData(scriptsIn(html)), 'vehicleDetails');
+  if (!text) return null;
+  const car = JSON.parse(text);
+  // 2. The fields.
+  const inspection = car.inspectionReport;
+  const points = inspection?.inspectionCategories?.flatMap((category: any) => category.inspectionPoints.map((point: any) => ({ category: category.description, point: point.description, status: point.status })));
+  return {
+    vehicleId: car.vehicleId, vin: car.vin, year: car.year, make: car.make, model: car.model, trim: car.trim, mileage: car.mileage, saleStatus: car.saleStatus,
+    // The tags the page shows, in its order. Some repeat their name as their explanation; that says nothing more.
+    highlights: car.highlights?.filter((tag: any) => tag.isVdpDisplayable).sort((left: any, right: any) => left.sortOrder - right.sortOrder)
+      .map((tag: any) => ({ name: tag.tagName, description: tag.tagDescription && tag.tagDescription !== tag.tagName ? tag.tagDescription : '' })),
+    accidentReported: car.isAutocheckReportAccidentVehicle,
+    priorUse: car.priorUseTypes,
+    keys: car.numberOfKeys ?? null,
+    recalls: car.recalls?.length,
+    warranty: {
+      basic: remaining(car.remainingWarrantyMonths, car.remainingWarrantyMiles),
+      drivetrain: remaining(car.remainingDriveTrainWarrantyMonths, car.remainingDriveTrainWarrantyMiles),
+      battery: remaining(car.remainingBatteryWarrantyMonths, car.remainingBatteryWarrantyMiles),
+    },
+    features: car.cvnaCategories?.map((category: any) => ({ category: category.name, names: category.cvnaFeatures.map((feature: any) => feature.name) }))
+      .filter((category: { names: string[] }) => category.names.length),
+    options: car.catalogFeatures?.options?.map((option: any) => option.name),
+    packages: car.catalogFeatures?.packages?.map((option: any) => (typeof option === 'string' ? option : option.name)),
+    imperfections: car.vexVdpImageData?.imperfections?.map((imperfection: any) => ({ title: imperfection.title, description: imperfection.description, location: imperfection.location, area: imperfection.zoneDescription })),
+    inspection: inspection ? { date: inspection.inspectedOn, points: points.length, notPassed: points.filter((point: { status: string }) => point.status !== 'Passed') } : null,
+  };
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/** "Oct 21, 2026", without Intl, which not every engine core.js runs in has. */
+const dayOf = (iso: string) => {
+  const date = new Date(iso);
+  return `${MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+};
+/** "FixedOrReplaced" as "fixed or replaced". */
+const statusText = (status: string) => status.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+const warrantyText = (name: string, left: Remaining) => (left.months === null && left.miles === null ? null
+  : `${name} ${[left.months !== null ? `${left.months} mo` : '', left.miles !== null ? `${groupDigits(left.miles)} mi` : ''].filter(Boolean).join(' or ')}`);
+
 export const site: SiteCode = {
   tools: {
     async search_vehicles(ctx) {
@@ -166,7 +252,7 @@ export const site: SiteCode = {
       if (res.userDeliveryInfo?.state) ctx.store.set('userState', res.userDeliveryInfo.state);
       return {
         vehicles: inv.vehicles.map((vehicle: any) => ({
-          vehicleId: vehicle.vehicleId, stockNumber: vehicle.stockNumber, year: vehicle.year, make: vehicle.make, model: vehicle.model, trim: vehicle.trim,
+          vehicleId: vehicle.vehicleId, stockNumber: vehicle.stockNumber, vin: vehicle.vin, year: vehicle.year, make: vehicle.make, model: vehicle.model, trim: vehicle.trim,
           mileage: vehicle.mileage, color: vehicle.color, price: vehicle.price.total, estimatedTaxesAndFees: vehicle.price.estimatedTaxesAndFees,
           ...ctx.derived('vehicle', vehicle), locationId: vehicle.locationId, deepLink: ctx.link('vehicle', { vehicleId: vehicle.vehicleId }),
         })),
@@ -216,14 +302,75 @@ export const site: SiteCode = {
         reviews: res.reviews.map((review: any) => ({ text: ctx.fence(review.review_text, 'carvana-reviews'), rating: review.review_rating >= 1 ? review.review_rating : null, date: review.review_date })),
       };
     },
-    // vehicle_details waits for a recording of a vehicle page, to build and test its page reader against.
+
+    async vehicle_details(ctx) {
+      const { vehicleId } = ctx.args as { vehicleId: number };
+      const page = await ctx.call('vehicle_page', { params: { vehicleId } }) as VehiclePage;
+      carOnScreen(ctx, vehicleId);
+      return {
+        ...page,
+        vehicleId,
+        // Carvana's inspectors wrote these notes, not us; fenced like any text the model should report on, not follow.
+        imperfections: page.imperfections.map((imperfection) => ({ ...imperfection, description: ctx.fence(imperfection.description, 'carvana-vehicle') })),
+        deepLink: ctx.link('vehicle', { vehicleId }),
+      };
+    },
   },
+
+  parsers: { vehicle_page: parseVehiclePage },
 
   valueSources: { facets: facetsRequest },
   // The results page carries its filters as base64 JSON, in the same shape the search request sends them.
   destinations: { search_results: (args: SearchArgs, link) => link('search', { cvnaid: { filters: filtersFrom(args) } }) },
 
   sections: {
+    /** What Carvana knows of the car's past and state: the accident report, prior use, inspection, recalls, keys, warranty. */
+    condition(view: EntityView) {
+      const details = view.byTool.vehicle_details as VehicleDetails | undefined;
+      if (!details) return null;
+      const { inspection, warranty } = details;
+      const warrantyLeft = [warrantyText('basic', warranty.basic), warrantyText('drivetrain', warranty.drivetrain), warrantyText('battery', warranty.battery)].filter(Boolean);
+      // Inspection points not simply passed, one line per category and status, so 11 items read as a few lines.
+      const groups = new Map<string, string[]>();
+      for (const point of inspection?.notPassed ?? []) {
+        const key = `${point.category}\u0000${point.status}`;
+        groups.set(key, [...(groups.get(key) ?? []), point.point]);
+      }
+      const lines = [
+        { text: `Prior use: ${details.priorUse.join(', ') || 'not listed'}` },
+        // Only the tags Carvana explains (Single Owner, from the CARFAX report); bare tags such as Luxury Vehicle say nothing of the car's past.
+        ...details.highlights.filter((highlight) => highlight.description).map((highlight) => ({ text: highlight.name, meta: highlight.description })),
+        ...(inspection ? [{ text: `Inspected ${dayOf(inspection.date)}: ${inspection.points} points`, meta: inspection.notPassed.length ? `${inspection.notPassed.length} fixed or replaced` : 'all passed' }] : []),
+        ...[...groups].map(([key, points]) => {
+          const [category, status] = key.split('\u0000') as [string, string];
+          return { text: `${category}: ${points.join('; ')}`, meta: statusText(status) };
+        }),
+        { text: `Recalls listed: ${details.recalls || 'none'}` },
+        ...(details.keys !== null ? [{ text: `Keys: ${details.keys}` }] : []),
+        ...(warrantyLeft.length ? [{ text: `Warranty left: ${warrantyLeft.join('; ')}` }] : []),
+      ];
+      return { summary: details.accidentReported ? 'The AutoCheck report Carvana uses shows an accident.' : 'No accident on the AutoCheck report Carvana uses.', lines };
+    },
+    imperfections(view: EntityView) {
+      const details = view.byTool.vehicle_details as VehicleDetails | undefined;
+      if (!details) return null;
+      const count = details.imperfections.length;
+      return {
+        summary: count ? `Carvana's inspectors photographed ${count} imperfection${count === 1 ? '' : 's'}.` : "Carvana's inspectors list no imperfections.",
+        lines: details.imperfections.map((imperfection) => ({ text: `${imperfection.title}, ${imperfection.area.toLowerCase()}`, meta: unfence(imperfection.description) })),
+      };
+    },
+    features(view: EntityView) {
+      const details = view.byTool.vehicle_details as VehicleDetails | undefined;
+      if (!details) return null;
+      return {
+        lines: [
+          ...details.features.map((category) => ({ text: `${category.category}: ${category.names.join(', ')}` })),
+          ...(details.options.length ? [{ text: `Factory options: ${details.options.join(', ')}` }] : []),
+          ...(details.packages.length ? [{ text: `Packages: ${details.packages.join(', ')}` }] : []),
+        ],
+      };
+    },
     reviews(view: EntityView) {
       const ownerReviews = view.byTool.get_owner_reviews as Reviews | undefined;
       if (!ownerReviews) return null;

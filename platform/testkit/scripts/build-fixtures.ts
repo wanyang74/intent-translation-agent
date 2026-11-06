@@ -2,7 +2,10 @@
 //   recorded:  real traffic for the site pack's JSON endpoints, copied as recorded, with the identifiers the site
 //              pack lists (recording.scrubFields, recording.scrubHeaders) replaced by fixed placeholders. A request
 //              that FakeHost can't tell from one already kept (same match key) is skipped: it could never be served
-//   observed and synthetic: added by the site's hooks, sites/<id>/fixture-hooks.ts, if it has them
+//   pages:     for endpoints whose response is a page (responseFormat: html), only the part the site's hooks keep
+//              (sites/<id>/fixture-hooks.ts, page), since a page can carry the visitor's own data; without the hook,
+//              pages are left out
+//   observed and synthetic: added by the site's hooks, if it has them
 // The output is deterministic: rebuilding from the same recordings gives identical files, and adding a recording at
 // the end of the list leaves the fixtures from the earlier ones as they were. Before keeping the
 // output, it checks that no identifier from the recording survives: neither the scrubbed values nor
@@ -87,8 +90,10 @@ for (const harPath of harPaths) {
   for (const [i, entry] of entries.entries()) {
     const match = endpointOf(pack, entry.request.url);
     if (!match || entry.response.status !== 200 || entry.request.method !== match.endpoint.method) continue;
-    if ((match.endpoint.responseFormat ?? 'json') !== 'json') { skippedHtml++; continue; }
     const { name: endpoint } = match;
+    const isPage = (match.endpoint.responseFormat ?? 'json') === 'html';
+    const page = isPage ? hooks.page?.(endpoint, entry.response.content.text) ?? null : null;
+    if (isPage && page === null) { skippedHtml++; continue; }
 
     const method = entry.request.method as 'GET' | 'POST';
     const url = scrubUrl(entry.request.url);
@@ -97,7 +102,7 @@ for (const harPath of harPaths) {
     // The same request again (a page reloaded, a car opened twice): FakeHost would always serve the first.
     const key = `${endpoint} ${matchKey(match.endpoint, value)}`;
     if (seenKeys.has(key)) { skippedRepeats++; continue; }
-    const response = scrub(JSON.parse(entry.response.content.text));
+    const response = isPage ? page : scrub(JSON.parse(entry.response.content.text));
     const count = (counters.get(endpoint) ?? 0) + 1;
     counters.set(endpoint, count);
     const id = `${endpoint}-${String(count).padStart(2, '0')}`;
@@ -109,7 +114,7 @@ for (const harPath of harPaths) {
       source: `recording ${String(entry.startedDateTime).slice(0, 10)}, HAR entry ${i}`,
       description: hooks.describe?.(endpoint, value, response) ?? `${method} ${endpoint}`,
       request: { method, url, headers: scrubHeaderList(entry.request.headers), body },
-      response: { status: 200, headers: { 'content-type': 'application/json' }, body: response },
+      response: { status: 200, headers: { 'content-type': isPage ? 'text/html' : 'application/json' }, body: response },
     });
   }
 }
@@ -159,5 +164,5 @@ if (leaks.length) {
 const byKind = fixtures.reduce<Record<string, number>>((acc, fixture) => ({ ...acc, [fixture.kind]: (acc[fixture.kind] ?? 0) + 1 }), {});
 console.log(`Wrote ${fixtures.length} ${site} fixtures (${Object.entries(byKind).map(([kind, count]) => `${count} ${kind}`).join(', ')}) to ${path.relative(process.cwd(), outDir)}`);
 if (skippedRepeats) console.log(`Skipped ${skippedRepeats} repeated request(s): FakeHost serves the first of each.`);
-if (skippedHtml) console.log(`Skipped ${skippedHtml} HTML page(s): their fixtures hold parsed output and come from the site's own tests.`);
+if (skippedHtml) console.log(`Skipped ${skippedHtml} page(s): the site's fixture hooks keep no part of them.`);
 console.log(`Replaced ${placeholders.size} identifiers with placeholders; no identifier from the recording remains.`);

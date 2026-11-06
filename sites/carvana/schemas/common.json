@@ -12,6 +12,11 @@
       "type": "integer",
       "minimum": 1
     },
+    "Vin": {
+      "type": "string",
+      "pattern": "^[A-HJ-NPR-Z0-9]{17}$",
+      "description": "The car's 17-character vehicle identification number, as Carvana lists it (no I, O or Q)."
+    },
     "RouteId": {
       "type": "string",
       "pattern": "^H4sI[A-Za-z0-9_-]+={0,2}$",

@@ -18,6 +18,9 @@
               "stockNumber": {
                 "$ref": "/sites/carvana/schemas/common.json#/$defs/StockNumber"
               },
+              "vin": {
+                "$ref": "/sites/carvana/schemas/common.json#/$defs/Vin"
+              },
               "year": {
                 "type": "integer",
                 "minimum": 1990,
@@ -95,6 +98,7 @@
             "required": [
               "vehicleId",
               "stockNumber",
+              "vin",
               "year",
               "make",
               "model",

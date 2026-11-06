@@ -4,9 +4,152 @@
   "title": "vehicle_details: output",
   "type": "object",
   "properties": {
+    "vehicleId": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/VehicleId"
+    },
     "vin": {
+      "$ref": "/sites/carvana/schemas/common.json#/$defs/Vin"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "trim": {
+      "type": "string"
+    },
+    "mileage": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "saleStatus": {
       "type": "string",
-      "pattern": "^[A-HJ-NPR-Z0-9]{17}$"
+      "description": "Carvana's sale status for the car, such as Available"
+    },
+    "highlights": {
+      "type": "array",
+      "description": "The highlight tags the car's page shows, in its order, with Carvana's explanation when it gives one (such as No Reported Accidents, according to CARFAX and AutoCheck)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "accidentReported": {
+      "type": "boolean",
+      "description": "Whether the AutoCheck report Carvana uses shows an accident"
+    },
+    "priorUse": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "How the car was used before, such as Personal"
+    },
+    "keys": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "How many keys come with the car"
+    },
+    "recalls": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How many recalls Carvana lists for the car"
+    },
+    "warranty": {
+      "type": "object",
+      "description": "Manufacturer warranty left, by coverage; null where the car has none or Carvana doesn't say",
+      "properties": {
+        "basic": {
+          "type": "object",
+          "properties": {
+            "months": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "miles": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "months",
+            "miles"
+          ],
+          "additionalProperties": false
+        },
+        "drivetrain": {
+          "type": "object",
+          "properties": {
+            "months": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "miles": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "months",
+            "miles"
+          ],
+          "additionalProperties": false
+        },
+        "battery": {
+          "type": "object",
+          "properties": {
+            "months": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "miles": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "months",
+            "miles"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "basic",
+        "drivetrain",
+        "battery"
+      ],
+      "additionalProperties": false
     },
     "features": {
       "type": "array",
@@ -31,8 +174,23 @@
         "additionalProperties": false
       }
     },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Factory options installed"
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Factory packages installed"
+    },
     "imperfections": {
       "type": "array",
+      "description": "Imperfections Carvana's inspectors photographed",
       "items": {
         "type": "object",
         "properties": {
@@ -43,48 +201,141 @@
             "$ref": "/schemas/common.json#/$defs/Fenced"
           },
           "location": {
-            "type": "string"
+            "type": "string",
+            "description": "exterior or interior"
+          },
+          "area": {
+            "type": "string",
+            "description": "Where on the car, such as Front Bumper"
           }
         },
         "required": [
           "title",
           "description",
-          "location"
+          "location",
+          "area"
         ],
         "additionalProperties": false
       }
     },
-    "options": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "inspection": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Carvana's inspection report: when, how many points, and every point not simply passed",
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T"
+        },
+        "points": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notPassed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "point": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "description": "Such as FixedOrReplaced"
+              }
+            },
+            "required": [
+              "category",
+              "point",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "date",
+        "points",
+        "notPassed"
+      ],
+      "additionalProperties": false
     },
-    "packages": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "deepLink": {
+      "type": "string",
+      "pattern": "^https://www\\.carvana\\.com/"
     },
-    "highlights": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "nextStep": {
+      "type": "string"
     }
   },
   "required": [
+    "vehicleId",
     "vin",
+    "year",
+    "make",
+    "model",
+    "trim",
+    "mileage",
+    "saleStatus",
+    "highlights",
+    "accidentReported",
+    "priorUse",
+    "keys",
+    "recalls",
+    "warranty",
     "features",
-    "imperfections",
     "options",
     "packages",
-    "highlights"
+    "imperfections",
+    "inspection",
+    "deepLink"
   ],
   "additionalProperties": false,
   "examples": [
     {
-      "vin": "EXAMPLEVN00000000",
+      "vehicleId": 4853120,
+      "vin": "7SAYGDEE1PA000000",
+      "year": 2023,
+      "make": "Tesla",
+      "model": "Model Y",
+      "trim": "Long Range Sport Utility 4D",
+      "mileage": 39914,
+      "saleStatus": "Available",
+      "highlights": [
+        {
+          "name": "No Reported Accidents",
+          "description": "This vehicle has no reported accidents, fire, flood, or frame damage according to CARFAX™ and AutoCheck®."
+        },
+        {
+          "name": "Luxury Vehicle",
+          "description": ""
+        }
+      ],
+      "accidentReported": false,
+      "priorUse": [
+        "Personal"
+      ],
+      "keys": 1,
+      "recalls": 0,
+      "warranty": {
+        "basic": {
+          "months": 2,
+          "miles": 9800
+        },
+        "drivetrain": {
+          "months": 50,
+          "miles": 79800
+        },
+        "battery": {
+          "months": 50,
+          "miles": 59800
+        }
+      },
       "features": [
         {
           "category": "Safety & Security",
@@ -93,18 +344,30 @@
           ]
         }
       ],
+      "options": [
+        "Autopilot"
+      ],
+      "packages": [],
       "imperfections": [
         {
-          "title": "Paint",
-          "description": "<untrusted source=\"carvana-vehicle\">Small area of paint damage.</untrusted>",
-          "location": "exterior"
+          "title": "Light Scratch",
+          "description": "<untrusted source=\"carvana-vehicle\">Scratches in the clear coat that are clearly visible with virtually no depth.</untrusted>",
+          "location": "exterior",
+          "area": "Front Bumper"
         }
       ],
-      "options": [],
-      "packages": [],
-      "highlights": [
-        "Long Range"
-      ]
+      "inspection": {
+        "date": "2026-10-21T00:00:00.000Z",
+        "points": 150,
+        "notPassed": [
+          {
+            "category": "How it looks",
+            "point": "Rear bumper condition",
+            "status": "FixedOrReplaced"
+          }
+        ]
+      },
+      "deepLink": "https://www.carvana.com/vehicle/4853120"
     }
   ]
 }

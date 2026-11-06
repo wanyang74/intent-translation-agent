@@ -1,0 +1,395 @@
+{
+  "id": "car-condition",
+  "site": "carvana",
+  "description": "The user is on a car's page and asks about damage and accident history. The agent reads the car's own page with vehicle_details and shows its condition and imperfections, saying where each fact comes from.",
+  "now": "2026-11-05T20:30:00Z",
+  "fixtures": [
+    "vehicle_page-01"
+  ],
+  "pageData": {
+    "vehicleId": 4853120,
+    "year": 2023,
+    "make": "Tesla",
+    "model": "Model Y",
+    "trim": "Long Range Sport Utility 4D",
+    "mileage": 39914,
+    "color": "White",
+    "price": 33990,
+    "vehicleInventoryType": 1,
+    "locationId": 147
+  },
+  "notes": [
+    "vehicle_details fetches the car's page as the site's frontend would (a plain GET with accept: text/html) and reads the vehicleDetails object in the page's streamed data. The fixture keeps only that object, word for word, from a page recorded on 2026-11-05.",
+    "The inspectors' imperfection notes are fenced for the model; the detail view shows them unfenced.",
+    "The accident report is AutoCheck's, as Carvana states it; the agent says so rather than calling the car accident-free on its own authority.",
+    "pageData is what the page reader reads from the same recorded page."
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "carvana",
+      "sessionId": "sess_carvana_vdp02",
+      "traceId": "trace_carvana_vdp02",
+      "message": "Has this one been in an accident? Any damage I should know about?",
+      "pageContext": {
+        "url": "https://www.carvana.com/vehicle/4853120",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4853120
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_carvana_vdp02",
+      "call": {
+        "id": "call_1",
+        "name": "vehicle_details",
+        "args": {
+          "vehicleId": 4853120
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_carvana_vdp02",
+      "text": "Reading this car's page…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_carvana_vdp02",
+      "callIds": [
+        "call_1"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_carvana_vdp02",
+      "traceId": "trace_carvana_vdp02",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "vehicleId": 4853120,
+            "vin": "7SAYGDEE2PA038836",
+            "year": 2023,
+            "make": "Tesla",
+            "model": "Model Y",
+            "trim": "Long Range Sport Utility 4D",
+            "mileage": 39914,
+            "saleStatus": "Available",
+            "highlights": [
+              {
+                "name": "No Reported Accidents",
+                "description": "This vehicle has no reported accidents, fire, flood, or frame damage according to CARFAX™ and AutoCheck®."
+              },
+              {
+                "name": "Luxury Vehicle",
+                "description": ""
+              },
+              {
+                "name": "Single Owner",
+                "description": "This vehicle’s CarFax history report shows it has had only one previous owner."
+              },
+              {
+                "name": "Great Deal",
+                "description": "This car is priced at least $1,500 below its Kelley Blue Book® Suggested Retail Value."
+              },
+              {
+                "name": "Affordable Luxury SUVs",
+                "description": ""
+              },
+              {
+                "name": "All Affordable Luxury",
+                "description": ""
+              }
+            ],
+            "accidentReported": false,
+            "priorUse": [
+              "Personal"
+            ],
+            "keys": 1,
+            "recalls": 0,
+            "warranty": {
+              "basic": {
+                "months": 2,
+                "miles": 9800
+              },
+              "drivetrain": {
+                "months": 50,
+                "miles": 79800
+              },
+              "battery": {
+                "months": 50,
+                "miles": 59800
+              }
+            },
+            "features": [
+              {
+                "category": "Comfort & Convenience",
+                "names": [
+                  "Partial Self-Driving",
+                  "12V Power Outlet",
+                  "Air Conditioning",
+                  "Automatic Air Conditioning",
+                  "Automatic Windshield Wipers",
+                  "Compass",
+                  "Cruise Control",
+                  "Cup Holder",
+                  "Heated Mirrors",
+                  "Heated Steering Wheel",
+                  "Keyless Entry",
+                  "Memory Exterior Mirrors",
+                  "Multi-Zone Climate Control",
+                  "Power Adjustable Steering Column",
+                  "Power Folding Exterior Mirrors",
+                  "Power Locks",
+                  "Power Lumbar Support",
+                  "Power Mirrors",
+                  "Power Tailgate/Hatch",
+                  "Power Windows",
+                  "Remote Mirrors",
+                  "Remote Start",
+                  "Tilt Wheel",
+                  "Dual-Zone Climate Control"
+                ]
+              },
+              {
+                "category": "Wheels & Tires",
+                "names": [
+                  "Alloy Wheels",
+                  "Tire Pressure Monitor"
+                ]
+              },
+              {
+                "category": "Braking & Traction",
+                "names": [
+                  "4-Wheel Disc Brakes",
+                  "Anti-Lock Brakes",
+                  "Electronic Stability Control",
+                  "Hill Assistance",
+                  "Intelligent Traction Control",
+                  "Rollover Mitigation",
+                  "Slip Control",
+                  "Stability Control",
+                  "Traction Control"
+                ]
+              },
+              {
+                "category": "Safety & Security",
+                "names": [
+                  "Active Lane Keep Assistance",
+                  "Adaptive Cruise Control",
+                  "Alarm System",
+                  "Auto Dimming Mirrors",
+                  "Automatic Emergency Braking",
+                  "Blindspot Sensors",
+                  "Child Door Locks",
+                  "Child Seat Anchors",
+                  "Collision Detection",
+                  "Driver Airbag",
+                  "Driver Attention Assist Monitor",
+                  "Driver Knee Airbag",
+                  "Emergency & Security Services",
+                  "Engine Immobilizer",
+                  "Front Head Curtain Airbag",
+                  "Front Knee Airbag",
+                  "Front Side Airbag",
+                  "Front View Camera",
+                  "Lane Departure Warning",
+                  "Parking Assistance",
+                  "Passenger Airbag",
+                  "Pedestrian Detection",
+                  "Rear Head Curtain Airbag",
+                  "Rear View Camera",
+                  "Side View Cameras",
+                  "Stolen Vehicle Tracking Software",
+                  "Traffic Sign Recognition"
+                ]
+              },
+              {
+                "category": "Seating & Interior",
+                "names": [
+                  "Aluminum Interior Trim",
+                  "Chrome Interior Trim",
+                  "Fold Down Rear Seats",
+                  "Heated Seats",
+                  "Power Driver Seat",
+                  "Power Passenger Seat",
+                  "Rear Heated Seats",
+                  "Seat Memory System",
+                  "Synthetic Leather Seats"
+                ]
+              },
+              {
+                "category": "Entertainment & Technology",
+                "names": [
+                  "Audible Text Message Feature",
+                  "Bluetooth Music",
+                  "GPS Navigation",
+                  "Hands Free Calling",
+                  "HD Radio",
+                  "MP3 Player",
+                  "Performance Monitoring",
+                  "Premium Radio",
+                  "SD Card Slot",
+                  "Steering Wheel Controls",
+                  "Touch Screen Monitor",
+                  "USB Input",
+                  "Voice Recognition System",
+                  "AM/FM Radio"
+                ]
+              },
+              {
+                "category": "Lighting",
+                "names": [
+                  "Automatic Headlights",
+                  "Automatic High Beams",
+                  "Automatic Leveling Headlights",
+                  "Daytime Running Lights",
+                  "Fog Lights",
+                  "LED Daytime Running Lights",
+                  "LED Headlamps",
+                  "LED Tail Lights"
+                ]
+              },
+              {
+                "category": "Roof & Glass",
+                "names": [
+                  "Privacy Glass",
+                  "Rear Window Defroster"
+                ]
+              }
+            ],
+            "options": [
+              "Autopilot",
+              "Premium connectivity",
+              "Dual motor all-wheel drive",
+              "All Black Premium Interior",
+              "Pearl White Paint",
+              "Premium interior",
+              "Supercharger network access + pay-as-you-go",
+              "Five seat interior",
+              "19’’ gemini light wheels"
+            ],
+            "packages": [],
+            "imperfections": [
+              {
+                "title": "Light Scratch",
+                "description": "<untrusted source=\"carvana-vehicle\">Scratches in the clear coat that are clearly visible with virtually no depth. A fingernail won't catch on the scratch.</untrusted>",
+                "location": "exterior",
+                "area": "Front Bumper"
+              },
+              {
+                "title": "Visible Repair",
+                "description": "<untrusted source=\"carvana-vehicle\">Past repair work is visible.</untrusted>",
+                "location": "exterior",
+                "area": "Rear Bumper"
+              },
+              {
+                "title": "Scratch",
+                "description": "<untrusted source=\"carvana-vehicle\">Scratches on internal hard surfaces.</untrusted>",
+                "location": "interior",
+                "area": "Trunk"
+              }
+            ],
+            "inspection": {
+              "date": "2026-10-21T00:00:00.000Z",
+              "points": 150,
+              "notPassed": [
+                {
+                  "category": "Under the hood",
+                  "point": "Wheels/Rims (check for damage)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Under the hood",
+                  "point": "Spare tire (or inflator kit)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Interior",
+                  "point": "Steering wheel tilt/lock",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Interior",
+                  "point": "Luggage compartment (jack and tool present)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "How it looks",
+                  "point": "Driver’s side (front/rear)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "How it looks",
+                  "point": "Passenger side (front/rear)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "How it looks",
+                  "point": "Rear bumper condition",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Detailing",
+                  "point": "Complete premium detail (wash, wax and high speed buff)",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Detailing",
+                  "point": "Complete premium interior detail including odor test",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Detailing",
+                  "point": "Clean engine compartment",
+                  "status": "FixedOrReplaced"
+                },
+                {
+                  "category": "Detailing",
+                  "point": "Clean all windows",
+                  "status": "FixedOrReplaced"
+                }
+              ]
+            },
+            "deepLink": "https://www.carvana.com/vehicle/4853120",
+            "nextStep": "Show the car with present_detail and the sections that answer the question, such as condition, imperfections or features."
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_carvana_vdp02",
+      "text": "No accident is reported: Carvana says the AutoCheck report shows none, and its CARFAX-based tag says there was one previous owner.\n\nCarvana's inspectors photographed three imperfections: a light scratch on the front bumper, visible past repair work on the rear bumper, and a scratch on a hard surface in the trunk. In the 150-point inspection on Oct 21, 11 items were fixed or replaced, including the rear bumper, the wheels and the spare tire.",
+      "present": [
+        {
+          "name": "present_detail",
+          "args": {
+            "entity": "vehicle",
+            "id": 4853120,
+            "sections": [
+              "condition",
+              "imperfections"
+            ]
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "estimated_total"
+          }
+        }
+      ]
+    }
+  ]
+}

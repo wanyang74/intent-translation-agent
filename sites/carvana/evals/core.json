@@ -808,6 +808,108 @@
           ]
         }
       }
+    },
+    {
+      "id": "car-vin",
+      "quick": true,
+      "description": "The car on screen: its VIN, from the car's own page (recorded 2026-11-05)",
+      "now": "2026-11-05T20:30:00Z",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4853120",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4853120
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4853120,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range Sport Utility 4D",
+        "mileage": 39914,
+        "color": "White",
+        "price": 33990,
+        "vehicleInventoryType": 1,
+        "locationId": 147
+      },
+      "message": "What's the VIN on this car?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "vehicle_details",
+            "args": {
+              "vehicleId": 4853120
+            }
+          }
+        ],
+        "text": {
+          "includes": [
+            "7SAYGDEE2PA038836"
+          ]
+        }
+      }
+    },
+    {
+      "id": "car-condition",
+      "description": "The car on screen: accidents and damage, from its page, saying where each fact comes from",
+      "now": "2026-11-05T20:30:00Z",
+      "page": {
+        "url": "https://www.carvana.com/vehicle/4853120",
+        "pageType": "vehicle",
+        "entity": {
+          "kind": "vehicle",
+          "id": 4853120
+        },
+        "location": {
+          "postalCode": "94402",
+          "region": "CA"
+        },
+        "locale": "en-US"
+      },
+      "pageData": {
+        "vehicleId": 4853120,
+        "year": 2023,
+        "make": "Tesla",
+        "model": "Model Y",
+        "trim": "Long Range Sport Utility 4D",
+        "mileage": 39914,
+        "color": "White",
+        "price": 33990,
+        "vehicleInventoryType": 1,
+        "locationId": 147
+      },
+      "message": "Has this one been in an accident? Any damage I should know about?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "vehicle_details",
+            "args": {
+              "vehicleId": 4853120
+            }
+          }
+        ],
+        "shows": [
+          {
+            "entity": "vehicle",
+            "includes": [
+              4853120
+            ]
+          }
+        ],
+        "text": {
+          "matches": [
+            "autocheck|carfax|report",
+            "repair"
+          ]
+        }
+      }
     }
   ]
 }

@@ -302,6 +302,12 @@
                       "text": "Gray"
                     },
                     {
+                      "key": "vin",
+                      "label": "VIN",
+                      "value": "7SAYGDEE6PF624412",
+                      "text": "7SAYGDEE6PF624412"
+                    },
+                    {
                       "key": "delivery",
                       "label": "Delivery",
                       "value": "Saturday",

@@ -728,6 +728,41 @@
     "file": "availability/availability-37.json"
   },
   {
+    "id": "vehicle_page-01",
+    "endpoint": "vehicle_page",
+    "kind": "recorded",
+    "description": "car 4853120: 2023 Tesla Model Y, 3 imperfections, 11 inspection points not passed",
+    "file": "vehicle_page/vehicle_page-01.json"
+  },
+  {
+    "id": "vehicle_page-02",
+    "endpoint": "vehicle_page",
+    "kind": "recorded",
+    "description": "car 4817704: 2023 Tesla Model Y, 2 imperfections, 11 inspection points not passed",
+    "file": "vehicle_page/vehicle_page-02.json"
+  },
+  {
+    "id": "vehicle_page-03",
+    "endpoint": "vehicle_page",
+    "kind": "recorded",
+    "description": "car 4878735: 2023 Tesla Model Y, 3 imperfections, 0 inspection points not passed",
+    "file": "vehicle_page/vehicle_page-03.json"
+  },
+  {
+    "id": "vehicle_page-04",
+    "endpoint": "vehicle_page",
+    "kind": "recorded",
+    "description": "car 4875944: 2024 Tesla Model Y, 1 imperfection, 0 inspection points not passed",
+    "file": "vehicle_page/vehicle_page-04.json"
+  },
+  {
+    "id": "vehicle_page-05",
+    "endpoint": "vehicle_page",
+    "kind": "recorded",
+    "description": "car 4885073: 2024 Tesla Model Y, 1 imperfection, 0 inspection points not passed",
+    "file": "vehicle_page/vehicle_page-05.json"
+  },
+  {
     "id": "pricing-err-no-client-id",
     "endpoint": "pricing",
     "kind": "observed",

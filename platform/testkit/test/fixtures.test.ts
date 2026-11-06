@@ -1,6 +1,7 @@
 // Tests: every site's fixture library (sites/<id>/fixtures/) and the fixture builder that makes it from recordings.
-// How: reads every fixture and the index, validates them against the site's endpoint schemas, scans for unscrubbed
-// identifiers, and (when the raw recordings are on this machine) rebuilds the library in memory.
+// How: reads every fixture and the index, validates them against the site's endpoint schemas (a page through the
+// site's own parser), scans for unscrubbed identifiers, and (when the raw recordings are on this machine) rebuilds the
+// library in memory.
 // Passes when: fixtures are valid where they should be, scrubbed, consistent with the index, and rebuilding from the
 // recordings gives byte-identical files.
 import { test } from 'node:test';
@@ -13,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { loadContract, describeErrors } from '../../contract/src/load.ts';
 import { repoRoot, requestValue } from '../../contract/src/site-pack.ts';
 import { fixtureDir, hasFixtures, loadFixtures } from '../src/fixtures.ts';
+import { loadSiteRuntime } from '../src/site-runtime.ts';
 
 const contract = loadContract();
 const sites = Object.keys(contract.sites).filter(hasFixtures);
@@ -60,6 +62,18 @@ for (const site of sites) {
       const ok = validate(fixture.response.body);
       if (fixture.expect === 'contract_violation') assert.equal(ok, false, `${fixture.id}: should break the contract`);
       else assert.ok(ok, `${fixture.id}: ${describeErrors(validate.errors)}`);
+    }
+  });
+
+  test(`${site}: pages: every recorded page reads, through the site's parser, into data that meets the contract`, async () => {
+    const pages = fixtures.filter((candidate) => candidate.response.status === 200 && !isJson(candidate.endpoint));
+    const { code } = await loadSiteRuntime(site);
+    for (const fixture of pages) {
+      const parse = code.parsers?.[fixture.endpoint];
+      assert.ok(parse, `${fixture.id}: the site has no parser for ${fixture.endpoint}`);
+      assert.equal(typeof fixture.response.body, 'string', `${fixture.id}: a page fixture holds the page`);
+      const validate = validator(pack.endpoints[fixture.endpoint]!.response);
+      assert.ok(validate(parse!(fixture.response.body as string)), `${fixture.id}: ${describeErrors(validate.errors)}`);
     }
   });
 

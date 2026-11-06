@@ -3,7 +3,8 @@
 // How: core.js's Execute and Respond with FakeHost answering from Carvana's fixtures; some tests inject faults.
 // Passes when: each request carries what Carvana needs and nothing more (decision D4); each failure the fixtures
 // cover becomes the right error; bad filters and sorts are refused before any request; the rate limit holds; and
-// cards and the detail view read the way Carvana shows cars.
+// cards and the detail view read the way Carvana shows cars; each car's VIN reaches the model and the screen; and a
+// car's own page gives its condition, imperfections and features, or a format change, never a guess.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { HostRequest } from '../../../platform/core/src/runtime/host.ts';
@@ -176,6 +177,18 @@ test('vehicle cards: read the way Carvana shows cars, with the estimated-total n
   assert.deepEqual(components[1], { type: 'notice', notice: 'estimated_total', text: 'Estimated total adds Carvana\'s estimated taxes and fees to the price. Final amounts are set at checkout.', version: '2026-10-12' });
 });
 
+test("VIN: search returns each car's VIN, and a comparison shows it from the tool result", async () => {
+  const { coreSession } = await session();
+  const search = await runToolCall(coreSession, 'search_vehicles', goalSearch);
+  assert.ok(search.ok);
+  const vehicles = search.output.vehicles as { vehicleId: number; vin: string }[];
+  assert.ok(vehicles.length > 0 && vehicles.every((vehicle) => /^[A-HJ-NPR-Z0-9]{17}$/.test(vehicle.vin)));
+  const [first, second] = vehicles;
+  const [comparison] = present(coreSession, [{ name: 'present_comparison', args: { entity: 'vehicle', ids: [first!.vehicleId, second!.vehicleId], attributes: ['vin'] } }]).components;
+  assert.ok(comparison?.type === 'comparison');
+  assert.deepEqual(comparison.rows.map((row) => [row.label, row.cells.map((cell) => cell.text)]), [['VIN', [first!.vin, second!.vin]]]);
+});
+
 test("car on its page: the page's price shows on the card before any quote", async () => {
   const page = { url: 'https://www.carvana.com/vehicle/4812031', pageType: 'vehicle', entity: { kind: 'vehicle' as const, id: 4812031 } };
   const { coreSession } = await session({ page, pageData: { ...(carPage as object), price: 35590 } });
@@ -199,4 +212,68 @@ test("detail view: the car's page details, the quote, and what owners say", asyn
   assert.equal(detail.sections[1]!.summary, '1,221 of 1,518 owner ratings are 4 or 5 stars.');
   assert.equal(detail.sections[1]!.lines!.length, 5);
   assert.ok(!detail.sections[1]!.lines!.some((line) => line.text.includes('<untrusted')), 'the fence is for the model only');
+});
+
+const CAR_PAGE = { url: 'https://www.carvana.com/vehicle/4853120', pageType: 'vehicle', entity: { kind: 'vehicle', id: 4853120 }, location: { postalCode: '94402', region: 'CA' } };
+
+test("vehicle_details: the car's page gives its VIN, condition and equipment; the request is a plain page fetch", async () => {
+  const { coreSession, sent } = await session({ page: CAR_PAGE });
+  const outcome = await runToolCall(coreSession, 'vehicle_details', { vehicleId: 4853120 });
+  assert.ok(outcome.ok, JSON.stringify(!outcome.ok && outcome.error));
+  const details = outcome.output as Record<string, any>;
+  assert.deepEqual([details.vin, details.year, details.make, details.model, details.mileage, details.saleStatus], ['7SAYGDEE2PA038836', 2023, 'Tesla', 'Model Y', 39914, 'Available']);
+  assert.deepEqual(details.imperfections.map((imperfection: { title: string; area: string }) => `${imperfection.title}, ${imperfection.area}`), ['Light Scratch, Front Bumper', 'Visible Repair, Rear Bumper', 'Scratch, Trunk']);
+  assert.ok(details.imperfections.every((imperfection: { description: string }) => imperfection.description.startsWith('<untrusted source="carvana-vehicle">')), "the inspectors' notes are fenced");
+  assert.deepEqual([details.accidentReported, details.priorUse, details.keys, details.recalls], [false, ['Personal'], 1, 0]);
+  assert.deepEqual([details.inspection.points, details.inspection.notPassed.length], [150, 11]);
+  assert.equal(details.features.length, 8);
+  assert.equal(details.deepLink, 'https://www.carvana.com/vehicle/4853120');
+  // The page as a signed-out browser asks for it: no visitor or tracking IDs.
+  assert.equal(sent.length, 1);
+  assert.deepEqual([sent[0]!.method, sent[0]!.url, sent[0]!.headers], ['GET', 'https://www.carvana.com/vehicle/4853120', { accept: 'text/html' }]);
+});
+
+test("detail view: the car's condition, imperfections and features read from its page, with no search needed", async () => {
+  const carOnPage = loadConversations('carvana').find((conversation) => conversation.id === 'car-condition')!.pageData;
+  const { coreSession } = await session({ page: CAR_PAGE, pageData: carOnPage });
+  assert.ok((await runToolCall(coreSession, 'vehicle_details', { vehicleId: 4853120 })).ok);
+  const [detail] = present(coreSession, [{ name: 'present_detail', args: { entity: 'vehicle', id: 4853120, sections: ['overview', 'condition', 'imperfections', 'features'] } }]).components;
+  assert.ok(detail?.type === 'detail');
+  assert.equal(detail.card.title, '2023 Tesla Model Y');
+  const [overview, condition, imperfections, features] = detail.sections;
+  assert.equal(overview!.fields!.find((field) => field.key === 'vin')?.text, '7SAYGDEE2PA038836');
+  assert.equal(condition!.summary, 'No accident on the AutoCheck report Carvana uses.');
+  assert.deepEqual(condition!.lines!.map((line) => line.text), [
+    'Prior use: Personal',
+    'No Reported Accidents',
+    'Single Owner',
+    'Great Deal',
+    'Inspected Oct 21, 2026: 150 points',
+    'Under the hood: Wheels/Rims (check for damage); Spare tire (or inflator kit)',
+    'Interior: Steering wheel tilt/lock; Luggage compartment (jack and tool present)',
+    'How it looks: Driver’s side (front/rear); Passenger side (front/rear); Rear bumper condition',
+    'Detailing: Complete premium detail (wash, wax and high speed buff); Complete premium interior detail including odor test; Clean engine compartment; Clean all windows',
+    'Recalls listed: none',
+    'Keys: 1',
+    'Warranty left: basic 2 mo or 9,800 mi; drivetrain 50 mo or 79,800 mi; battery 50 mo or 59,800 mi',
+  ], 'bare tags such as Luxury Vehicle are left out; the inspection points not passed are grouped by category');
+  assert.match(condition!.lines![2]!.meta!, /only one previous owner/);
+  assert.equal(condition!.lines![4]!.meta, '11 fixed or replaced');
+  assert.equal(condition!.lines![5]!.meta, 'fixed or replaced');
+  // On the car's own page, its card shows the page's price, as with the other tools.
+  assert.equal(detail.card.fields.find((field) => field.key === 'price')?.text, '$33,990');
+  assert.equal(imperfections!.summary, "Carvana's inspectors photographed 3 imperfections.");
+  assert.deepEqual(imperfections!.lines![1], { text: 'Visible Repair, rear bumper', meta: 'Past repair work is visible.' });
+  assert.ok(features!.lines!.some((line) => line.text.startsWith('Safety & Security: ')));
+  assert.ok(features!.lines!.some((line) => line.text.startsWith('Factory options: Autopilot')));
+  assert.ok(!JSON.stringify(detail).includes('<untrusted'), 'the fence is for the model only');
+});
+
+test("vehicle_details: a page without the car's data is a format change, never a guess", async () => {
+  const recorded = fixtures.find((fixture) => fixture.id === 'vehicle_page-01')!;
+  const redesigned: Fixture = { ...structuredClone(recorded), id: 'vehicle_page-redesigned', kind: 'synthetic', request: { ...structuredClone(recorded.request), url: 'https://www.carvana.com/vehicle/4853121' }, response: { ...recorded.response, body: '<!DOCTYPE html><html><body><script>self.__next_f.push([1,"{}"])</script></body></html>' } };
+  const { coreSession, log } = await session({ extra: [redesigned], page: { ...CAR_PAGE, url: 'https://www.carvana.com/vehicle/4853121', entity: { kind: 'vehicle', id: 4853121 } } });
+  const outcome = await runToolCall(coreSession, 'vehicle_details', { vehicleId: 4853121 });
+  assert.deepEqual(!outcome.ok && [outcome.error.code, outcome.error.reason], ['format_changed', 'response_changed']);
+  assert.ok(log.some((entry) => entry.kind === 'response_check'), 'the change monitor will read this');
 });
