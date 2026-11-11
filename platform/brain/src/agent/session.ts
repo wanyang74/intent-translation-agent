@@ -3,8 +3,12 @@
 // IDs, and usage toward the quotas. At most one turn runs at a time: a new message replaces it, results and
 // amendments go to it, and between turns there is none. The brain creates sessions and forgets idle ones; the turn
 // itself (the agent loop) is in turn.ts.
+// Memory: at the end of every turn the session condenses itself and saves the memory (memory/condense.ts), if the brain
+// keeps memories. A session opened from a memory starts with it: its IDs go back into the checks, its usage counts
+// on, and the model reads the memory at the start of the first new turn.
 import type { ClientAmend, ClientResults, ClientTurn } from '../../../contract/generated/types.ts';
 import { IdSet } from '../../../core/src/boundary/ids.ts';
+import { condense, describeMemory, type SessionMemory } from '../memory/condense.ts';
 import type { ChatMessage } from '../model/model.ts';
 import { contextBlock, SKILL_TOOL, type PromptPrefix } from '../prompt/prompt.ts';
 import { loadSkill, skillsForPage } from '../prompt/skills.ts';
@@ -28,6 +32,10 @@ export class AgentSession {
   readonly usage: SessionUsage = { turns: 0, modelCalls: 0, tokens: 0 };
   /** The turn that's running or waiting for results; null between turns. */
   turn: Turn | null = null;
+  /** The memory this session was reopened from: its turns come first when the session is condensed again. */
+  private restoredFrom: SessionMemory | null = null;
+  /** The memory as the model reads it, until the first new turn puts it in the history. */
+  private earlierConversation: string | null = null;
   lastSeen: number;
   private nextCall = 0;
   /** Tells the brain this session was just used, so it keeps its sessions in order of last use. */
@@ -61,7 +69,8 @@ export class AgentSession {
    * POST /v1/turn: a new message from the user starts a turn.
    *   1. A turn still running is replaced: its model call stops, and calls it was waiting on get error results.
    *   2. The session's turn quota is checked before anything is added to the history.
-   *   3. The message goes into the history with the page context. The item on screen counts as a known ID.
+   *   3. The message goes into the history with the page context, after the memory in a reopened session's first
+   *      turn. The item on screen counts as a known ID.
    *   4. A skill for this kind of page loads before the first model call, as if the model had asked for it.
    *   5. The turn's steps stream back to the client.
    */
@@ -77,11 +86,14 @@ export class AgentSession {
       return { ok: true, events: once({ type: 'error', traceId: turnMessage.traceId, code: 'budget_reached', message: refusal.message }) };
     }
     this.usage.turns++;
-    // 3. The user's words, then the page and time in a fenced block at the end, where they don't break the cache.
+    // 3. The user's words, then the page and time in a fenced block at the end, where they don't break the cache. The
+    //    first turn of a reopened session starts with the memory of the conversation so far.
     const now = this.services.now();
     const page = turnMessage.pageContext;
     if (page.entity) this.ids.learn(page.entity.kind, page.entity.id, { now });
-    this.history.push({ role: 'user', content: [{ type: 'text', text: turnMessage.message }, { type: 'text', text: contextBlock(page, now) }] });
+    const earlier = this.earlierConversation;
+    this.earlierConversation = null;
+    this.history.push({ role: 'user', content: [...(earlier ? [{ type: 'text' as const, text: earlier }] : []), { type: 'text', text: turnMessage.message }, { type: 'text', text: contextBlock(page, now) }] });
     const turn = new Turn(this, turnMessage.traceId, page, now);
     this.turn = turn;
     this.log(turn.traceId, 'turn', { message: turnMessage.message.length, pageType: page.pageType });
@@ -120,6 +132,31 @@ export class AgentSession {
     turn.amend(amendMessage.message);
     this.touch();
     return reply('queued');
+  }
+
+  /** Reopens this session from its memory: the IDs it knew, its usage so far, and the memory for the next turn. */
+  restore(memory: SessionMemory): void {
+    this.ids.restore(memory.knownIds);
+    Object.assign(this.usage, memory.usage);
+    this.restoredFrom = memory;
+    this.earlierConversation = describeMemory(this.services.site.bundle, memory, this.services.now());
+  }
+
+  /**
+   * Called when a turn ends: saves the session's memory, if the brain keeps memories. A failure here is logged and
+   * never reaches the user: memory is a convenience, the conversation goes on without it.
+   */
+  turnEnded(): void {
+    const { memory, site, now } = this.services;
+    if (!memory) return;
+    try {
+      memory.save(condense({
+        sessionId: this.id, bundle: site.bundle, history: this.history, knownIds: this.ids.entries(), usage: this.usage,
+        previous: this.restoredFrom, lastSeen: this.lastSeen, now: now(),
+      }));
+    } catch (error) {
+      this.log(undefined, 'memory_failed', { error: String(error) });
+    }
   }
 
   /** The brain is dropping this session: a turn still open ends here. */

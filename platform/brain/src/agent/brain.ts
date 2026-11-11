@@ -5,11 +5,14 @@
 //   POST /v1/turn     the user's message and page context → the first steps' events
 //   POST /v1/results  the results the brain awaited → the next steps' events
 //   POST /v1/amend    a message sent while the turn runs → queued, or too late
+// A session is forgotten after BrainLimits.sessionIdleMs without use. With a memory store, its condensed memory
+// (memory/condense.ts, saved at the end of every turn) reopens it when a turn for the same session ID comes back.
 // One brain serves one site: each site deploys its own, with its own model keys, quotas and logs. A host that serves
 // several sites from one process would run one Brain per site behind a router that picks by the turn's site.
 import type { ClientAmend, ClientResults, ClientTurn, RemoteConfig } from '../../../contract/generated/types.ts';
 import { effectivePolicy } from '../../../core/src/boundary/limits.ts';
 import { describeProblems, validatorFor } from '../../../core/src/shared/validate.ts';
+import type { MemoryStore } from '../memory/store.ts';
 import type { ChatMessage, ModelAdapter } from '../model/model.ts';
 import { buildPromptPrefix, type PromptPrefix } from '../prompt/prompt.ts';
 import type { SiteBundle } from '../prompt/site.ts';
@@ -26,6 +29,8 @@ export interface BrainOptions {
   config?: RemoteConfig | undefined;
   now?: (() => number) | undefined;
   log?: ((entry: BrainLogEntry) => void) | undefined;
+  /** Keeps sessions' condensed memories, so a forgotten session can be reopened; without it, a forgotten session starts over. */
+  memory?: MemoryStore | undefined;
 }
 
 export class Brain {
@@ -50,6 +55,7 @@ export class Brain {
       model: options.model,
       limits: this.limits,
       quotas: new Quotas({ ...DEFAULT_QUOTAS, ...options.quotas }, now),
+      memory: options.memory ?? null,
       now,
       log: (sessionId, traceId, kind, detail) => logger?.({ ...(sessionId ? { sessionId } : {}), ...(traceId ? { traceId } : {}), kind, detail }),
     };
@@ -96,19 +102,27 @@ export class Brain {
    * A new user message:
    *   1. It must name this brain's site.
    *   2. Forget idle sessions first, so the cap counts only live ones.
-   *   3. Find the conversation, or open it on its first message.
+   *   3. Find the conversation, or open it: from its memory when the brain forgot it (idle, or a restart), otherwise
+   *      as a new one.
    *   4. The session starts the turn, replacing one still running.
    */
   private startTurn(turnMessage: ClientTurn, signal: AbortSignal | undefined): ServerResponse {
     const { site } = this.services;
     if (turnMessage.site !== site.id) return { ok: false, status: 400, error: `this brain serves ${site.id}, not ${turnMessage.site}` };
-    this.evict();
+    this.maybeEvict();
     let session = this.sessions.get(turnMessage.sessionId);
     if (!session) {
       // What the device can run is fixed by its first turn: the tool list then stays the same for the whole conversation.
       const opened = new AgentSession(turnMessage.sessionId, this.services, turnMessage.capabilities?.scripts === true, () => this.markUsed(opened));
       session = opened;
       session.log(turnMessage.traceId, 'session_start', { site: turnMessage.site });
+      const memory = this.services.memory?.load(turnMessage.sessionId, this.services.now()) ?? null;
+      if (memory) {
+        opened.restore(memory);
+        session.log(turnMessage.traceId, 'session_restored', {
+          turns: memory.turns.length, ids: memory.knownIds.length, idleMinutes: Math.round((this.services.now() - memory.lastSeen) / 60_000),
+        });
+      }
     }
     return session.startTurn(turnMessage, signal);
   }
@@ -136,7 +150,7 @@ export class Brain {
   }
 
   /** Forgets idle sessions, oldest first (the map is kept in order of last use), and the oldest beyond the cap. */
-  private evict(): void {
+  private maybeEvict(): void {
     const now = this.services.now();
     for (const session of this.sessions.values()) {
       const idle = now - session.lastSeen > this.limits.sessionIdleMs;

@@ -9,6 +9,7 @@ import type { UiComponent } from '../../core/src/present/present.ts';
 import type { IdValue } from '../../core/src/boundary/ids.ts';
 import { Brain } from '../../brain/src/agent/brain.ts';
 import type { BrainLogEntry } from '../../brain/src/agent/types.ts';
+import { InMemoryMemoryStore } from '../../brain/src/memory/store.ts';
 import type { ModelAdapter, ModelEvent, ModelRequest } from '../../brain/src/model/model.ts';
 import { loadSite, type SiteBundle } from '../../brain/src/prompt/site.ts';
 import { loadConversations, type Conversation } from '../../testkit/src/conversations.ts';
@@ -132,7 +133,8 @@ const NO_STEPS: StepUsage = { steps: 0, inputTokens: 0, outputTokens: 0, cacheRe
  *   2. The brain, with the replaying model in front of the model under test, and a log.
  *   3. core.js on a test host (with the script sandbox when the device has one), its link to the brain recorded, and
  *      requests no fixture answers noted.
- *   4. The earlier turns, replayed; they must go as saved, or the harness is broken.
+ *   4. The earlier turns, replayed; they must go as saved, or the harness is broken. Then the user's time away, if
+ *      the case has some: both clocks move on, and past the brain's idle limit the brain reopens from its memory.
  *   5. The case's message, on its page, through runTurn.
  *   6. The Trial, from what crossed the link, what the user saw, and the brain's log, for the new turn only.
  */
@@ -150,7 +152,10 @@ export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: Mo
   // 2. The brain.
   const log: BrainLogEntry[] = [];
   const caseModel = new ReplayThenModel(new FakeModel(conversation ? replayScript(conversation, earlier.length) : [], { idPrefix: 'replay' }), model);
-  const brain = new Brain({ site: site.bundle, model: caseModel, now: () => now, log: (entry) => log.push(entry) });
+  // The brain keeps session memory, as `npm run brain` does, on a clock the case can move on.
+  const clock = { now };
+  const memory = new InMemoryMemoryStore({ site: site.id, keepHours: 24 });
+  const brain = new Brain({ site: site.bundle, model: caseModel, now: () => clock.now, log: (entry) => log.push(entry), memory });
 
   // 3. core.js, its recorded link, and fixture misses.
   const recorder = new LinkRecorder(inProcess(brain));
@@ -175,6 +180,9 @@ export async function runCase(site: SiteMaterials, evalCase: EvalCase, model: Mo
     const outcome = await runTurn(session, turn.message, surface);
     if (!outcome.ok) throw new Error(`${evalCase.id}: replaying ${conversation!.id} failed: ${outcome.reason}`);
   }
+  const away = (evalCase.after?.idleMinutes ?? 0) * 60_000;
+  clock.now += away;
+  harness.clock.advance(away);
 
   // 5. The new turn.
   const trafficStart = recorder.traffic.length;

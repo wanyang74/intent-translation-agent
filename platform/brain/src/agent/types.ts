@@ -6,6 +6,7 @@
 //   Turn (turn.ts)            one user message to one answer: the agent loop, a ModelStep per model call
 import type { ServerEvent } from '../../../contract/generated/types.ts';
 import type { Policy } from '../../../core/src/boundary/limits.ts';
+import type { MemoryStore } from '../memory/store.ts';
 import type { ModelAdapter } from '../model/model.ts';
 import type { PromptPrefix } from '../prompt/prompt.ts';
 import type { SiteBundle } from '../prompt/site.ts';
@@ -67,6 +68,8 @@ export interface BrainServices {
   readonly model: ModelAdapter;
   readonly limits: BrainLimits;
   readonly quotas: Quotas;
+  /** Where sessions' condensed memories are kept, to reopen a forgotten session; null when the brain keeps none. */
+  readonly memory: MemoryStore | null;
   readonly now: () => number;
   log(sessionId: string | undefined, traceId: string | undefined, kind: string, detail: unknown): void;
 }

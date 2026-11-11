@@ -288,6 +288,7 @@ export class Turn {
     this.timer = null;
     if (this.session.turn === this) this.session.turn = null;
     this.log('turn_end', { why, steps: this.steps });
+    this.session.turnEnded();
   }
 
   /** A new message replaced this turn: stop the model call and end it; calls it was waiting on get error results. */

@@ -36,11 +36,11 @@ test('loader: a case that names something that does not exist is caught', async 
   const { pack } = await loadSiteRuntime(site);
   const [first] = loadCases(site);
   const broken = {
-    ...first!, id: 'Broken Case', after: { conversation: 'no-such-conversation', turns: 1 }, fixtures: [{ from: 'no-such-fixture', set: {} }],
+    ...first!, id: 'Broken Case', after: { conversation: 'no-such-conversation', turns: 1, idleMinutes: 0 }, fixtures: [{ from: 'no-such-fixture', set: {} }],
     expect: { calls: [{ tool: 'no_such_tool' }], shows: [{ entity: 'no_such_entity' }], text: { matches: ['('] } },
   };
   const problems = checkCases([broken], { pack, conversations: [], fixtures: [] });
-  for (const expected of ['lowercase words', 'no example conversation', 'no fixture', "isn't one of the site's tools", 'unknown entity', 'valid regular expression']) {
+  for (const expected of ['lowercase words', 'no example conversation', 'idleMinutes', 'no fixture', "isn't one of the site's tools", 'unknown entity', 'valid regular expression']) {
     assert.ok(problems.some((problem) => problem.includes(expected)), `expected a problem mentioning "${expected}": ${problems.join(' | ')}`);
   }
 });

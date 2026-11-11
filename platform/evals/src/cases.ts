@@ -88,8 +88,11 @@ export interface EvalCase {
   description: string;
   /** Runs on every change: high-traffic cases. Safety cases always do. */
   quick?: boolean;
-  /** The state: the first `turns` user turns of an example conversation, replayed as saved. */
-  after?: { conversation: string; turns: number };
+  /**
+   * The state: the first `turns` user turns of an example conversation, replayed as saved. With idleMinutes, the user
+   * is away that long before the new message; past the brain's idle limit, the conversation comes back from its memory.
+   */
+  after?: { conversation: string; turns: number; idleMinutes?: number };
   /** The page the message is sent from. Default: the file's page, or the last replayed turn's page. */
   page?: PageContext;
   pageData?: unknown;
@@ -158,6 +161,8 @@ export function checkCases(cases: readonly EvalCase[], ctx: CaseContext): string
       const turns = conversation.messages.filter((message) => message.type === 'turn').length;
       if (evalCase.after!.turns < 1 || evalCase.after!.turns > turns) add(`${conversation.id} has ${turns} turns, not ${evalCase.after!.turns}`);
     }
+    const idle = evalCase.after?.idleMinutes;
+    if (idle !== undefined && !(idle > 0 && idle <= 24 * 60)) add('idleMinutes is more than 0 and at most a day (the memory is kept 24 hours)');
     if (!evalCase.after && !evalCase.page) add('a case with no earlier conversation needs a page');
     if (!evalCase.after && !evalCase.now) add('a case with no earlier conversation needs a clock');
     if (evalCase.now && Number.isNaN(Date.parse(evalCase.now))) add(`${evalCase.now} isn't a date`);

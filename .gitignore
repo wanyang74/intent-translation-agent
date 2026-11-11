@@ -17,3 +17,6 @@ sites/*/evals/runs/
 traces/
 # Brain logs saved with tee
 logs/
+
+# Session memories from the local brain (what users typed, condensed); kept 24 hours, never committed
+sites/*/session_log/

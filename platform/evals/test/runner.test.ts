@@ -5,8 +5,9 @@
 // (sites/<id>/evals/references/) replays.
 // Passes when: the case passes when the model writes what the conversation did; fails when the model puts a price on
 // screen that no tool returned; is unrecorded when the model asks the site for something no fixture answers; the
-// device matches users' (no script sandbox, so no run_script) unless a run asks for scripts; and every saved
-// reference passes again.
+// device matches users' (no script sandbox, so no run_script) unless a run asks for scripts; after time away past the
+// brain's idle limit, IDs from the earlier turns still pass the brain's checks (the conversation came back from its
+// memory); and every saved reference passes again.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { listSites } from '../../contract/src/site-pack.ts';
@@ -92,4 +93,28 @@ for (const site of listSites().filter(hasEvals)) {
       assert.deepEqual(result.checks.filter((check) => !check.pass), []);
     });
   }
+}
+
+for (const site of listSites().filter(hasFixtures)) {
+  const materials = await loadSiteMaterials(site);
+  const conversation = materials.conversations.find((candidate) => candidate.messages.some((message) => message.type === 'answer' && (message.present ?? []).some((presentation) => 'ids' in presentation.args)));
+  if (!conversation) continue;
+  test(`${site}/${conversation.id}: after 40 minutes away, the earlier turns' IDs still pass the brain's checks`, async () => {
+    const shown = conversation.messages.flatMap((message) => (message.type === 'answer' ? message.present ?? [] : [])).find((presentation) => 'ids' in presentation.args)!.args as { entity: string; ids: (string | number)[] };
+    const turns = conversation.messages.filter((message) => message.type === 'turn').length;
+    const evalCase: EvalCase = {
+      id: 'after-a-break', category: 'context', description: 'time away', message: 'show me the first one again',
+      after: { conversation: conversation.id, turns, idleMinutes: 40 }, expect: {},
+    };
+    // The model shows the item by its ID from before; if that ID has since expired, it says so.
+    const model = new FakeModel([
+      { text: 'Here it is.', calls: [{ name: 'present_items', input: { entity: shown.entity, ids: [shown.ids[0]] } }] },
+      { text: 'That one has expired.' },
+    ]);
+    const trial = await runCase(materials, evalCase, model);
+    assert.equal(trial.outcome, 'answer');
+    const reasons = (trial.refusals as { reason: string }[][]).flat().map((refusal) => refusal.reason);
+    assert.ok(!reasons.includes('unknown_id'), `the brain still knew the earlier IDs: ${JSON.stringify(trial.refusals)}`);
+    assert.deepEqual(trial.calls, [], 'no new call to the site');
+  });
 }

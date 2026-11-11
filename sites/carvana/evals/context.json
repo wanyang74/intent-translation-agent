@@ -298,6 +298,50 @@
           ]
         }
       }
+    },
+    {
+      "id": "after-a-break-fewest-miles",
+      "quick": true,
+      "description": "The user comes back 40 minutes later, past the brain's idle limit: the conversation comes back from its memory, so the agent knows which six cars it showed and their mileage, with no new search",
+      "after": {
+        "conversation": "goal-to-ranked-list",
+        "turns": 1,
+        "idleMinutes": 40
+      },
+      "message": "I'm back. Of the six you showed me, which has the fewest miles?",
+      "expect": {
+        "noCalls": [
+          "search_vehicles"
+        ],
+        "text": {
+          "includes": [
+            "2,520"
+          ]
+        }
+      }
+    },
+    {
+      "id": "after-a-break-car-condition",
+      "description": "40 minutes after asking about a car's condition, the user asks for its VIN and where the repair was: from the conversation's memory, or the car's page again, never a new search",
+      "after": {
+        "conversation": "car-condition",
+        "turns": 1,
+        "idleMinutes": 40
+      },
+      "message": "Sorry, I stepped away. What was its VIN again, and where was the repair work?",
+      "expect": {
+        "noCalls": [
+          "search_vehicles"
+        ],
+        "text": {
+          "includes": [
+            "7SAYGDEE2PA038836"
+          ],
+          "matches": [
+            "rear bumper"
+          ]
+        }
+      }
     }
   ]
 }
