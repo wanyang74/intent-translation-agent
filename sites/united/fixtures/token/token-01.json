@@ -1,0 +1,30 @@
+{
+  "id": "token-01",
+  "site": "united",
+  "endpoint": "token",
+  "kind": "synthetic",
+  "source": "made by the fixture builder from the site pack's token section",
+  "description": "a token, valid far beyond any fixture's clock",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/token/anonymous",
+    "headers": {
+      "accept": "application/json"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "token": {
+          "hash": "fixture-token-0001",
+          "expiresAt": "2099-01-01T00:00:00Z"
+        }
+      }
+    }
+  }
+}

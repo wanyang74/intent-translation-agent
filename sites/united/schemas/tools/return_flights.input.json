@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/return_flights.input.json",
+  "title": "return_flights: input",
+  "type": "object",
+  "properties": {
+    "fareId": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/FareId",
+      "description": "The outbound fare the traveler picked, from search_flights"
+    },
+    "nonstopOnly": {
+      "type": "boolean"
+    },
+    "sortBy": {
+      "enum": [
+        "best",
+        "price",
+        "duration",
+        "departure"
+      ]
+    }
+  },
+  "required": [
+    "fareId"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "fareId": "0bSXrUfWdPSSBENS4M91V800a"
+    }
+  ]
+}

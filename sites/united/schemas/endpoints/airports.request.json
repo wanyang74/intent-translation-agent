@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/airports.request.json",
+  "title": "United airport lookup request (GET /api/airports/lookup/, query string)",
+  "type": "object",
+  "properties": {
+    "airport": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,60}$"
+    },
+    "allAirports": {
+      "enum": [
+        "true",
+        "false"
+      ]
+    },
+    "matches": {
+      "type": "string",
+      "pattern": "^[0-9]{1,2}$"
+    }
+  },
+  "required": [
+    "airport",
+    "allAirports",
+    "matches"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "airport": "shanghai",
+      "allAirports": "true",
+      "matches": "5"
+    }
+  ]
+}

@@ -9,7 +9,8 @@
     "method": "GET",
     "url": "https://api.demo-flights.example/v1/trips?status=upcoming",
     "headers": {
-      "accept": "application/json"
+      "accept": "application/json",
+      "x-demo-token": "Bearer fixture-token-0001"
     },
     "body": null
   },

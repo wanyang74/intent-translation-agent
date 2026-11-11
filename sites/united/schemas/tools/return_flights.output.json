@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/return_flights.output.json",
+  "title": "return_flights: output",
+  "type": "object",
+  "properties": {
+    "direction": {
+      "enum": [
+        "outbound",
+        "return",
+        "one_way"
+      ]
+    },
+    "pricedAs": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,}$"
+    },
+    "flights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "flightId": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/FlightId"
+          },
+          "carrier": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "flightNumbers": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "route": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "departs": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "arrives": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "stops": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "layovers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "duration": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "aircraft": {
+            "type": "string"
+          },
+          "operatedBy": {
+            "type": "string"
+          },
+          "lowestFare": {
+            "$ref": "/schemas/common.json#/$defs/Money"
+          },
+          "fares": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fareId": {
+                  "$ref": "/sites/united/schemas/common.json#/$defs/FareId"
+                },
+                "name": {
+                  "type": "string",
+                  "pattern": "^[\\s\\S]{1,}$"
+                },
+                "cabin": {
+                  "type": "string"
+                },
+                "totalPrice": {
+                  "$ref": "/schemas/common.json#/$defs/Money"
+                },
+                "refundable": {
+                  "type": "boolean"
+                },
+                "noChangeFees": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "fareId",
+                "name",
+                "totalPrice"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "flightId",
+          "carrier",
+          "flightNumbers",
+          "route",
+          "departs",
+          "arrives",
+          "stops",
+          "duration",
+          "fares"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "totalFlights": {
+      "type": "integer"
+    },
+    "shown": {
+      "type": "integer"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nextStep": {
+      "type": "string",
+      "description": "Added by the platform from the site pack"
+    }
+  },
+  "required": [
+    "direction",
+    "pricedAs",
+    "flights",
+    "totalFlights",
+    "shown"
+  ],
+  "additionalProperties": false
+}

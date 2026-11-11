@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/common.json",
+  "title": "United definitions",
+  "$defs": {
+    "Place": {
+      "type": "string",
+      "pattern": "^([A-Z]{3}|[A-Z][A-Z .'-]* \\(ALL AIRPORTS\\))$",
+      "description": "Where a search starts or ends, as United's search takes it: a three-letter airport code (SFO), or a city's all-airports name from find_airport (SHANGHAI (ALL AIRPORTS))."
+    },
+    "FlightId": {
+      "type": "string",
+      "pattern": "^[0-9]+-[0-9A-Z|]+-[A-Z0-9]{2}$",
+      "description": "A flight option in one search, as United names it: a number, the flight numbers joined by |, and the airline (356-1164|198-UA)."
+    },
+    "FareId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]{20,32}(_[A-Z]{2})?$",
+      "description": "One fare on one flight option in one search (an offer)."
+    },
+    "SearchSession": {
+      "type": "string",
+      "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+      "description": "United's search session (its cartId). Internal: never shown."
+    },
+    "Cabin": {
+      "enum": [
+        "economy",
+        "business_or_first"
+      ],
+      "description": "economy, or business_or_first (United's premium search: Polaris business, first and Premium Plus)."
+    },
+    "LocalTime": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$",
+      "description": "A local time at the airport, as United sends it."
+    },
+    "Segment": {
+      "type": "object",
+      "properties": {
+        "flightNumber": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,}$"
+        },
+        "marketingCarrier": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,}$"
+        },
+        "marketingCarrierDescription": {
+          "type": "string"
+        },
+        "operatingCarrier": {
+          "type": "string"
+        },
+        "operatingCarrierDescription": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "departDateTime": {
+          "$ref": "/sites/united/schemas/common.json#/$defs/LocalTime"
+        },
+        "destinationDateTime": {
+          "$ref": "/sites/united/schemas/common.json#/$defs/LocalTime"
+        },
+        "travelMinutes": {
+          "type": "integer"
+        },
+        "connectTimeMinutes": {
+          "type": "integer"
+        },
+        "equipmentDisclosures": {
+          "type": "object",
+          "properties": {
+            "equipmentType": {
+              "type": "string"
+            },
+            "equipmentDescription": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "flightNumber",
+        "marketingCarrier",
+        "origin",
+        "destination",
+        "departDateTime",
+        "destinationDateTime"
+      ],
+      "additionalProperties": true
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "productType": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,}$"
+        },
+        "productSubtype": {
+          "type": "string"
+        },
+        "cabinType": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subTitle": {
+          "type": "string"
+        },
+        "prices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pricingType": {
+                "type": "string",
+                "pattern": "^[\\s\\S]{1,}$"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "amountAllPax": {
+                "type": "number"
+              },
+              "currency": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "pricingType",
+              "amount"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "nonRefundableIndicator": {
+          "type": "boolean"
+        },
+        "noChangeFeeIndicator": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "productType"
+      ],
+      "additionalProperties": true
+    },
+    "FlightOption": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "flightOption"
+        },
+        "flight": {
+          "allOf": [
+            {
+              "$ref": "/sites/united/schemas/common.json#/$defs/Segment"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "$ref": "/sites/united/schemas/common.json#/$defs/FlightId"
+                },
+                "travelMinutesTotal": {
+                  "type": "integer"
+                },
+                "connections": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "/sites/united/schemas/common.json#/$defs/Segment"
+                  }
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "/sites/united/schemas/common.json#/$defs/Product"
+                  }
+                }
+              },
+              "required": [
+                "hash",
+                "travelMinutesTotal",
+                "connections",
+                "products"
+              ],
+              "additionalProperties": true
+            }
+          ]
+        }
+      },
+      "required": [
+        "flight"
+      ],
+      "additionalProperties": true
+    },
+    "SearchStream": {
+      "type": "object",
+      "properties": {
+        "meta": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "cartId": {
+                "$ref": "/sites/united/schemas/common.json#/$defs/SearchSession"
+              },
+              "origin": {
+                "type": "string"
+              },
+              "destination": {
+                "type": "string"
+              },
+              "originDecoded": {
+                "type": "string"
+              },
+              "destinationDecoded": {
+                "type": "string"
+              },
+              "departDate": {
+                "$ref": "/schemas/common.json#/$defs/Date"
+              },
+              "tripNumber": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "cartId",
+              "departDate"
+            ],
+            "additionalProperties": true
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "flightOption": {
+          "type": "array",
+          "items": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/FlightOption"
+          }
+        },
+        "warning": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "meta"
+      ],
+      "additionalProperties": true,
+      "description": "Its events grouped by their type field (eventKind: type): meta, then one flightOption per flight option, then filters and more."
+    }
+  }
+}

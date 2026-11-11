@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/fare_details.output.json",
+  "title": "fare_details: output",
+  "type": "object",
+  "properties": {
+    "flightId": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/FlightId"
+    },
+    "fares": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fareId": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/FareId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "totalPrice": {
+            "$ref": "/schemas/common.json#/$defs/Money"
+          },
+          "checkedBags": {
+            "type": "string"
+          },
+          "carryOn": {
+            "type": "string"
+          },
+          "seat": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "string"
+          },
+          "refunds": {
+            "type": "string"
+          },
+          "upgrades": {
+            "type": "string"
+          },
+          "lounge": {
+            "type": "string"
+          },
+          "other": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "What United lists that has no field of its own"
+          }
+        },
+        "required": [
+          "fareId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "flightId",
+    "fares"
+  ],
+  "additionalProperties": false
+}

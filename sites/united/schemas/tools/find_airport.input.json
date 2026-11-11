@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/find_airport.input.json",
+  "title": "find_airport: input",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{2,60}$",
+      "description": "A city or airport name, or a code"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "query": "shanghai"
+    }
+  ]
+}

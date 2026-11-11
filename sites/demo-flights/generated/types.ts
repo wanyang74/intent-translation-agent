@@ -54,14 +54,23 @@ export interface OffersRequest {
   cabin: Cabin;
 }
 /**
- * Demo Flights offer search response
+ * Demo Flights offer search response, its events grouped by name. The stream sends one search event, then one offer event per offer (none when nothing matches), then done.
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
  * via the `definition` "OffersResponse".
  */
 export interface OffersResponse {
-  searchId: string;
-  offers: {
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  search: [
+    {
+      searchId: string;
+      [k: string]: unknown | undefined;
+    }
+  ];
+  offer?: {
     offerId: OfferId;
     expiresAt: DateTime;
     price: {
@@ -77,6 +86,34 @@ export interface OffersResponse {
     duration: Duration;
     [k: string]: unknown | undefined;
   }[];
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  done: [
+    {
+      count: number;
+      [k: string]: unknown | undefined;
+    }
+  ];
+  [k: string]: unknown | undefined;
+}
+/**
+ * Demo Flights token request (GET /v1/session/token, nothing sent)
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "SessionTokenRequest".
+ */
+export interface SessionTokenRequest {}
+/**
+ * Demo Flights token response
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "SessionTokenResponse".
+ */
+export interface SessionTokenResponse {
+  token: string;
+  expiresAt: DateTime;
   [k: string]: unknown | undefined;
 }
 /**

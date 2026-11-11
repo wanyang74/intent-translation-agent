@@ -1,6 +1,8 @@
 // Generates TypeScript types, precompiled validators and tool definitions:
 //   platform/contract/generated/  types.ts, validators.js, validators.d.ts for the platform schemas, and tools.json
-//                                 (the presentation tools and the platform's own tools)
+//                                 (the presentation tools and the platform's own tools); runtime-validators.js and .d.ts
+//                                 hold the same minus the site-pack format, which only build tools and tests check, for
+//                                 what ships in an app (a bundler can't drop unused Ajv validators)
 //   sites/<id>/generated/         the same for each site pack's schemas, plus site.json (the site pack as JSON, for
 //                                 core.js) and tools.json (the site's tools)
 // Validators are Ajv standalone code with no imports, eval or new Function, so they run in web pages,
@@ -179,6 +181,11 @@ const outputs: { file: string; text: string }[] = [];
     { file: path.join(platformOut, 'validators.js'), text: validators.js },
     { file: path.join(platformOut, 'validators.d.ts'), text: validators.dts },
     { file: path.join(platformOut, 'tools.json'), text: toolsJson(platformToolDefinitions()) },
+  );
+  const shipped = generateValidators(platform.filter((schema) => schema.rel !== 'site-pack.json'), platform, null);
+  outputs.push(
+    { file: path.join(platformOut, 'runtime-validators.js'), text: shipped.js },
+    { file: path.join(platformOut, 'runtime-validators.d.ts'), text: shipped.dts },
   );
 }
 for (const id of listSites()) {

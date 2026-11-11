@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/find_airport.output.json",
+  "title": "find_airport: output",
+  "type": "object",
+  "properties": {
+    "airports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "place": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/Place"
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^[\\s\\S]{1,}$"
+          },
+          "country": {
+            "type": "string"
+          },
+          "allAirports": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "place",
+          "code",
+          "name",
+          "allAirports"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "airports"
+  ],
+  "additionalProperties": false
+}

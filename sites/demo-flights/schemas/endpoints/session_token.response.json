@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/session_token.response.json",
+  "title": "Demo Flights token response",
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,}$"
+    },
+    "expiresAt": {
+      "$ref": "/schemas/common.json#/$defs/DateTime"
+    }
+  },
+  "required": [
+    "token",
+    "expiresAt"
+  ],
+  "additionalProperties": true,
+  "examples": [
+    {
+      "token": "fixture-token-0001",
+      "expiresAt": "2099-01-01T00:00:00Z"
+    }
+  ]
+}

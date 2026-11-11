@@ -1,0 +1,132 @@
+{
+  "id": "cheapest-round-trip",
+  "site": "united",
+  "source": "conversation",
+  "description": "A round trip to a city with two airports: the agent finds its all-airports choice, searches cheapest first, and weighs the cheapest against the nonstop.",
+  "turns": [
+    {
+      "message": "What's the cheapest economy round trip from SFO to Shanghai, Dec 22 to Jan 10? Just me.",
+      "page": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Finding Shanghai's airports…"
+        },
+        {
+          "type": "progress",
+          "text": "Searching United flights for 12/22/2026, back 1/10/2027…"
+        },
+        {
+          "type": "progress",
+          "text": "Searching United, cheapest first…"
+        },
+        {
+          "type": "answer",
+          "text": "The cheapest of the 10 round trips United found is $2,841, taxes included: UA 2409 / UA 198 via Los Angeles, leaving Tue, Dec 22, 7:55 PM. It has a 15h 16m layover in LAX, so the trip out takes 31h 00m.\n\nFor $237 more, UA 857 flies nonstop to Shanghai Pudong in 13h 50m for $3,078. These prices cover the whole round trip; pick an outbound fare and I'll show the flights back.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "flight",
+              "layout": "cards",
+              "heading": "SFO to Shanghai, Dec 22 to Jan 10, cheapest first",
+              "items": [
+                {
+                  "id": "356-2409|198-UA",
+                  "title": "UA 2409 / UA 198",
+                  "fields": [
+                    {
+                      "key": "lowestFare",
+                      "label": "From",
+                      "value": 2841,
+                      "text": "$2,841"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 1,
+                      "text": "1"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "31h 00m",
+                      "text": "31h 00m"
+                    }
+                  ],
+                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM"
+                },
+                {
+                  "id": "356-2282|198-UA",
+                  "title": "UA 2282 / UA 198",
+                  "fields": [
+                    {
+                      "key": "lowestFare",
+                      "label": "From",
+                      "value": 2851,
+                      "text": "$2,851"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 1,
+                      "text": "1"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "33h 09m",
+                      "text": "33h 09m"
+                    }
+                  ],
+                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM"
+                },
+                {
+                  "id": "356-857-UA",
+                  "title": "UA 857",
+                  "fields": [
+                    {
+                      "key": "lowestFare",
+                      "label": "From",
+                      "value": 3078,
+                      "text": "$3,078"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 0,
+                      "text": "0"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "13h 50m",
+                      "text": "13h 50m"
+                    }
+                  ],
+                  "subtitle": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "fares_include_taxes",
+              "text": "Fares include taxes and fees, for all travelers.",
+              "version": "2026-11-06"
+            },
+            {
+              "type": "notice",
+              "notice": "signed_out_fares",
+              "text": "These are United's signed-out fares. MileagePlus benefits, such as free checked bags for some members, show when you sign in on united.com.",
+              "version": "2026-11-06"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

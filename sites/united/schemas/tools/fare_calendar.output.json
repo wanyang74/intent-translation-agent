@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/fare_calendar.output.json",
+  "title": "fare_calendar: output",
+  "type": "object",
+  "properties": {
+    "currency": {
+      "type": "string"
+    },
+    "pricedAs": {
+      "type": "string",
+      "pattern": "^[\\s\\S]{1,}$"
+    },
+    "dates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "depart": {
+            "$ref": "/schemas/common.json#/$defs/Date"
+          },
+          "return": {
+            "$ref": "/schemas/common.json#/$defs/Date"
+          },
+          "lowestFare": {
+            "$ref": "/schemas/common.json#/$defs/Money"
+          }
+        },
+        "required": [
+          "depart",
+          "lowestFare"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "pricedAs",
+    "dates"
+  ],
+  "additionalProperties": false
+}

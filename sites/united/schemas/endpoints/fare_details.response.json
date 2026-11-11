@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/fare_details.response.json",
+  "title": "United fare details: what each fare on a flight includes",
+  "type": "object",
+  "properties": {
+    "CabinEntitlements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/FareId"
+          },
+          "Price": {
+            "type": "number"
+          },
+          "Attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Type": {
+                  "type": "string"
+                },
+                "Text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "Type",
+                "Text"
+              ],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "ProductId",
+          "Attributes"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": [
+    "CabinEntitlements"
+  ],
+  "additionalProperties": true
+}

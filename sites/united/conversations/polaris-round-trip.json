@@ -1,0 +1,808 @@
+{
+  "id": "polaris-round-trip",
+  "site": "united",
+  "description": "Business class, nonstop: the agent compares what each Polaris fare includes, then lists the flights back for the fare the traveler picks.",
+  "now": "2026-11-06T22:00:00Z",
+  "fixtures": [
+    "airports-01",
+    "fare_details-01",
+    "flights-02",
+    "return_flights-01",
+    "token-01"
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "united",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip1",
+      "message": "Nonstop business class from SFO to Shanghai on Dec 22, back Jan 10. What do the different fares get me?",
+      "pageContext": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_polarisroundtrip1",
+      "call": {
+        "id": "call_1",
+        "name": "find_airport",
+        "args": {
+          "query": "shanghai"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_polarisroundtrip1",
+      "text": "Finding Shanghai's airports…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_polarisroundtrip1",
+      "callIds": [
+        "call_1"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip1",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "airports": [
+              {
+                "place": "SHANGHAI (ALL AIRPORTS)",
+                "code": "SHA",
+                "name": "Shanghai (All Airports)",
+                "allAirports": true,
+                "country": "China"
+              },
+              {
+                "place": "PVG",
+                "code": "PVG",
+                "name": "Shanghai (PVG - Pu Dong)",
+                "allAirports": false,
+                "country": "China"
+              },
+              {
+                "place": "SHA",
+                "code": "SHA",
+                "name": "Shanghai (SHA - Hongqiao)",
+                "allAirports": false,
+                "country": "China"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_polarisroundtrip1",
+      "call": {
+        "id": "call_2",
+        "name": "search_flights",
+        "args": {
+          "from": "SFO",
+          "to": "SHANGHAI (ALL AIRPORTS)",
+          "departDate": "2026-12-22",
+          "returnDate": "2027-01-10",
+          "adults": 1,
+          "cabin": "business_or_first",
+          "nonstopOnly": true
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_polarisroundtrip1",
+      "text": "Searching nonstop business class…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_polarisroundtrip1",
+      "callIds": [
+        "call_2"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip1",
+      "results": [
+        {
+          "id": "call_2",
+          "ok": true,
+          "output": {
+            "direction": "outbound",
+            "pricedAs": "the whole round trip, for all travelers, taxes and fees included",
+            "flights": [
+              {
+                "flightId": "356-857-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 857",
+                "route": "SFO to PVG",
+                "departs": "Tue, Dec 22, 12:55 PM",
+                "arrives": "Wed, Dec 23, 6:45 PM",
+                "stops": 0,
+                "layovers": [],
+                "duration": "13h 50m",
+                "lowestFare": 3078,
+                "fares": [
+                  {
+                    "fareId": "0bSXrUfWdPSSBENS4M91V8001",
+                    "name": "United Economy",
+                    "totalPrice": 3078,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "0bSXrUfWdPSSBENS4M91V800H",
+                    "name": "United Premium Plus, Base (Most restrictive)",
+                    "totalPrice": 4333,
+                    "cabin": "PREMIUMPLUS"
+                  },
+                  {
+                    "fareId": "0bSXrUfWdPSSBENS4M91V800V",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11240,
+                    "cabin": "Business"
+                  }
+                ]
+              }
+            ],
+            "totalFlights": 1,
+            "shown": 1,
+            "nextStep": "Fares expire after about 30 minutes; if the traveler comes back later, search again before quoting a price."
+          }
+        }
+      ]
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_polarisroundtrip1",
+      "call": {
+        "id": "call_3",
+        "name": "fare_details",
+        "args": {
+          "flightId": "356-857-UA"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_polarisroundtrip1",
+      "text": "Reading what each fare includes…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_polarisroundtrip1",
+      "callIds": [
+        "call_3"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip1",
+      "results": [
+        {
+          "id": "call_3",
+          "ok": true,
+          "output": {
+            "flightId": "356-857-UA",
+            "fares": [
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V8001",
+                "name": "United Economy",
+                "totalPrice": 3078,
+                "refunds": "Non-refundable",
+                "changes": "No change fees",
+                "seat": "Choose your seat",
+                "upgrades": "Upgrades available",
+                "checkedBags": "1 checked bag included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V8009",
+                "name": "United Economy, Flexible (Fully refundable)",
+                "totalPrice": 4128,
+                "refunds": "Fully refundable",
+                "changes": "No change fees",
+                "seat": "Choose your seat",
+                "upgrades": "Upgrades available",
+                "checkedBags": "1 checked bag included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800M",
+                "name": "United Premium Plus",
+                "totalPrice": 5535,
+                "refunds": "Non-refundable",
+                "changes": "No change fees",
+                "seat": "Choose your roomier seat",
+                "upgrades": "Upgrades available",
+                "checkedBags": "2 checked bags included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800H",
+                "name": "United Premium Plus, Base (Most restrictive)",
+                "totalPrice": 4333,
+                "refunds": "Non-refundable",
+                "changes": "No changes",
+                "seat": "Choose your seat for a fee",
+                "upgrades": "No upgrades",
+                "checkedBags": "1 checked bag included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800U",
+                "name": "United Premium Plus, Flexible (Fully refundable)",
+                "totalPrice": 13851,
+                "refunds": "Fully refundable",
+                "changes": "No change fees",
+                "seat": "Choose your roomier seat",
+                "upgrades": "Upgrades available",
+                "checkedBags": "2 checked bags included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800V",
+                "name": "United Polaris, Base (Most restrictive)",
+                "totalPrice": 11240,
+                "refunds": "Non-refundable",
+                "changes": "No changes",
+                "seat": "Choose your lie-flat seat for a fee",
+                "lounge": "No United Polaris lounge access; United Club access",
+                "checkedBags": "1 checked bag included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800a",
+                "name": "United Polaris",
+                "totalPrice": 11640,
+                "refunds": "Non-refundable",
+                "changes": "No change fees",
+                "seat": "Choose your lie-flat seat",
+                "lounge": "United Polaris lounge access; United Club access",
+                "checkedBags": "2 checked bags included",
+                "carryOn": "1 carry-on bag included"
+              },
+              {
+                "fareId": "0bSXrUfWdPSSBENS4M91V800i",
+                "name": "United Polaris, Flexible (Fully refundable)",
+                "totalPrice": 21827,
+                "refunds": "Fully refundable",
+                "changes": "No change fees",
+                "seat": "Choose your lie-flat seat",
+                "lounge": "United Polaris lounge access; United Club access",
+                "checkedBags": "2 checked bags included",
+                "carryOn": "1 carry-on bag included"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_polarisroundtrip1",
+      "text": "UA 857 is the only nonstop, and United Polaris business on it comes three ways, priced for the whole round trip with taxes:\n\n- United Polaris, Base (Most restrictive): $11,240. No changes, choose your lie-flat seat for a fee, and no Polaris lounge (United Club only).\n- United Polaris: $11,640. No change fees, choose your lie-flat seat, Polaris lounge access and 2 checked bags included.\n- United Polaris, Flexible (Fully refundable): $21,827, the same plus a full refund if your plans change.\n\nThe standard fare is $400 more than the basic one for the lounge, a second bag and free seat choice.",
+      "present": [
+        {
+          "name": "present_comparison",
+          "args": {
+            "entity": "fare",
+            "ids": [
+              "0bSXrUfWdPSSBENS4M91V800V",
+              "0bSXrUfWdPSSBENS4M91V800a",
+              "0bSXrUfWdPSSBENS4M91V800i"
+            ],
+            "attributes": [
+              "totalPrice",
+              "seat",
+              "lounge",
+              "checkedBags",
+              "changes",
+              "refunds"
+            ]
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "fares_include_taxes"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "signed_out_fares"
+          }
+        }
+      ]
+    },
+    {
+      "type": "turn",
+      "site": "united",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip2",
+      "message": "I'll take the standard one with the lounge. What are my options to come back?",
+      "pageContext": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_polarisroundtrip2",
+      "call": {
+        "id": "call_4",
+        "name": "return_flights",
+        "args": {
+          "fareId": "0bSXrUfWdPSSBENS4M91V800a"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_polarisroundtrip2",
+      "text": "Finding flights back…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_polarisroundtrip2",
+      "callIds": [
+        "call_4"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_polarisroundtrip",
+      "traceId": "trace_polarisroundtrip2",
+      "results": [
+        {
+          "id": "call_4",
+          "ok": true,
+          "output": {
+            "direction": "return",
+            "pricedAs": "the whole round trip, for all travelers, taxes and fees included",
+            "flights": [
+              {
+                "flightId": "10-858-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 858",
+                "route": "PVG to SFO",
+                "departs": "Sun, Jan 10, 1:10 PM",
+                "arrives": "Sun, Jan 10, 8:25 AM",
+                "stops": 0,
+                "layovers": [],
+                "duration": "11h 15m",
+                "lowestFare": 7414,
+                "fares": [
+                  {
+                    "fareId": "ezmi22cFZ83NRQe42CZjH0001",
+                    "name": "United Economy",
+                    "totalPrice": 7414,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "ezmi22cFZ83NRQe42CZjH0003",
+                    "name": "United Premium Plus",
+                    "totalPrice": 8575,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "ezmi22cFZ83NRQe42CZjH0004",
+                    "name": "United Polaris",
+                    "totalPrice": 13763,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|770-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 770",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Sun, Jan 10, 8:10 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 2h 05m"
+                ],
+                "duration": "15h 15m",
+                "lowestFare": 7425,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR001",
+                    "name": "United Economy",
+                    "totalPrice": 7425,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00u",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7650,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01Q",
+                    "name": "United Polaris",
+                    "totalPrice": 11640,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|1195-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 1195",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Sun, Jan 10, 9:26 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 3h 10m"
+                ],
+                "duration": "16h 31m",
+                "lowestFare": 7425,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR002",
+                    "name": "United Economy",
+                    "totalPrice": 7425,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00v",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7650,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01R",
+                    "name": "United Polaris",
+                    "totalPrice": 11640,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|2056-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 2056",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Sun, Jan 10, 10:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 4h 45m"
+                ],
+                "duration": "18h 00m",
+                "lowestFare": 7425,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR003",
+                    "name": "United Economy",
+                    "totalPrice": 7425,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00w",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7650,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01S",
+                    "name": "United Polaris",
+                    "totalPrice": 11640,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|5571-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 5571",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Mon, Jan 11, 12:22 AM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 6h 00m"
+                ],
+                "duration": "19h 27m",
+                "lowestFare": 7425,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR004",
+                    "name": "United Economy",
+                    "totalPrice": 7425,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00x",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7650,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01T",
+                    "name": "United Polaris",
+                    "totalPrice": 11640,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|2492-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 2492",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Mon, Jan 11, 7:34 AM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 13h 25m"
+                ],
+                "duration": "26h 39m",
+                "lowestFare": 7436,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR005",
+                    "name": "United Economy",
+                    "totalPrice": 7436,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00y",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7661,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01U",
+                    "name": "United Polaris",
+                    "totalPrice": 11663,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-199|336-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 199 / UA 336",
+                "route": "PVG to SFO via LAX",
+                "departs": "Sun, Jan 10, 8:55 PM",
+                "arrives": "Mon, Jan 11, 8:59 AM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 14h 50m"
+                ],
+                "duration": "28h 04m",
+                "lowestFare": 7436,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR006",
+                    "name": "United Economy",
+                    "totalPrice": 7436,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00z",
+                    "name": "United Premium Plus",
+                    "totalPrice": 7661,
+                    "cabin": "PREMIUMPLUS",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01V",
+                    "name": "United Polaris",
+                    "totalPrice": 11663,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-972|876-NH",
+                "carrier": "All Nippon Airways",
+                "flightNumbers": "NH 972 / UA 876",
+                "route": "PVG to SFO via HND",
+                "departs": "Sun, Jan 10, 8:35 AM",
+                "arrives": "Sun, Jan 10, 11:15 AM",
+                "stops": 1,
+                "layovers": [
+                  "HND, 6h 05m"
+                ],
+                "duration": "18h 40m",
+                "lowestFare": 7933,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00C",
+                    "name": "United Economy",
+                    "totalPrice": 7933,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR010",
+                    "name": "United Premium Plus",
+                    "totalPrice": 9181,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01X",
+                    "name": "United Polaris",
+                    "totalPrice": 14422,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-968|876-NH",
+                "carrier": "All Nippon Airways",
+                "flightNumbers": "NH 968 / UA 876",
+                "route": "PVG to SFO via HND",
+                "departs": "Sun, Jan 10, 2:35 AM",
+                "arrives": "Sun, Jan 10, 11:15 AM",
+                "stops": 1,
+                "layovers": [
+                  "HND, 12h 10m"
+                ],
+                "duration": "24h 40m",
+                "lowestFare": 7933,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00D",
+                    "name": "United Economy",
+                    "totalPrice": 7933,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR011",
+                    "name": "United Premium Plus",
+                    "totalPrice": 9181,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR01Y",
+                    "name": "United Polaris",
+                    "totalPrice": 14422,
+                    "cabin": "Business",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              },
+              {
+                "flightId": "10-929|838-CA",
+                "carrier": "Air China",
+                "flightNumbers": "CA 929 / UA 838",
+                "route": "PVG to SFO via NRT",
+                "departs": "Sun, Jan 10, 9:40 AM",
+                "arrives": "Sun, Jan 10, 9:30 AM",
+                "stops": 1,
+                "layovers": [
+                  "NRT, 3h 15m"
+                ],
+                "duration": "15h 50m",
+                "lowestFare": 8102,
+                "fares": [
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR00E",
+                    "name": "United Economy",
+                    "totalPrice": 8102,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "a1BvBWYey5SUgSPWwtBiwR018",
+                    "name": "United Premium Plus",
+                    "totalPrice": 9600,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  }
+                ]
+              }
+            ],
+            "totalFlights": 10,
+            "shown": 10
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_polarisroundtrip2",
+      "text": "Flying Polaris both ways, the nonstop home, UA 858, makes the round trip $13,763: it leaves Shanghai Pudong Sun, Jan 10, 1:10 PM and lands in San Francisco Sun, Jan 10, 8:25 AM, the same morning by the clock. Connecting in Los Angeles on UA 199 / UA 770 keeps it at $11,640, the price you saw, with a 2h 05m stop. To book, I can open these flights on United.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "flight",
+            "ids": [
+              "10-858-UA",
+              "10-199|770-UA"
+            ],
+            "heading": "Shanghai to SFO, Jan 10"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "fares_include_taxes"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "signed_out_fares"
+          }
+        }
+      ]
+    }
+  ]
+}

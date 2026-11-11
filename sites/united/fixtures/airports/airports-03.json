@@ -1,0 +1,48 @@
+{
+  "id": "airports-03",
+  "site": "united",
+  "endpoint": "airports",
+  "kind": "recorded",
+  "source": "recording 2026-11-07, HAR entry 158",
+  "description": "\"Shanghai (All Airports)\": 1 airports",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/airports/lookup/?airport=Shanghai%20(All%20Airports)&allAirports=true&matches=0",
+    "headers": {
+      "accept": "application/json",
+      "x-authorization-api": "bearer fixture-token-0001"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "airports": [
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SHA"
+              },
+              "IATACode": "SHA",
+              "IATACountryCode": {
+                "CountryCode": "CN",
+                "Name": "China"
+              },
+              "Name": "Shanghai (All Airports)",
+              "ShortName": "Shanghai (All Airports)",
+              "StateProvince": {
+                "StateProvinceCode": ""
+              },
+              "AutoCompleteDisplayName": "Shanghai (All Airports)"
+            },
+            "IsAllAirport": "1"
+          }
+        ]
+      }
+    }
+  }
+}

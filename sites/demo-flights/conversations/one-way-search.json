@@ -4,6 +4,7 @@
   "description": "A one-way search: the agent searches, shows the offers as cards, and adds the site's full-fare notice.",
   "now": "2026-10-12T18:05:00Z",
   "fixtures": [
+    "session_token-01",
     "offers-01"
   ],
   "messages": [

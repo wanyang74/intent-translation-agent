@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/fare_calendar.input.json",
+  "title": "fare_calendar: input",
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "Airport or city code (SHA for all of Shanghai)"
+    },
+    "to": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "Airport or city code"
+    },
+    "departDate": {
+      "$ref": "/schemas/common.json#/$defs/Date"
+    },
+    "returnDate": {
+      "$ref": "/schemas/common.json#/$defs/Date"
+    },
+    "adults": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9
+    },
+    "cabin": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/Cabin"
+    }
+  },
+  "required": [
+    "from",
+    "to",
+    "departDate",
+    "adults",
+    "cabin"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "from": "SFO",
+      "to": "SHA",
+      "departDate": "2026-12-22",
+      "returnDate": "2027-01-10",
+      "adults": 1,
+      "cabin": "economy"
+    }
+  ]
+}

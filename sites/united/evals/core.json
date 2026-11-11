@@ -1,0 +1,122 @@
+{
+  "category": "core",
+  "defaults": {
+    "now": "2026-11-06T22:00:00Z",
+    "page": {
+      "url": "https://www.united.com/en/us/",
+      "pageType": "home",
+      "locale": "en-US"
+    }
+  },
+  "cases": [
+    {
+      "id": "cheapest-round-trip",
+      "quick": true,
+      "description": "A round trip to a city with two airports, cheapest first",
+      "fixtures": [
+        {
+          "from": "airports-01",
+          "copyAs": "airports-shanghai",
+          "set": {
+            "request.url": "https://www.united.com/api/airports/lookup/?airport=Shanghai&allAirports=true&matches=5"
+          }
+        },
+        {
+          "from": "airports-01",
+          "copyAs": "airports-shanghai-china",
+          "set": {
+            "request.url": "https://www.united.com/api/airports/lookup/?airport=Shanghai%20China&allAirports=true&matches=5"
+          }
+        }
+      ],
+      "message": "What's the cheapest economy round trip from SFO to Shanghai, Dec 22 to Jan 10? Just me.",
+      "expect": {
+        "lastCall": {
+          "tool": "search_flights",
+          "args": {
+            "from": "SFO",
+            "to": "SHANGHAI (ALL AIRPORTS)",
+            "departDate": "2026-12-22",
+            "returnDate": "2027-01-10",
+            "adults": 1,
+            "cabin": "economy"
+          }
+        },
+        "shows": [
+          {
+            "type": "items",
+            "entity": "flight",
+            "includes": [
+              "356-2409|198-UA"
+            ]
+          },
+          {
+            "notice": "fares_include_taxes"
+          }
+        ],
+        "text": {
+          "includes": [
+            "2,841"
+          ]
+        }
+      }
+    },
+    {
+      "id": "polaris-fares",
+      "description": "What each business fare on the nonstop includes, compared",
+      "fixtures": [
+        {
+          "from": "airports-01",
+          "copyAs": "airports-shanghai",
+          "set": {
+            "request.url": "https://www.united.com/api/airports/lookup/?airport=Shanghai&allAirports=true&matches=5"
+          }
+        },
+        {
+          "from": "airports-01",
+          "copyAs": "airports-shanghai-china",
+          "set": {
+            "request.url": "https://www.united.com/api/airports/lookup/?airport=Shanghai%20China&allAirports=true&matches=5"
+          }
+        }
+      ],
+      "message": "Nonstop business class from SFO to Shanghai on Dec 22, back Jan 10. What do the different fares get me?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "search_flights",
+            "args": {
+              "cabin": "business_or_first",
+              "nonstopOnly": true
+            }
+          },
+          {
+            "tool": "fare_details",
+            "args": {
+              "flightId": "356-857-UA"
+            }
+          }
+        ],
+        "shows": [
+          {
+            "type": "comparison",
+            "entity": "fare",
+            "includes": [
+              "0bSXrUfWdPSSBENS4M91V800V",
+              "0bSXrUfWdPSSBENS4M91V800a"
+            ]
+          }
+        ],
+        "text": {
+          "includes": [
+            "11,240",
+            "11,640"
+          ],
+          "matches": [
+            "lounge"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/flights.request.json",
+  "title": "United flight search request (POST /api/flight/FetchSSENestedFlights)",
+  "type": "object",
+  "properties": {
+    "SearchTypeSelection": {
+      "enum": [
+        1,
+        2
+      ],
+      "description": "1 one way, 2 round trip"
+    },
+    "SortType": {
+      "type": "string"
+    },
+    "Trips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Origin": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/Place"
+          },
+          "Destination": {
+            "$ref": "/sites/united/schemas/common.json#/$defs/Place"
+          },
+          "DepartDate": {
+            "$ref": "/schemas/common.json#/$defs/Date"
+          },
+          "Index": {
+            "type": "integer"
+          },
+          "TripIndex": {
+            "type": "integer"
+          },
+          "SearchFiltersIn": {
+            "type": "object",
+            "properties": {
+              "FareFamily": {
+                "enum": [
+                  "ECONOMY",
+                  "FIRST"
+                ]
+              },
+              "StopCountMin": {
+                "type": "integer"
+              },
+              "StopCountMax": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "FareFamily"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "Origin",
+          "Destination",
+          "DepartDate",
+          "SearchFiltersIn"
+        ],
+        "additionalProperties": true
+      },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "CabinPreferenceMain": {
+      "enum": [
+        "economy",
+        "premium"
+      ]
+    },
+    "PaxInfoList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "PaxType": {
+            "const": 1
+          }
+        },
+        "required": [
+          "PaxType"
+        ],
+        "additionalProperties": true
+      },
+      "minItems": 1,
+      "maxItems": 9
+    },
+    "AwardTravel": {
+      "const": false
+    }
+  },
+  "required": [
+    "SearchTypeSelection",
+    "Trips",
+    "CabinPreferenceMain",
+    "PaxInfoList",
+    "AwardTravel"
+  ],
+  "additionalProperties": true
+}

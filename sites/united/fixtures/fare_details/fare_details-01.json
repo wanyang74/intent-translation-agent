@@ -1,0 +1,1887 @@
+{
+  "id": "fare_details-01",
+  "site": "united",
+  "endpoint": "fare_details",
+  "kind": "recorded",
+  "source": "recording 2026-11-07, HAR entry 344",
+  "description": "fares on 356-857-UA: 8",
+  "request": {
+    "method": "POST",
+    "url": "https://www.united.com/api/flight/NestedCabinEntitlements",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "x-authorization-api": "bearer fixture-token-0001"
+    },
+    "body": {
+      "CartId": "00000000-0000-4000-8000-000000000003",
+      "FlightHash": "356-857-UA",
+      "IncludeLmxQuote": true
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "CartId": "00000000-0000-4000-8000-000000000003",
+      "CabinEntitlements": [
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V8001",
+          "Attributes": [
+            {
+              "Text": "Non-refundable",
+              "Icon": "close",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "Upgrades available",
+              "Icon": "price",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 checked bag included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "4368",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "7280",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "8736",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "10192",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "13104",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "13104",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1456",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 3078,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V8009",
+          "Attributes": [
+            {
+              "Text": "Fully refundable",
+              "Icon": "checkmark",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "Upgrades available",
+              "Icon": "price",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 checked bag included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "5943",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "9905",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "11886",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "13867",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "17829",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "17829",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "1981",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 4128,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800M",
+          "Attributes": [
+            {
+              "Text": "Non-refundable",
+              "Icon": "close",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your roomier seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "Upgrades available",
+              "Icon": "price",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "2 checked bags included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "7065",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "11775",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "14130",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "16485",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "21195",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "21195",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2355",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 5535,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800H",
+          "Attributes": [
+            {
+              "Text": "Non-refundable",
+              "Icon": "close",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No changes",
+              "Icon": "close",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 2,
+              "FooterSDLKey": "IBO_CFW_FOOTNOTE3_OFFERED"
+            },
+            {
+              "Text": "Choose your seat for a fee",
+              "Icon": "price",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 1,
+              "FooterSDLKey": "IBO_CFW_FOOTNOTE1"
+            },
+            {
+              "Text": "No upgrades",
+              "Icon": "close",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 checked bag included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 3,
+              "FooterSDLKey": "IBO_CFW_FOOTNOTE2"
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "0",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "4506",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "6759",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "9012",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "13518",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "13518",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "2253",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 4,
+              "FooterSDLKey": "IBO_CFW_FOOTNOTE4"
+            }
+          ],
+          "Price": 4333,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800U",
+          "Attributes": [
+            {
+              "Text": "Fully refundable",
+              "Icon": "checkmark",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your roomier seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "Upgrades available",
+              "Icon": "price",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "2 checked bags included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "22386",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "37310",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "44772",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "52234",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "67158",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "67158",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "7462",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 13851,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800V",
+          "Attributes": [
+            {
+              "Text": "Non-refundable",
+              "Icon": "close",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No changes",
+              "Icon": "close",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 2,
+              "FooterSDLKey": "IBJ_CFW_FOOTNOTE3_OFFERED"
+            },
+            {
+              "Text": "Choose your lie-flat seat for a fee",
+              "Icon": "price",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 1,
+              "FooterSDLKey": "IBJ_CFW_FOOTNOTE1"
+            },
+            {
+              "Text": "No United Polaris lounge access",
+              "Icon": "close",
+              "SortIndex": 3,
+              "Type": "LOUNGE",
+              "LinkId": 3,
+              "FooterSDLKey": "IBJ_CFW_FOOTNOTE4"
+            },
+            {
+              "Text": "United Club access",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "LOBBY",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 checked bag included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 4,
+              "FooterSDLKey": "IBJ_CFW_FOOTNOTE2"
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "0",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "10390",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "15585",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "20780",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "31170",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "31170",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "0",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5195",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 5,
+              "FooterSDLKey": "IBJ_CFW_FOOTNOTE5"
+            }
+          ],
+          "Price": 11240,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800a",
+          "Attributes": [
+            {
+              "Text": "Non-refundable",
+              "Icon": "close",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your lie-flat seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "NOTAPPLICABLE",
+              "Icon": "",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "United Polaris lounge access",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "LOUNGE",
+              "LinkId": 0
+            },
+            {
+              "Text": "United Club access",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "LOBBY",
+              "LinkId": 0
+            },
+            {
+              "Text": "2 checked bags included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "16185",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "26975",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "32370",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "37765",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "48555",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "48555",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "5395",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 11640,
+          "IsAllAttributesLoaded": true
+        },
+        {
+          "ProductId": "0bSXrUfWdPSSBENS4M91V800i",
+          "Attributes": [
+            {
+              "Text": "Fully refundable",
+              "Icon": "checkmark",
+              "SortIndex": 8,
+              "Type": "FareRule",
+              "LinkId": 0
+            },
+            {
+              "Text": "No change fees",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "CHANGEFEE",
+              "LinkId": 0
+            },
+            {
+              "Text": "Choose your lie-flat seat",
+              "Icon": "checkmark",
+              "IsPrimary": true,
+              "SortIndex": 1,
+              "Type": "SEAT",
+              "LinkId": 0
+            },
+            {
+              "Text": "NOTAPPLICABLE",
+              "Icon": "",
+              "SortIndex": 2,
+              "Type": "UPGRADE",
+              "LinkId": 0
+            },
+            {
+              "Text": "United Polaris lounge access",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "LOUNGE",
+              "LinkId": 0
+            },
+            {
+              "Text": "United Club access",
+              "Icon": "checkmark",
+              "SortIndex": 3,
+              "Type": "LOBBY",
+              "LinkId": 0
+            },
+            {
+              "Text": "2 checked bags included",
+              "Icon": "checkmark",
+              "SortIndex": 4,
+              "Type": "CHECKEDBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "1 carry-on bag included",
+              "Icon": "checkmark",
+              "SortIndex": 5,
+              "Type": "CARRYONBAG",
+              "LinkId": 0
+            },
+            {
+              "Text": "MileagePlus earnings",
+              "SortIndex": 9,
+              "Type": "Miles",
+              "LmxQuoteTiers": [
+                {
+                  "Level": 0,
+                  "Descr": "Member",
+                  "Key": "1",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "30957",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 1,
+                  "Descr": "Premier Silver",
+                  "Key": "2",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "51595",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 2,
+                  "Descr": "Premier Gold",
+                  "Key": "3",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "61914",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 3,
+                  "Descr": "Premier Platinum",
+                  "Key": "4",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "72233",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 4,
+                  "Descr": "Premier 1K&reg;",
+                  "Key": "5",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "75000",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                },
+                {
+                  "Level": 5,
+                  "Descr": "Global Services&#8480",
+                  "Key": "6",
+                  "LmxQuotes": [
+                    {
+                      "Type": "RDM",
+                      "Descr": "Accruable Miles",
+                      "Amount": "75000",
+                      "Currency": "Miles",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQF",
+                      "Descr": "Premier Qualifying Flights",
+                      "Amount": "1",
+                      "Currency": "Segment",
+                      "IsEligible": true
+                    },
+                    {
+                      "Type": "PQP",
+                      "Descr": "Premier Qualifying Points",
+                      "Amount": "10319",
+                      "Currency": "Points",
+                      "IsEligible": true
+                    }
+                  ]
+                }
+              ],
+              "LinkId": 0
+            }
+          ],
+          "Price": 21827,
+          "IsAllAttributesLoaded": true
+        }
+      ],
+      "UpsellDetails": [],
+      "Status": 1
+    }
+  }
+}

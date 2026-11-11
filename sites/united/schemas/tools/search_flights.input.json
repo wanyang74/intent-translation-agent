@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/search_flights.input.json",
+  "title": "search_flights: input",
+  "type": "object",
+  "properties": {
+    "from": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/Place",
+      "description": "Airport code, or a city's all-airports name from find_airport"
+    },
+    "to": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/Place",
+      "description": "Airport code, or a city's all-airports name from find_airport"
+    },
+    "departDate": {
+      "$ref": "/schemas/common.json#/$defs/Date"
+    },
+    "returnDate": {
+      "$ref": "/schemas/common.json#/$defs/Date",
+      "description": "For a round trip"
+    },
+    "adults": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9
+    },
+    "cabin": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/Cabin"
+    },
+    "nonstopOnly": {
+      "type": "boolean",
+      "description": "Only nonstop flights (United filters them)"
+    },
+    "sortBy": {
+      "enum": [
+        "best",
+        "price",
+        "duration",
+        "departure"
+      ],
+      "description": "best is United's own order; the others sort every option United returned"
+    }
+  },
+  "required": [
+    "from",
+    "to",
+    "departDate",
+    "adults",
+    "cabin"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "from": "SFO",
+      "to": "SHANGHAI (ALL AIRPORTS)",
+      "departDate": "2026-12-22",
+      "returnDate": "2027-01-10",
+      "adults": 1,
+      "cabin": "economy",
+      "sortBy": "price"
+    }
+  ]
+}

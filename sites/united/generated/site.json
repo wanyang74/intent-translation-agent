@@ -1,0 +1,592 @@
+{
+  "site": {
+    "id": "united",
+    "name": "United Airlines",
+    "origins": [
+      "https://www.united.com"
+    ],
+    "pages": [
+      "https://www.united.com/*"
+    ],
+    "locale": "en-US",
+    "pageTypes": [
+      "home",
+      "results",
+      "other"
+    ],
+    "requires": {
+      "location": "none",
+      "signIn": "never"
+    }
+  },
+  "entities": {
+    "airport": {
+      "description": "An airport, or all of a city's airports, as a search's start or end",
+      "id": {
+        "type": "string",
+        "pattern": "^([A-Z]{3}|[A-Z][A-Z .'-]* \\(ALL AIRPORTS\\))$"
+      },
+      "noPage": true,
+      "fields": {
+        "name": {
+          "label": "Airport",
+          "type": "text",
+          "from": "name"
+        },
+        "code": {
+          "label": "Code",
+          "type": "text",
+          "from": "code"
+        },
+        "country": {
+          "label": "Country",
+          "type": "text",
+          "from": "country"
+        }
+      },
+      "card": {
+        "title": "{name}",
+        "fields": [
+          "code",
+          "country"
+        ]
+      }
+    },
+    "flight": {
+      "description": "One flight option in one search, nonstop or with connections, and its fares",
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9]+-[0-9A-Z|]+-[A-Z0-9]{2}$"
+      },
+      "noPage": true,
+      "expires": {
+        "afterSeconds": 1800
+      },
+      "fields": {
+        "lowestFare": {
+          "label": "From",
+          "type": "money",
+          "from": "lowestFare"
+        },
+        "route": {
+          "label": "Route",
+          "type": "text",
+          "from": "route"
+        },
+        "departs": {
+          "label": "Departs",
+          "type": "text",
+          "from": "departs"
+        },
+        "arrives": {
+          "label": "Arrives",
+          "type": "text",
+          "from": "arrives"
+        },
+        "stops": {
+          "label": "Stops",
+          "type": "integer",
+          "from": "stops"
+        },
+        "duration": {
+          "label": "Duration",
+          "type": "text",
+          "from": "duration"
+        },
+        "aircraft": {
+          "label": "Aircraft",
+          "type": "text",
+          "from": "aircraft"
+        },
+        "operatedBy": {
+          "label": "Operated by",
+          "type": "text",
+          "from": "operatedBy"
+        }
+      },
+      "card": {
+        "title": "{flightNumbers}",
+        "subtitle": "{route}: {departs} to {arrives}",
+        "fields": [
+          "lowestFare",
+          "stops",
+          "duration"
+        ]
+      }
+    },
+    "fare": {
+      "description": "One fare on one flight option, such as United Economy or Polaris business, with its price and rules",
+      "id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9]{20,32}(_[A-Z]{2})?$"
+      },
+      "noPage": true,
+      "expires": {
+        "afterSeconds": 1800
+      },
+      "fields": {
+        "totalPrice": {
+          "label": "Total price",
+          "type": "money",
+          "from": "totalPrice"
+        },
+        "cabin": {
+          "label": "Cabin",
+          "type": "text",
+          "from": "cabin"
+        },
+        "refundable": {
+          "label": "Refundable",
+          "type": "boolean",
+          "from": "refundable"
+        },
+        "noChangeFees": {
+          "label": "No change fees",
+          "type": "boolean",
+          "from": "noChangeFees"
+        },
+        "checkedBags": {
+          "label": "Checked bags",
+          "type": "text",
+          "from": "checkedBags"
+        },
+        "carryOn": {
+          "label": "Carry-on",
+          "type": "text",
+          "from": "carryOn"
+        },
+        "seat": {
+          "label": "Seat",
+          "type": "text",
+          "from": "seat"
+        },
+        "changes": {
+          "label": "Changes",
+          "type": "text",
+          "from": "changes"
+        },
+        "refunds": {
+          "label": "Refunds",
+          "type": "text",
+          "from": "refunds"
+        },
+        "upgrades": {
+          "label": "Upgrades",
+          "type": "text",
+          "from": "upgrades"
+        },
+        "lounge": {
+          "label": "Lounges",
+          "type": "text",
+          "from": "lounge"
+        }
+      },
+      "card": {
+        "title": "{name}",
+        "fields": [
+          "totalPrice",
+          "refundable"
+        ]
+      }
+    },
+    "search_session": {
+      "description": "United's search session (it calls it a cart, though nothing is in it); later calls about the search name it",
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+      },
+      "internal": true,
+      "expires": {
+        "afterSeconds": 1800
+      }
+    }
+  },
+  "endpoints": {
+    "token": {
+      "description": "An anonymous token, valid for an hour, that every other call sends",
+      "method": "GET",
+      "url": "https://www.united.com/api/token/anonymous",
+      "request": "endpoints/token.request.json",
+      "response": "endpoints/token.response.json",
+      "matchKey": [],
+      "verified": "2026-11-06, the user's console"
+    },
+    "airports": {
+      "description": "Airports and cities matching typed text",
+      "method": "GET",
+      "url": "https://www.united.com/api/airports/lookup/",
+      "request": "endpoints/airports.request.json",
+      "response": "endpoints/airports.response.json",
+      "matchKey": [
+        "airport",
+        "allAirports",
+        "matches"
+      ],
+      "verified": "2026-11-06, the user's console, with our own token"
+    },
+    "flights": {
+      "description": "Flight search, one direction at a time, streamed as it runs (a round trip lists outbound flights priced as round trips)",
+      "method": "POST",
+      "url": "https://www.united.com/api/flight/FetchSSENestedFlights",
+      "request": "endpoints/flights.request.json",
+      "response": "endpoints/flights.response.json",
+      "responseFormat": "sse",
+      "eventKind": "type",
+      "timeoutSeconds": 45,
+      "matchKey": [
+        "SearchTypeSelection",
+        "Trips[].Origin",
+        "Trips[].Destination",
+        "Trips[].DepartDate",
+        "Trips[].SearchFiltersIn.FareFamily",
+        "Trips[].SearchFiltersIn.StopCountMax",
+        "CabinPreferenceMain",
+        "PaxInfoList[].PaxType",
+        "SortType"
+      ],
+      "ids": [
+        {
+          "kind": "search_session",
+          "path": "meta[].cartId"
+        },
+        {
+          "kind": "flight",
+          "path": "flightOption[].flight.hash"
+        },
+        {
+          "kind": "fare",
+          "path": "flightOption[].flight.products[].productId"
+        }
+      ],
+      "verified": "2026-11-06, the user's console, with our own token: 200 in 5.9 s"
+    },
+    "return_flights": {
+      "description": "Return flights for a chosen outbound fare, priced as round trips with it, streamed",
+      "method": "POST",
+      "url": "https://www.united.com/api/flight/SelectAndFetchSSENestedFlights",
+      "request": "endpoints/return_flights.request.json",
+      "response": "endpoints/return_flights.response.json",
+      "responseFormat": "sse",
+      "eventKind": "type",
+      "timeoutSeconds": 45,
+      "matchKey": [
+        "BBXCellId",
+        "flightHash"
+      ],
+      "ids": [
+        {
+          "kind": "flight",
+          "path": "flightOption[].flight.hash"
+        },
+        {
+          "kind": "fare",
+          "path": "flightOption[].flight.products[].productId"
+        }
+      ],
+      "verified": "recording 2026-11-06"
+    },
+    "fare_details": {
+      "description": "What each fare on one flight option includes (bags, changes, refunds, seats, lounges)",
+      "method": "POST",
+      "url": "https://www.united.com/api/flight/NestedCabinEntitlements",
+      "request": "endpoints/fare_details.request.json",
+      "response": "endpoints/fare_details.response.json",
+      "matchKey": [
+        "FlightHash"
+      ],
+      "verified": "recording 2026-11-06"
+    },
+    "calendar": {
+      "description": "The lowest fare for each date (one way) or pair of dates (round trip) around the ones asked",
+      "method": "POST",
+      "url": "https://www.united.com/api/FlexPricer/CalendarPricing",
+      "request": "endpoints/calendar.request.json",
+      "response": "endpoints/calendar.response.json",
+      "matchKey": [
+        "Origin",
+        "Destination",
+        "Depart",
+        "Return",
+        "IsOneway",
+        "IsPremium",
+        "Travelers.Adult"
+      ],
+      "verified": "recording 2026-11-06"
+    }
+  },
+  "token": {
+    "endpoint": "token",
+    "value": "data.token.hash",
+    "expiresAt": "data.token.expiresAt",
+    "header": "X-Authorization-api",
+    "format": "bearer {token}",
+    "refusedStatuses": [
+      405,
+      401,
+      403
+    ]
+  },
+  "tools": {
+    "find_airport": {
+      "description": "Airports and cities matching a name or code; a city with several airports also comes as all of its airports",
+      "input": "tools/find_airport.input.json",
+      "output": "tools/find_airport.output.json",
+      "uses": [
+        "airports"
+      ],
+      "sideEffect": "read",
+      "ids": {
+        "output": [
+          {
+            "kind": "airport",
+            "path": "airports[].place"
+          }
+        ]
+      }
+    },
+    "search_flights": {
+      "description": "Search United flights. For a round trip it lists the outbound flights, each priced as the whole round trip; after the traveler picks an outbound fare, return_flights lists the returns. Prices include taxes and fees, for all travelers.",
+      "input": "tools/search_flights.input.json",
+      "output": "tools/search_flights.output.json",
+      "uses": [
+        "flights"
+      ],
+      "sideEffect": "read",
+      "presentation": "present_items",
+      "ids": {
+        "output": [
+          {
+            "kind": "flight",
+            "path": "flights[].flightId"
+          },
+          {
+            "kind": "fare",
+            "path": "flights[].fares[].fareId"
+          }
+        ]
+      },
+      "nextStep": "Fares expire after about 30 minutes; if the traveler comes back later, search again before quoting a price.",
+      "errors": {
+        "no_flights": {
+          "code": "no_results",
+          "message": "United found no flights for this search. Try other dates, nearby airports, or allow stops.",
+          "retryable": true
+        }
+      }
+    },
+    "return_flights": {
+      "description": "The return flights for a round trip, after the traveler picked an outbound fare, each priced as the whole round trip with it",
+      "input": "tools/return_flights.input.json",
+      "output": "tools/return_flights.output.json",
+      "uses": [
+        "return_flights"
+      ],
+      "sideEffect": "read",
+      "presentation": "present_items",
+      "ids": {
+        "input": [
+          {
+            "kind": "fare",
+            "path": "fareId"
+          }
+        ],
+        "output": [
+          {
+            "kind": "flight",
+            "path": "flights[].flightId"
+          },
+          {
+            "kind": "fare",
+            "path": "flights[].fares[].fareId"
+          }
+        ]
+      },
+      "errors": {
+        "not_round_trip": {
+          "code": "invalid_value",
+          "message": "That fare is from a one-way search, or is already a return fare, so it has no return flights. Search a round trip.",
+          "retryable": true
+        },
+        "search_again": {
+          "code": "expired",
+          "message": "United's search for that fare is gone from this page. Run the search again first.",
+          "retryable": true
+        },
+        "no_flights": {
+          "code": "no_results",
+          "message": "United found no return flights for that fare. Pick another outbound fare.",
+          "retryable": true
+        }
+      }
+    },
+    "fare_details": {
+      "description": "What each fare on one flight includes, such as checked bags, carry-on, change fees, refunds, seat choice and lounge access",
+      "input": "tools/fare_details.input.json",
+      "output": "tools/fare_details.output.json",
+      "uses": [
+        "fare_details"
+      ],
+      "sideEffect": "read",
+      "presentation": "present_comparison",
+      "ids": {
+        "input": [
+          {
+            "kind": "flight",
+            "path": "flightId"
+          }
+        ],
+        "output": [
+          {
+            "kind": "fare",
+            "path": "fares[].fareId"
+          }
+        ]
+      },
+      "errors": {
+        "search_again": {
+          "code": "expired",
+          "message": "United's search for that flight is gone from this page. Run the search again first.",
+          "retryable": true
+        }
+      }
+    },
+    "fare_calendar": {
+      "description": "The lowest fare for each date around the ones asked (round trip pairs, or one-way dates), to find cheaper days",
+      "input": "tools/fare_calendar.input.json",
+      "output": "tools/fare_calendar.output.json",
+      "uses": [
+        "calendar"
+      ],
+      "sideEffect": "read"
+    }
+  },
+  "forms": {
+    "flight_search": {
+      "description": "What the agent asks for when a search is missing details",
+      "fields": {
+        "from": {
+          "label": "From",
+          "type": "text",
+          "required": true
+        },
+        "to": {
+          "label": "To",
+          "type": "text",
+          "required": true
+        },
+        "departDate": {
+          "label": "Depart",
+          "type": "date",
+          "required": true
+        },
+        "returnDate": {
+          "label": "Return",
+          "type": "date"
+        },
+        "adults": {
+          "label": "Travelers",
+          "type": "integer",
+          "min": 1,
+          "max": 9
+        },
+        "cabin": {
+          "label": "Cabin",
+          "type": "select",
+          "options": [
+            "economy",
+            "business_or_first"
+          ]
+        }
+      },
+      "submitTool": "search_flights"
+    }
+  },
+  "notices": {
+    "fares_include_taxes": {
+      "text": "Fares include taxes and fees, for all travelers.",
+      "source": "US DOT full-fare advertising rule; United's own results show fares with taxes",
+      "version": "2026-11-06",
+      "showWith": [
+        "lowestFare",
+        "totalPrice"
+      ]
+    },
+    "signed_out_fares": {
+      "text": "These are United's signed-out fares. MileagePlus benefits, such as free checked bags for some members, show when you sign in on united.com.",
+      "source": "our wording; the agent searches signed out",
+      "version": "2026-11-06",
+      "showWith": [
+        "lowestFare",
+        "totalPrice"
+      ]
+    }
+  },
+  "policies": {
+    "hiddenFields": [],
+    "pageSize": 12,
+    "rateLimitPerSecond": 1,
+    "callBudget": {
+      "perTask": 30,
+      "perSession": null,
+      "perDay": null
+    },
+    "priceDisplay": "total_including_taxes",
+    "writes": "none"
+  },
+  "deepLinks": {
+    "results_round_trip": {
+      "template": "https://www.united.com/en/us/fsr/choose-flights?f={from}&t={to}&d={departDate}&r={returnDate}&sc={cabinCode},{cabinCode}&px={adults}&taxng=1&clm=7&st=bestmatches&tqp=R",
+      "description": "United's results page for a round-trip search, as its own search form opens it"
+    },
+    "results_one_way": {
+      "template": "https://www.united.com/en/us/fsr/choose-flights?f={from}&t={to}&d={departDate}&sc={cabinCode}&px={adults}&taxng=1&clm=7&st=bestmatches&tqp=O",
+      "description": "United's results page for a one-way search (one way not recorded yet)"
+    },
+    "home": {
+      "template": "https://www.united.com/en/us/"
+    }
+  },
+  "destinations": {
+    "flight_search": {
+      "title": "These flights on United",
+      "description": "United's results page for this search, where the traveler picks a fare, chooses seats and books; the agent never books",
+      "argsOf": "search_flights"
+    },
+    "united_home": {
+      "title": "United's home page",
+      "description": "The place to sign in, manage a trip, check in, or cancel; the agent can't do these",
+      "link": "home"
+    }
+  },
+  "skills": {
+    "flight_search": {
+      "description": "Turning travel plans into a United search, round trips, fare rules and cheaper dates",
+      "load": "on demand; preloaded on the home and results pages",
+      "pageTypes": [
+        "home",
+        "results"
+      ]
+    }
+  },
+  "recording": {
+    "hars": [
+      "recordings/www.united.com.searchflight.har",
+      "recordings/www.united.com.allthewayToCheckout.har"
+    ],
+    "scrubFields": [
+      "CartId",
+      "cartId",
+      "SessionId",
+      "sessionKey",
+      "lastResultId",
+      "LastBBXSolutionSetId",
+      "BBXSolutionSetId",
+      "EditSearchCartId"
+    ],
+    "scrubHeaders": [],
+    "keepHeaders": [
+      "accept",
+      "content-type"
+    ]
+  }
+}

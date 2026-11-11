@@ -105,6 +105,14 @@ export function crossCheck(site: Site): string[] {
     for (const rel of [endpoint.request, endpoint.response]) if (!schemaExists(rel)) add(`endpoints.${name}`, `schema ${rel} not found`);
     for (const id of endpoint.ids ?? []) if (!kinds.has(id.kind)) add(`endpoints.${name}.ids`, `unknown entity kind ${id.kind}`);
     if (!pack.site.origins.some((origin) => endpoint.url.startsWith(origin))) add(`endpoints.${name}.url`, 'not under any of site.origins');
+    if (endpoint.eventKind && endpoint.responseFormat !== 'sse') add(`endpoints.${name}.eventKind`, 'only applies to responseFormat: sse');
+  }
+  if (pack.token) {
+    const issuer = pack.endpoints[pack.token.endpoint];
+    if (!issuer) add('token.endpoint', `unknown endpoint ${pack.token.endpoint}`);
+    else if ((issuer.responseFormat ?? 'json') !== 'json') add('token.endpoint', 'must answer with JSON');
+    // Without an expiry the token would be kept until a call is refused, which costs a failed call each time.
+    if (!pack.token.expiresAt && !pack.token.lifetimeSeconds) add('token', 'needs expiresAt or lifetimeSeconds');
   }
   for (const [name, tool] of entriesOf(pack.tools)) {
     if (RESERVED_TOOLS.includes(name)) add(`tools.${name}`, 'name is reserved for a platform tool');

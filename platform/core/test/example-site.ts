@@ -10,11 +10,11 @@ import { examplePack } from './example-pack.ts';
 
 export const START = Date.UTC(2026, 9, 14, 12);
 
-/** Validators for the shop's schemas: each accepts any object, unless a test supplies its own rule. */
-export function exampleValidators(rules: Record<string, (data: any) => boolean> = {}): Validators {
+/** Validators for the shop's schemas (or a variant pack's): each accepts any object, unless a test supplies its own rule. */
+export function exampleValidators(rules: Record<string, (data: any) => boolean> = {}, pack: SitePack = examplePack): Validators {
   const paths = new Set<string>();
-  for (const endpoint of Object.values(examplePack.endpoints)) paths.add(endpoint!.request).add(endpoint!.response);
-  for (const tool of Object.values(examplePack.tools)) paths.add(tool!.input).add(tool!.output);
+  for (const endpoint of Object.values(pack.endpoints)) paths.add(endpoint!.request).add(endpoint!.response);
+  for (const tool of Object.values(pack.tools)) paths.add(tool!.input).add(tool!.output);
   const site: Record<string, unknown> = {};
   for (const rel of paths) {
     const rule = rules[rel] ?? ((data: unknown) => data !== null && typeof data === 'object' && !Array.isArray(data));

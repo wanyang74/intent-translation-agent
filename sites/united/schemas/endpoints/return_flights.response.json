@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/return_flights.response.json",
+  "title": "United return flights, streamed, priced as round trips with the chosen outbound",
+  "$ref": "/sites/united/schemas/common.json#/$defs/SearchStream"
+}

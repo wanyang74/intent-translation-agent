@@ -1,5 +1,12 @@
 [
   {
+    "id": "session_token-01",
+    "endpoint": "session_token",
+    "kind": "synthetic",
+    "description": "a token, valid far beyond any fixture's clock",
+    "file": "session_token/session_token-01.json"
+  },
+  {
     "id": "offers-01",
     "endpoint": "offers",
     "kind": "synthetic",

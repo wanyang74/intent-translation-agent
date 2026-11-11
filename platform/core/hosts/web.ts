@@ -1,7 +1,6 @@
 // The web host: core.js inside a page on the site (a content script or an embedded SDK). Requests go out from the
 // page with its own cookies and origin (decision D1). The brain is reached over HTTP, and its events stream back as
 // newline-delimited JSON, one event per line, so each tool call can start the moment it arrives. A surface that
-// reaches the brain another way (the extension, through its background worker) passes its own brain link instead. A surface that
 // reaches the brain another way (the extension, through its background worker) passes its own brain link instead.
 import type { ClientMessage } from '../../contract/generated/types.ts';
 import type { Host, ScriptRunner } from '../src/runtime/host.ts';
@@ -17,6 +16,7 @@ export interface WebHostOptions {
   log?: Host['log'];
   /** For tests; the page's own fetch otherwise. */
   fetch?: typeof fetch;
+  /** How long a site call may take, unless its endpoint says otherwise. Default 15 seconds. */
   requestTimeoutMs?: number;
 }
 
@@ -49,7 +49,7 @@ export function webHost(options: WebHostOptions): Host {
   const host: Host = {
     async request(req) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), options.requestTimeoutMs ?? 15_000);
+      const timer = setTimeout(() => controller.abort(), req.timeoutMs ?? options.requestTimeoutMs ?? 15_000);
       try {
         // Cookies go only to the page's own origin, as the browser's default. A site's API on another host answers
         // its frontend without them, and a server that doesn't allow credentials rejects a request that sends them

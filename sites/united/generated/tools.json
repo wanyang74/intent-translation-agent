@@ -1,0 +1,175 @@
+[
+  {
+    "name": "find_airport",
+    "description": "Airports and cities matching a name or code; a city with several airports also comes as all of its airports",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{2,60}$",
+          "description": "A city or airport name, or a code"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "search_flights",
+    "description": "Search United flights. For a round trip it lists the outbound flights, each priced as the whole round trip; after the traveler picks an outbound fare, return_flights lists the returns. Prices include taxes and fees, for all travelers.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "pattern": "^([A-Z]{3}|[A-Z][A-Z .'-]* \\(ALL AIRPORTS\\))$",
+          "description": "Airport code, or a city's all-airports name from find_airport"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^([A-Z]{3}|[A-Z][A-Z .'-]* \\(ALL AIRPORTS\\))$",
+          "description": "Airport code, or a city's all-airports name from find_airport"
+        },
+        "departDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "returnDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "For a round trip"
+        },
+        "adults": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "cabin": {
+          "enum": [
+            "economy",
+            "business_or_first"
+          ],
+          "description": "economy, or business_or_first (United's premium search: Polaris business, first and Premium Plus)."
+        },
+        "nonstopOnly": {
+          "type": "boolean",
+          "description": "Only nonstop flights (United filters them)"
+        },
+        "sortBy": {
+          "enum": [
+            "best",
+            "price",
+            "duration",
+            "departure"
+          ],
+          "description": "best is United's own order; the others sort every option United returned"
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "departDate",
+        "adults",
+        "cabin"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "return_flights",
+    "description": "The return flights for a round trip, after the traveler picked an outbound fare, each priced as the whole round trip with it",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "fareId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]{20,32}(_[A-Z]{2})?$",
+          "description": "The outbound fare the traveler picked, from search_flights"
+        },
+        "nonstopOnly": {
+          "type": "boolean"
+        },
+        "sortBy": {
+          "enum": [
+            "best",
+            "price",
+            "duration",
+            "departure"
+          ]
+        }
+      },
+      "required": [
+        "fareId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "fare_details",
+    "description": "What each fare on one flight includes, such as checked bags, carry-on, change fees, refunds, seat choice and lounge access",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "flightId": {
+          "type": "string",
+          "pattern": "^[0-9]+-[0-9A-Z|]+-[A-Z0-9]{2}$",
+          "description": "A flight option from search_flights or return_flights"
+        }
+      },
+      "required": [
+        "flightId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "fare_calendar",
+    "description": "The lowest fare for each date around the ones asked (round trip pairs, or one-way dates), to find cheaper days",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Airport or city code (SHA for all of Shanghai)"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Airport or city code"
+        },
+        "departDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "returnDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "adults": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "cabin": {
+          "enum": [
+            "economy",
+            "business_or_first"
+          ],
+          "description": "economy, or business_or_first (United's premium search: Polaris business, first and Premium Plus)."
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "departDate",
+        "adults",
+        "cabin"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

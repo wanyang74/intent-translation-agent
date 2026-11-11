@@ -125,14 +125,14 @@ for (const scope of scopes) {
   });
 }
 
-// Budget on what one app ships: the platform's validators plus one site's, minified and gzipped.
-// Bundlers can't drop unused validators here, because Ajv sets bookkeeping properties (.evaluated) on the
-// functions at the top level of the file. If core.js needs to be smaller, generate a file with only the
-// validators it uses (it doesn't need the site-pack validator at runtime, for one).
+// Budget on what one app ships: the platform's runtime validators plus one site's, minified and gzipped.
+// Bundlers can't drop unused validators, because Ajv sets bookkeeping properties (.evaluated) on the functions at the
+// top level of the file, so the generator writes runtime-validators.js without the ones core.js never runs (the
+// site-pack format's). If core.js needs to be smaller still, leave out more there.
 for (const [id, site] of Object.entries(contract.sites)) {
   test(`platform + ${id}: size: minified, gzipped validators stay within 60 KB`, async () => {
-    const contents = [platformGenerated, path.join(site.dir, 'generated')]
-      .map((dir, i) => `import * as v${i} from ${JSON.stringify(path.join(dir, 'validators.js'))}; globalThis.v${i} = v${i};`).join('\n');
+    const contents = [path.join(platformGenerated, 'runtime-validators.js'), path.join(site.dir, 'generated', 'validators.js')]
+      .map((file, i) => `import * as v${i} from ${JSON.stringify(file)}; globalThis.v${i} = v${i};`).join('\n');
     const kb = gzipSync(await bundleOf(platformGenerated, contents, true)).length / 1024;
     assert.ok(kb < 60, `gzipped bundle is ${Math.round(kb)} KB`);
   });

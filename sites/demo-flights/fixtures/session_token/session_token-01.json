@@ -1,0 +1,26 @@
+{
+  "id": "session_token-01",
+  "site": "demo-flights",
+  "endpoint": "session_token",
+  "kind": "synthetic",
+  "source": "hand-written for the demo-flights test site",
+  "description": "a token, valid far beyond any fixture's clock",
+  "request": {
+    "method": "GET",
+    "url": "https://api.demo-flights.example/v1/session/token",
+    "headers": {
+      "accept": "application/json"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "token": "fixture-token-0001",
+      "expiresAt": "2099-01-01T00:00:00Z"
+    }
+  }
+}

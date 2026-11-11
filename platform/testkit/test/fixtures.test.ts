@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadContract, describeErrors } from '../../contract/src/load.ts';
 import { repoRoot, requestValue } from '../../contract/src/site-pack.ts';
-import { fixtureDir, hasFixtures, loadFixtures } from '../src/fixtures.ts';
+import { fixtureDir, hasFixtures, loadFixtures, responseValue } from '../src/fixtures.ts';
 import { loadSiteRuntime } from '../src/site-runtime.ts';
 
 const contract = loadContract();
@@ -31,7 +31,7 @@ for (const site of sites) {
   const { pack } = contract.sites[site]!;
   const fixtures = loadFixtures(site);
   const validator = (rel: string) => contract.siteValidator(site, rel);
-  const isJson = (endpoint: string) => (pack.endpoints[endpoint]?.responseFormat ?? 'json') === 'json';
+  const isPage = (endpoint: string) => pack.endpoints[endpoint]?.responseFormat === 'html';
 
   test(`${site}: ids: unique, and each fixture names this site and one of its endpoints`, () => {
     assert.equal(new Set(fixtures.map((fixture) => fixture.id)).size, fixtures.length);
@@ -57,16 +57,17 @@ for (const site of sites) {
   });
 
   test(`${site}: responses: every 200 meets the contract, except deliberate shape changes`, () => {
-    for (const fixture of fixtures.filter((candidate) => candidate.response.status === 200 && isJson(candidate.endpoint))) {
-      const validate = validator(pack.endpoints[fixture.endpoint]!.response);
-      const ok = validate(fixture.response.body);
+    for (const fixture of fixtures.filter((candidate) => candidate.response.status === 200 && !isPage(candidate.endpoint))) {
+      const endpoint = pack.endpoints[fixture.endpoint]!;
+      const validate = validator(endpoint.response);
+      const ok = validate(responseValue(fixture, endpoint));
       if (fixture.expect === 'contract_violation') assert.equal(ok, false, `${fixture.id}: should break the contract`);
       else assert.ok(ok, `${fixture.id}: ${describeErrors(validate.errors)}`);
     }
   });
 
   test(`${site}: pages: every recorded page reads, through the site's parser, into data that meets the contract`, async () => {
-    const pages = fixtures.filter((candidate) => candidate.response.status === 200 && !isJson(candidate.endpoint));
+    const pages = fixtures.filter((candidate) => candidate.response.status === 200 && isPage(candidate.endpoint));
     const { code } = await loadSiteRuntime(site);
     for (const fixture of pages) {
       const parse = code.parsers?.[fixture.endpoint];

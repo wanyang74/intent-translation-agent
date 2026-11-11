@@ -16,7 +16,7 @@ import { build } from 'esbuild';
 import { getQuickJS } from 'quickjs-emscripten';
 import { requestValue, sitesDir, listSites } from '../../contract/src/site-pack.ts';
 import { loadConversations } from '../../testkit/src/conversations.ts';
-import { hasFixtures, loadFixtures } from '../../testkit/src/fixtures.ts';
+import { hasFixtures, loadFixtures, responseText } from '../../testkit/src/fixtures.ts';
 import { loadSiteRuntime } from '../../testkit/src/site-runtime.ts';
 import { matchKey } from '../src/index.ts';
 import { runCases } from './engine-cases.ts';
@@ -77,7 +77,7 @@ for (const site of ioSites) {
     const recorded = fixtures.filter((fixture) => conversation.fixtures.includes(fixture.id) && !fixture.trigger).map((fixture) => ({
       endpoint: fixture.endpoint,
       key: matchKey(rt.pack.endpoints[fixture.endpoint]!, requestValue(rt.pack, fixture.request)),
-      response: { status: fixture.response.status, headers: fixture.response.headers, body: typeof fixture.response.body === 'string' ? fixture.response.body : JSON.stringify(fixture.response.body) },
+      response: { status: fixture.response.status, headers: fixture.response.headers, body: responseText(fixture, rt.pack.endpoints[fixture.endpoint]!) },
     }));
     ioCases.push({ pack: rt.pack, code: rt.code, siteValidators: rt.validators.site, conversation, recorded });
   }

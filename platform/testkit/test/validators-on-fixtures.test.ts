@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { loadContract } from '../../contract/src/load.ts';
 import { validatorName } from '../../contract/src/names.ts';
 import { requestValue } from '../../contract/src/site-pack.ts';
-import { hasFixtures, loadFixtures } from '../src/fixtures.ts';
+import { hasFixtures, loadFixtures, responseValue } from '../src/fixtures.ts';
 
 const contract = loadContract();
 
@@ -21,7 +21,7 @@ for (const site of Object.keys(contract.sites).filter(hasFixtures)) {
     for (const fixture of loadFixtures(site)) {
       const endpoint = pack.endpoints[fixture.endpoint]!;
       const pairs: [string, unknown][] = [[endpoint.request, requestValue(pack, fixture.request)]];
-      if (fixture.response.status === 200 && (endpoint.responseFormat ?? 'json') === 'json') pairs.push([endpoint.response, fixture.response.body]);
+      if (fixture.response.status === 200 && endpoint.responseFormat !== 'html') pairs.push([endpoint.response, responseValue(fixture, endpoint)]);
       for (const [rel, data] of pairs) {
         assert.equal(generated[validatorName(rel)]!(data), contract.siteValidator(site, rel)(data), `${fixture.id} ${rel}`);
         compared++;

@@ -1,0 +1,9 @@
+{
+  "name": "@intent/site-united",
+  "private": true,
+  "type": "module",
+  "description": "Site pack: United Airlines, read-only and signed out",
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}

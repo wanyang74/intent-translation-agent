@@ -1,13 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-agent.invalid/sites/demo-flights/schemas/endpoints/offers.response.json",
-  "title": "Demo Flights offer search response",
+  "title": "Demo Flights offer search response, its events grouped by name",
+  "description": "The stream sends one search event, then one offer event per offer (none when nothing matches), then done.",
   "type": "object",
   "properties": {
-    "searchId": {
-      "type": "string"
+    "search": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "searchId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "searchId"
+        ],
+        "additionalProperties": true
+      },
+      "minItems": 1,
+      "maxItems": 1
     },
-    "offers": {
+    "offer": {
       "type": "array",
       "items": {
         "type": "object",
@@ -62,11 +77,29 @@
         ],
         "additionalProperties": true
       }
+    },
+    "done": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "additionalProperties": true
+      },
+      "minItems": 1,
+      "maxItems": 1
     }
   },
   "required": [
-    "searchId",
-    "offers"
+    "search",
+    "done"
   ],
   "additionalProperties": true
 }

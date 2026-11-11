@@ -19,7 +19,8 @@ function siteBundle(site: string): Plugin {
     `export { site as code } from ${JSON.stringify(path.join(siteDir, 'tools.ts'))};`,
     `export { readPage } from ${JSON.stringify(path.join(siteDir, 'page.ts'))};`,
     `export * as siteValidators from ${JSON.stringify(path.join(siteDir, 'generated', 'validators.js'))};`,
-    `export * as platformValidators from ${JSON.stringify(path.join(contractGenerated, 'validators.js'))};`,
+    // The platform's validators without the site-pack format's, which only build tools check.
+    `export * as platformValidators from ${JSON.stringify(path.join(contractGenerated, 'runtime-validators.js'))};`,
   ].join('\n');
   return {
     name: 'site-bundle',

@@ -1,0 +1,540 @@
+{
+  "id": "cheapest-round-trip",
+  "site": "united",
+  "description": "A round trip to a city with two airports: the agent finds its all-airports choice, searches cheapest first, and weighs the cheapest against the nonstop.",
+  "now": "2026-11-06T22:00:00Z",
+  "fixtures": [
+    "airports-01",
+    "flights-01",
+    "token-01"
+  ],
+  "messages": [
+    {
+      "type": "turn",
+      "site": "united",
+      "sessionId": "sess_cheapestroundtrip",
+      "traceId": "trace_cheapestroundtrip1",
+      "message": "What's the cheapest economy round trip from SFO to Shanghai, Dec 22 to Jan 10? Just me.",
+      "pageContext": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      }
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_cheapestroundtrip1",
+      "call": {
+        "id": "call_1",
+        "name": "find_airport",
+        "args": {
+          "query": "shanghai"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_cheapestroundtrip1",
+      "text": "Finding Shanghai's airports…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_cheapestroundtrip1",
+      "callIds": [
+        "call_1"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_cheapestroundtrip",
+      "traceId": "trace_cheapestroundtrip1",
+      "results": [
+        {
+          "id": "call_1",
+          "ok": true,
+          "output": {
+            "airports": [
+              {
+                "place": "SHANGHAI (ALL AIRPORTS)",
+                "code": "SHA",
+                "name": "Shanghai (All Airports)",
+                "allAirports": true,
+                "country": "China"
+              },
+              {
+                "place": "PVG",
+                "code": "PVG",
+                "name": "Shanghai (PVG - Pu Dong)",
+                "allAirports": false,
+                "country": "China"
+              },
+              {
+                "place": "SHA",
+                "code": "SHA",
+                "name": "Shanghai (SHA - Hongqiao)",
+                "allAirports": false,
+                "country": "China"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "tool_call",
+      "traceId": "trace_cheapestroundtrip1",
+      "call": {
+        "id": "call_2",
+        "name": "search_flights",
+        "args": {
+          "from": "SFO",
+          "to": "SHANGHAI (ALL AIRPORTS)",
+          "departDate": "2026-12-22",
+          "returnDate": "2027-01-10",
+          "adults": 1,
+          "cabin": "economy",
+          "sortBy": "price"
+        }
+      }
+    },
+    {
+      "type": "progress",
+      "traceId": "trace_cheapestroundtrip1",
+      "text": "Searching United, cheapest first…"
+    },
+    {
+      "type": "await_results",
+      "traceId": "trace_cheapestroundtrip1",
+      "callIds": [
+        "call_2"
+      ]
+    },
+    {
+      "type": "results",
+      "sessionId": "sess_cheapestroundtrip",
+      "traceId": "trace_cheapestroundtrip1",
+      "results": [
+        {
+          "id": "call_2",
+          "ok": true,
+          "output": {
+            "direction": "outbound",
+            "pricedAs": "the whole round trip, for all travelers, taxes and fees included",
+            "flights": [
+              {
+                "flightId": "356-2409|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 2409 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 7:55 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 15h 16m"
+                ],
+                "duration": "31h 00m",
+                "lowestFare": 2841,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN001",
+                    "name": "United Economy",
+                    "totalPrice": 2841,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06d",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AW",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-2282|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 2282 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 5:46 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 17h 25m"
+                ],
+                "duration": "33h 09m",
+                "lowestFare": 2851,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN003",
+                    "name": "United Economy",
+                    "totalPrice": 2851,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06f",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0Ac",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-2179|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 2179 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 10:35 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 12h 39m"
+                ],
+                "duration": "28h 20m",
+                "lowestFare": 2859,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN005",
+                    "name": "United Economy",
+                    "totalPrice": 2859,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06b",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AS",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-1799|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 1799 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 6:48 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 16h 23m"
+                ],
+                "duration": "32h 07m",
+                "lowestFare": 2859,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN006",
+                    "name": "United Economy",
+                    "totalPrice": 2859,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06e",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AY",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-2862|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 2862 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 9:22 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 13h 53m"
+                ],
+                "duration": "29h 33m",
+                "lowestFare": 2913,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN00A",
+                    "name": "United Economy",
+                    "totalPrice": 2913,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06c",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AT",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-1754|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 1754 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 4:35 PM",
+                "arrives": "Thu, Dec 24, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 18h 36m"
+                ],
+                "duration": "34h 20m",
+                "lowestFare": 2913,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN00B",
+                    "name": "United Economy",
+                    "totalPrice": 2913,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06g",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5558,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0Ag",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11264,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-1164|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 1164 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 10:10 AM",
+                "arrives": "Wed, Dec 23, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 0h 56m"
+                ],
+                "duration": "16h 45m",
+                "lowestFare": 3025,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN00P",
+                    "name": "United Economy",
+                    "totalPrice": 3025,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06Y",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5540,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AG",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11244,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-1457|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 1457 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 8:45 AM",
+                "arrives": "Wed, Dec 23, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 2h 21m"
+                ],
+                "duration": "18h 10m",
+                "lowestFare": 3025,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN00Q",
+                    "name": "United Economy",
+                    "totalPrice": 3025,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06Z",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5540,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AI",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11244,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-1260|198-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 1260 / UA 198",
+                "route": "SFO to PVG via LAX",
+                "departs": "Tue, Dec 22, 7:00 AM",
+                "arrives": "Wed, Dec 23, 6:55 PM",
+                "stops": 1,
+                "layovers": [
+                  "LAX, 4h 06m"
+                ],
+                "duration": "19h 55m",
+                "lowestFare": 3025,
+                "fares": [
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN00R",
+                    "name": "United Economy",
+                    "totalPrice": 3025,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN06a",
+                    "name": "United Premium Plus",
+                    "totalPrice": 5540,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "A6uNHRe1spLOrsBmXhiOvN0AL",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11244,
+                    "cabin": "First"
+                  }
+                ]
+              },
+              {
+                "flightId": "356-857-UA",
+                "carrier": "United Airlines",
+                "flightNumbers": "UA 857",
+                "route": "SFO to PVG",
+                "departs": "Tue, Dec 22, 12:55 PM",
+                "arrives": "Wed, Dec 23, 6:45 PM",
+                "stops": 0,
+                "layovers": [],
+                "duration": "13h 50m",
+                "lowestFare": 3078,
+                "fares": [
+                  {
+                    "fareId": "GtAoefqhwB8LqKaFeruQbJ001",
+                    "name": "United Economy",
+                    "totalPrice": 3078,
+                    "cabin": "Coach",
+                    "refundable": false,
+                    "noChangeFees": true
+                  },
+                  {
+                    "fareId": "GtAoefqhwB8LqKaFeruQbJ00H",
+                    "name": "United Premium Plus, Base (Most restrictive)",
+                    "totalPrice": 4333,
+                    "cabin": "PREMIUMPLUS"
+                  },
+                  {
+                    "fareId": "GtAoefqhwB8LqKaFeruQbJ00V",
+                    "name": "United Polaris, Base (Most restrictive)",
+                    "totalPrice": 11240,
+                    "cabin": "Business"
+                  }
+                ]
+              }
+            ],
+            "totalFlights": 10,
+            "shown": 10,
+            "nextStep": "Fares expire after about 30 minutes; if the traveler comes back later, search again before quoting a price."
+          }
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "traceId": "trace_cheapestroundtrip1",
+      "text": "The cheapest of the 10 round trips United found is $2,841, taxes included: UA 2409 / UA 198 via Los Angeles, leaving Tue, Dec 22, 7:55 PM. It has a 15h 16m layover in LAX, so the trip out takes 31h 00m.\n\nFor $237 more, UA 857 flies nonstop to Shanghai Pudong in 13h 50m for $3,078. These prices cover the whole round trip; pick an outbound fare and I'll show the flights back.",
+      "present": [
+        {
+          "name": "present_items",
+          "args": {
+            "entity": "flight",
+            "ids": [
+              "356-2409|198-UA",
+              "356-2282|198-UA",
+              "356-857-UA"
+            ],
+            "heading": "SFO to Shanghai, Dec 22 to Jan 10, cheapest first"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "fares_include_taxes"
+          }
+        },
+        {
+          "name": "present_notice",
+          "args": {
+            "notice": "signed_out_fares"
+          }
+        }
+      ]
+    }
+  ]
+}

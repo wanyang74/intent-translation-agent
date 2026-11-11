@@ -5,6 +5,11 @@
 //   pages:     for endpoints whose response is a page (responseFormat: html), only the part the site's hooks keep
 //              (sites/<id>/fixture-hooks.ts, page), since a page can carry the visitor's own data; without the hook,
 //              pages are left out
+//   streams:   for endpoints whose response is a stream of events (responseFormat: sse), the events, scrubbed like any
+//              body, and cut down by the site's hooks (stream) when a recorded stream is too large to keep whole
+//   the token: for a site with a token, a synthetic answer from its token endpoint (no recording has one: the page
+//              keeps its token), issuing FIXTURE_TOKEN, which every recorded request then sends in place of the
+//              recorded token
 //   observed and synthetic: added by the site's hooks, if it has them
 // The output is deterministic: rebuilding from the same recordings gives identical files, and adding a recording at
 // the end of the list leaves the fixtures from the earlier ones as they were. Before keeping the
@@ -14,9 +19,10 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { parseEventStream } from '../../contract/src/events.ts';
 import { loadContract } from '../../contract/src/load.ts';
 import { endpointOf, matchKey, repoRoot, requestValue } from '../../contract/src/site-pack.ts';
-import { type DeriveContext, type Fixture, type FixtureHooks, type FixtureIndexEntry, fixtureDir, normalizeFixture } from '../src/fixtures.ts';
+import { type DeriveContext, type Fixture, type FixtureHooks, type FixtureIndexEntry, FIXTURE_TOKEN, fixtureDir, normalizeFixture } from '../src/fixtures.ts';
 
 const [site, harArg, outArg] = process.argv.slice(2);
 if (!site) {
@@ -52,6 +58,13 @@ function placeholder(value: string): string {
   return replacement;
 }
 
+function setPath(target: Record<string, unknown>, dotted: string, value: unknown): void {
+  const parts = dotted.split('.');
+  let node = target;
+  for (const part of parts.slice(0, -1)) node = (node[part] ??= {}) as Record<string, unknown>;
+  node[parts.at(-1)!] = value;
+}
+
 function scrub(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(scrub);
   if (value && typeof value === 'object') {
@@ -68,16 +81,21 @@ function scrubUrl(url: string): string {
   return address.toString();
 }
 
+const tokenRule = pack.token;
+const tokenHeader = tokenRule?.header.toLowerCase();
+
 function scrubHeaderList(headers: { name: string; value: string }[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (const { name, value } of headers) {
     const lowerName = name.toLowerCase();
-    if (keepHeaders.has(lowerName)) out[lowerName] = scrubHeaders.has(lowerName) ? placeholder(value) : value;
+    if (lowerName === tokenHeader) out[lowerName] = (tokenRule!.format ?? '{token}').replace('{token}', FIXTURE_TOKEN);
+    else if (keepHeaders.has(lowerName)) out[lowerName] = scrubHeaders.has(lowerName) ? placeholder(value) : value;
   }
   return Object.fromEntries(Object.entries(out).sort(([left], [right]) => (left < right ? -1 : 1)));
 }
 
 // ---------------------------------------------------------------- recorded traffic
+const CONTENT_TYPES: Record<string, string> = { json: 'application/json', html: 'text/html', sse: 'text/event-stream' };
 const recorded: Fixture[] = [];
 const used: any[] = [];
 const counters = new Map<string, number>();
@@ -91,7 +109,8 @@ for (const harPath of harPaths) {
     const match = endpointOf(pack, entry.request.url);
     if (!match || entry.response.status !== 200 || entry.request.method !== match.endpoint.method) continue;
     const { name: endpoint } = match;
-    const isPage = (match.endpoint.responseFormat ?? 'json') === 'html';
+    const format = match.endpoint.responseFormat ?? 'json';
+    const isPage = format === 'html';
     const page = isPage ? hooks.page?.(endpoint, entry.response.content.text) ?? null : null;
     if (isPage && page === null) { skippedHtml++; continue; }
 
@@ -102,7 +121,13 @@ for (const harPath of harPaths) {
     // The same request again (a page reloaded, a car opened twice): FakeHost would always serve the first.
     const key = `${endpoint} ${matchKey(match.endpoint, value)}`;
     if (seenKeys.has(key)) { skippedRepeats++; continue; }
-    const response = isPage ? page : scrub(JSON.parse(entry.response.content.text));
+    const text: string = entry.response.content.text;
+    let response: unknown;
+    if (isPage) response = page;
+    else if (format === 'sse') {
+      const events = parseEventStream(text).map((streamEvent) => ({ ...streamEvent, data: scrub(streamEvent.data) }));
+      response = hooks.stream?.(endpoint, events) ?? events;
+    } else response = scrub(JSON.parse(text));
     const count = (counters.get(endpoint) ?? 0) + 1;
     counters.set(endpoint, count);
     const id = `${endpoint}-${String(count).padStart(2, '0')}`;
@@ -114,9 +139,24 @@ for (const harPath of harPaths) {
       source: `recording ${String(entry.startedDateTime).slice(0, 10)}, HAR entry ${i}`,
       description: hooks.describe?.(endpoint, value, response) ?? `${method} ${endpoint}`,
       request: { method, url, headers: scrubHeaderList(entry.request.headers), body },
-      response: { status: 200, headers: { 'content-type': isPage ? 'text/html' : 'application/json' }, body: response },
+      response: { status: 200, headers: { 'content-type': CONTENT_TYPES[format]! }, body: response },
     });
   }
+}
+
+// ---------------------------------------------------------------- the token endpoint's answer
+if (tokenRule) {
+  const issuer = pack.endpoints[tokenRule.endpoint]!;
+  const body: Record<string, unknown> = {};
+  setPath(body, tokenRule.value, FIXTURE_TOKEN);
+  // Far beyond any fixture's clock, so a replay never has to fetch a second token.
+  if (tokenRule.expiresAt) setPath(body, tokenRule.expiresAt, '2099-01-01T00:00:00Z');
+  recorded.unshift({
+    id: `${tokenRule.endpoint}-01`, site, endpoint: tokenRule.endpoint, kind: 'synthetic',
+    source: 'made by the fixture builder from the site pack\'s token section', description: 'a token, valid far beyond any fixture\'s clock',
+    request: { method: issuer.method, url: issuer.url, headers: { accept: 'application/json' }, body: issuer.method === 'POST' ? {} : null },
+    response: { status: 200, headers: { 'content-type': 'application/json' }, body },
+  });
 }
 
 // ---------------------------------------------------------------- fixtures the site derives from them

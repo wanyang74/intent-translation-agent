@@ -9,11 +9,10 @@ import assert from 'node:assert/strict';
 import { loadContract } from '../../contract/src/load.ts';
 import { entriesOf, matchKey, requestValue } from '../../contract/src/site-pack.ts';
 import { FakeHost } from '../src/fake-host.ts';
-import { type Fixture, hasFixtures, loadFixtures, toHostRequest } from '../src/fixtures.ts';
+import { type Fixture, hasFixtures, loadFixtures, responseText, toHostRequest } from '../src/fixtures.ts';
 
 const contract = loadContract();
 const sites = Object.keys(contract.sites).filter(hasFixtures);
-const json = (text: string) => JSON.parse(text);
 
 for (const site of sites) {
   const { pack, schemas } = contract.sites[site]!;
@@ -27,8 +26,7 @@ for (const site of sites) {
       const res = await host.request(toHostRequest(fixture));
       assert.equal(host.calls.at(-1)?.fixtureId, fixture.id, `${fixture.id} is shadowed by a fixture with the same match key`);
       assert.equal(res.status, fixture.response.status, fixture.id);
-      const body = typeof fixture.response.body === 'string' ? res.body : json(res.body);
-      assert.deepEqual(body, fixture.response.body, fixture.id);
+      assert.equal(res.body, responseText(fixture, pack.endpoints[fixture.endpoint]!), fixture.id);
     }
   });
 

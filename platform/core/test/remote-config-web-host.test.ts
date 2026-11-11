@@ -68,6 +68,19 @@ test("web host: requests carry the page's cookies to its own origin only, and re
   assert.deepEqual(host.pageData!(), { vehicleId: 7 });
 });
 
+test("web host: a request gives up after its own time limit, or the host's default when it has none", async () => {
+  // A fetch that never answers, unless it's aborted: then it fails as the browser's does.
+  const hanging = ((_url: string, init: RequestInit) => new Promise((_resolve, reject) => {
+    init.signal!.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
+  })) as unknown as typeof fetch;
+  const host = webHost({ fetch: hanging, requestTimeoutMs: 5_000 });
+  const started = Date.now();
+  await assert.rejects(host.request({ method: 'GET', url: 'https://api.example.com/slow', headers: {}, body: null, timeoutMs: 30 }), /aborted/);
+  assert.ok(Date.now() - started < 2_000, 'the request\'s own 30 ms, not the default 5 s');
+  const quick = webHost({ fetch: hanging, requestTimeoutMs: 30 });
+  await assert.rejects(quick.request({ method: 'GET', url: 'https://api.example.com/slow', headers: {}, body: null }), /aborted/);
+});
+
 function chunked(text: string, sizes: number[]): ReadableStream<Uint8Array> {
   const bytes = new TextEncoder().encode(text);
   let at = 0;

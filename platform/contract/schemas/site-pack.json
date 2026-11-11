@@ -89,6 +89,62 @@
         "$ref": "/schemas/site-pack.json#/$defs/Endpoint"
       }
     },
+    "token": {
+      "type": "object",
+      "description": "For sites whose frontend sends an anonymous token with every call. core.js fetches it from the site's own endpoint on the device, sends it in the header on every other call, keeps it in memory until shortly before it expires, and when a call is refused with one of refusedStatuses fetches a new one and retries once. It never reaches the brain (D1).",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "description": "The endpoint that issues a token. Tools don't list it in uses: the platform calls it."
+        },
+        "value": {
+          "$ref": "/schemas/site-pack.json#/$defs/Path",
+          "description": "Where the token is in that endpoint's response."
+        },
+        "expiresAt": {
+          "$ref": "/schemas/site-pack.json#/$defs/Path",
+          "description": "Where its expiry time is (an ISO date-time)."
+        },
+        "lifetimeSeconds": {
+          "type": "integer",
+          "minimum": 60,
+          "description": "How long a token lasts, when the response doesn't say."
+        },
+        "refreshBeforeSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Fetch a new token this long before the old one expires. Default 300."
+        },
+        "header": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]{1,64}$"
+        },
+        "format": {
+          "type": "string",
+          "pattern": "\\{token\\}",
+          "description": "The header's value, with {token} for the token, such as \"bearer {token}\". Default \"{token}\"."
+        },
+        "refusedStatuses": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 499
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Statuses that mean the token was missing, expired or refused. The first is the one the site was seen answering; FakeHost answers with it."
+        }
+      },
+      "required": [
+        "endpoint",
+        "value",
+        "header",
+        "refusedStatuses"
+      ],
+      "additionalProperties": false
+    },
     "tools": {
       "type": "object",
       "propertyNames": {
@@ -446,10 +502,21 @@
         "responseFormat": {
           "enum": [
             "json",
-            "html"
+            "html",
+            "sse"
           ],
           "default": "json",
-          "description": "html: the response schema applies to what the site's parser extracts."
+          "description": "html: the response schema applies to what the site's parser extracts. sse: a stream of server-sent events, read to the end and grouped by kind (eventKind); the response schema applies to the grouped object."
+        },
+        "eventKind": {
+          "$ref": "/schemas/site-pack.json#/$defs/Path",
+          "description": "For sse: where each event's data names its kind, such as \"type\". The grouped response is {kind: [data, ...]}. Without it, the event's own name is used (\"message\" when it has none)."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120,
+          "description": "How long the host waits for the whole answer. Default 15; slow searches need more."
         },
         "request": {
           "$ref": "/schemas/site-pack.json#/$defs/SchemaRef"
@@ -487,8 +554,7 @@
           "items": {
             "$ref": "/schemas/site-pack.json#/$defs/Path"
           },
-          "minItems": 1,
-          "description": "The request fields that decide the response. FakeHost matches fixtures on these."
+          "description": "The request fields that decide the response. FakeHost matches fixtures on these. Empty for a request that carries nothing, such as a token endpoint's."
         },
         "ids": {
           "type": "array",

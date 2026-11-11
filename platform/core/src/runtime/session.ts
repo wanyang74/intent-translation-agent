@@ -1,6 +1,6 @@
 // One user's session on one site: the IDs it has seen, its share of the call budget and rate limit, cached responses,
-// the latest response of each endpoint (for allowed-value checks), site code's scratch space, and the records Respond
-// fills cards from. Sessions share nothing.
+// the latest response of each endpoint (for allowed-value checks), site code's scratch space, the records Respond
+// fills cards from, and the site token while one is held. Sessions share nothing.
 import type { PageContext, SitePack } from '../../../contract/generated/types.ts';
 import type { Host } from './host.ts';
 import { IdSet, type KnownId } from '../boundary/ids.ts';
@@ -35,6 +35,15 @@ export interface SessionSnapshot {
   store: [string, unknown][];
   responses: Record<string, unknown>;
   used: { session: number; day: number; dayKey: number };
+  /** The site token, so the next page doesn't fetch a new one. It stays on the device, like the rest. */
+  siteToken?: SiteToken | null;
+}
+
+/** A token from the site's token endpoint (the site pack's token section), and when to stop using it. */
+export interface SiteToken {
+  value: string;
+  /** Milliseconds since the epoch. */
+  expiresAt: number;
 }
 
 export class Session {
@@ -59,6 +68,10 @@ export class Session {
   activeTurn: string | undefined;
   /** Where progress lines go while tools run. */
   onProgress: ((text: string) => void) | undefined;
+  /** The site token while one is held. Kept in memory on the device: it never goes into a message to the brain. */
+  siteToken: SiteToken | null = null;
+  /** A token request on its way, shared, so tool calls running side by side wait for one token instead of each fetching its own. */
+  tokenRequest: Promise<string> | null = null;
   private records = new Map<string, Map<string, unknown>>();
   private tracking = new Map<string, string>();
 
@@ -80,6 +93,7 @@ export class Session {
       for (const [name, id] of saved.tracking) this.tracking.set(name, id);
       for (const [name, value] of saved.store) this.store.set(name, value);
       Object.assign(this.responses, saved.responses);
+      this.siteToken = saved.siteToken ?? null;
     }
   }
 
@@ -99,7 +113,7 @@ export class Session {
     });
     const snapshot: SessionSnapshot = {
       id: this.id, ids: this.ids.entries(), records, tracking: [...this.tracking.entries()], store: [...this.store.entries()],
-      responses: this.responses, used: { session, day, dayKey },
+      responses: this.responses, used: { session, day, dayKey }, siteToken: this.siteToken,
     };
     return JSON.parse(JSON.stringify(snapshot)) as SessionSnapshot;
   }

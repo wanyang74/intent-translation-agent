@@ -1,7 +1,9 @@
 # Site pack: Demo Flights (synthetic)
 # A made-up airline used only in tests, to keep the platform honest about generality. It exercises what the
-# first real site pack doesn't: a search form, offers that expire, a signed-in trips list, and a rule that
-# prices must include all taxes and fees. The .example domain is reserved and never resolves.
+# first real site pack doesn't: a search form, offers that expire, a signed-in trips list, a rule that
+# prices must include all taxes and fees, a token on every call, and a search that answers as a stream of events
+# (named events, where a real airline may name them inside the data). The .example domain is reserved and never
+# resolves.
 
 site:
   id: demo-flights
@@ -43,14 +45,24 @@ entities:
     card: { title: "{route}", subtitle: "{departs}", link: trip }
 
 endpoints:
+  session_token:
+    description: An anonymous token for the other calls
+    method: GET
+    url: https://api.demo-flights.example/v1/session/token
+    request: endpoints/session_token.request.json
+    response: endpoints/session_token.response.json
+    matchKey: []
+    verified: synthetic
   offers:
-    description: Flight offers for one search
+    description: Flight offers for one search, streamed as the search runs (search, then each offer, then done)
     method: POST
     url: https://api.demo-flights.example/v1/offers/search
     request: endpoints/offers.request.json
     response: endpoints/offers.response.json
+    responseFormat: sse
+    timeoutSeconds: 30
     matchKey: [origin, destination, departDate, returnDate, adults, cabin]
-    ids: [{ kind: flight_offer, path: "offers[].offerId", expiresAt: "offers[].expiresAt" }]
+    ids: [{ kind: flight_offer, path: "offer[].offerId", expiresAt: "offer[].expiresAt" }]
     verified: synthetic
   trips:
     description: The signed-in traveler's trips
@@ -62,6 +74,14 @@ endpoints:
     ids: [{ kind: trip, path: "trips[].recordLocator" }]
     signIn: true
     verified: synthetic
+
+token:
+  endpoint: session_token
+  value: token
+  expiresAt: expiresAt
+  header: X-Demo-Token
+  format: "Bearer {token}"
+  refusedStatuses: [403]
 
 tools:
   search_flights:

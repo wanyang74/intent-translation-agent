@@ -55,6 +55,24 @@ test("references: a destination's tool, reader, deep link and params, and every 
   ]);
 });
 
+test("references: a token's endpoint must exist and answer JSON, a token needs an expiry, and eventKind needs a stream", () => {
+  const site = readSite(sites[0]!);
+  const unknown = structuredClone(site.pack);
+  unknown.token = { endpoint: 'no_such_endpoint', value: 'token', header: 'X-Token', refusedStatuses: [401] };
+  const [name] = entriesOf(unknown.endpoints).find(([, endpoint]) => (endpoint.responseFormat ?? 'json') === 'json')!;
+  unknown.endpoints[name]!.eventKind = 'type';
+  const htmlIssuer = structuredClone(site.pack);
+  htmlIssuer.endpoints.token_page = { method: 'GET', url: `${site.pack.site.origins[0]}/token`, request: unknown.endpoints[name]!.request, response: unknown.endpoints[name]!.response, responseFormat: 'html', matchKey: [] };
+  htmlIssuer.token = { endpoint: 'token_page', value: 'token', lifetimeSeconds: 3600, header: 'X-Token', refusedStatuses: [401] };
+  const problems = (pack: typeof site.pack) => crossCheck({ ...site, pack }).map((problem) => problem.slice(problem.indexOf(': ') + 2));
+  assert.deepEqual(problems(unknown), [
+    `endpoints.${name}.eventKind: only applies to responseFormat: sse`,
+    'token.endpoint: unknown endpoint no_such_endpoint',
+    'token: needs expiresAt or lifetimeSeconds',
+  ]);
+  assert.deepEqual(problems(htmlIssuer), ['token.endpoint: must answer with JSON']);
+});
+
 // The words that would tie platform code to a site: its id and its hostnames.
 function siteWords(id: string): string[] {
   const { pack } = readSite(id);

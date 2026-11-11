@@ -1,0 +1,312 @@
+{
+  "id": "polaris-round-trip",
+  "site": "united",
+  "source": "conversation",
+  "description": "Business class, nonstop: the agent compares what each Polaris fare includes, then lists the flights back for the fare the traveler picks.",
+  "turns": [
+    {
+      "message": "Nonstop business class from SFO to Shanghai on Dec 22, back Jan 10. What do the different fares get me?",
+      "page": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Finding Shanghai's airports…"
+        },
+        {
+          "type": "progress",
+          "text": "Searching United flights for 12/22/2026, back 1/10/2027…"
+        },
+        {
+          "type": "progress",
+          "text": "Searching nonstop business class…"
+        },
+        {
+          "type": "progress",
+          "text": "Reading what each fare includes…"
+        },
+        {
+          "type": "answer",
+          "text": "UA 857 is the only nonstop, and United Polaris business on it comes three ways, priced for the whole round trip with taxes:\n\n- United Polaris, Base (Most restrictive): $11,240. No changes, choose your lie-flat seat for a fee, and no Polaris lounge (United Club only).\n- United Polaris: $11,640. No change fees, choose your lie-flat seat, Polaris lounge access and 2 checked bags included.\n- United Polaris, Flexible (Fully refundable): $21,827, the same plus a full refund if your plans change.\n\nThe standard fare is $400 more than the basic one for the lounge, a second bag and free seat choice.",
+          "components": [
+            {
+              "type": "comparison",
+              "entity": "fare",
+              "items": [
+                {
+                  "id": "0bSXrUfWdPSSBENS4M91V800V",
+                  "title": "United Polaris, Base (Most restrictive)"
+                },
+                {
+                  "id": "0bSXrUfWdPSSBENS4M91V800a",
+                  "title": "United Polaris"
+                },
+                {
+                  "id": "0bSXrUfWdPSSBENS4M91V800i",
+                  "title": "United Polaris, Flexible (Fully refundable)"
+                }
+              ],
+              "rows": [
+                {
+                  "key": "totalPrice",
+                  "label": "Total price",
+                  "cells": [
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 11240,
+                      "text": "$11,240"
+                    },
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 11640,
+                      "text": "$11,640"
+                    },
+                    {
+                      "key": "totalPrice",
+                      "label": "Total price",
+                      "value": 21827,
+                      "text": "$21,827"
+                    }
+                  ]
+                },
+                {
+                  "key": "seat",
+                  "label": "Seat",
+                  "cells": [
+                    {
+                      "key": "seat",
+                      "label": "Seat",
+                      "value": "Choose your lie-flat seat for a fee",
+                      "text": "Choose your lie-flat seat for a fee"
+                    },
+                    {
+                      "key": "seat",
+                      "label": "Seat",
+                      "value": "Choose your lie-flat seat",
+                      "text": "Choose your lie-flat seat"
+                    },
+                    {
+                      "key": "seat",
+                      "label": "Seat",
+                      "value": "Choose your lie-flat seat",
+                      "text": "Choose your lie-flat seat"
+                    }
+                  ]
+                },
+                {
+                  "key": "lounge",
+                  "label": "Lounges",
+                  "cells": [
+                    {
+                      "key": "lounge",
+                      "label": "Lounges",
+                      "value": "No United Polaris lounge access; United Club access",
+                      "text": "No United Polaris lounge access; United Club access"
+                    },
+                    {
+                      "key": "lounge",
+                      "label": "Lounges",
+                      "value": "United Polaris lounge access; United Club access",
+                      "text": "United Polaris lounge access; United Club access"
+                    },
+                    {
+                      "key": "lounge",
+                      "label": "Lounges",
+                      "value": "United Polaris lounge access; United Club access",
+                      "text": "United Polaris lounge access; United Club access"
+                    }
+                  ]
+                },
+                {
+                  "key": "checkedBags",
+                  "label": "Checked bags",
+                  "cells": [
+                    {
+                      "key": "checkedBags",
+                      "label": "Checked bags",
+                      "value": "1 checked bag included",
+                      "text": "1 checked bag included"
+                    },
+                    {
+                      "key": "checkedBags",
+                      "label": "Checked bags",
+                      "value": "2 checked bags included",
+                      "text": "2 checked bags included"
+                    },
+                    {
+                      "key": "checkedBags",
+                      "label": "Checked bags",
+                      "value": "2 checked bags included",
+                      "text": "2 checked bags included"
+                    }
+                  ]
+                },
+                {
+                  "key": "changes",
+                  "label": "Changes",
+                  "cells": [
+                    {
+                      "key": "changes",
+                      "label": "Changes",
+                      "value": "No changes",
+                      "text": "No changes"
+                    },
+                    {
+                      "key": "changes",
+                      "label": "Changes",
+                      "value": "No change fees",
+                      "text": "No change fees"
+                    },
+                    {
+                      "key": "changes",
+                      "label": "Changes",
+                      "value": "No change fees",
+                      "text": "No change fees"
+                    }
+                  ]
+                },
+                {
+                  "key": "refunds",
+                  "label": "Refunds",
+                  "cells": [
+                    {
+                      "key": "refunds",
+                      "label": "Refunds",
+                      "value": "Non-refundable",
+                      "text": "Non-refundable"
+                    },
+                    {
+                      "key": "refunds",
+                      "label": "Refunds",
+                      "value": "Non-refundable",
+                      "text": "Non-refundable"
+                    },
+                    {
+                      "key": "refunds",
+                      "label": "Refunds",
+                      "value": "Fully refundable",
+                      "text": "Fully refundable"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "fares_include_taxes",
+              "text": "Fares include taxes and fees, for all travelers.",
+              "version": "2026-11-06"
+            },
+            {
+              "type": "notice",
+              "notice": "signed_out_fares",
+              "text": "These are United's signed-out fares. MileagePlus benefits, such as free checked bags for some members, show when you sign in on united.com.",
+              "version": "2026-11-06"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    },
+    {
+      "message": "I'll take the standard one with the lounge. What are my options to come back?",
+      "page": {
+        "url": "https://www.united.com/en/us/",
+        "pageType": "home",
+        "locale": "en-US"
+      },
+      "events": [
+        {
+          "type": "progress",
+          "text": "Finding return flights…"
+        },
+        {
+          "type": "progress",
+          "text": "Finding flights back…"
+        },
+        {
+          "type": "answer",
+          "text": "Flying Polaris both ways, the nonstop home, UA 858, makes the round trip $13,763: it leaves Shanghai Pudong Sun, Jan 10, 1:10 PM and lands in San Francisco Sun, Jan 10, 8:25 AM, the same morning by the clock. Connecting in Los Angeles on UA 199 / UA 770 keeps it at $11,640, the price you saw, with a 2h 05m stop. To book, I can open these flights on United.",
+          "components": [
+            {
+              "type": "items",
+              "entity": "flight",
+              "layout": "cards",
+              "heading": "Shanghai to SFO, Jan 10",
+              "items": [
+                {
+                  "id": "10-858-UA",
+                  "title": "UA 858",
+                  "fields": [
+                    {
+                      "key": "lowestFare",
+                      "label": "From",
+                      "value": 7414,
+                      "text": "$7,414"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 0,
+                      "text": "0"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "11h 15m",
+                      "text": "11h 15m"
+                    }
+                  ],
+                  "subtitle": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM"
+                },
+                {
+                  "id": "10-199|770-UA",
+                  "title": "UA 199 / UA 770",
+                  "fields": [
+                    {
+                      "key": "lowestFare",
+                      "label": "From",
+                      "value": 7425,
+                      "text": "$7,425"
+                    },
+                    {
+                      "key": "stops",
+                      "label": "Stops",
+                      "value": 1,
+                      "text": "1"
+                    },
+                    {
+                      "key": "duration",
+                      "label": "Duration",
+                      "value": "15h 15m",
+                      "text": "15h 15m"
+                    }
+                  ],
+                  "subtitle": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM"
+                }
+              ]
+            },
+            {
+              "type": "notice",
+              "notice": "fares_include_taxes",
+              "text": "Fares include taxes and fees, for all travelers.",
+              "version": "2026-11-06"
+            },
+            {
+              "type": "notice",
+              "notice": "signed_out_fares",
+              "text": "These are United's signed-out fares. MileagePlus benefits, such as free checked bags for some members, show when you sign in on united.com.",
+              "version": "2026-11-06"
+            }
+          ],
+          "budgetReached": false
+        }
+      ]
+    }
+  ]
+}

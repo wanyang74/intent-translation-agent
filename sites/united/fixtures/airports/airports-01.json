@@ -1,0 +1,86 @@
+{
+  "id": "airports-01",
+  "site": "united",
+  "endpoint": "airports",
+  "kind": "recorded",
+  "source": "recording 2026-11-07, HAR entry 46",
+  "description": "\"shanghai\": 3 airports",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/airports/lookup/?airport=shanghai&allAirports=true&matches=5",
+    "headers": {
+      "accept": "application/json",
+      "x-authorization-api": "bearer fixture-token-0001"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "airports": [
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SHA"
+              },
+              "IATACode": "SHA",
+              "IATACountryCode": {
+                "CountryCode": "CN",
+                "Name": "China"
+              },
+              "Name": "Shanghai (All Airports)",
+              "ShortName": "Shanghai (All Airports)",
+              "StateProvince": {
+                "StateProvinceCode": ""
+              },
+              "AutoCompleteDisplayName": "Shanghai (All Airports)"
+            },
+            "IsAllAirport": "1"
+          },
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SHA"
+              },
+              "IATACode": "PVG",
+              "IATACountryCode": {
+                "CountryCode": "CN",
+                "Name": "China"
+              },
+              "Name": "Shanghai (PVG - Pu Dong)",
+              "ShortName": "Shanghai (PVG)",
+              "StateProvince": {
+                "StateProvinceCode": ""
+              },
+              "AutoCompleteDisplayName": "Shanghai (PVG)"
+            },
+            "IsAllAirport": "0"
+          },
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SHA"
+              },
+              "IATACode": "SHA",
+              "IATACountryCode": {
+                "CountryCode": "CN",
+                "Name": "China"
+              },
+              "Name": "Shanghai (SHA - Hongqiao)",
+              "ShortName": "Shanghai (SHA)",
+              "StateProvince": {
+                "StateProvinceCode": ""
+              },
+              "AutoCompleteDisplayName": "Shanghai (SHA)"
+            },
+            "IsAllAirport": "0"
+          }
+        ]
+      }
+    }
+  }
+}

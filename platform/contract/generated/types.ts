@@ -171,7 +171,19 @@ export type Path = string;
  * via the `definition` "SchemaRef".
  */
 export type SchemaRef = string;
+/**
+ * Dotted path into a JSON value. [] maps over an array; :sorted sorts the result (for match keys).
+ */
+export type Path1 = string;
 export type PageType1 = string;
+/**
+ * Dotted path into a JSON value. [] maps over an array; :sorted sorts the result (for match keys).
+ */
+export type Path2 = string;
+/**
+ * Dotted path into a JSON value. [] maps over an array; :sorted sorts the result (for match keys).
+ */
+export type Path3 = string;
 
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -656,9 +668,14 @@ export interface Endpoint {
    */
   url: string;
   /**
-   * html: the response schema applies to what the site's parser extracts.
+   * html: the response schema applies to what the site's parser extracts. sse: a stream of server-sent events, read to the end and grouped by kind (eventKind); the response schema applies to the grouped object.
    */
-  responseFormat?: 'json' | 'html';
+  responseFormat?: 'json' | 'html' | 'sse';
+  eventKind?: Path1;
+  /**
+   * How long the host waits for the whole answer. Default 15; slow searches need more.
+   */
+  timeoutSeconds?: number;
   request: SchemaRef;
   response: SchemaRef;
   headers?: {
@@ -672,11 +689,9 @@ export interface Endpoint {
     headers?: string[];
   };
   /**
-   * The request fields that decide the response. FakeHost matches fixtures on these.
-   *
-   * @minItems 1
+   * The request fields that decide the response. FakeHost matches fixtures on these. Empty for a request that carries nothing, such as a token endpoint's.
    */
-  matchKey: [Path, ...Path[]];
+  matchKey: Path[];
   ids?: IdPath[];
   signIn?: boolean;
   verified?: string;
@@ -846,6 +861,36 @@ export interface SitePack {
   };
   endpoints: {
     [k: string]: Endpoint | undefined;
+  };
+  /**
+   * For sites whose frontend sends an anonymous token with every call. core.js fetches it from the site's own endpoint on the device, sends it in the header on every other call, keeps it in memory until shortly before it expires, and when a call is refused with one of refusedStatuses fetches a new one and retries once. It never reaches the brain (D1).
+   */
+  token?: {
+    /**
+     * The endpoint that issues a token. Tools don't list it in uses: the platform calls it.
+     */
+    endpoint: string;
+    value: Path2;
+    expiresAt?: Path3;
+    /**
+     * How long a token lasts, when the response doesn't say.
+     */
+    lifetimeSeconds?: number;
+    /**
+     * Fetch a new token this long before the old one expires. Default 300.
+     */
+    refreshBeforeSeconds?: number;
+    header: string;
+    /**
+     * The header's value, with {token} for the token, such as "bearer {token}". Default "{token}".
+     */
+    format?: string;
+    /**
+     * Statuses that mean the token was missing, expired or refused. The first is the one the site was seen answering; FakeHost answers with it.
+     *
+     * @minItems 1
+     */
+    refusedStatuses: [number, ...number[]];
   };
   tools: {
     [k: string]: Tool | undefined;

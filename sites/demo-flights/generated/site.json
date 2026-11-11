@@ -109,12 +109,23 @@
     }
   },
   "endpoints": {
+    "session_token": {
+      "description": "An anonymous token for the other calls",
+      "method": "GET",
+      "url": "https://api.demo-flights.example/v1/session/token",
+      "request": "endpoints/session_token.request.json",
+      "response": "endpoints/session_token.response.json",
+      "matchKey": [],
+      "verified": "synthetic"
+    },
     "offers": {
-      "description": "Flight offers for one search",
+      "description": "Flight offers for one search, streamed as the search runs (search, then each offer, then done)",
       "method": "POST",
       "url": "https://api.demo-flights.example/v1/offers/search",
       "request": "endpoints/offers.request.json",
       "response": "endpoints/offers.response.json",
+      "responseFormat": "sse",
+      "timeoutSeconds": 30,
       "matchKey": [
         "origin",
         "destination",
@@ -126,8 +137,8 @@
       "ids": [
         {
           "kind": "flight_offer",
-          "path": "offers[].offerId",
-          "expiresAt": "offers[].expiresAt"
+          "path": "offer[].offerId",
+          "expiresAt": "offer[].expiresAt"
         }
       ],
       "verified": "synthetic"
@@ -150,6 +161,16 @@
       "signIn": true,
       "verified": "synthetic"
     }
+  },
+  "token": {
+    "endpoint": "session_token",
+    "value": "token",
+    "expiresAt": "expiresAt",
+    "header": "X-Demo-Token",
+    "format": "Bearer {token}",
+    "refusedStatuses": [
+      403
+    ]
   },
   "tools": {
     "search_flights": {

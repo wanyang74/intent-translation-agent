@@ -1,0 +1,93 @@
+[
+  {
+    "id": "token-01",
+    "endpoint": "token",
+    "kind": "synthetic",
+    "description": "a token, valid far beyond any fixture's clock",
+    "file": "token/token-01.json"
+  },
+  {
+    "id": "airports-01",
+    "endpoint": "airports",
+    "kind": "recorded",
+    "description": "\"shanghai\": 3 airports",
+    "file": "airports/airports-01.json"
+  },
+  {
+    "id": "calendar-01",
+    "endpoint": "calendar",
+    "kind": "recorded",
+    "description": "SFO to SHA, round trip around 01082027: 30 dates",
+    "file": "calendar/calendar-01.json"
+  },
+  {
+    "id": "calendar-02",
+    "endpoint": "calendar",
+    "kind": "recorded",
+    "description": "SFO to SHA, round trip around 12222026: 30 dates",
+    "file": "calendar/calendar-02.json"
+  },
+  {
+    "id": "airports-02",
+    "endpoint": "airports",
+    "kind": "recorded",
+    "description": "\"SFO\": 2 airports",
+    "file": "airports/airports-02.json"
+  },
+  {
+    "id": "airports-03",
+    "endpoint": "airports",
+    "kind": "recorded",
+    "description": "\"Shanghai (All Airports)\": 1 airports",
+    "file": "airports/airports-03.json"
+  },
+  {
+    "id": "flights-01",
+    "endpoint": "flights",
+    "kind": "recorded",
+    "description": "SFO to SHANGHAI (ALL AIRPORTS) 2026-12-22, back SHANGHAI (ALL AIRPORTS) to SFO 2027-01-10, 1 adult, economy: 10 flight options kept",
+    "file": "flights/flights-01.json"
+  },
+  {
+    "id": "airports-04",
+    "endpoint": "airports",
+    "kind": "recorded",
+    "description": "\"SHANGHAI (ALL AIRPORTS)\": 1 airports",
+    "file": "airports/airports-04.json"
+  },
+  {
+    "id": "flights-02",
+    "endpoint": "flights",
+    "kind": "recorded",
+    "description": "SFO to SHANGHAI (ALL AIRPORTS) 2026-12-22, back SHANGHAI (ALL AIRPORTS) to SFO 2027-01-10, 1 adult, premium, nonstop: 10 flight options kept",
+    "file": "flights/flights-02.json"
+  },
+  {
+    "id": "fare_details-01",
+    "endpoint": "fare_details",
+    "kind": "recorded",
+    "description": "fares on 356-857-UA: 8",
+    "file": "fare_details/fare_details-01.json"
+  },
+  {
+    "id": "return_flights-01",
+    "endpoint": "return_flights",
+    "kind": "recorded",
+    "description": "returns for outbound fare 0bSXrUfWdPSSBENS4M91V800a on 356-857-UA: 10 flight options kept",
+    "file": "return_flights/return_flights-01.json"
+  },
+  {
+    "id": "fare_details-02",
+    "endpoint": "fare_details",
+    "kind": "recorded",
+    "description": "fares on 10-858-UA: 5",
+    "file": "fare_details/fare_details-02.json"
+  },
+  {
+    "id": "airports-05",
+    "endpoint": "airports",
+    "kind": "recorded",
+    "description": "\"PVG\": 1 airports",
+    "file": "airports/airports-05.json"
+  }
+]

@@ -1,0 +1,204 @@
+{
+  "id": "calendar-01",
+  "site": "united",
+  "endpoint": "calendar",
+  "kind": "recorded",
+  "source": "recording 2026-11-07, HAR entry 55",
+  "description": "SFO to SHA, round trip around 01082027: 30 dates",
+  "request": {
+    "method": "POST",
+    "url": "https://www.united.com/api/FlexPricer/CalendarPricing",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "x-authorization-api": "bearer fixture-token-0001"
+    },
+    "body": {
+      "UserSelected": true,
+      "Depart": "01082027",
+      "Return": "01102027",
+      "Origin": "SFO",
+      "Destination": "SHA",
+      "IsAward": false,
+      "ClientCurrentDate": "",
+      "IsPremium": false,
+      "IsOneway": false,
+      "ExcludeBasicEconomy": false,
+      "Travelers": {
+        "Adult": 1,
+        "Senior": 0,
+        "Infant": 0,
+        "InfantOnLap": 0,
+        "Children01": 0,
+        "Children02": 0,
+        "Children03": 0,
+        "Children04": 0
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "origin": "SFO",
+        "destination": "SHA",
+        "currency": "USD",
+        "fareDetails": [
+          {
+            "depart": "1/8/2027",
+            "return": "1/9/2027",
+            "fare": 25957.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/10/2027",
+            "fare": 2395.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/11/2027",
+            "fare": 1726.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/12/2027",
+            "fare": 1701.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/13/2027",
+            "fare": 1720.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/14/2027",
+            "fare": 1668.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/15/2027",
+            "fare": 1608.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/16/2027",
+            "fare": 1776.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/17/2027",
+            "fare": 1679.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/18/2027",
+            "fare": 1576.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/19/2027",
+            "fare": 1558.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/20/2027",
+            "fare": 1388.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/21/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/22/2027",
+            "fare": 1402.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/23/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/24/2027",
+            "fare": 1388.09
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/25/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/26/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/27/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/28/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/29/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/30/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "1/31/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/1/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/2/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/3/2027",
+            "fare": 1432.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/4/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/5/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/6/2027",
+            "fare": 1377.99
+          },
+          {
+            "depart": "1/8/2027",
+            "return": "2/7/2027",
+            "fare": 1377.99
+          }
+        ]
+      }
+    }
+  }
+}

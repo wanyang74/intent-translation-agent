@@ -8,6 +8,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { groupEvents, parseEventStream } from '../src/events.ts';
 import { loadContract, describeErrors, type SchemaFile } from '../src/load.ts';
 import { crossCheck, endpointOf, repoRoot, requestValue } from '../src/site-pack.ts';
 import { mustReject as platformCases, type MustReject } from '../src/cases.ts';
@@ -60,9 +61,12 @@ for (const [id, site] of Object.entries(contract.sites)) {
     const name = path.basename(har);
     for (const [i, entry] of JSON.parse(readFileSync(har, 'utf8')).log.entries.entries()) {
       const match = endpointOf(site.pack, entry.request.url);
-      if (!match || entry.response.status !== 200 || (match.endpoint.responseFormat ?? 'json') !== 'json') continue;
+      const format = match?.endpoint.responseFormat ?? 'json';
+      // A page's schema applies to what the site's reader makes of it, so recorded pages are checked through fixtures.
+      if (!match || entry.response.status !== 200 || format === 'html') continue;
       const request = requestValue(site.pack, { method: entry.request.method, url: entry.request.url, body: entry.request.postData?.text ?? null });
-      const response = JSON.parse(entry.response.content?.text ?? 'null');
+      const text: string = entry.response.content?.text ?? 'null';
+      const response = format === 'sse' ? groupEvents(parseEventStream(text), match.endpoint.eventKind) : JSON.parse(text);
       for (const [kind, rel, body] of [['request', match.endpoint.request, request], ['response', match.endpoint.response, response]] as const) {
         recorded++;
         const validate = contract.siteValidator(id, rel);

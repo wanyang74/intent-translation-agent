@@ -1,5 +1,6 @@
 // Demo Flights' tools: offers from a search form's fields, and the signed-in traveler's trips; and the URL of the
-// results page for a search, for the flight_search destination.
+// results page for a search, for the flight_search destination. The search answers as a stream, which core.js hands
+// over grouped by event name: one search event, an offer event per offer (none when nothing matches), one done.
 import type { SiteCode } from '../../platform/core/src/index.ts';
 
 interface Segment { carrier: string; flightNumber: string; from: string; to: string; departs: string; arrives: string }
@@ -12,7 +13,7 @@ export const site: SiteCode = {
         body: { origin: args.origin, destination: args.destination, departDate: args.departDate, ...(args.returnDate ? { returnDate: args.returnDate } : {}), adults: args.adults, cabin: args.cabin },
       });
       return {
-        offers: res.offers.map((offer: { offerId: string; expiresAt: string; price: { total: number }; segments: Segment[]; duration: string }) => ({
+        offers: (res.offer ?? []).map((offer: { offerId: string; expiresAt: string; price: { total: number }; segments: Segment[]; duration: string }) => ({
           offerId: offer.offerId,
           expiresAt: offer.expiresAt,
           totalPrice: offer.price.total,

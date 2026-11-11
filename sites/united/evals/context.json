@@ -1,0 +1,63 @@
+{
+  "category": "context",
+  "cases": [
+    {
+      "id": "return-after-pick",
+      "quick": true,
+      "description": "After comparing fares, the traveler picks one: the returns for that fare, at its prices",
+      "after": {
+        "conversation": "polaris-round-trip",
+        "turns": 1
+      },
+      "message": "I'll take the standard one with the lounge. What are my options to come back?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "return_flights",
+            "args": {
+              "fareId": "0bSXrUfWdPSSBENS4M91V800a"
+            }
+          }
+        ],
+        "noCalls": [
+          "search_flights"
+        ],
+        "shows": [
+          {
+            "type": "items",
+            "entity": "flight",
+            "includes": [
+              "10-858-UA"
+            ]
+          }
+        ],
+        "text": {
+          "matches": [
+            "13,763|11,640"
+          ],
+          "excludes": [
+            "7,414"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nonstop-from-list",
+      "description": "A follow-up answered from the flights already shown, with no new search",
+      "after": {
+        "conversation": "cheapest-round-trip",
+        "turns": 1
+      },
+      "message": "Which of those is nonstop, and how long is it?",
+      "expect": {
+        "noCalls": true,
+        "text": {
+          "includes": [
+            "857",
+            "13h 50m"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -8,6 +8,8 @@ export interface HostRequest {
   url: string;
   headers: Record<string, string>;
   body: string | null;
+  /** How long to wait for the whole answer before giving up, when the endpoint needs longer than the host's default. */
+  timeoutMs?: number;
 }
 
 export interface HostResponse {

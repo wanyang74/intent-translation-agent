@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/fare_details.request.json",
+  "title": "United fare details for one flight option (POST /api/flight/NestedCabinEntitlements)",
+  "type": "object",
+  "properties": {
+    "CartId": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/SearchSession"
+    },
+    "FlightHash": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/FlightId"
+    },
+    "IncludeLmxQuote": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "CartId",
+    "FlightHash"
+  ],
+  "additionalProperties": false
+}

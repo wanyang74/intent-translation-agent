@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/airports.response.json",
+  "title": "United airport lookup",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "airports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Airport": {
+                "type": "object",
+                "properties": {
+                  "IATACode": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "Name": {
+                    "type": "string",
+                    "pattern": "^[\\s\\S]{1,}$"
+                  },
+                  "ShortName": {
+                    "type": "string"
+                  },
+                  "IATACountryCode": {
+                    "type": "object",
+                    "properties": {
+                      "CountryCode": {
+                        "type": "string"
+                      },
+                      "Name": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": true
+                  },
+                  "IATACityCode": {
+                    "type": "object",
+                    "properties": {
+                      "CityCode": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "IATACode",
+                  "Name"
+                ],
+                "additionalProperties": true
+              },
+              "IsAllAirport": {
+                "enum": [
+                  "0",
+                  "1"
+                ]
+              }
+            },
+            "required": [
+              "Airport",
+              "IsAllAirport"
+            ],
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "airports"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "data"
+  ],
+  "additionalProperties": true
+}

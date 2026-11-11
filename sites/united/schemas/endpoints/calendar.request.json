@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/calendar.request.json",
+  "title": "United fare calendar request (POST /api/FlexPricer/CalendarPricing)",
+  "type": "object",
+  "properties": {
+    "Depart": {
+      "type": "string",
+      "pattern": "^[0-9]{8}$",
+      "description": "MMDDYYYY"
+    },
+    "Return": {
+      "type": "string",
+      "pattern": "^([0-9]{8})?$"
+    },
+    "Origin": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "Destination": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "IsOneway": {
+      "type": "boolean"
+    },
+    "IsPremium": {
+      "type": "boolean"
+    },
+    "IsAward": {
+      "const": false
+    },
+    "Travelers": {
+      "type": "object",
+      "properties": {
+        "Adult": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        }
+      },
+      "required": [
+        "Adult"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "Depart",
+    "Origin",
+    "Destination",
+    "IsOneway",
+    "IsPremium",
+    "IsAward",
+    "Travelers"
+  ],
+  "additionalProperties": true
+}

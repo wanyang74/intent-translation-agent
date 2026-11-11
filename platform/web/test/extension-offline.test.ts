@@ -18,7 +18,7 @@ import path from 'node:path';
 import { Brain } from '../../brain/src/agent/brain.ts';
 import { loadSite } from '../../brain/src/prompt/site.ts';
 import { createBrainServer } from '../../brain/src/server/server.ts';
-import { listSites, readSite } from '../../contract/src/site-pack.ts';
+import { endpointOf, listSites, readSite } from '../../contract/src/site-pack.ts';
 import { loadConversations, type Conversation } from '../../testkit/src/conversations.ts';
 import { FakeHost } from '../../testkit/src/fake-host.ts';
 import { fakeModelFor } from '../../testkit/src/fake-model.ts';
@@ -61,16 +61,18 @@ const squash = (text: string) => text.replace(/\*\*/g, '').replace(/^\s*[-*•]\
 /**
  * The site's API calls answered from fixtures, with the CORS headers a cross-origin call from the page needs. Like
  * the live site's API, they don't allow credentials, so a request that sends cookies cross-origin fails here as it
- * did live.
+ * did live. A site whose API is on its pages' own host (a token call, a search) gets its endpoints from fixtures
+ * too: only addresses that are no endpoint of the site pack are pages.
  */
 function siteAnswers(site: string, fake: FakeHost, pageOrigin: string) {
   const cors = { 'access-control-allow-origin': pageOrigin, 'access-control-allow-methods': 'GET, POST' };
-  const pages = readSite(site).pack.site.pages.map((page) => new RegExp(`^${page.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`));
+  const { pack } = readSite(site);
+  const pages = pack.site.pages.map((page) => new RegExp(`^${page.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`));
   return async (request: InterceptedRequest) => {
     // The preflight: it allows exactly the headers asked for.
     const asked = Object.entries(request.headers).find(([name]) => name.toLowerCase() === 'access-control-request-headers')?.[1];
     if (request.method === 'OPTIONS') return { status: 204, headers: { ...cors, ...(asked ? { 'access-control-allow-headers': asked } : {}) }, body: '' };
-    if (request.method === 'GET' && pages.some((page) => page.test(request.url)) && !new URL(request.url).pathname.includes('.')) {
+    if (request.method === 'GET' && !endpointOf(pack, request.url) && pages.some((page) => page.test(request.url)) && !new URL(request.url).pathname.includes('.')) {
       return { status: 200, headers: { 'content-type': 'text/html' }, body: '<!doctype html><html><head><title>site page</title></head><body><h1>A page on the site</h1></body></html>' };
     }
     const response = await fake.request({ method: request.method as 'GET' | 'POST', url: request.url, headers: request.headers, body: request.body });

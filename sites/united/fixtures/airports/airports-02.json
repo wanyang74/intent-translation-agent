@@ -1,0 +1,67 @@
+{
+  "id": "airports-02",
+  "site": "united",
+  "endpoint": "airports",
+  "kind": "recorded",
+  "source": "recording 2026-11-07, HAR entry 156",
+  "description": "\"SFO\": 2 airports",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/airports/lookup/?airport=SFO&allAirports=true&matches=0",
+    "headers": {
+      "accept": "application/json",
+      "x-authorization-api": "bearer fixture-token-0001"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "airports": [
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SFO"
+              },
+              "IATACode": "SFO",
+              "IATACountryCode": {
+                "CountryCode": "US",
+                "Name": "United States"
+              },
+              "Name": "San Francisco, CA, US (SFO)",
+              "ShortName": "San Francisco, CA, US (SFO)",
+              "StateProvince": {
+                "StateProvinceCode": "CA"
+              },
+              "AutoCompleteDisplayName": "San Francisco, CA, US (SFO)"
+            },
+            "IsAllAirport": "0"
+          },
+          {
+            "Airport": {
+              "IATACityCode": {
+                "CityCode": "SFO"
+              },
+              "IATACode": "SFO",
+              "IATACountryCode": {
+                "CountryCode": "US",
+                "Name": "United States"
+              },
+              "Name": "San Francisco, CA, US (All Airports)",
+              "ShortName": "San Francisco, CA, US (All Airports)",
+              "StateProvince": {
+                "StateProvinceCode": "CA"
+              },
+              "AutoCompleteDisplayName": "San Francisco, CA, US (All Airports)"
+            },
+            "IsAllAirport": "1"
+          }
+        ]
+      }
+    }
+  }
+}

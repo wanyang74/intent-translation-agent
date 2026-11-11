@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/calendar.response.json",
+  "title": "United fare calendar: the lowest fare for each date or pair of dates",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "fareDetails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "depart": {
+                "type": "string",
+                "pattern": "^[\\s\\S]{1,}$"
+              },
+              "return": {
+                "type": "string"
+              },
+              "fare": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "depart",
+              "fare"
+            ],
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "fareDetails"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "data"
+  ],
+  "additionalProperties": true
+}

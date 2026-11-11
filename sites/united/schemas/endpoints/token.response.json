@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/token.response.json",
+  "title": "United anonymous token",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "object",
+          "properties": {
+            "hash": {
+              "type": "string",
+              "pattern": "^[\\s\\S]{1,}$"
+            },
+            "expiresAt": {
+              "type": "string",
+              "pattern": "^[\\s\\S]{1,}$"
+            }
+          },
+          "required": [
+            "hash",
+            "expiresAt"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "data"
+  ],
+  "additionalProperties": true,
+  "examples": [
+    {
+      "data": {
+        "token": {
+          "hash": "fixture-token-0001",
+          "expiresAt": "2099-01-01T00:00:00Z"
+        }
+      }
+    }
+  ]
+}

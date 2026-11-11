@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/return_flights.request.json",
+  "title": "United return flights for a chosen outbound fare (POST /api/flight/SelectAndFetchSSENestedFlights)",
+  "type": "object",
+  "properties": {
+    "CartId": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/SearchSession"
+    },
+    "BBXCellId": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/FareId"
+    },
+    "flightHash": {
+      "$ref": "/sites/united/schemas/common.json#/$defs/FlightId"
+    }
+  },
+  "required": [
+    "CartId",
+    "BBXCellId",
+    "flightHash"
+  ],
+  "additionalProperties": true
+}
