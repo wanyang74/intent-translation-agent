@@ -38,15 +38,81 @@
               "items": [
                 {
                   "id": "0bSXrUfWdPSSBENS4M91V800V",
-                  "title": "United Polaris, Base (Most restrictive)"
+                  "title": "UA 857, United Polaris, Base (Most restrictive)",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=1,1&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_fare_options",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ],
+                        "cabin": "United Polaris",
+                        "fare": "Base (Most restrictive)",
+                        "prices": [
+                          11240
+                        ]
+                      },
+                      "hint": "UA 857, leaving SFO at 12:55 PM (United Polaris, Base (Most restrictive))"
+                    }
+                  }
                 },
                 {
                   "id": "0bSXrUfWdPSSBENS4M91V800a",
-                  "title": "United Polaris"
+                  "title": "UA 857, United Polaris",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=1,1&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_fare_options",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ],
+                        "cabin": "United Polaris",
+                        "fare": "Standard",
+                        "prices": [
+                          11640
+                        ]
+                      },
+                      "hint": "UA 857, leaving SFO at 12:55 PM (United Polaris)"
+                    }
+                  }
                 },
                 {
                   "id": "0bSXrUfWdPSSBENS4M91V800i",
-                  "title": "United Polaris, Flexible (Fully refundable)"
+                  "title": "UA 857, United Polaris, Flexible (Fully refundable)",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=1,1&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_fare_options",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ],
+                        "cabin": "United Polaris",
+                        "fare": "Flexible (Fully refundable)",
+                        "prices": [
+                          21827
+                        ]
+                      },
+                      "hint": "UA 857, leaving SFO at 12:55 PM (United Polaris, Flexible (Fully refundable))"
+                    }
+                  }
                 }
               ],
               "rows": [
@@ -262,7 +328,24 @@
                       "text": "11h 15m"
                     }
                   ],
-                  "subtitle": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM"
+                  "subtitle": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=1,1&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_flight_details",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ]
+                      },
+                      "hint": "your outbound flight, UA 857, leaving SFO at 12:55 PM; after you select it, UA 858 is among the returns"
+                    }
+                  }
                 },
                 {
                   "id": "10-199|770-UA",
@@ -287,7 +370,24 @@
                       "text": "15h 15m"
                     }
                   ],
-                  "subtitle": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM"
+                  "subtitle": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=1,1&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_flight_details",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ]
+                      },
+                      "hint": "your outbound flight, UA 857, leaving SFO at 12:55 PM; after you select it, UA 199 / UA 770 is among the returns"
+                    }
+                  }
                 }
               ]
             },

@@ -24,6 +24,43 @@
         },
         "signedIn": {
           "type": "boolean"
+        },
+        "pageAction": {
+          "description": "What the extension did on this page after the user's last button, when its page action changes the site (D6): reported once, with the next message. The message is the one the user read.",
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,31}$"
+            },
+            "result": {
+              "enum": [
+                "done",
+                "stopped",
+                "unconfirmed"
+              ],
+              "description": "done: the site shows the change. stopped: nothing was pressed. unconfirmed: pressed, but the site didn't show the change."
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^[\\s\\S]{1,600}$"
+            }
+          },
+          "required": [
+            "action",
+            "result",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        "pressed": {
+          "description": "The panel's buttons the user pressed since their last message, oldest first, so \"this one\" can mean the item they opened: sent once, with the next message.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PanelPress"
+          },
+          "minItems": 1,
+          "maxItems": 5
         }
       },
       "required": [
@@ -511,6 +548,39 @@
           "$ref": "/schemas/messages.json#/$defs/AmendedEvent"
         }
       ]
+    },
+    "PanelPress": {
+      "description": "One press of a panel button that goes to the site: a card's View on site, a Take me there, or a confirming button (D6). kind and id are the item it was for, an ID a tool returned; destination is the button's destination.",
+      "type": "object",
+      "properties": {
+        "button": {
+          "enum": [
+            "card",
+            "destination",
+            "confirm"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,200}$",
+          "description": "What the button was for, as the panel showed it: the card's title or the destination's."
+        },
+        "kind": {
+          "$ref": "/schemas/common.json#/$defs/EntityKind"
+        },
+        "id": {
+          "$ref": "/schemas/common.json#/$defs/EntityId"
+        },
+        "destination": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        }
+      },
+      "required": [
+        "button",
+        "title"
+      ],
+      "additionalProperties": false
     }
   },
   "oneOf": [

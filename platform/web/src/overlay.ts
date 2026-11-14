@@ -2,10 +2,12 @@
 // Brain link drives it the same way it drives FakeSurface in tests and the native sheets later. It draws what it's
 // told and reports what the user typed; deciding whether a message starts a turn or amends one is the controller's
 // job (agent.ts). Everything lives in a shadow root, apart from the site's DOM and CSS. It keeps a record of what it
-// has shown (shown()), so the next page of the site can draw the same conversation again (restore()).
+// has shown (shown()), so the next page of the site can draw the same conversation again (restore()). A button to
+// the site leaves a quiet line saying what was pressed, the same press the model hears with the next message.
+import type { PanelPress } from '../../contract/generated/types.ts';
 import type { Surface } from '../../core/src/link/link.ts';
-import type { UiComponent } from '../../core/src/present/present.ts';
-import type { ShownEntry } from './conversation.ts';
+import type { PageFocus, UiComponent } from '../../core/src/present/present.ts';
+import { pressText, type ShownEntry } from './conversation.ts';
 import { element, renderComponent, renderText, type ComponentActions } from './render.ts';
 import { OVERLAY_CSS } from './styles.ts';
 
@@ -16,8 +18,17 @@ export interface OverlayOptions {
   greeting?: string;
   /** The user sent a message: typed, an option picked, or a form submitted. */
   onSend(message: string): void;
-  /** The user tapped Take me there. Without it, the page opens in the same tab. */
-  onNavigate?(url: string): void;
+  /** The site's name, for the line a pressed button leaves in the conversation. */
+  siteName?: string;
+  /** The site pack's brand color (#rrggbb), for the buttons and the user's messages; checked again here, since it goes into CSS. */
+  brandColor?: string;
+  /**
+   * The user tapped Take me there, or a card's button to the page that shows it; `press` says which. Without it, the
+   * page opens in the same tab.
+   */
+  onNavigate?(url: string, focus: PageFocus | undefined, press: PanelPress): void;
+  /** The user opened the site in a new tab from a card's link. */
+  onPress?(press: PanelPress): void;
   /** Drawn in the page's flow at its full height instead of floating: for the UI fixture gallery and screenshots. */
   staticLayout?: boolean;
   /** Opened at once instead of behind the launcher button. */
@@ -41,9 +52,18 @@ export class Overlay implements Surface {
   constructor(doc: Document, mountPoint: HTMLElement, options: OverlayOptions) {
     this.doc = doc;
     this.options = options;
+    // A press is drawn first, so the conversation saved before the page changes already shows it.
     this.actions = {
       send: (message) => this.send(message),
-      navigate: (url) => (options.onNavigate ? options.onNavigate(url) : doc.defaultView?.location.assign(url)),
+      navigate: (url, focus, press) => {
+        this.pressed(press);
+        if (options.onNavigate) options.onNavigate(url, focus, press);
+        else doc.defaultView?.location.assign(url);
+      },
+      press: (press) => {
+        this.pressed(press);
+        options.onPress?.(press);
+      },
     };
     const root = mountPoint.attachShadow({ mode: 'open' });
     const style = doc.createElement('style');
@@ -75,6 +95,12 @@ export class Overlay implements Surface {
     if (options.staticLayout) this.panel.setAttribute('data-static', '');
     this.launcher = element(doc, 'button', 'launcher', [options.title]);
     this.launcher.addEventListener('click', () => this.open());
+    if (options.brandColor && /^#[0-9a-f]{6}$/i.test(options.brandColor)) {
+      for (const branded of [this.panel, this.launcher]) {
+        branded.style.setProperty('--brand', options.brandColor);
+        branded.setAttribute('data-brand', '');
+      }
+    }
     root.append(style, this.panel, this.launcher);
     if (options.startOpen || options.staticLayout) this.open();
     else this.close();
@@ -94,15 +120,18 @@ export class Overlay implements Surface {
   restore(entries: readonly ShownEntry[]): void {
     for (const entry of entries) {
       if (entry.type === 'user') this.userMessage(entry.text);
+      else if (entry.type === 'press') this.pressed(entry.press);
       else if (entry.type === 'early') this.early(entry.components);
       else if (entry.type === 'answer') this.answer(entry.text, entry.components, { budgetReached: entry.budgetReached });
       else if (entry.type === 'error') this.error(entry.message);
     }
   }
 
+  /** Shows the panel at the latest message. A hidden panel has no layout, so scrolling while hidden (restore()) does nothing. */
   open(): void {
     this.panel.hidden = false;
     this.launcher.hidden = true;
+    this.scrollToEnd();
     this.input.focus();
   }
 
@@ -158,6 +187,13 @@ export class Overlay implements Surface {
   }
 
   // ------------------------------------------------------------ inside
+
+  /** Notes a pressed button in the conversation, as a quiet line, so the user sees what the agent will be told. */
+  private pressed(press: PanelPress): void {
+    this.history.push({ type: 'press', press });
+    this.endReply();
+    this.append(element(this.doc, 'div', 'pressed', [pressText(press, this.options.siteName)]));
+  }
 
   private send(message: string): void {
     this.userMessage(message);

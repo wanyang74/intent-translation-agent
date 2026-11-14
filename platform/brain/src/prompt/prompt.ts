@@ -5,7 +5,7 @@
 //       script sandbox (run_script offered) and one for devices without; each is shared by every session of its kind.
 //   2 · Session: the conversation so far, tool results, and skills (which load as tool results).
 //   3 · Volatile: the page context and the time, as a <context> block at the end of the newest user turn.
-import type { PageContext } from '../../../contract/generated/types.ts';
+import type { PageContext, PanelPress } from '../../../contract/generated/types.ts';
 import { entriesOf, PRESENTATION_TOOLS } from '../../../contract/src/site-pack.ts';
 import { fence } from '../../../core/src/boundary/sanitize.ts';
 import type { ToolSpec } from '../model/model.ts';
@@ -118,6 +118,16 @@ function ruleLines(pack: Pack): string[] {
   if (Object.keys(pack.destinations ?? {}).length) {
     lines.push("- When the user wants to go to a page of the site, or the site already has a page for what they ask, answer in two or three sentences and add that page's button with present_destination. If the page has a reader, first call the reader with the same params, then answer with what it found (such as how many results there are); if not, say only what the page is for. When the site has no page for what they want, such as a comparison of the items they picked, show cards instead. Nothing opens until the user taps the button: never say you opened a page.");
   }
+  // D6: a button whose page action changes the site. Only the user's press runs it, and only the extension's report
+  // says whether it worked, so the model must neither offer it unasked nor claim its result.
+  const writes = entriesOf(pack.destinations).filter(([, destination]) => pack.pageActions?.[destination.pageAction ?? '']?.effect === 'changes_site_state');
+  if (writes.length) {
+    lines.push(`- ${writes.map(([name]) => name).join(', ')} change${writes.length === 1 ? 's' : ''} something on the site when the user presses the button. Offer one only when the user asks for exactly that, for one item they chose. You never press it and never see the site do it: never say it's done, added or reserved. The extension reports what happened in the context block's "Page action" line on the next message; go by that line alone.`);
+  }
+  // The panel's buttons the user pressed, so "this one" can mean the item they opened rather than a guess.
+  if (Object.keys(pack.destinations ?? {}).length || entriesOf(pack.entities).some(([, entity]) => entity.card?.link || entity.card?.destination)) {
+    lines.push('- The context block\'s "Pressed" line lists the panel\'s buttons the user pressed since their last message, oldest first, with the item each was for. When the user says "this one" or "that one" without naming it, they mean the item they pressed last; if they pressed several and it\'s still unclear, ask which. A press only opened a page: it chose and changed nothing.');
+  }
   lines.push(`- Each request can make at most ${policies.callBudget.perTask} calls to the site, ${policies.rateLimitPerSecond} per second.`);
   return lines;
 }
@@ -193,6 +203,13 @@ export function buildPromptPrefix(bundle: SiteBundle, options: PrefixOptions): P
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 /** The volatile block at the end of the newest user turn: the page (fenced: it's text we didn't write) and the time. */
+/** One press, for the context block: which button, the item it was for, and its title. */
+function pressLine(press: PanelPress): string {
+  const button = press.button === 'card' ? 'View on site' : `${press.button === 'confirm' ? 'the confirming button' : 'Take me there'} (${press.destination ?? 'unknown'})`;
+  const item = press.kind !== undefined && press.id !== undefined ? ` for ${press.kind} ${press.id}` : '';
+  return `${button}${item} ("${press.title}")`;
+}
+
 export function contextBlock(page: PageContext, now: number): string {
   const lines = [`Page: ${page.url} (${page.pageType} page)`];
   if (page.entity) lines.push(`On screen: ${page.entity.kind} ${page.entity.id}`);
@@ -205,6 +222,10 @@ export function contextBlock(page: PageContext, now: number): string {
   }
   if (page.locale) lines.push(`Language: ${page.locale}`);
   if (page.signedIn !== undefined) lines.push(`Signed in: ${page.signedIn ? 'yes' : 'no'}`);
+  // What the extension did on the site's page after the user's last button: the platform's or site pack's own words.
+  if (page.pageAction) lines.push(`Page action: ${page.pageAction.action}, ${page.pageAction.result}: ${page.pageAction.message}`);
+  // The panel's buttons pressed since the last message: the item each was for, and its title as the panel showed it.
+  if (page.pressed?.length) lines.push(`Pressed since the last message, oldest first: ${page.pressed.map(pressLine).join('; ')}`);
   const time = new Date(now);
   const iso = time.toISOString().replace(/\.\d{3}Z$/, 'Z');
   return `<context>\n${fence(lines.join('\n'), 'page-context', 2000)}\nTime: ${iso} (${WEEKDAYS[time.getUTCDay()]}, UTC)\n</context>`;

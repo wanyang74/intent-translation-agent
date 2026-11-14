@@ -60,6 +60,11 @@
             }
           },
           "additionalProperties": false
+        },
+        "brandColor": {
+          "description": "The site's own button color, as #rrggbb: the panel's buttons and the user's messages use it, with white text, so it must be dark enough to read white on. Without it, the panel's neutral blue.",
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
         }
       },
       "required": [
@@ -258,11 +263,65 @@
           "app": {
             "type": "string",
             "description": "The app's own route for the page, a template like deep links'; apps without it open the web URL."
+          },
+          "pageAction": {
+            "type": "string",
+            "description": "One of pageActions: what the extension does on the page the button opens, such as opening the chosen item's details. The site code's builder gives its target. A destination whose action changes the site is drawn as a confirming button, with the action's consent text and the builder's summary of the item."
           }
         },
         "required": [
           "title",
           "description"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "pageActions": {
+      "type": "object",
+      "description": "What the extension may do on the site's own page after a button in the panel, such as opening the chosen flight's details. Most only show information. One kind may change something on the site (D6): adding an item to the site's cart by pressing the site's own button, after the user pressed a confirming button that says so; never accepting terms, entering traveler details or paying. The platform runs only actions listed here; the site's page code does them, and presses nothing when it can't find its target exactly.",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,31}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "What the action does on the page."
+          },
+          "effect": {
+            "enum": [
+              "shows_information",
+              "changes_site_state"
+            ],
+            "description": "shows_information: opens or scrolls to information already on the page, and changes nothing on the site. changes_site_state: presses the site's own button that changes something there, such as adding to its cart (D6); it needs button, consent and done."
+          },
+          "pageTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "The page types it runs on."
+          },
+          "button": {
+            "type": "string",
+            "description": "For changes_site_state: the confirming button's label, saying what pressing it does, such as \"Add to cart on the site\"."
+          },
+          "consent": {
+            "type": "string",
+            "description": "For changes_site_state: what the user agrees to by pressing it, shown above the button."
+          },
+          "done": {
+            "type": "string",
+            "description": "For changes_site_state: what the user reads once the site shows the change; {hint} is the site code's description of the item."
+          }
+        },
+        "required": [
+          "description",
+          "effect",
+          "pageTypes"
         ],
         "additionalProperties": false
       }
@@ -463,6 +522,10 @@
             },
             "link": {
               "type": "string"
+            },
+            "destination": {
+              "type": "string",
+              "description": "A destination whose one param is this kind's ID: the card's button opens it, with the destination's page action. Takes the place of link, for items with no page of their own."
             }
           },
           "required": [

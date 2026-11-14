@@ -1,19 +1,28 @@
 // The overlay's stylesheet. It lives inside the overlay's shadow root, so the site's CSS can't reach in and ours can't
 // leak out; `:host { all: initial }` also stops inherited styles (fonts, colors, line height) from crossing the
-// boundary. Colors are tokens, redefined for dark mode.
+// boundary. Colors are tokens, redefined for dark mode. A site pack's brand color (site.brandColor) comes in as --brand
+// on the panel and the launcher, marked data-brand; the accent tokens are mixed from it, so one color restyles both.
 export const OVERLAY_CSS = `
 :host { all: initial; }
 .panel {
-  --bg: #ffffff; --bg-soft: #f5f6f8; --line: #e3e6eb; --text: #18202c; --muted: #5d6675; --accent: #1f5eff;
-  --accent-soft: #e8efff; --user: #1f5eff; --user-text: #ffffff; --warn: #a14a00; --warn-soft: #fff3e6; --shadow: 0 8px 32px rgba(16, 24, 40, 0.18);
+  --bg: #ffffff; --bg-soft: #f5f6f8; --line: #e3e6eb; --text: #18202c; --muted: #5d6675; --accent: #1f5eff; --accent-strong: #1747c7;
+  --accent-text: #1f5eff; --accent-soft: #e8efff; --user: #1f5eff; --user-text: #ffffff; --warn: #a14a00; --warn-soft: #fff3e6; --shadow: 0 8px 32px rgba(16, 24, 40, 0.18);
   box-sizing: border-box; position: fixed; top: 12px; right: 12px; bottom: 12px; width: 400px; max-width: calc(100vw - 24px);
   display: flex; flex-direction: column; background: var(--bg); color: var(--text); border: 1px solid var(--line);
   border-radius: 14px; box-shadow: var(--shadow); z-index: 2147483646; overflow: hidden;
   font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  .panel { --bg: #15181e; --bg-soft: #1d2129; --line: #2c323d; --text: #e8ebf0; --muted: #9aa3b2; --accent: #7aa2ff;
-    --accent-soft: #1e2a47; --user: #3a6df0; --user-text: #ffffff; --warn: #ffb066; --warn-soft: #3a2a18; --shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
+  .panel { --bg: #15181e; --bg-soft: #1d2129; --line: #2c323d; --text: #e8ebf0; --muted: #9aa3b2; --accent: #7aa2ff; --accent-strong: #5b86f0;
+    --accent-text: #7aa2ff; --accent-soft: #1e2a47; --user: #3a6df0; --user-text: #ffffff; --warn: #ffb066; --warn-soft: #3a2a18; --shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
+}
+.panel[data-brand], .launcher[data-brand] {
+  --accent: var(--brand); --accent-strong: color-mix(in srgb, var(--brand) 78%, black); --accent-text: var(--brand);
+  --accent-soft: color-mix(in srgb, var(--brand) 10%, white); --user: var(--brand);
+}
+@media (prefers-color-scheme: dark) {
+  /* A brand color is dark enough for white text, so as text on a dark panel it's lightened. */
+  .panel[data-brand] { --accent-text: color-mix(in srgb, var(--brand) 45%, white); --accent-soft: color-mix(in srgb, var(--brand) 25%, #15181e); }
 }
 .panel[data-static] { position: static; width: 400px; max-width: none; height: auto; box-shadow: none; }
 .panel[hidden] { display: none; }
@@ -36,6 +45,7 @@ export const OVERLAY_CSS = `
 @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 .error { background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 10px; }
 .budget { color: var(--muted); font-size: 12px; }
+.pressed { align-self: center; max-width: 90%; color: var(--muted); font-size: 12px; text-align: center; overflow-wrap: anywhere; }
 .heading { font-weight: 600; font-size: 13px; color: var(--muted); text-transform: none; margin: 2px 0 6px; }
 .cards { display: flex; flex-direction: column; gap: 8px; }
 .cards.carousel { flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; }
@@ -48,12 +58,12 @@ export const OVERLAY_CSS = `
 .fields dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .fields dd.na { color: var(--muted); font-style: italic; }
 .est { color: var(--muted); font-size: 11px; margin-left: 4px; }
-.link { color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 500; align-self: flex-start; }
+.link { color: var(--accent-text); text-decoration: none; font-size: 13px; font-weight: 500; align-self: flex-start; }
 .link:hover { text-decoration: underline; }
 .list .card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; padding: 8px 10px; }
 .list .card .main { min-width: 0; }
 .list .card .fields { display: block; text-align: right; }
-.list .card .link { grid-column: 1; }
+.list .card .card-btn { grid-column: 1; }
 .list .card .fields dt { display: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { all: unset; cursor: pointer; border: 1px solid var(--line); background: var(--bg-soft); border-radius: 999px; padding: 5px 12px; font-size: 13px; }
@@ -75,16 +85,24 @@ export const OVERLAY_CSS = `
 .form { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .form label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--muted); }
 .form input, .form select { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
-.btn { all: unset; cursor: pointer; background: var(--accent); color: #fff; border-radius: 8px; padding: 6px 14px; font-weight: 600; font-size: 13px; align-self: flex-start; }
+.btn { all: unset; box-sizing: border-box; cursor: pointer; background: var(--accent); color: #fff; border-radius: 999px; padding: 9px 20px; font-weight: 600; font-size: 14px; line-height: 1.2; text-align: center; align-self: flex-start; transition: background-color 0.15s, box-shadow 0.15s; }
+.btn:hover:not([disabled]) { background: var(--accent-strong); box-shadow: 0 2px 8px rgba(16, 24, 40, 0.18); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn[disabled] { opacity: 0.5; cursor: default; }
+.card-btn { margin-top: 4px; }
 .destination { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
 .destination .dest-title { flex: 1; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
-.destination .btn { align-self: center; padding: 8px 16px; }
+.destination .btn { align-self: center; }
+.destination.confirm { flex-direction: column; align-items: stretch; }
+.destination.confirm .btn { align-self: flex-start; }
+.dest-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dest-summary { margin: 0; padding-left: 18px; font-size: 13px; }
+.consent { font-size: 12px; color: var(--muted); }
 .notice { font-size: 12px; color: var(--muted); background: var(--bg-soft); border-radius: 8px; padding: 6px 10px; }
 .compose { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
 .compose textarea { flex: 1; resize: none; font: inherit; color: var(--text); background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; height: 40px; max-height: 120px; }
 .compose textarea:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
-.launcher { all: unset; position: fixed; right: 20px; bottom: 20px; z-index: 2147483646; cursor: pointer; background: #1f5eff; color: #fff;
+.launcher { all: unset; position: fixed; right: 20px; bottom: 20px; z-index: 2147483646; cursor: pointer; background: var(--accent, #1f5eff); color: #fff;
   border-radius: 999px; padding: 10px 16px; font: 600 14px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; box-shadow: 0 6px 20px rgba(16, 24, 40, 0.25); }
 .launcher[hidden] { display: none; }
 `;

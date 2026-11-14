@@ -261,6 +261,45 @@ export interface PageContext {
   location?: Location;
   locale?: Locale;
   signedIn?: boolean;
+  /**
+   * What the extension did on this page after the user's last button, when its page action changes the site (D6): reported once, with the next message. The message is the one the user read.
+   */
+  pageAction?: {
+    action: string;
+    /**
+     * done: the site shows the change. stopped: nothing was pressed. unconfirmed: pressed, but the site didn't show the change.
+     */
+    result: 'done' | 'stopped' | 'unconfirmed';
+    message: string;
+  };
+  /**
+   * The panel's buttons the user pressed since their last message, oldest first, so "this one" can mean the item they opened: sent once, with the next message.
+   *
+   * @minItems 1
+   * @maxItems 5
+   */
+  pressed?:
+    | [PanelPress]
+    | [PanelPress, PanelPress]
+    | [PanelPress, PanelPress, PanelPress]
+    | [PanelPress, PanelPress, PanelPress, PanelPress]
+    | [PanelPress, PanelPress, PanelPress, PanelPress, PanelPress];
+}
+/**
+ * One press of a panel button that goes to the site: a card's View on site, a Take me there, or a confirming button (D6). kind and id are the item it was for, an ID a tool returned; destination is the button's destination.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "PanelPress".
+ */
+export interface PanelPress {
+  button: 'card' | 'destination' | 'confirm';
+  /**
+   * What the button was for, as the panel showed it: the card's title or the destination's.
+   */
+  title: string;
+  kind?: EntityKind;
+  id?: EntityId;
+  destination?: string;
 }
 /**
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -653,6 +692,10 @@ export interface Entity {
     subtitle?: string;
     fields?: string[];
     link?: string;
+    /**
+     * A destination whose one param is this kind's ID: the card's button opens it, with the destination's page action. Takes the place of link, for items with no page of their own.
+     */
+    destination?: string;
   };
   sections?: string[];
 }
@@ -855,6 +898,10 @@ export interface SitePack {
       location?: 'none' | 'postal_code';
       signIn?: 'never' | 'some_tools' | 'always';
     };
+    /**
+     * The site's own button color, as #rrggbb: the panel's buttons and the user's messages use it, with white text, so it must be dark enough to read white on. Without it, the panel's neutral blue.
+     */
+    brandColor?: string;
   };
   entities: {
     [k: string]: Entity | undefined;
@@ -955,6 +1002,45 @@ export interface SitePack {
            * The app's own route for the page, a template like deep links'; apps without it open the web URL.
            */
           app?: string;
+          /**
+           * One of pageActions: what the extension does on the page the button opens, such as opening the chosen item's details. The site code's builder gives its target. A destination whose action changes the site is drawn as a confirming button, with the action's consent text and the builder's summary of the item.
+           */
+          pageAction?: string;
+        }
+      | undefined;
+  };
+  /**
+   * What the extension may do on the site's own page after a button in the panel, such as opening the chosen flight's details. Most only show information. One kind may change something on the site (D6): adding an item to the site's cart by pressing the site's own button, after the user pressed a confirming button that says so; never accepting terms, entering traveler details or paying. The platform runs only actions listed here; the site's page code does them, and presses nothing when it can't find its target exactly.
+   */
+  pageActions?: {
+    [k: string]:
+      | {
+          /**
+           * What the action does on the page.
+           */
+          description: string;
+          /**
+           * shows_information: opens or scrolls to information already on the page, and changes nothing on the site. changes_site_state: presses the site's own button that changes something there, such as adding to its cart (D6); it needs button, consent and done.
+           */
+          effect: 'shows_information' | 'changes_site_state';
+          /**
+           * The page types it runs on.
+           *
+           * @minItems 1
+           */
+          pageTypes: [string, ...string[]];
+          /**
+           * For changes_site_state: the confirming button's label, saying what pressing it does, such as "Add to cart on the site".
+           */
+          button?: string;
+          /**
+           * For changes_site_state: what the user agrees to by pressing it, shown above the button.
+           */
+          consent?: string;
+          /**
+           * For changes_site_state: what the user reads once the site shows the change; {hint} is the site code's description of the item.
+           */
+          done?: string;
         }
       | undefined;
   };

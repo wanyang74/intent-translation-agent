@@ -141,7 +141,9 @@
                     "totalPrice": 2841,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2409 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06d",
@@ -149,13 +151,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2409 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AW",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 2409 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -179,7 +185,9 @@
                     "totalPrice": 2851,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2282 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06f",
@@ -187,13 +195,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2282 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0Ac",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 2282 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -217,7 +229,9 @@
                     "totalPrice": 2859,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2179 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:35 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06b",
@@ -225,13 +239,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2179 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:35 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AS",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 2179 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:35 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -255,7 +273,9 @@
                     "totalPrice": 2859,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1799 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 6:48 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06e",
@@ -263,13 +283,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1799 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 6:48 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AY",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 1799 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 6:48 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -293,7 +317,9 @@
                     "totalPrice": 2913,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2862 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 9:22 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06c",
@@ -301,13 +327,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 2862 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 9:22 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AT",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 2862 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 9:22 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -331,7 +361,9 @@
                     "totalPrice": 2913,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1754 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 4:35 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06g",
@@ -339,13 +371,17 @@
                     "totalPrice": 5558,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1754 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 4:35 PM to Thu, Dec 24, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0Ag",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11264,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 1754 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 4:35 PM to Thu, Dec 24, 6:55 PM"
                   }
                 ]
               },
@@ -369,7 +405,9 @@
                     "totalPrice": 3025,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1164 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:10 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06Y",
@@ -377,13 +415,17 @@
                     "totalPrice": 5540,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1164 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:10 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AG",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11244,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 1164 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 10:10 AM to Wed, Dec 23, 6:55 PM"
                   }
                 ]
               },
@@ -407,7 +449,9 @@
                     "totalPrice": 3025,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1457 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 8:45 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06Z",
@@ -415,13 +459,17 @@
                     "totalPrice": 5540,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1457 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 8:45 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AI",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11244,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 1457 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 8:45 AM to Wed, Dec 23, 6:55 PM"
                   }
                 ]
               },
@@ -445,7 +493,9 @@
                     "totalPrice": 3025,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1260 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:00 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN06a",
@@ -453,13 +503,17 @@
                     "totalPrice": 5540,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 1260 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:00 AM to Wed, Dec 23, 6:55 PM"
                   },
                   {
                     "fareId": "A6uNHRe1spLOrsBmXhiOvN0AL",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11244,
-                    "cabin": "First"
+                    "cabin": "First",
+                    "flightNumbers": "UA 1260 / UA 198",
+                    "schedule": "SFO to PVG via LAX: Tue, Dec 22, 7:00 AM to Wed, Dec 23, 6:55 PM"
                   }
                 ]
               },
@@ -481,19 +535,25 @@
                     "totalPrice": 3078,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   },
                   {
                     "fareId": "GtAoefqhwB8LqKaFeruQbJ00H",
                     "name": "United Premium Plus, Base (Most restrictive)",
                     "totalPrice": 4333,
-                    "cabin": "PREMIUMPLUS"
+                    "cabin": "PREMIUMPLUS",
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   },
                   {
                     "fareId": "GtAoefqhwB8LqKaFeruQbJ00V",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11240,
-                    "cabin": "Business"
+                    "cabin": "Business",
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   }
                 ]
               }

@@ -3,15 +3,16 @@
 // (build/gallery.ts) in headless Chrome, and read back from each overlay's shadow root. Skipped when Chrome isn't
 // installed (set CHROME_PATH to point at it).
 // Passes when: every message, answer line, card, field value and error shows, links are only http(s), progress shows
-// only while a turn runs, nothing reads "undefined", markup from the site stays text, and picking an option or
-// sending a form sends the right message.
+// only while a turn runs, nothing reads "undefined", markup from the site stays text, picking an option or
+// sending a form sends the right message, every button to the site reports which item it was for and leaves a line
+// in the conversation, and a site's brand color reaches its buttons and the user's messages.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { listSites } from '../../contract/src/site-pack.ts';
+import { listSites, readSite } from '../../contract/src/site-pack.ts';
 import type { CardView, UiComponent } from '../../core/src/present/present.ts';
 import { chromePath, openChrome, type ChromePage } from '../build/chrome.ts';
 import { galleryPage } from '../build/gallery.ts';
@@ -78,7 +79,8 @@ function expectations(component: UiComponent): { texts: string[]; cards: number;
     case 'notice':
       return { texts: [component.text], cards: 0, links: 0 };
     case 'destination':
-      return { texts: [component.title, 'Take me there'], cards: 0, links: 0 };
+      // A confirming button shows what will change and what the user agrees to, on a button that says what it does.
+      return { texts: component.confirm ? [component.title, ...component.confirm.summary, component.confirm.consent, component.confirm.button] : [component.title, 'Take me there'], cards: 0, links: 0 };
   }
 }
 
@@ -127,7 +129,7 @@ for (const [name, fixtures] of [...listSites().map((site) => [site, loadUiFixtur
   });
 }
 
-test('clicks: an option sends its title, a form sends its values, Take me there opens its page, and site markup never runs', { skip }, async () => {
+test("clicks: an option sends its title, a form sends its values, Take me there and a card's button open their page with its page action and say which item was pressed, a confirming button takes one press, and site markup never runs", { skip }, async () => {
   const page = await openGallery('clicks', UI_STATES);
   try {
     const root = (id: string) => `document.querySelector('[data-fixture="${id}"]').shadowRoot`;
@@ -139,8 +141,45 @@ test('clicks: an option sends its title, a form sends its values, Take me there 
     ]);
     assert.equal(await page.evaluate(`${root('state-options')}.querySelectorAll('.user').length`), 2, 'the picked option shows as the user’s message');
     await page.evaluate(`${root('state-destination')}.querySelector('.destination .btn').click()`);
-    assert.deepEqual(await page.evaluate('window.navigated'), [{ fixture: 'state-destination', url: 'https://shop.example/help/returns' }]);
+    await page.evaluate(`${root('state-page-action')}.querySelector('.card button').click()`);
+    await page.evaluate(`${root('state-page-action')}.querySelector('.destination .btn').click()`);
+    // Pressed twice: the second press does nothing, so one confirmation can't start two writes.
+    await page.evaluate(`${root('state-write-action')}.querySelector('.destination .btn').click()`);
+    await page.evaluate(`${root('state-write-action')}.querySelector('.destination .btn').click()`);
+    assert.deepEqual(await page.evaluate('window.navigated'), [
+      { fixture: 'state-destination', url: 'https://shop.example/help/returns', press: { button: 'destination', title: 'Returns policy', destination: 'returns_policy' } },
+      { fixture: 'state-page-action', url: 'https://shop.example/list?d=1', action: 'open_details', press: { button: 'card', title: 'Departure 1', kind: 'departure', id: 'dep_1' } },
+      { fixture: 'state-page-action', url: 'https://shop.example/list?d=1', action: 'open_details', press: { button: 'destination', title: 'This departure', destination: 'departure_list', kind: 'departure', id: 'dep_1' } },
+      { fixture: 'state-write-action', url: 'https://shop.example/list?d=1', action: 'add_fare_to_cart', press: { button: 'confirm', title: 'Add to your cart', destination: 'add_to_cart', kind: 'fare', id: 'fare_1' } },
+    ]);
+    assert.equal(await page.evaluate(`${root('state-write-action')}.querySelector('.destination .btn').textContent`), 'Add to cart on the shop', 'the button says what it does');
+    // Each press leaves a quiet line, so the user sees what the agent will be told.
+    assert.deepEqual(await page.evaluate(`[...${root('state-page-action')}.querySelectorAll('.pressed')].map((line) => line.textContent)`), ['You opened Departure 1 on platform', 'You pressed Take me there: This departure']);
+    assert.deepEqual(await page.evaluate(`[...${root('state-write-action')}.querySelectorAll('.pressed')].map((line) => line.textContent)`), ['You pressed the confirming button: Add to your cart'], 'the second press of a confirming button does nothing, so it leaves no line');
     assert.equal(await page.evaluate('window.hacked'), undefined);
+  } finally {
+    await page.close();
+  }
+});
+
+test("brand color: a site pack's brandColor colors its buttons and the user's messages; a site without one keeps the panel's blue", { skip }, async () => {
+  const branded = listSites().map((site) => ({ site, color: readSite(site).pack.site.brandColor })).filter((entry) => entry.color && loadUiFixtures(entry.site).length);
+  const unbranded = listSites().find((site) => !readSite(site).pack.site.brandColor && loadUiFixtures(site).length);
+  assert.ok(branded.length && unbranded, 'a branded and an unbranded site pack with UI fixtures');
+  const fixtures = [...branded.map((entry) => loadUiFixtures(entry.site)[0]!), loadUiFixtures(unbranded!)[0]!];
+  const page = await openGallery('brand', fixtures);
+  try {
+    const colors = await page.evaluate<{ id: string; user: string; button: string | null }[]>(`[...document.querySelectorAll('.overlay')].map((host) => {
+      const root = host.shadowRoot;
+      const button = root.querySelector('.btn');
+      return { id: host.dataset.fixture, user: getComputedStyle(root.querySelector('.user')).backgroundColor, button: button && getComputedStyle(button).backgroundColor };
+    })`);
+    const rgb = (hex: string) => `rgb(${[1, 3, 5].map((start) => Number.parseInt(hex.slice(start, start + 2), 16)).join(', ')})`;
+    for (const [i, entry] of branded.entries()) {
+      assert.equal(colors[i]!.user, rgb(entry.color!), `${entry.site}: the user's messages`);
+      if (colors[i]!.button) assert.equal(colors[i]!.button, rgb(entry.color!), `${entry.site}: the buttons`);
+    }
+    assert.equal(colors.at(-1)!.user, rgb('#1f5eff'), `${unbranded}: the panel's own blue`);
   } finally {
     await page.close();
   }

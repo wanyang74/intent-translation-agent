@@ -18,6 +18,14 @@
           "name": {
             "type": "string"
           },
+          "flightNumbers": {
+            "type": "string",
+            "description": "The flight this fare is on, such as UA 1554 / UA 1068"
+          },
+          "schedule": {
+            "type": "string",
+            "description": "That flight's route and local times"
+          },
           "totalPrice": {
             "$ref": "/schemas/common.json#/$defs/Money"
           },

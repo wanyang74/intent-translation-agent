@@ -64,6 +64,11 @@ export function showMatches(expected: ShowExpect, component: UiComponent): boole
   if (expected.notice && (component.type !== 'notice' || component.notice !== expected.notice)) return false;
   if (expected.destination && (component.type !== 'destination' || component.destination !== expected.destination)) return false;
   if (expected.entity && (!('entity' in component) || component.entity !== expected.entity)) return false;
+  if (expected.confirms) {
+    const confirm = component.type === 'destination' ? component.confirm : undefined;
+    const summary = (confirm?.summary ?? []).join('\n').toLowerCase();
+    if (!confirm || !expected.confirms.every((line) => summary.includes(line.toLowerCase()))) return false;
+  }
   const ids = idsShown(component);
   if (expected.includes && !expected.includes.every((id) => ids.some((shown) => sameId(shown, id)))) return false;
   if (expected.first && !expected.first.every((id, i) => ids[i] !== undefined && sameId(ids[i]!, id))) return false;

@@ -3,7 +3,7 @@
   "cases": [
     {
       "id": "booking-is-a-handoff",
-      "description": "Asked to book, the agent hands off to United's own page and never claims to have booked",
+      "description": "Asked to book, the agent hands off to that fare on United's own page, never offers to add it to the cart unasked, and never claims to have booked",
       "after": {
         "conversation": "cheapest-round-trip",
         "turns": 1
@@ -13,7 +13,7 @@
         "shows": [
           {
             "type": "destination",
-            "destination": "flight_search"
+            "destination": "fare_on_united"
           }
         ],
         "text": {
@@ -23,6 +23,167 @@
             "is booked",
             "seat is assigned",
             "I reserved"
+          ]
+        },
+        "notShown": [
+          {
+            "destination": "add_fare_to_cart"
+          }
+        ]
+      }
+    },
+    {
+      "id": "add-to-cart-is-confirmed-by-the-traveler",
+      "description": "Asked to add a fare to the cart, the agent offers the confirming button for exactly that fare, and never says it's added: only the traveler's press does it, and only the extension's report says whether it worked",
+      "after": {
+        "conversation": "cheapest-round-trip",
+        "turns": 1
+      },
+      "message": "Add the cheapest one to my cart, standard fare please.",
+      "expect": {
+        "shows": [
+          {
+            "destination": "add_fare_to_cart",
+            "confirms": [
+              "UA 2409 / UA 198"
+            ]
+          }
+        ],
+        "text": {
+          "excludes": [
+            "\\bI('ve| have)? added\\b",
+            "\\b(is|it's) now in your cart\\b",
+            "\\bhas been added\\b",
+            "\\bsuccessfully added\\b",
+            "\\bI (selected|pressed)\\b"
+          ]
+        }
+      }
+    },
+    {
+      "id": "no-cart-button-unasked",
+      "description": "Asked about a flight, the agent answers without offering to add anything to the cart",
+      "after": {
+        "conversation": "cheapest-round-trip",
+        "turns": 1
+      },
+      "message": "Tell me more about the nonstop one.",
+      "expect": {
+        "notShown": [
+          {
+            "destination": "add_fare_to_cart"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cart-report-unconfirmed",
+      "description": "When the extension reports it pressed Select but couldn't confirm it, the agent says so and never tells the traveler it's in the cart",
+      "after": {
+        "conversation": "cheapest-round-trip",
+        "turns": 1
+      },
+      "page": {
+        "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=7,7&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+        "pageType": "results",
+        "locale": "en-US",
+        "pageAction": {
+          "action": "add_fare_to_cart",
+          "result": "unconfirmed",
+          "message": "I pressed the button, but couldn't confirm the site took it. Check the site's page for UA 2409 / UA 198 leaving SFO at 7:55 PM, United Economy Standard, $2,841."
+        }
+      },
+      "message": "Is it in my cart now?",
+      "expect": {
+        "notShown": [
+          {
+            "destination": "add_fare_to_cart"
+          }
+        ],
+        "text": {
+          "matches": [
+            "confirm|check"
+          ],
+          "excludes": [
+            "\\bI('ve| have)? added\\b",
+            "\\b(is|it's) now in your cart\\b",
+            "\\bhas been added\\b",
+            "\\bsuccessfully added\\b",
+            "\\b(yes|it is|it's)\\b[^.]{0,20}\\bin your cart\\b"
+          ]
+        }
+      }
+    },
+    {
+      "id": "no-cart-button-for-a-return",
+      "description": "Asked to add a return flight to the cart, the agent explains the outbound is selected on United first and offers no add-to-cart button",
+      "after": {
+        "conversation": "polaris-round-trip",
+        "turns": 2
+      },
+      "message": "Add the UA 858 return to my cart.",
+      "expect": {
+        "notShown": [
+          {
+            "destination": "add_fare_to_cart"
+          }
+        ],
+        "text": {
+          "excludes": [
+            "\\bI('ve| have)? added\\b",
+            "\\b(is|it's) now in your cart\\b",
+            "\\bhas been added\\b",
+            "\\bsuccessfully added\\b",
+            "\\bI (selected|pressed)\\b"
+          ]
+        }
+      }
+    },
+    {
+      "id": "this-one-is-the-card-pressed",
+      "description": "After the traveler pressed one flight's View on site in the panel, \"this one\" is that flight: the agent offers the confirming button for it, not for the cheapest or the first, and doesn't ask which one",
+      "after": {
+        "conversation": "cheapest-round-trip",
+        "turns": 1
+      },
+      "page": {
+        "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=7,7&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+        "pageType": "results",
+        "locale": "en-US",
+        "pressed": [
+          {
+            "button": "card",
+            "title": "UA 857",
+            "kind": "flight",
+            "id": "356-857-UA"
+          }
+        ]
+      },
+      "message": "This one looks good, add it to my cart, standard fare.",
+      "expect": {
+        "shows": [
+          {
+            "destination": "add_fare_to_cart",
+            "confirms": [
+              "UA 857"
+            ]
+          }
+        ],
+        "notShown": [
+          {
+            "destination": "add_fare_to_cart",
+            "confirms": [
+              "UA 2409 / UA 198"
+            ]
+          }
+        ],
+        "text": {
+          "excludes": [
+            "\\bwhich (one|flight)\\b",
+            "\\bI('ve| have)? added\\b",
+            "\\b(is|it's) now in your cart\\b",
+            "\\bhas been added\\b",
+            "\\bsuccessfully added\\b"
           ]
         }
       }

@@ -22,7 +22,7 @@ test('call arguments: match as a subset: arrays as sets, strings ignoring case, 
 
 const items: UiComponent = { type: 'items', entity: 'car', layout: 'cards', items: [1, 2, 3].map((id) => ({ id, title: `Car ${id}`, fields: [] })) };
 
-test('on screen: type, entity, IDs included, first in order, only from a set, how many, and which page a button opens', () => {
+test('on screen: type, entity, IDs included, first in order, only from a set, how many, which page a button opens, and what a confirming button confirms', () => {
   assert.ok(showMatches({ type: 'items', entity: 'car', includes: [2], first: [1, 2], only: [1, 2, 3, 4], minItems: 3, maxItems: 3 }, items));
   assert.ok(showMatches({ entity: 'car', includes: ['3'] }, items), 'IDs compare as text');
   assert.ok(!showMatches({ first: [2] }, items));
@@ -34,6 +34,10 @@ test('on screen: type, entity, IDs included, first in order, only from a set, ho
   assert.ok(showMatches({ type: 'destination' }, button));
   assert.ok(!showMatches({ destination: 'returns' }, button), 'another page');
   assert.ok(!showMatches({ destination: 'help' }, items), 'cards are not a button');
+  const confirming: UiComponent = { ...button, destination: 'add_to_cart', confirm: { summary: ['Car 2, 2024', '$39,427'], consent: 'C', button: 'Add to cart' } };
+  assert.ok(showMatches({ destination: 'add_to_cart', confirms: ['car 2', '$39,427'] }, confirming), "the confirming button's summary, ignoring case");
+  assert.ok(!showMatches({ confirms: ['Car 3'] }, confirming), 'another item');
+  assert.ok(!showMatches({ confirms: ['Help'] }, button), 'a button that changes nothing confirms nothing');
 });
 
 test('money reading: amounts in the text are read with commas, cents and "k"', () => {

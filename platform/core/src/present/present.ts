@@ -30,7 +30,21 @@ export interface CardView {
   title: string;
   subtitle?: string;
   fields: FieldView[];
+  /** The item's own page on the site, opened in a new tab. */
   link?: string;
+  /** For an item with no page of its own: a page that shows it, opened like a Take me there button. */
+  go?: { url: string; focus?: PageFocus };
+}
+
+/**
+ * What the extension does on the page a button opens: one of the site pack's page actions, its target from the site
+ * code, and how to tell the user to find it if the page code can't. Most actions only show information; one that
+ * changes the site (D6) comes only from a confirming button (DestinationView.confirm).
+ */
+export interface PageFocus {
+  action: string;
+  target: unknown;
+  hint: string;
 }
 
 export interface DetailSection extends SectionContent {
@@ -52,12 +66,24 @@ export interface FormFieldView {
 export type UiComponent =
   | { type: 'items'; entity: string; heading?: string; layout: 'list' | 'cards' | 'carousel'; items: CardView[] }
   | { type: 'options'; entity: string; heading?: string; options: CardView[] }
-  | { type: 'comparison'; entity: string; items: { id: string | number; title: string; link?: string }[]; rows: { key: string; label: string; cells: FieldView[] }[] }
+  | { type: 'comparison'; entity: string; items: { id: string | number; title: string; link?: string; go?: CardView['go'] }[]; rows: { key: string; label: string; cells: FieldView[] }[] }
   | { type: 'detail'; entity: string; card: CardView; sections: DetailSection[] }
   | { type: 'form'; form: string; heading?: string; submitTool?: string; fields: FormFieldView[] }
   | { type: 'notice'; notice: string; text: string; version?: string }
-  /** A Take me there button: a page on the site, and the app's own route to it when the site pack has one. */
-  | { type: 'destination'; destination: string; title: string; url: string; appRoute?: string };
+  /**
+   * A Take me there button: a page on the site, and the app's own route to it when the site pack has one. With
+   * `confirm`, its page action changes the site, so it's drawn as a confirming button instead. `item` is the one item
+   * its params name, if they name one, so a press of it can tell the model which item the user opened.
+   */
+  | { type: 'destination'; destination: string; title: string; url: string; appRoute?: string; focus?: PageFocus; confirm?: ConfirmView; item?: { kind: string; id: string | number } };
+
+/** A confirming button for a page action that changes the site (D6): what changes, what the user agrees to, and its label. */
+export interface ConfirmView {
+  /** The item, from the site code's builder: filled from tool results, never from the model's words. */
+  summary: string[];
+  consent: string;
+  button: string;
+}
 
 export interface Presented {
   components: UiComponent[];
@@ -211,6 +237,12 @@ export function cardOf(session: Session, kind: string, id: string | number): Car
     const link = deepLink(pack, entity.card.link, view.values);
     if (link.ok) card.link = link.url;
   }
+  if (entity.card?.destination) {
+    // The destination's one param is this card's ID (the site pack's checks make sure of it).
+    const param = Object.keys(pack.destinations?.[entity.card.destination]?.params ?? {})[0]!;
+    const built = destinationOf(session, entity.card.destination, { [param]: id });
+    if (!('code' in built)) card.go = { url: built.url, ...(built.focus ? { focus: built.focus } : {}) };
+  }
   return card;
 }
 
@@ -254,7 +286,7 @@ function componentFor(session: Session, call: PresentationCall): UiComponent {
         type: 'comparison', entity: kind,
         items: ids.map((id) => {
           const card = cardOf(session, kind, id);
-          return { id, title: card.title, ...(card.link ? { link: card.link } : {}) };
+          return { id, title: card.title, ...(card.link ? { link: card.link } : {}), ...(card.go ? { go: card.go } : {}) };
         }),
         rows: call.args.attributes.map((key) => ({
           key,
@@ -302,8 +334,12 @@ function onSitePages(pack: SitePack, url: string): boolean {
  *   2. Only a page where the agent appears is accepted, so the button never leaves the site and the conversation
  *      carries over to the page it opens.
  *   3. The app's route, when the site pack has one.
+ *   4. The page action, when the destination has one and the builder gave its target.
+ *   5. An action that changes the site needs its target and the builder's summary of the item; without both there's
+ *      no button, since the user must see exactly what they're confirming.
+ *   6. The item, when exactly one param is an item's ID.
  */
-function destinationOf(session: Session, name: string, params: Record<string, unknown>): UiComponent | ToolError {
+function destinationOf(session: Session, name: string, params: Record<string, unknown>): Extract<UiComponent, { type: 'destination' }> | ToolError {
   const { pack } = session;
   const destination = pack.destinations![name]!;
   const unavailable = platformError('destination_unavailable', { destination: name });
@@ -312,12 +348,29 @@ function destinationOf(session: Session, name: string, params: Record<string, un
     const built = deepLink(pack, link, values);
     return built.ok ? built.url : undefined;
   };
-  const url = destination.link ? linkOf(destination.link, params) : session.site.destinations?.[name]?.(params, linkOf);
+  const built = destination.link ? linkOf(destination.link, params) : session.site.destinations?.[name]?.(params, linkOf, session.store);
+  const url = typeof built === 'string' ? built : built?.url;
   // 2. On the site.
   if (!url || !onSitePages(pack, url)) return unavailable;
   // 3. The app's route.
   const appRoute = destination.app ? buildLink(destination.app, params) : undefined;
-  return { type: 'destination', destination: name, title: destination.title, url, ...(appRoute?.ok ? { appRoute: appRoute.url } : {}) };
+  // 4. The page action.
+  const focus = destination.pageAction && typeof built === 'object' && built.focus ? { action: destination.pageAction, ...built.focus } : undefined;
+  // 5. Confirming.
+  const action = pack.pageActions?.[destination.pageAction ?? ''];
+  let confirm: ConfirmView | undefined;
+  if (action?.effect === 'changes_site_state') {
+    const summary = typeof built === 'object' ? (built.summary ?? []).filter((line) => line.trim()) : [];
+    if (!focus || !summary.length) return unavailable;
+    confirm = { summary, consent: action.consent!, button: action.button! };
+  }
+  // 6. The item.
+  const items = Object.entries(destination.params ?? {}).flatMap(([param, spec]) => {
+    const id = params[param];
+    return spec?.entity && (typeof id === 'string' || typeof id === 'number') ? [{ kind: spec.entity, id }] : [];
+  });
+  const item = items.length === 1 ? items[0] : undefined;
+  return { type: 'destination', destination: name, title: destination.title, url, ...(appRoute?.ok ? { appRoute: appRoute.url } : {}), ...(focus ? { focus } : {}), ...(confirm ? { confirm } : {}), ...(item ? { item } : {}) };
 }
 
 /**

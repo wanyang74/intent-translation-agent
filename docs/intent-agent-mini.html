@@ -419,6 +419,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d3">D3 · Client and server checks</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d4">D4 · Tracking fields</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#d5">D5 · Platform and site packs</a></div></li>
+<li><div class="toc-row"><span class="toc-spacer"></span><a href="#d6">D6 · Add to cart</a></div></li>
 <li><div class="toc-row"><span class="toc-spacer"></span><a href="#open">Open questions</a></div></li>
 </ol></li>
 </ol>
@@ -426,7 +427,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
 
 <main>
     <header class="top">
-      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-11-06</div>
+      <div class="eyebrow">Intent Translation Agent · Design draft v0.6 · updated 2026-11-13</div>
       <h1>Intent Agent Mini</h1>
       <p class="lede">The smallest first version: take what a person can already do on a consumer site's frontend and turn it into a conversational agent flow that can loop and compare at scale. It only sends requests the frontend already sends. It doesn't touch the backend and doesn't place orders. The platform is general: everything it knows about a site comes from that site's pack, and Carvana is the first.</p>
       <div class="chips">
@@ -434,7 +435,7 @@ details.fold > summary :is(h2,h3,h4){margin:0;flex:1 1 auto;min-width:0}
         <span class="chip">First site pack <b>carvana.com</b></span>
         <span class="chip">Next <b>Airlines · brokerages</b></span>
         <span class="chip">Platforms <b>Web · iOS</b> (Android next)</span>
-        <span class="chip">Operations <b>Read-only</b></span>
+        <span class="chip">Operations <b>Read-only</b>, plus add to cart (D6)</span>
       </div>
     </header>
 
@@ -864,7 +865,7 @@ let result = try await webView.callAsyncJavaScript(
 <details class="fold lvl4" id="client-destinations" open>
 <summary><h4>Taking the user to a page</h4></summary>
 <div class="fold-body">
-<p class="sub">Two kinds of request, two answers, on every surface. When the site has no page for what the user wants (a side-by-side of the cars they picked), the agent builds it as cards, and every card links to its item's page (a site-pack check requires a link for every kind of item shown on cards). When the site has the page and the user just doesn't know the way there (a filtered search, an award-flight search, a transfer page, a help article), the agent answers briefly and shows a <b>Take me there</b> button. It saves the menu taps, which matters most in apps with small, crowded buttons.</p>
+<p class="sub">Two kinds of request, two answers, on every surface. When the site has no page for what the user wants (a side-by-side of the cars they picked), the agent builds it as cards, and every card links to its item's page (a site-pack check requires a link for every kind of item shown on cards). An item with no page of its own, such as a United flight, links to the page that lists it instead, with its details opened there. When the site has the page and the user just doesn't know the way there (a filtered search, an award-flight search, a transfer page, a help article), the agent answers briefly and shows a <b>Take me there</b> button. It saves the menu taps, which matters most in apps with small, crowded buttons.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>Part</th><th>How it works</th></tr></thead>
@@ -873,11 +874,13 @@ let result = try await webView.callAsyncJavaScript(
             <tr><td><code>present_destination</code></td><td>The seventh presentation tool. The model names a destination and its parameters, never a URL; core.js builds the URL and refuses anything off the site. Parameters that are item IDs must be known IDs, like on cards</td></tr>
             <tr><td>The answer</td><td>With a reader, the model reads the page through it and answers from what it returned, so the summary is grounded like any other fact. Without one (a signed-in page, or none built yet), it says only what the destination's description says the page is for. Either way the button is there, and the page is the source the user can check</td></tr>
             <tr><td>Never without a tap</td><td>The surface draws the button; nothing navigates until the user taps it. On the web it opens the page in the same tab. In an app, the surface hands the destination to the app: its app route if the pack has one, otherwise its web URL, which the app's own link handling opens (in the iOS and Android shell apps, the WebView loads it)</td></tr>
+            <tr><td>Page actions</td><td>For an item with no page of its own, the button can also say what to open on the page it leads to, such as the chosen flight's details. The site pack lists each action, marked as only showing information (opening or scrolling to what the page already has), and the site's page code does it. The extension runs only listed actions, on their page types, once, just after the page opens. When the page code can't find the item, or two match, it clicks nothing and the panel tells the user how to find it. A card of such an item gets a <b>View on site</b> button that works the same way. One kind of action may change the site: adding the chosen item to the site's cart by pressing the site's own button (D6). Its button in the panel is a confirming one: it lists the item from the tool results, says what the user agrees to, and is labeled with what it does; it takes one press, and never sits on a card. The page code checks the item is exactly the one confirmed, price included, and presses nothing otherwise. The extension saves a check before the press, so the page the press leads to can confirm it, and tells the user how it went: done only once the site shows the change. The model hears that report with the next message, and never claims the result itself. Every press of a button to the site (a card's View on site, Take me there, a confirming button) leaves a quiet line in the conversation, such as "You opened UA 1079 on United Airlines", and the same press goes to the model with the next message, naming the item it was for, so "this one" means the item the user opened. Only presses in the panel: clicks on the site's own page aren't recorded</td></tr>
             <tr><td>The conversation follows the user</td><td>While the user stays on the same site, the conversation carries over to the new page: the chat on screen, the session ID and core.js's session (known IDs, the records cards are filled from, the call budget), saved by the host and restored on the next page. On the web the extension keeps it per site, in any tab, until Chrome closes; in an app it lives in native memory. It ends after 30 minutes idle, when the brain forgets the session too</td></tr>
-            <tr><td>Out of scope</td><td>Clicking menus or filling in the site's own forms for the user. Links only; still read-only</td></tr>
+            <tr><td>Out of scope</td><td>Clicking anything else that changes something: accepting terms, filling in or submitting the site's forms, choosing seats, paying. The only clicks are listed page actions: those that show information, and adding one confirmed item to the cart (D6)</td></tr>
           </tbody>
         </table>
       </div>
+      <p class="note">On United: a search's results page; and for a flight or fare, the same page with that flight's Details opened. United has no page per flight, and its flight numbers show only in the details, so the page code finds the row by its times, airports and stops, and checks the flight numbers once the details open. A return flight isn't listed until its outbound is selected, so its button opens the outbound. A fare's button opens its cabin's options ("Select a fare to continue") and scrolls to its card. <b>Add to cart on United</b> (D6) does the same, then presses that fare's own Select if its price is the one confirmed; Basic stops before United's terms box, which the traveler ticks. It works for a one-way or outbound fare, not a return. Seen on United's page on 2026-11-13; the add itself is still to be tried live.</p>
       <p class="note">On Carvana: a search on the site with the user's filters (read by <code>search_vehicles</code>, which already returns the results page's link) and a car's page (read by <code>vehicle_details</code>). Carvana's other pages, such as financing, selling a car and help articles, wait for one signed-out look at their URLs and where help content comes from.</p>
 </div>
 </details>
@@ -1169,7 +1172,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <table>
           <thead><tr><th>Part</th><th>What it declares</th><th>Carvana's</th></tr></thead>
           <tbody>
-            <tr><td>Site</td><td>Origins, the pages where the agent appears, page types, locale, and what the site requires: a location, signing in</td><td>3 origins; every page on www.carvana.com; search, vehicle and other pages; a zip code; no sign-in</td></tr>
+            <tr><td>Site</td><td>Origins, the pages where the agent appears, page types, locale, what the site requires (a location, signing in), and optionally its brand color, which the panel's buttons and the user's messages use (checked to be dark enough for white text, 4.5:1)</td><td>3 origins; every page on www.carvana.com; search, vehicle and other pages; a zip code; no sign-in; no brand color yet (United's is the blue of its Select buttons)</td></tr>
             <tr><td>Entities</td><td>The kinds of things the site shows: ID format, whether IDs expire, fields, card template, detail sections. Each field names where its value comes from; a value more than one tool returns lists them in order, and the first that has it is shown. Internal kinds are never shown</td><td>Vehicle and suggestion; route is internal</td></tr>
             <tr><td>Endpoints</td><td>Each request the frontend sends: URL, request and response schemas, the response format (JSON, a page's HTML, or a stream of events), required tracking fields (D4), the fields that decide the response, and where the IDs are</td><td>8, including the vehicle page's HTML</td></tr>
             <tr><td>Site token</td><td>For sites whose frontend sends an anonymous token with every call: the endpoint that issues it, where its value and expiry are, the header it goes in, and the statuses that mean it was refused. core.js fetches it on the device, keeps it in memory until shortly before it expires, and on a refusal fetches a new one and retries once. It never reaches the brain (D1)</td><td>None: Carvana's calls need no token</td></tr>
@@ -1177,7 +1180,8 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>Forms and notices</td><td>Forms the agent can show to collect details; required wording, versioned, with the fields it must appear next to</td><td>The estimated-total notice</td></tr>
             <tr><td>Policies</td><td>Hidden fields, derived fields and their formulas, allowed values, page size, rate limit, call budget, how prices are shown, whether writes are allowed</td><td>No monthly payment or APR; estimated total = price + estimated taxes and fees; 1 call per second; 60 calls per task; no writes</td></tr>
             <tr><td>Page reader</td><td>Site code (<code>page.ts</code>) that tells the web surface which page the user is on: the page type, the item on screen and, when the page shows it, the user's location and what the page carries about the item</td><td>From the URL: a vehicle page's car, or a search page. On a vehicle page, the car's details and price come from the data the page embeds for itself (Next.js streamed data). On every page, the zip code comes from Carvana's own cookie (its guess from the visitor's network, or the zip they set), marked as a guess: the agent says which zip it used. With no cookie, the agent asks</td></tr>
-            <tr><td>Destinations</td><td>The pages the agent may send the user to with a Take me there button: title, what's there, parameters, how the URL is built, an optional reader tool and app route</td><td>A search with filters; a car's page</td></tr>
+            <tr><td>Destinations</td><td>The pages the agent may send the user to with a Take me there button: title, what's there, parameters, how the URL is built, an optional reader tool and app route, and an optional page action. A kind with no page of its own can link its cards through a destination that takes its ID</td><td>A search with filters; a car's page</td></tr>
+            <tr><td>Page actions</td><td>What the extension may do on the page a button opens, each marked with its effect: only showing information, or changing the site (D6), which also needs its button's label, the consent text and the done message. With the page types it runs on. The site's page code (<code>page.ts</code>) does them, seeing the page only through a small slice of the DOM so it can be tested in Node</td><td>None: every Carvana item has its own page. United opens a flight's Details or a fare's options on its results page, and adds a fare to its cart</td></tr>
             <tr><td>Deep links, skills, recording</td><td>Links back to the site's pages; the skills the brain loads; the recording fixtures are built from, and which identifiers to scrub from it</td><td>Search and vehicle pages; 4 skills; HARs from 2026-10-08 and 2026-10-19, and five car pages from 2026-11-05 (a page's fixture keeps only the car's own data)</td></tr>
           </tbody>
         </table>
@@ -1191,7 +1195,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
         <table>
           <thead><tr><th>Piece</th><th>How it works for any site</th></tr></thead>
           <tbody>
-            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location (marked when it's the site's guess, so the agent says which one it used), locale and whether the user is signed in. A device with the script sandbox says so in its turn</td></tr>
+            <tr><td>Protocol</td><td>Every turn names its site. Tool names are plain identifiers, checked against the site pack when called. The page context is the URL, page type, the item on screen, location (marked when it's the site's guess, so the agent says which one it used), locale and whether the user is signed in, plus what happened since the last message, sent once: the panel's buttons the user pressed (at most five, each with the item it was for) and how the last add to cart went (D6). A device with the script sandbox says so in its turn</td></tr>
             <tr><td>Presentation tools</td><td>Seven tools for every site; the site pack's templates decide what each card shows. See <a href="#core-present">Presentation tools</a></td></tr>
             <tr><td>Typed IDs</td><td>Every ID has a kind from the site pack, and an expiry where the site's IDs expire. Tools and presentation calls accept only IDs of the right kind that this session saw and that haven't expired</td></tr>
             <tr><td>Errors</td><td>One set of codes for every site: <code>invalid_value</code>, <code>no_results</code>, <code>not_found</code>, <code>expired</code>, <code>auth_required</code>, <code>rate_limited</code>, <code>budget_reached</code> and a few more. The site adds a reason and a message the model can act on</td></tr>
@@ -1260,7 +1264,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 <details class="fold lvl4" id="sites-next" open>
 <summary><h4>What airlines and brokerages need</h4></summary>
 <div class="fold-body">
-<p class="sub">The next targets are airlines such as United and American Airlines, and brokerages such as Fidelity and Vanguard. Each gets its own phase 0. United was recorded on 2026-11-06 (signed out: a search, and a booking up to payment); the last three rows come from that recording. The rest is what we expect from these sites.</p>
+<p class="sub">The next targets are airlines such as United and American Airlines, and brokerages such as Fidelity and Vanguard. Each gets its own phase 0. United was recorded on 2026-11-06 (signed out: a search, and a booking up to payment); the last four rows come from that recording and the first live tries on 2026-11-10. The rest is what we expect from these sites.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>Need</th><th>Example</th><th>How the site pack covers it</th></tr></thead>
@@ -1274,6 +1278,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
             <tr><td>Personal data</td><td>Traveler names, frequent-flyer and account numbers</td><td>Hidden fields keep them from the model, and recordings are scrubbed before fixtures are built from them</td></tr>
             <tr><td>A token on every call</td><td>United sends an anonymous token, valid for an hour, with every API call, and refuses calls without one (with 405, not 401)</td><td>The site token. United's page keeps its own token in its saved app state; we fetch our own from the same endpoint the page uses instead, since that works on every surface, doesn't depend on how the page stores it, and keeps our searches apart from the user's own session</td></tr>
             <tr><td>Answers that stream</td><td>United's flight search answers with a stream of events (server-sent events): the search, then each flight, then the filters</td><td>Response format <code>sse</code>: core.js reads the whole stream and groups the events by kind, and the response schema checks that object. Fixtures keep the events as a list</td></tr>
+            <tr><td>No page per flight</td><td>United shows a flight only as a row of its results page; choosing it (Select) puts it in a cart, and its flight numbers show only once its Details are open</td><td>Flight and fare cards, and the booking handoff, open the search's results page with a page action that opens that flight's Details or that fare's options. Asked to, the agent offers a confirming button that presses the fare's own Select (D6); the user picks seats and pays on United</td></tr>
             <tr><td>Search sessions on the server</td><td>A United search opens a session on the server (it calls it a cart, though nothing is in it); the return flights, fare details and nearby dates for that search name it</td><td>An internal entity, like Carvana's route: the tool keeps the session's ID with its results and sends it on, and the model never sees it</td></tr>
           </tbody>
         </table>
@@ -1922,7 +1927,7 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
 <div class="audit-item"><label><input type="checkbox" data-k="ua-pack"><span><span class="t">Prerequisite: United site pack</span> <span class="pill warn">In progress</span></span></label>
 <ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-rec"> HAR recorded</label></li><li><label><input type="checkbox" data-k="ua-pack-built"> Pack built and checked</label></li></ul></div>
 <div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-book"><span><span class="t">Ticket booking</span> <span class="pill warn">Write</span></span></label>
-<div class="why">A write action, outside the read-only mini scope. Per D3: stage the choice and hand off to United's own page; the user approves there.</div>
+<div class="why">A write action. Per D3 and D6: the user confirms the fare in the panel, the extension presses United's own Select (the cart only), and seats, travelers and payment happen on United's own page.</div>
 <ul class="audit-sub"><li><label><input type="checkbox" data-k="ua-book-search"> Flight search and results correct</label></li><li><label><input type="checkbox" data-k="ua-book-hand"> Hands off to United's checkout without submitting</label></li></ul></div>
 <div class="audit-item" data-nine><label><input type="checkbox" data-k="ua-seat"><span><span class="t">Seat selection</span> <span class="pill warn">Write</span></span></label>
 <div class="why">Same handoff rule: read the seat map, never assign a seat.</div>
@@ -2075,6 +2080,32 @@ return { ids: picks.map(v =&gt; v.vehicleId), checked: vehicles.length };      <
           <dd>An extra layer: the platform reads tools, IDs and rules from data instead of code. The validators one app ships grew from 36 KB to 48 KB, minified and gzipped, against a 60 KB budget. Site packs also carry a little code: fixture hooks now, and parsers such as the vehicle page's later.</dd>
           <dt>Revisit when</dt>
           <dd>A real site needs something the site-pack format can't express: then we extend the format rather than special-case the platform. Or the code in site packs grows beyond small adapters: then it gets its own interface and tests.</dd>
+        </dl>
+</details>
+<details class="fold lvl3 dec" id="d6" open>
+<summary class="dec-head">
+          <span class="dec-id">D6</span>
+          <h3>Can the agent ever change something on the site?</h3>
+          <span class="chip">Decided <b>2026-11-13</b></span>
+        </summary>
+        <dl>
+          <dt>Decision</dt>
+          <dd>One thing: adding an item the user chose to the site's cart, by pressing the site's own button on its own page, after the user pressed a confirming button in the panel. The confirming button lists the item from the tool results and says what pressing it does. The site's page code presses nothing unless it finds exactly that item at the confirmed price, and never accepts terms for the user. The extension saves a check before the press, says done only once the site shows the change, and tells the model with the next message. The press itself reaches the model too, like every press of a button in the panel, naming the item confirmed. Accepting terms, traveler details, seats and payment stay with the user.</dd>
+          <dt>Alternative considered</dt>
+          <dd>Stay strictly read-only and open the item for the user to select (the page actions that show information). Or have core.js send the site's cart request directly.</dd>
+          <dt>Rationale</dt>
+          <dd>
+            <ul class="plain">
+              <li><b>It's what the user asked for</b>, one click they would make themselves, in their own session.</li>
+              <li><b>The site's own page makes the request</b>, with its own rules and checks. Sending the request ourselves would copy a write whose rules we only partly know.</li>
+              <li><b>A cart isn't a purchase.</b> The user reviews it, picks seats and pays on the site, and can drop it there.</li>
+              <li><b>Only the user's press starts it</b>: the model can offer the button but can't press it, and can't claim the result.</li>
+            </ul>
+          </dd>
+          <dt>Cost we accept</dt>
+          <dd>Page code that reads the site's markup, which can change without notice; a check that fails closed (unconfirmed) when the site's next page isn't what we expect; and a site that may ignore or flag a click from code, in which case we stop and the user presses it, with no workaround (D4).</dd>
+          <dt>Revisit when</dt>
+          <dd>A site offers an official cart API for agents, or sign-in mode arrives and the cart becomes the user's account's.</dd>
         </dl>
 </details>
 <details class="fold lvl3" id="open" open>

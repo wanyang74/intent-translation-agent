@@ -68,10 +68,32 @@ export interface SiteCode {
   /**
    * URL builders for destinations whose URL a deep-link template can't express, by destination name: the checked
    * params in, a URL out (or undefined), built with the site pack's deep links. Only URLs on the site's origins are used.
+   * A destination with a page action returns its target too: what the page code looks for on the page it opens.
    */
-  destinations?: Record<string, (params: any, link: (name: string, values: Record<string, unknown>) => string | undefined) => string | undefined>;
+  destinations?: Record<string, DestinationBuilder>;
   /** Builders for detail-view sections beyond the overview, by section name. */
   sections?: Record<string, (view: EntityView) => SectionContent | null>;
+}
+
+/**
+ * Builds one destination's URL. `store` is what the tools kept this session (read-only here), so a destination for an
+ * item can find the search it came from.
+ */
+export type DestinationBuilder = (
+  params: any,
+  link: (name: string, values: Record<string, unknown>) => string | undefined,
+  store: ReadonlyMap<string, unknown>,
+) => string | BuiltDestination | undefined;
+
+export interface BuiltDestination {
+  url: string;
+  /** For the destination's page action: what to find on the page, and how to tell the user to find it themselves. */
+  focus?: { target: unknown; hint: string };
+  /**
+   * For a page action that changes the site: the item in a few lines (what, which, price), from what the tools
+   * returned, shown with the confirming button so the user sees exactly what will change.
+   */
+  summary?: string[];
 }
 
 /** Thrown inside a tool to stop it with an error the model can act on. */

@@ -6,8 +6,11 @@
 // by FakeHost from the fixtures. The user's turns are typed into the overlay. Skipped without Chrome.
 // The page is loaded again before every turn after the first, as when the user follows a link on the site, so the
 // conversation must carry over: the overlay draws it again and the next turn goes on in the same brain session.
+// Where a turn shows a card with a link to the site and another turn follows, its link is pressed (the new tab it would
+// open is cancelled, so nothing goes live).
 // Passes when: each answer shows in the overlay with no error, the conversation survives every page load in one
-// brain session, and the site was called for exactly the fixtures the conversation lists. Conversations whose page
+// brain session, the site was called for exactly the fixtures the conversation lists, and a pressed card shows in the
+// conversation and reaches the brain with the next message only. Conversations whose page
 // carries data the page reader can't read yet are left out.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -91,9 +94,13 @@ for (const site of listSites().filter(hasFixtures)) {
       const brain = new Brain({ site: await loadSite(site), model: fakeModelFor(conversation), now: () => now });
       // Every session the brain is asked about: a conversation that survived its page loads uses one.
       const sessionIds = new Set<string>();
+      // The presses each user message carried, in order.
+      const pressesSent: unknown[] = [];
       const accept = brain.accept.bind(brain);
       brain.accept = (message, options) => {
         sessionIds.add((message as { sessionId: string }).sessionId);
+        const turnMessage = message as { type: string; pageContext?: { pressed?: unknown } };
+        if (turnMessage.type === 'turn') pressesSent.push(turnMessage.pageContext?.pressed ?? null);
         return accept(message, options);
       };
       const server = createBrainServer({ brain, allowedOrigins: [] });
@@ -110,19 +117,49 @@ for (const site of listSites().filter(hasFixtures)) {
         await page.goto(firstPage);
         await page.evaluate(OVERLAY_READY);
         const answers = conversation.messages.flatMap((message) => (message.type === 'answer' ? [message] : []));
+        // The turn whose message should carry a press, and the press.
+        let pressedBefore = null as { turn: number; title: string } | null;
         for (const [i, turn] of turns.entries()) {
           if (i > 0) {
             // A new page of the site: the overlay comes back with the conversation so far, open as it was.
             await page.goto(turn.pageContext.url);
             await page.evaluate(OVERLAY_READY);
-            const restored = await page.evaluate<{ users: number; open: boolean }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; return { users: root.querySelectorAll('.user').length, open: !root.querySelector('.panel').hidden }; })()`);
-            assert.deepEqual(restored, { users: i, open: true }, `before turn ${i + 1}: the conversation carried over to the new page`);
+            const restored = await page.evaluate<{ users: number; open: boolean; atEnd: boolean }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; const log = root.querySelector('.log'); return { users: root.querySelectorAll('.user').length, open: !root.querySelector('.panel').hidden, atEnd: log.scrollHeight - log.clientHeight - log.scrollTop <= 2 }; })()`);
+            // atEnd: the panel opens at the latest message, not scrolled back to the first turn.
+            assert.deepEqual(restored, { users: i, open: true, atEnd: true }, `before turn ${i + 1}: the conversation carried over to the new page`);
+            if (pressedBefore?.turn === i) {
+              const lines = await page.evaluate<string[]>(`[...document.querySelector('#intent-agent-overlay').shadowRoot.querySelectorAll('.pressed')].map((line) => line.textContent)`);
+              assert.equal(lines.length, 1, 'the pressed card shows in the conversation after the page load');
+              assert.ok(lines[0]!.includes(pressedBefore.title), lines[0]);
+            }
           }
           await page.evaluate(typeMessage(turn.message));
           await page.evaluate(AWAIT_REPLY);
           const shown = await page.evaluate<{ text: string; errors: string[] }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; const last = [...root.querySelectorAll('.agent')].at(-1); return { text: last.innerText, errors: [...root.querySelectorAll('.error')].map((node) => node.textContent) }; })()`);
           assert.deepEqual(shown.errors, [], `turn ${i + 1}; console:\n${page.console.slice(-20).join('\n')}`);
           assert.ok(squash(shown.text).includes(squash(answers[i]!.text)), `turn ${i + 1}: the answer isn't shown:\n${shown.text}`);
+          // A card with a link, and a turn after it: press the first one, cancelling the tab it would open.
+          if (!pressedBefore && i + 1 < turns.length) {
+            const title = await page.evaluate<string | null>(`(() => {
+              const root = document.querySelector('#intent-agent-overlay').shadowRoot;
+              const link = root.querySelector('.card a.card-btn');
+              if (!link) return null;
+              root.addEventListener('click', (event) => event.preventDefault(), { capture: true, once: true });
+              link.click();
+              return link.closest('.card').querySelector('.t').textContent;
+            })()`);
+            if (title) pressedBefore = { turn: i + 1, title };
+          }
+        }
+        if (pressedBefore) {
+          // Only the next message carries the press; the ones before and after carry none.
+          pressesSent.forEach((pressed, index) => {
+            if (index !== pressedBefore!.turn) assert.equal(pressed, null, `message ${index + 1} carries no press`);
+          });
+          const [press] = pressesSent[pressedBefore.turn] as { button: string; title: string; kind: string; id: unknown }[];
+          assert.equal(press?.button, 'card');
+          assert.equal(press?.title, pressedBefore.title);
+          assert.ok(press?.kind && press.id !== undefined, 'the press names the item');
         }
         assert.deepEqual([...new Set(fake.calls.map((call) => call.fixtureId))].sort(), [...conversation.fixtures].sort(), 'calls exactly the fixtures the conversation lists');
         assert.equal(sessionIds.size, 1, 'one brain session for the whole conversation');

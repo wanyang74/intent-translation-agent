@@ -39,6 +39,8 @@ export interface ShowExpect {
   includes?: IdValue[];
   /** The component starts with these IDs, in this order. */
   first?: IdValue[];
+  /** A confirming button (a page action that changes the site) whose summary includes each of these, ignoring case. */
+  confirms?: string[];
   /** Every ID shown is one of these. */
   only?: IdValue[];
   minItems?: number;
@@ -186,6 +188,8 @@ export function checkCases(cases: readonly EvalCase[], ctx: CaseContext): string
       if (show.notice && !pack.notices?.[show.notice]) add(`unknown notice ${show.notice}`);
       if (show.destination && !pack.destinations?.[show.destination]) add(`unknown destination ${show.destination}`);
       if (!show.type && !show.entity && !show.notice && !show.destination) add('a shows expectation needs a type, an entity, a notice or a destination');
+      const action = pack.pageActions?.[pack.destinations?.[show.destination ?? '']?.pageAction ?? ''];
+      if (show.confirms && action?.effect !== 'changes_site_state') add('confirms needs a destination whose page action changes the site');
     }
     for (const pattern of [...(expect.text?.matches ?? []), ...(expect.text?.excludes ?? [])]) {
       try {

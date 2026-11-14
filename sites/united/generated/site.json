@@ -9,6 +9,7 @@
       "https://www.united.com/*"
     ],
     "locale": "en-US",
+    "brandColor": "#1414d2",
     "pageTypes": [
       "home",
       "results",
@@ -111,7 +112,8 @@
           "lowestFare",
           "stops",
           "duration"
-        ]
+        ],
+        "destination": "flight_on_united"
       }
     },
     "fare": {
@@ -153,7 +155,7 @@
         "carryOn": {
           "label": "Carry-on",
           "type": "text",
-          "from": "carryOn"
+          "from": "fare_details"
         },
         "seat": {
           "label": "Seat",
@@ -168,7 +170,7 @@
         "refunds": {
           "label": "Refunds",
           "type": "text",
-          "from": "refunds"
+          "from": "fare_details"
         },
         "upgrades": {
           "label": "Upgrades",
@@ -179,14 +181,27 @@
           "label": "Lounges",
           "type": "text",
           "from": "lounge"
+        },
+        "flightNumbers": {
+          "label": "Flight",
+          "type": "text",
+          "from": "flightNumbers"
+        },
+        "schedule": {
+          "label": "Schedule",
+          "type": "text",
+          "from": "schedule"
         }
       },
       "card": {
-        "title": "{name}",
+        "title": "{flightNumbers}, {name}",
+        "subtitle": "{schedule}",
         "fields": [
           "totalPrice",
-          "refundable"
-        ]
+          "carryOn",
+          "refunds"
+        ],
+        "destination": "fare_on_united"
       }
     },
     "search_session": {
@@ -552,10 +567,72 @@
       "description": "United's results page for this search, where the traveler picks a fare, chooses seats and books; the agent never books",
       "argsOf": "search_flights"
     },
+    "flight_on_united": {
+      "title": "This flight on United",
+      "description": "United's results page for the search that found this flight, with the flight's details opened there; the traveler selects it and books on United. A return flight's page opens its outbound flight, which the traveler selects first",
+      "params": {
+        "flightId": {
+          "type": "string",
+          "entity": "flight",
+          "description": "A flight a search returned"
+        }
+      },
+      "pageAction": "open_flight_details"
+    },
+    "fare_on_united": {
+      "title": "This fare on United",
+      "description": "United's results page for the search that found this fare, with the fare's options opened under its flight and the fare scrolled to; the traveler selects it there. A return fare's page opens its outbound flight's details instead. Use it when the traveler wants to see or book a fare they chose",
+      "params": {
+        "fareId": {
+          "type": "string",
+          "entity": "fare",
+          "description": "A fare a search or fare_details returned"
+        }
+      },
+      "pageAction": "open_fare_options"
+    },
+    "add_fare_to_cart": {
+      "title": "Add this fare to your United cart",
+      "description": "A confirming button that, when the traveler presses it, opens the results page and presses this fare's own Select there, which puts it in United's cart; seats, traveler details and payment stay with the traveler. Only when the traveler asks to add a fare they chose to the cart or to select it for them. Only a one-way fare or an outbound fare from a search; never a return fare (the traveler selects the outbound on United first). Basic fares stop before United's terms box, which the traveler ticks themselves",
+      "params": {
+        "fareId": {
+          "type": "string",
+          "entity": "fare",
+          "description": "A fare a search returned"
+        }
+      },
+      "pageAction": "add_fare_to_cart"
+    },
     "united_home": {
       "title": "United's home page",
       "description": "The place to sign in, manage a trip, check in, or cancel; the agent can't do these",
       "link": "home"
+    }
+  },
+  "pageActions": {
+    "open_flight_details": {
+      "description": "On United's results page, scrolls to the chosen flight and opens its Details, which show its flight numbers, aircraft and times. Never Select, which puts the flight in a cart",
+      "effect": "shows_information",
+      "pageTypes": [
+        "results"
+      ]
+    },
+    "open_fare_options": {
+      "description": "On United's results page, opens the chosen flight's cabin (\"Select a fare to continue\") and scrolls to the chosen fare's card, with its price and rules. Never Select",
+      "effect": "shows_information",
+      "pageTypes": [
+        "results"
+      ]
+    },
+    "add_fare_to_cart": {
+      "description": "On United's results page, opens the chosen fare's card and presses its own Select, once, if its price is the one the traveler confirmed. Never ticks Basic's terms box, and never goes past the cart",
+      "effect": "changes_site_state",
+      "pageTypes": [
+        "results"
+      ],
+      "button": "Add to cart on United",
+      "consent": "Opens United's results and presses Select on this fare, which puts it in your United cart. Nothing is bought: you choose seats, enter travelers and pay on United.",
+      "done": "United shows it in your cart: {hint}. Seats, travelers and payment are next, on United."
     }
   },
   "skills": {

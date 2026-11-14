@@ -92,6 +92,13 @@ export const RESERVED_TOOLS = [...PRESENTATION_TOOLS, ...PLATFORM_TOOLS];
 const placeholdersIn = (template: string) => [...template.matchAll(/\{(?:base64json:)?([A-Za-z_][A-Za-z0-9_]*)\}/g)].map((match) => match[1]!);
 
 /** Problems with a site pack beyond its schema: references to things that don't exist. */
+/** How a #rrggbb color contrasts with white text, by WCAG 2's relative luminance: 21 for black, 1 for white. */
+export function contrastWithWhite(color: string): number {
+  const channels = [1, 3, 5].map((start) => Number.parseInt(color.slice(start, start + 2), 16) / 255);
+  const [red, green, blue] = channels.map((channel) => (channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)) as [number, number, number];
+  return 1.05 / (0.2126 * red + 0.7152 * green + 0.0722 * blue + 0.05);
+}
+
 export function crossCheck(site: Site): string[] {
   const { pack } = site;
   const problems: string[] = [];
@@ -101,6 +108,11 @@ export function crossCheck(site: Site): string[] {
 
   if (pack.site.id !== site.id) add('site.id', `should be the folder name "${site.id}"`);
   for (const page of pack.site.pages) if (!pack.site.origins.some((origin) => page.startsWith(`${origin}/`))) add('site.pages', `${page} is not under any of site.origins`);
+  // The panel puts white text on the brand color (buttons, the user's messages), so it must pass WCAG's 4.5:1.
+  if (pack.site.brandColor) {
+    const contrast = contrastWithWhite(pack.site.brandColor);
+    if (contrast < 4.5) add('site.brandColor', `too light for white text: ${contrast.toFixed(2)}:1, needs 4.5:1`);
+  }
   for (const [name, endpoint] of entriesOf(pack.endpoints)) {
     for (const rel of [endpoint.request, endpoint.response]) if (!schemaExists(rel)) add(`endpoints.${name}`, `schema ${rel} not found`);
     for (const id of endpoint.ids ?? []) if (!kinds.has(id.kind)) add(`endpoints.${name}.ids`, `unknown entity kind ${id.kind}`);
@@ -126,6 +138,17 @@ export function crossCheck(site: Site): string[] {
     if (entity.card?.link && !pack.deepLinks?.[entity.card.link]) add(`entities.${kind}.card.link`, `unknown deep link ${entity.card.link}`);
     // A card is where the user goes on from: every kind shown on cards links to its item's page, unless it has none.
     if (entity.card && !entity.internal && !entity.noPage && !entity.card.link) add(`entities.${kind}.card`, 'needs a link to the item\'s page');
+    // A card's destination takes the card's own ID, and nothing else, so core.js can build it for any card of the kind.
+    const cardDestination = entity.card?.destination;
+    if (cardDestination) {
+      const params = Object.values(pack.destinations?.[cardDestination]?.params ?? {});
+      if (!pack.destinations?.[cardDestination]) add(`entities.${kind}.card.destination`, `unknown destination ${cardDestination}`);
+      else if (params.length !== 1 || params[0]!.entity !== kind) add(`entities.${kind}.card.destination`, `${cardDestination} must take exactly one param, a ${kind} ID`);
+      if (entity.card?.link) add(`entities.${kind}.card`, 'takes either link or destination, not both');
+      // A card's button is "View on site": it may only show the item, never change the site (D6 needs a confirming button).
+      const cardAction = pack.pageActions?.[pack.destinations?.[cardDestination]?.pageAction ?? ''];
+      if (cardAction?.effect === 'changes_site_state') add(`entities.${kind}.card.destination`, `${cardDestination} changes the site, so it can't be a card's button`);
+    }
   }
   for (const [name, destination] of entriesOf(pack.destinations)) {
     const where = `destinations.${name}`;
@@ -139,9 +162,23 @@ export function crossCheck(site: Site): string[] {
       // A template's values come from the destination's own parameters (a tool's arguments go through site code).
       else for (const placeholder of placeholdersIn(link.template)) if (!destination.params?.[placeholder]) add(`${where}.link`, `the template's {${placeholder}} isn't one of the destination's params`);
     }
+    if (destination.pageAction) {
+      if (!pack.pageActions?.[destination.pageAction]) add(`${where}.pageAction`, `unknown page action ${destination.pageAction}`);
+      // The action's target comes from the site code's builder, which a template can't stand in for.
+      if (destination.link) add(where, 'a page action needs the site code\'s builder, not a link');
+    }
     if (destination.app && destination.params) {
       for (const placeholder of placeholdersIn(destination.app)) if (!destination.params[placeholder]) add(`${where}.app`, `the route's {${placeholder}} isn't one of the destination's params`);
     }
+  }
+  for (const [name, action] of entriesOf(pack.pageActions)) {
+    for (const pageType of action.pageTypes) if (!pack.site.pageTypes?.includes(pageType)) add(`pageActions.${name}.pageTypes`, `unknown page type ${pageType}`);
+    // An action that changes the site says so on its button and above it, and tells the user when it's done (D6);
+    // one that only shows information has no confirming button, so these would never be seen.
+    const confirming = (['button', 'consent', 'done'] as const).filter((field) => action[field] !== undefined);
+    if (action.effect === 'changes_site_state') {
+      for (const field of ['button', 'consent', 'done'] as const) if (!action[field]?.trim()) add(`pageActions.${name}`, `changes the site, so it needs ${field}`);
+    } else if (confirming.length) add(`pageActions.${name}`, `only shows information, so ${confirming.join(', ')} would never show`);
   }
   for (const [name, notice] of entriesOf(pack.notices)) {
     for (const field of notice.showWith ?? []) if (!fieldKeys.has(field)) add(`notices.${name}.showWith`, `unknown field ${field}`);

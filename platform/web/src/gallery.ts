@@ -1,6 +1,7 @@
 // The UI fixture gallery, in the browser: replays saved surface events into real overlays, one per fixture, so the
 // overlay can be looked at and screenshot-tested with no brain, model or site. The build (build/gallery.ts) puts the
 // fixtures in `window.uiFixtures`. With a #<fixture id> in the URL, only that fixture is drawn, for its screenshot.
+import type { PanelPress } from '../../contract/generated/types.ts';
 import type { UiFixture } from './ui-fixture.ts';
 import { element } from './render.ts';
 import { Overlay } from './overlay.ts';
@@ -10,19 +11,26 @@ declare global {
     uiFixtures: UiFixture[];
     /** What the user sent from any overlay (a picked option, a submitted form), with the fixture it came from. */
     sent: { fixture: string; message: string }[];
-    /** The pages a Take me there button would have opened; the gallery never navigates. */
-    navigated: { fixture: string; url: string }[];
+    /** The pages a Take me there button would have opened, with any page action and the press; the gallery never navigates. */
+    navigated: { fixture: string; url: string; action?: string; press: PanelPress }[];
+    /** Cards' links opened in a new tab, by their press. */
+    pressed: { fixture: string; press: PanelPress }[];
+    /** Each site pack's brand color, by site id (build/gallery.ts). */
+    brandColors: Record<string, string>;
   }
 }
 
 window.sent = [];
 window.navigated = [];
+window.pressed = [];
 
 /** Plays one fixture into a fresh overlay: each message, then exactly the events the surface received. */
 function replay(fixture: UiFixture, mountPoint: HTMLElement): void {
   const onSend = (message: string) => window.sent.push({ fixture: fixture.id, message });
-  const onNavigate = (url: string) => window.navigated.push({ fixture: fixture.id, url });
-  const overlay = new Overlay(document, mountPoint, { title: `Ask ${fixture.site}`, staticLayout: true, onSend, onNavigate });
+  const onNavigate = (url: string, focus: { action: string } | undefined, press: PanelPress) => window.navigated.push({ fixture: fixture.id, url, ...(focus ? { action: focus.action } : {}), press });
+  const onPress = (press: PanelPress) => window.pressed.push({ fixture: fixture.id, press });
+  const brandColor = window.brandColors[fixture.site];
+  const overlay = new Overlay(document, mountPoint, { title: `Ask ${fixture.site}`, siteName: fixture.site, staticLayout: true, onSend, onNavigate, onPress, ...(brandColor ? { brandColor } : {}) });
   for (const turn of fixture.turns) {
     overlay.userMessage(turn.message);
     for (const event of turn.events) {

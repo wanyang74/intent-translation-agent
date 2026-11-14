@@ -2,6 +2,7 @@
 // looking at in a browser and for the screenshot test. Open it with #<fixture id> to see one fixture alone.
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { listSites, readSite } from '../../contract/src/site-pack.ts';
 import type { UiFixture } from '../src/ui-fixture.ts';
 
 const entry = fileURLToPath(new URL('../src/gallery.ts', import.meta.url));
@@ -10,6 +11,14 @@ const entry = fileURLToPath(new URL('../src/gallery.ts', import.meta.url));
 export async function galleryScript(): Promise<string> {
   const result = await build({ entryPoints: [entry], bundle: true, format: 'iife', platform: 'browser', target: 'es2020', write: false, logLevel: 'silent' });
   return result.outputFiles[0]!.text;
+}
+
+/** Each site pack's brand color, by site id, so a site's fixtures are drawn in its colors. */
+function brandColors(): Record<string, string> {
+  return Object.fromEntries(listSites().flatMap((site) => {
+    const color = readSite(site).pack.site.brandColor;
+    return color ? [[site, color]] : [];
+  }));
 }
 
 /** The whole page. `<` in the fixtures' JSON is escaped, so a fixture's text can't close the script tag early. */
@@ -31,7 +40,7 @@ export async function galleryPage(title: string, fixtures: UiFixture[]): Promise
 </style>
 </head>
 <body>
-<script>window.uiFixtures = ${data}; if (location.hash) document.body.className = 'one';</script>
+<script>window.uiFixtures = ${data}; window.brandColors = ${JSON.stringify(brandColors())}; if (location.hash) document.body.className = 'one';</script>
 <script>${await galleryScript()}</script>
 </body>
 </html>

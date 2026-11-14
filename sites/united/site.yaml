@@ -11,6 +11,7 @@ site:
   origins: [https://www.united.com]
   pages: ["https://www.united.com/*"]
   locale: en-US
+  brandColor: "#1414d2"     # the blue of united.com's own Select buttons (2026-11-13)
   pageTypes: [home, results, other]
   requires:
     location: none
@@ -44,6 +45,7 @@ entities:
       title: "{flightNumbers}"
       subtitle: "{route}: {departs} to {arrives}"
       fields: [lowestFare, stops, duration]
+      destination: flight_on_united   # United has no page per flight: its search's results page, with its details open
   fare:
     description: One fare on one flight option, such as United Economy or Polaris business, with its price and rules
     id: { type: string, pattern: "^[A-Za-z0-9]{20,32}(_[A-Z]{2})?$" }
@@ -55,13 +57,17 @@ entities:
       refundable: { label: Refundable, type: boolean, from: refundable }
       noChangeFees: { label: No change fees, type: boolean, from: noChangeFees }
       checkedBags: { label: Checked bags, type: text, from: checkedBags }
-      carryOn: { label: Carry-on, type: text, from: carryOn }
+      carryOn: { label: Carry-on, type: text, from: fare_details }
       seat: { label: Seat, type: text, from: seat }
       changes: { label: Changes, type: text, from: changes }
-      refunds: { label: Refunds, type: text, from: refunds }
+      refunds: { label: Refunds, type: text, from: fare_details }
       upgrades: { label: Upgrades, type: text, from: upgrades }
       lounge: { label: Lounges, type: text, from: lounge }
-    card: { title: "{name}", fields: [totalPrice, refundable] }
+      flightNumbers: { label: Flight, type: text, from: flightNumbers }
+      schedule: { label: Schedule, type: text, from: schedule }
+    # Fares on different flights often share a name ("United Economy"), so the card leads with the flight. Bags and
+    # refunds come from fare_details; until it's called for a fare they read "not checked", never as a no.
+    card: { title: "{flightNumbers}, {name}", subtitle: "{schedule}", fields: [totalPrice, carryOn, refunds], destination: fare_on_united }
   search_session:
     description: United's search session (it calls it a cart, though nothing is in it); later calls about the search name it
     id: { type: string, pattern: "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$" }
@@ -246,10 +252,46 @@ destinations:
     title: These flights on United
     description: United's results page for this search, where the traveler picks a fare, chooses seats and books; the agent never books
     argsOf: search_flights
+  flight_on_united:
+    title: This flight on United
+    description: United's results page for the search that found this flight, with the flight's details opened there; the traveler selects it and books on United. A return flight's page opens its outbound flight, which the traveler selects first
+    params:
+      flightId: { type: string, entity: flight, description: A flight a search returned }
+    pageAction: open_flight_details
+  fare_on_united:
+    title: This fare on United
+    description: United's results page for the search that found this fare, with the fare's options opened under its flight and the fare scrolled to; the traveler selects it there. A return fare's page opens its outbound flight's details instead. Use it when the traveler wants to see or book a fare they chose
+    params:
+      fareId: { type: string, entity: fare, description: A fare a search or fare_details returned }
+    pageAction: open_fare_options
+  add_fare_to_cart:
+    title: Add this fare to your United cart
+    description: A confirming button that, when the traveler presses it, opens the results page and presses this fare's own Select there, which puts it in United's cart; seats, traveler details and payment stay with the traveler. Only when the traveler asks to add a fare they chose to the cart or to select it for them. Only a one-way fare or an outbound fare from a search; never a return fare (the traveler selects the outbound on United first). Basic fares stop before United's terms box, which the traveler ticks themselves
+    params:
+      fareId: { type: string, entity: fare, description: A fare a search returned }
+    pageAction: add_fare_to_cart
   united_home:
     title: United's home page
     description: The place to sign in, manage a trip, check in, or cancel; the agent can't do these
     link: home
+
+pageActions:
+  open_flight_details:
+    description: On United's results page, scrolls to the chosen flight and opens its Details, which show its flight numbers, aircraft and times. Never Select, which puts the flight in a cart
+    effect: shows_information
+    pageTypes: [results]
+  open_fare_options:
+    description: On United's results page, opens the chosen flight's cabin ("Select a fare to continue") and scrolls to the chosen fare's card, with its price and rules. Never Select
+    effect: shows_information
+    pageTypes: [results]
+  add_fare_to_cart:
+    description: On United's results page, opens the chosen fare's card and presses its own Select, once, if its price is the one the traveler confirmed. Never ticks Basic's terms box, and never goes past the cart
+    effect: changes_site_state
+    pageTypes: [results]
+    button: Add to cart on United
+    consent: "Opens United's results and presses Select on this fare, which puts it in your United cart. Nothing is bought: you choose seats, enter travelers and pay on United."
+    done: "United shows it in your cart: {hint}. Seats, travelers and payment are next, on United."
+
 
 skills:
   flight_search:

@@ -141,19 +141,25 @@
                     "totalPrice": 3078,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   },
                   {
                     "fareId": "0bSXrUfWdPSSBENS4M91V800H",
                     "name": "United Premium Plus, Base (Most restrictive)",
                     "totalPrice": 4333,
-                    "cabin": "PREMIUMPLUS"
+                    "cabin": "PREMIUMPLUS",
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   },
                   {
                     "fareId": "0bSXrUfWdPSSBENS4M91V800V",
                     "name": "United Polaris, Base (Most restrictive)",
                     "totalPrice": 11240,
-                    "cabin": "Business"
+                    "cabin": "Business",
+                    "flightNumbers": "UA 857",
+                    "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
                   }
                 ]
               }
@@ -202,6 +208,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V8001",
                 "name": "United Economy",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 3078,
                 "refunds": "Non-refundable",
                 "changes": "No change fees",
@@ -213,6 +221,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V8009",
                 "name": "United Economy, Flexible (Fully refundable)",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 4128,
                 "refunds": "Fully refundable",
                 "changes": "No change fees",
@@ -224,6 +234,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800M",
                 "name": "United Premium Plus",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 5535,
                 "refunds": "Non-refundable",
                 "changes": "No change fees",
@@ -235,6 +247,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800H",
                 "name": "United Premium Plus, Base (Most restrictive)",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 4333,
                 "refunds": "Non-refundable",
                 "changes": "No changes",
@@ -246,6 +260,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800U",
                 "name": "United Premium Plus, Flexible (Fully refundable)",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 13851,
                 "refunds": "Fully refundable",
                 "changes": "No change fees",
@@ -257,6 +273,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800V",
                 "name": "United Polaris, Base (Most restrictive)",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 11240,
                 "refunds": "Non-refundable",
                 "changes": "No changes",
@@ -268,6 +286,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800a",
                 "name": "United Polaris",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 11640,
                 "refunds": "Non-refundable",
                 "changes": "No change fees",
@@ -279,6 +299,8 @@
               {
                 "fareId": "0bSXrUfWdPSSBENS4M91V800i",
                 "name": "United Polaris, Flexible (Fully refundable)",
+                "flightNumbers": "UA 857",
+                "schedule": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
                 "totalPrice": 21827,
                 "refunds": "Fully refundable",
                 "changes": "No change fees",
@@ -395,7 +417,9 @@
                     "totalPrice": 7414,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 858",
+                    "schedule": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM"
                   },
                   {
                     "fareId": "ezmi22cFZ83NRQe42CZjH0003",
@@ -403,7 +427,9 @@
                     "totalPrice": 8575,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 858",
+                    "schedule": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM"
                   },
                   {
                     "fareId": "ezmi22cFZ83NRQe42CZjH0004",
@@ -411,7 +437,9 @@
                     "totalPrice": 13763,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 858",
+                    "schedule": "PVG to SFO: Sun, Jan 10, 1:10 PM to Sun, Jan 10, 8:25 AM"
                   }
                 ]
               },
@@ -435,7 +463,9 @@
                     "totalPrice": 7425,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 770",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00u",
@@ -443,7 +473,9 @@
                     "totalPrice": 7650,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 770",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01Q",
@@ -451,7 +483,9 @@
                     "totalPrice": 11640,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 770",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 8:10 PM"
                   }
                 ]
               },
@@ -475,7 +509,9 @@
                     "totalPrice": 7425,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 1195",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 9:26 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00v",
@@ -483,7 +519,9 @@
                     "totalPrice": 7650,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 1195",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 9:26 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01R",
@@ -491,7 +529,9 @@
                     "totalPrice": 11640,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 1195",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 9:26 PM"
                   }
                 ]
               },
@@ -515,7 +555,9 @@
                     "totalPrice": 7425,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2056",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 10:55 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00w",
@@ -523,7 +565,9 @@
                     "totalPrice": 7650,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2056",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 10:55 PM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01S",
@@ -531,7 +575,9 @@
                     "totalPrice": 11640,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2056",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Sun, Jan 10, 10:55 PM"
                   }
                 ]
               },
@@ -555,7 +601,9 @@
                     "totalPrice": 7425,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 5571",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 12:22 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00x",
@@ -563,7 +611,9 @@
                     "totalPrice": 7650,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 5571",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 12:22 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01T",
@@ -571,7 +621,9 @@
                     "totalPrice": 11640,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 5571",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 12:22 AM"
                   }
                 ]
               },
@@ -595,7 +647,9 @@
                     "totalPrice": 7436,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2492",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 7:34 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00y",
@@ -603,7 +657,9 @@
                     "totalPrice": 7661,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2492",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 7:34 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01U",
@@ -611,7 +667,9 @@
                     "totalPrice": 11663,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 2492",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 7:34 AM"
                   }
                 ]
               },
@@ -635,7 +693,9 @@
                     "totalPrice": 7436,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 336",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 8:59 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR00z",
@@ -643,7 +703,9 @@
                     "totalPrice": 7661,
                     "cabin": "PREMIUMPLUS",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 336",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 8:59 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01V",
@@ -651,7 +713,9 @@
                     "totalPrice": 11663,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "UA 199 / UA 336",
+                    "schedule": "PVG to SFO via LAX: Sun, Jan 10, 8:55 PM to Mon, Jan 11, 8:59 AM"
                   }
                 ]
               },
@@ -675,7 +739,9 @@
                     "totalPrice": 7933,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 972 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 8:35 AM to Sun, Jan 10, 11:15 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR010",
@@ -683,7 +749,9 @@
                     "totalPrice": 9181,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 972 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 8:35 AM to Sun, Jan 10, 11:15 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01X",
@@ -691,7 +759,9 @@
                     "totalPrice": 14422,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 972 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 8:35 AM to Sun, Jan 10, 11:15 AM"
                   }
                 ]
               },
@@ -715,7 +785,9 @@
                     "totalPrice": 7933,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 968 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 2:35 AM to Sun, Jan 10, 11:15 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR011",
@@ -723,7 +795,9 @@
                     "totalPrice": 9181,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 968 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 2:35 AM to Sun, Jan 10, 11:15 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR01Y",
@@ -731,7 +805,9 @@
                     "totalPrice": 14422,
                     "cabin": "Business",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "NH 968 / UA 876",
+                    "schedule": "PVG to SFO via HND: Sun, Jan 10, 2:35 AM to Sun, Jan 10, 11:15 AM"
                   }
                 ]
               },
@@ -755,7 +831,9 @@
                     "totalPrice": 8102,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "CA 929 / UA 838",
+                    "schedule": "PVG to SFO via NRT: Sun, Jan 10, 9:40 AM to Sun, Jan 10, 9:30 AM"
                   },
                   {
                     "fareId": "a1BvBWYey5SUgSPWwtBiwR018",
@@ -763,7 +841,9 @@
                     "totalPrice": 9600,
                     "cabin": "Coach",
                     "refundable": false,
-                    "noChangeFees": true
+                    "noChangeFees": true,
+                    "flightNumbers": "CA 929 / UA 838",
+                    "schedule": "PVG to SFO via NRT: Sun, Jan 10, 9:40 AM to Sun, Jan 10, 9:30 AM"
                   }
                 ]
               }

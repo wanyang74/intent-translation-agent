@@ -18,6 +18,8 @@ function siteBundle(site: string): Plugin {
     `export { default as pack } from ${JSON.stringify(path.join(siteDir, 'generated', 'site.json'))};`,
     `export { site as code } from ${JSON.stringify(path.join(siteDir, 'tools.ts'))};`,
     `export { readPage } from ${JSON.stringify(path.join(siteDir, 'page.ts'))};`,
+    // The whole module too, so a site whose page.ts has no page actions still builds.
+    `export * as pageModule from ${JSON.stringify(path.join(siteDir, 'page.ts'))};`,
     `export * as siteValidators from ${JSON.stringify(path.join(siteDir, 'generated', 'validators.js'))};`,
     // The platform's validators without the site-pack format's, which only build tools check.
     `export * as platformValidators from ${JSON.stringify(path.join(contractGenerated, 'runtime-validators.js'))};`,

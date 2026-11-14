@@ -1,6 +1,6 @@
 // United's tools: airports for a city, a flight search, the return flights for a chosen outbound fare, what each fare
 // on a flight includes, and the cheapest dates around a trip; and the URL of United's results page for a search, for
-// the flight_search destination.
+// the destinations: the search itself, or one flight or fare on it, which page.ts then opens the details of.
 // How United's search works, and what the tools keep from it:
 //   - A search answers one direction at a time, as a stream that core.js hands over grouped by event type: one meta
 //     event (with the search session's ID, United's cartId), then one flightOption per flight option, then filters.
@@ -14,6 +14,7 @@
 //     rebuild from what United sends, so it's left out rather than shown at the wrong price. Seats are bought on
 //     United's own pages.
 // Times are local at each airport, as United sends them, so they're shown as text, never converted to a time zone.
+import type { FareTarget, FlightTarget } from './page.ts';
 import type { SiteCode, ToolContext } from '../../platform/core/src/index.ts';
 
 interface Segment {
@@ -69,6 +70,26 @@ interface SearchRef {
   flightHash: string;
   direction: Direction;
   filters: Record<string, unknown>;
+  /** The flight as each of its fares names it, so a fare's card says which flight it's on. */
+  flight: FlightOfFare;
+  /** The search whose results page lists it: the outbound search, for a return flight too. */
+  search: SearchArgs;
+  /** How United's results page shows the flight, for page.ts to find it. */
+  target: FlightTarget;
+  /** For a return flight: the outbound flight picked before it, which is what the results page lists first. */
+  outbound?: { flightNumbers: string; target: FlightTarget };
+}
+
+/** A fare as the results page shows it: its cabin's column, its name there, and the prices it may show. */
+type FareOnPage = Pick<FareTarget, 'cabin' | 'fare' | 'prices'>;
+
+/** What a search keeps about each fare: its flight's search, its name, how the page shows it, and its total price. */
+type FareRef = SearchRef & { name?: string; page?: FareOnPage; total?: number };
+
+/** Which flight a fare is on: its numbers, and its route and times in one line. */
+interface FlightOfFare {
+  flightNumbers: string;
+  schedule: string;
 }
 
 // ---------------------------------------------------------------- dates and times
@@ -143,6 +164,19 @@ const price = (product: Product) => {
   return fare ? Math.round((fare.amountAllPax ?? fare.amount) * 100) / 100 : undefined;
 };
 
+/**
+ * How the results page shows a fare, for page.ts: its cabin's title (its column) and its name, and its price per
+ * traveler and for all travelers. None without a title, a name or a price: such a fare can't be found on the page.
+ */
+function fareOnPage(product: Product): FareOnPage | undefined {
+  const fare = product.prices?.find((candidate) => candidate.pricingType === 'Fare');
+  if (!product.title || !product.subTitle || !fare) return undefined;
+  return { cabin: product.title, fare: product.subTitle, prices: [...new Set([fare.amount, fare.amountAllPax ?? fare.amount])] };
+}
+
+/** An amount in dollars as the summary shows it: $1,107, or $327.50. No Intl, which not every engine has. */
+const dollars = (amount: number) => `$${(Number.isInteger(amount) ? String(amount) : amount.toFixed(2)).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+
 /** A fare's name as United's results show it: the cabin's title, and the variant unless it's the standard one. */
 const nameOf = (product: Product) => (product.title ? (product.subTitle && product.subTitle !== 'Standard' ? `${product.title}, ${product.subTitle}` : product.title) : product.productType);
 
@@ -184,7 +218,14 @@ export function flightOf(flight: Flight) {
     fares,
     minutes: flight.travelMinutesTotal,
     departsAt: flight.departDateTime,
+    target: targetOf(flight),
     variants: flight.products.flatMap((product) => product.nestedProducts ?? []).filter((nested) => nested.productId).map((nested) => ({ fareId: nested.productId!, name: nameOf(nested) })),
+    onPage: Object.fromEntries([...flight.products, ...flight.products.flatMap((product) => product.nestedProducts ?? [])]
+      .flatMap((product) => {
+        const page = fareOnPage(product);
+        const total = price(product);
+        return product.productId && page && total !== undefined ? [[product.productId, { page, total }] as const] : [];
+      })),
   };
 }
 
@@ -201,7 +242,7 @@ const SORTS: Record<Exclude<SortBy, 'best'>, (left: ReturnType<typeof flightOf>,
  *   2. Sorted as asked; United's own order otherwise. Sorting covers every option United sent, not just one page.
  *   3. The first page of them, and for each flight and fare returned, the search it came from, for later tools.
  */
-function flightsOut(ctx: ToolContext, answer: SearchStream, direction: Direction, options: { nonstopOnly?: boolean; sortBy?: SortBy; filters: Record<string, unknown>; pageSize: number }) {
+function flightsOut(ctx: ToolContext, answer: SearchStream, direction: Direction, options: { nonstopOnly?: boolean; sortBy?: SortBy; filters: Record<string, unknown>; pageSize: number; search: SearchArgs; outbound?: SearchRef['outbound'] }) {
   // 1. Flights with fares
   const cartId = answer.meta[0]!.cartId;
   let flights = (answer.flightOption ?? []).map((option) => flightOf(option.flight)).filter((flight) => flight.fares.length);
@@ -210,16 +251,22 @@ function flightsOut(ctx: ToolContext, answer: SearchStream, direction: Direction
   if (options.sortBy && options.sortBy !== 'best') flights = [...flights].sort(SORTS[options.sortBy]);
   // 3. One page, and what later tools need to name them
   const shown = flights.slice(0, options.pageSize);
+  const flightOfFare = (flight: Pick<ReturnType<typeof flightOf>, 'flightNumbers' | 'route' | 'departs' | 'arrives'>): FlightOfFare => ({ flightNumbers: flight.flightNumbers, schedule: `${flight.route}: ${flight.departs} to ${flight.arrives}` });
   for (const flight of shown) {
-    const ref: SearchRef = { cartId, flightHash: flight.flightId, direction, filters: options.filters };
+    const ref: SearchRef = {
+      cartId, flightHash: flight.flightId, direction, filters: options.filters, flight: flightOfFare(flight), search: options.search, target: flight.target,
+      ...(options.outbound ? { outbound: options.outbound } : {}),
+    };
     ctx.store.set(`flight:${flight.flightId}`, ref);
-    for (const fare of [...flight.fares, ...flight.variants]) ctx.store.set(`fare:${fare.fareId}`, { ...ref, name: fare.name });
+    for (const fare of [...flight.fares, ...flight.variants]) ctx.store.set(`fare:${fare.fareId}`, { ...ref, name: fare.name, ...flight.onPage[fare.fareId] } satisfies FareRef);
   }
   const warnings = (answer.warning ?? []).flatMap((warning) => warning.warnings ?? []).map((warning) => warning.message?.trim()).filter((message): message is string => !!message);
   return {
     direction,
     pricedAs: direction === 'one_way' ? 'one way, for all travelers, taxes and fees included' : 'the whole round trip, for all travelers, taxes and fees included',
-    flights: shown.map(({ minutes: _minutes, departsAt: _departsAt, variants: _variants, ...flight }) => flight),
+    flights: shown.map(({ minutes: _minutes, departsAt: _departsAt, variants: _variants, target: _target, onPage: _onPage, ...flight }) => ({
+      ...flight, fares: flight.fares.map((fare) => ({ ...fare, ...flightOfFare(flight) })),
+    })),
     totalFlights: flights.length,
     shown: shown.length,
     ...(warnings.length && !flights.length ? { warnings } : {}),
@@ -250,6 +297,72 @@ function rulesOf(attributes: { Type: string; Text: string }[]) {
 
 const PAGE_SIZE = 12;
 
+/** 2026-12-22 08:45 as United's results page shows the time: 8:45 AM. */
+const clockOf = (value: string) => localTime(value).split(', ').at(-1)!;
+
+/** How United's results page shows a flight, for page.ts to find its row. */
+function targetOf(flight: Flight): FlightTarget {
+  const segments = [flight, ...flight.connections];
+  return {
+    departs: clockOf(flight.departDateTime), arrives: clockOf(segments[segments.length - 1]!.destinationDateTime),
+    origin: flight.origin, destination: segments[segments.length - 1]!.destination,
+    stops: flight.connections.map((connection) => connection.origin),
+    flightNumbers: segments.map((segment) => `${segment.marketingCarrier} ${segment.flightNumber}`),
+  };
+}
+
+/** United's results page for a search, as its own search form opens it: round trip or one way. */
+function resultsPage(args: SearchArgs, link: (name: string, values: Record<string, unknown>) => string | undefined) {
+  const values = { from: args.from, to: args.to, departDate: args.departDate, returnDate: args.returnDate, cabinCode: CABINS[args.cabin].pageCode, adults: args.adults };
+  return link(args.returnDate ? 'results_round_trip' : 'results_one_way', values);
+}
+
+/**
+ * The results page for a flight or fare a search returned, with the flight's details to open there:
+ *   1. The search behind it, from the store; none (a search from before this was kept) means no button.
+ *   2. The results page lists outbound flights, so a return flight's page opens its outbound flight, the one the
+ *      traveler selects first.
+ *   3. How the user finds it if page.ts can't: the flight, its time, and the fare.
+ */
+function flightPage(ref: SearchRef | undefined, link: (name: string, values: Record<string, unknown>) => string | undefined, fareName?: string) {
+  // 1. The search.
+  if (!ref?.search || !ref.target) return undefined;
+  const url = resultsPage(ref.search, link);
+  if (!url) return undefined;
+  // 2. The flight on that page.
+  const onPage = ref.direction === 'return' && ref.outbound ? ref.outbound : { flightNumbers: ref.flight.flightNumbers, target: ref.target };
+  // 3. The hint.
+  const fare = fareName ? ` (${fareName})` : '';
+  const hint = ref.direction === 'return' && ref.outbound
+    ? `your outbound flight, ${onPage.flightNumbers}, leaving ${onPage.target.origin} at ${onPage.target.departs}; after you select it, ${ref.flight.flightNumbers}${fare} is among the returns`
+    : `${onPage.flightNumbers}, leaving ${onPage.target.origin} at ${onPage.target.departs}${fare}`;
+  return { url, focus: { target: onPage.target, hint } };
+}
+
+/**
+ * The add-to-cart button for a fare a search returned (D6):
+ *   1. Only a one-way or outbound fare whose search, page names and price are known. A return fare is listed only
+ *      after its outbound is selected on United, so it gets no button.
+ *   2. Its target: the flight's row, then the fare's cabin, name and prices, which page.ts checks before pressing.
+ *   3. What the user confirms: the flight, its times, the fare and its price, from the search's own answer.
+ */
+function cartButton(ref: FareRef | undefined, link: (name: string, values: Record<string, unknown>) => string | undefined) {
+  // 1. Which fares.
+  if (!ref?.search || !ref.target || !ref.page || ref.total === undefined || ref.direction === 'return') return undefined;
+  const url = resultsPage(ref.search, link);
+  if (!url) return undefined;
+  // 2. The target.
+  const target: FareTarget = { ...ref.target, ...ref.page };
+  // 3. The summary, and the hint for when the user must find it themselves.
+  const fare = `${ref.page.cabin} ${ref.page.fare}`;
+  const pricedAs = ref.direction === 'one_way' ? 'one way' : 'the whole round trip';
+  const summary = [
+    ref.flight.flightNumbers, ref.flight.schedule, fare, `${dollars(ref.total)}, ${pricedAs}, for all travelers, taxes and fees included`,
+    ...(ref.direction === 'outbound' ? ['The outbound flight: you pick the return on United next.'] : []),
+  ];
+  return { url, focus: { target, hint: `${ref.flight.flightNumbers} leaving ${ref.target.origin} at ${ref.target.departs}, ${fare}, ${dollars(ref.total)}` }, summary };
+}
+
 export const site: SiteCode = {
   tools: {
     async find_airport(ctx) {
@@ -271,7 +384,7 @@ export const site: SiteCode = {
       const args = ctx.args as SearchArgs;
       ctx.progress(`Searching United flights for ${shortDate(args.departDate)}${args.returnDate ? `, back ${shortDate(args.returnDate)}` : ''}…`);
       const answer: SearchStream = await ctx.call('flights', { body: searchBody(args) });
-      const out = flightsOut(ctx, answer, args.returnDate ? 'outbound' : 'one_way', { ...args, filters: searchFilters(args), pageSize: PAGE_SIZE });
+      const out = flightsOut(ctx, answer, args.returnDate ? 'outbound' : 'one_way', { ...args, filters: searchFilters(args), pageSize: PAGE_SIZE, search: args });
       if (!out.totalFlights) ctx.fail('no_flights');
       return out;
     },
@@ -289,7 +402,9 @@ export const site: SiteCode = {
           FareType: 'Refundable', BuildHashValue: 'true',
         },
       });
-      const out = flightsOut(ctx, answer, 'return', { ...args, filters: ref!.filters, pageSize: PAGE_SIZE });
+      const out = flightsOut(ctx, answer, 'return', {
+        ...args, filters: ref!.filters, pageSize: PAGE_SIZE, search: ref!.search, outbound: { flightNumbers: ref!.flight.flightNumbers, target: ref!.target },
+      });
       if (!out.totalFlights) ctx.fail('no_flights');
       return out;
     },
@@ -309,6 +424,7 @@ export const site: SiteCode = {
           return {
             fareId: entitlement.ProductId,
             ...(known?.name ? { name: known.name } : {}),
+            ...ref!.flight,
             ...(entitlement.Price === undefined ? {} : { totalPrice: entitlement.Price }),
             ...rulesOf(entitlement.Attributes),
           };
@@ -336,11 +452,17 @@ export const site: SiteCode = {
     },
   },
 
-  // United's results page for the search, as its own search form opens it: round trip or one way.
+  // United's results page for a search; for one flight, the same page with its details to open; for one fare, with
+  // its options open (a return fare: its outbound flight's details); and the fare's add-to-cart button (D6).
   destinations: {
-    flight_search: (args: SearchArgs, link) => {
-      const values = { from: args.from, to: args.to, departDate: args.departDate, returnDate: args.returnDate, cabinCode: CABINS[args.cabin].pageCode, adults: args.adults };
-      return link(args.returnDate ? 'results_round_trip' : 'results_one_way', values);
+    flight_search: (args: SearchArgs, link) => resultsPage(args, link),
+    flight_on_united: (params: { flightId: string }, link, store) => flightPage(store.get(`flight:${params.flightId}`) as SearchRef | undefined, link),
+    fare_on_united: (params: { fareId: string }, link, store) => {
+      const ref = store.get(`fare:${params.fareId}`) as FareRef | undefined;
+      const shown = flightPage(ref, link, ref?.name);
+      if (!shown || !ref?.page || ref.direction === 'return') return shown;
+      return { ...shown, focus: { ...shown.focus, target: { ...shown.focus.target, ...ref.page } satisfies FareTarget } };
     },
+    add_fare_to_cart: (params: { fareId: string }, link, store) => cartButton(store.get(`fare:${params.fareId}`) as FareRef | undefined, link),
   },
 };

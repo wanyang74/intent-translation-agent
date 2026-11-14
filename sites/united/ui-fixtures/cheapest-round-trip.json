@@ -57,7 +57,27 @@
                       "text": "31h 00m"
                     }
                   ],
-                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM"
+                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 7:55 PM to Thu, Dec 24, 6:55 PM",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=7,7&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_flight_details",
+                      "target": {
+                        "departs": "7:55 PM",
+                        "arrives": "6:55 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [
+                          "LAX"
+                        ],
+                        "flightNumbers": [
+                          "UA 2409",
+                          "UA 198"
+                        ]
+                      },
+                      "hint": "UA 2409 / UA 198, leaving SFO at 7:55 PM"
+                    }
+                  }
                 },
                 {
                   "id": "356-2282|198-UA",
@@ -82,7 +102,27 @@
                       "text": "33h 09m"
                     }
                   ],
-                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM"
+                  "subtitle": "SFO to PVG via LAX: Tue, Dec 22, 5:46 PM to Thu, Dec 24, 6:55 PM",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=7,7&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_flight_details",
+                      "target": {
+                        "departs": "5:46 PM",
+                        "arrives": "6:55 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [
+                          "LAX"
+                        ],
+                        "flightNumbers": [
+                          "UA 2282",
+                          "UA 198"
+                        ]
+                      },
+                      "hint": "UA 2282 / UA 198, leaving SFO at 5:46 PM"
+                    }
+                  }
                 },
                 {
                   "id": "356-857-UA",
@@ -107,7 +147,24 @@
                       "text": "13h 50m"
                     }
                   ],
-                  "subtitle": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM"
+                  "subtitle": "SFO to PVG: Tue, Dec 22, 12:55 PM to Wed, Dec 23, 6:45 PM",
+                  "go": {
+                    "url": "https://www.united.com/en/us/fsr/choose-flights?f=SFO&t=SHANGHAI%20(ALL%20AIRPORTS)&d=2026-12-22&r=2027-01-10&sc=7,7&px=1&taxng=1&clm=7&st=bestmatches&tqp=R",
+                    "focus": {
+                      "action": "open_flight_details",
+                      "target": {
+                        "departs": "12:55 PM",
+                        "arrives": "6:45 PM",
+                        "origin": "SFO",
+                        "destination": "PVG",
+                        "stops": [],
+                        "flightNumbers": [
+                          "UA 857"
+                        ]
+                      },
+                      "hint": "UA 857, leaving SFO at 12:55 PM"
+                    }
+                  }
                 }
               ]
             },

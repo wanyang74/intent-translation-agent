@@ -102,4 +102,33 @@ export const UI_STATES: UiFixture[] = [
       }],
     }],
   },
+  {
+    id: 'state-page-action', site: 'platform', source: 'conversation',
+    description: 'An item with no page of its own: its card and the Take me there button open the page that lists it, with its details to open there',
+    turns: [{
+      message: 'Book the 8:45 one', page,
+      events: [{
+        type: 'answer', budgetReached: false, text: "I can't book, but this opens the list with that departure's details open.",
+        components: [
+          { type: 'items', entity: 'departure', layout: 'cards', items: [{ id: 'dep_1', title: 'Departure 1', subtitle: '8:45 AM to 5:23 PM', fields: [], go: { url: 'https://shop.example/list?d=1', focus: { action: 'open_details', target: { id: 'dep_1' }, hint: 'the 8:45 AM departure' } } }] },
+          { type: 'destination', destination: 'departure_list', title: 'This departure', url: 'https://shop.example/list?d=1', focus: { action: 'open_details', target: { id: 'dep_1' }, hint: 'the 8:45 AM departure' }, item: { kind: 'departure', id: 'dep_1' } },
+        ],
+      }],
+    }],
+  },
+  {
+    id: 'state-write-action', site: 'platform', source: 'conversation',
+    description: 'A button whose page action changes the site (D6): what will change, what the user agrees to, and a label that says what it does; one press',
+    turns: [{
+      message: 'Add the 8:45 one, standard fare, to my cart', page,
+      events: [{
+        type: 'answer', budgetReached: false, text: 'Press the button to add it to your cart on the site. I will tell you once the site shows it.',
+        components: [{
+          type: 'destination', destination: 'add_to_cart', title: 'Add to your cart', url: 'https://shop.example/list?d=1', item: { kind: 'fare', id: 'fare_1' },
+          focus: { action: 'add_fare_to_cart', target: { id: 'dep_1', fare: 'standard' }, hint: 'the 8:45 AM departure, Standard, $377' },
+          confirm: { summary: ['Departure 1, 8:45 AM to 5:23 PM', 'Standard fare', '$377'], consent: "Puts it in your cart on the shop's site. Nothing is bought: you choose seats and pay there.", button: 'Add to cart on the shop' },
+        }],
+      }],
+    }],
+  },
 ];

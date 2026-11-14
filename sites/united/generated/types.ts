@@ -694,6 +694,14 @@ export interface FareDetailsOutput {
   fares: {
     fareId: FareId;
     name?: string;
+    /**
+     * The flight this fare is on, such as UA 1554 / UA 1068
+     */
+    flightNumbers?: string;
+    /**
+     * That flight's route and local times
+     */
+    schedule?: string;
     totalPrice?: Money;
     checkedBags?: string;
     carryOn?: string;
@@ -771,6 +779,14 @@ export interface ReturnFlightsOutput {
     fares: {
       fareId: FareId;
       name: string;
+      /**
+       * The flight this fare is on, such as UA 1554 / UA 1068
+       */
+      flightNumbers?: string;
+      /**
+       * That flight's route and local times
+       */
+      schedule?: string;
       cabin?: string;
       totalPrice: Money;
       refundable?: boolean;
@@ -832,6 +848,14 @@ export interface SearchFlightsOutput {
     fares: {
       fareId: FareId;
       name: string;
+      /**
+       * The flight this fare is on, such as UA 1554 / UA 1068
+       */
+      flightNumbers?: string;
+      /**
+       * That flight's route and local times
+       */
+      schedule?: string;
       cabin?: string;
       totalPrice: Money;
       refundable?: boolean;
