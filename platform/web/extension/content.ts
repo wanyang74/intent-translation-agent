@@ -2,7 +2,8 @@
 // (site.pages). Requests to the site go out from the page with the user's own session (D1); messages to the brain go
 // through the background worker (background.ts). The script sandbox isn't in the extension yet, so the model calls
 // tools one at a time. The conversation follows the user around the site: it's saved after every turn and before a
-// Take me there button opens its page, and the next page of the site carries on from it (conversation.ts).
+// Take me there button opens its page, and the next page of the site carries on from it (conversation.ts). Where the
+// user moved, resized or folded the panel is kept per site too, and the next page puts it back (placement.ts).
 import type { ClientMessage, PageContext, PanelPress } from '../../contract/generated/types.ts';
 import { pack, code, platformValidators, siteValidators, readPage, pageModule } from 'site:bundle';
 import { webHost } from '../../core/hosts/web.ts';
@@ -12,6 +13,7 @@ import type { PageFocus } from '../../core/src/present/present.ts';
 import { checkToRun, conversationToResume, focusToRun, withPress, type SavedConversation } from '../src/conversation.ts';
 import { controlOf, runCheck, runFocus, runWrite, writeStopped, type ActionReport, type PendingCheck } from '../src/page-actions.ts';
 import { Overlay } from '../src/overlay.ts';
+import { placementOf, type PanelPlacement } from '../src/placement.ts';
 import { viewOf } from '../src/page.ts';
 import { BRAIN_PORT, type ConversationRequest, type FromWorker, type ToWorker } from './messages.ts';
 
@@ -64,12 +66,21 @@ async function loadConversation(): Promise<SavedConversation | null> {
   }
 }
 
+/** Asks the worker where the user left the panel on this site; null for the default place. */
+async function loadPlacement(): Promise<PanelPlacement | null> {
+  try {
+    return placementOf(await chrome.runtime.sendMessage({ type: 'loadPanel', site: pack.site.id } satisfies ConversationRequest));
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Starts the agent on this page. A function rather than top-level code because a content script is a classic script,
  * where top-level await isn't allowed.
- *   1. The host, and the conversation to carry on, if this site has a fresh one saved.
+ *   1. The host, the conversation to carry on, if this site has a fresh one saved, and where the panel was left.
  *   2. The session: a new one, or the saved one restored.
- *   3. The overlay on the page, drawing the saved conversation as it was.
+ *   3. The overlay on the page, where the user left it, drawing the saved conversation as it was.
  *   4. The controller between them, which saves the conversation after every turn; a Take me there button saves it
  *      before it opens its page, with the page action to run there. The model hears how the last write went, and
  *      which of the panel's buttons the user pressed, with the next message, once.
@@ -85,7 +96,8 @@ async function start(): Promise<void> {
     // The development log goes to the console, where the extension's tests read it.
     log: (entry) => console.debug('[intent-agent]', JSON.stringify(entry)),
   });
-  const saved = conversationToResume(await loadConversation(), Date.now());
+  const [loaded, placement] = await Promise.all([loadConversation(), loadPlacement()]);
+  const saved = conversationToResume(loaded, Date.now());
   // 2. The session.
   const { session } = await startSession({ pack, site: code, validators: { platform: platformValidators, site: siteValidators }, host, ...(saved ? { restore: saved.session } : {}) });
   if (saved) host.log?.({ traceId: undefined, kind: 'conversation_resumed', detail: { sessionId: session.id, entries: saved.shown.length } });
@@ -111,6 +123,8 @@ async function start(): Promise<void> {
     title: `Ask ${pack.site.name}`,
     siteName: pack.site.name,
     ...(pack.site.brandColor ? { brandColor: pack.site.brandColor } : {}),
+    placement,
+    onPlacement: (moved) => void chrome.runtime.sendMessage({ type: 'savePanel', site: pack.site.id, placement: moved } satisfies ConversationRequest).catch(() => false),
     onSend: (message) => void controller.send(message),
     onNavigate: (url, focus: PageFocus | undefined, press) => {
       pressed = withPress(pressed, press);

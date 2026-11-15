@@ -5,7 +5,8 @@
 // Passes when: every message, answer line, card, field value and error shows, links are only http(s), progress shows
 // only while a turn runs, nothing reads "undefined", markup from the site stays text, picking an option or
 // sending a form sends the right message, every button to the site reports which item it was for and leaves a line
-// in the conversation, and a site's brand color reaches its buttons and the user's messages.
+// in the conversation, a site's brand color reaches its buttons and the user's messages, and a floating panel can be
+// dragged, resized, folded and reset, reports each change, and starts where it was left, inside the window.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
@@ -24,12 +25,12 @@ const skip = !chromePath() && 'Chrome not installed';
 const workDir = mkdtempSync(path.join(os.tmpdir(), 'overlay-test-'));
 after(() => rmSync(workDir, { recursive: true, force: true }));
 
-/** Writes a gallery of these fixtures and opens it. */
-async function openGallery(name: string, fixtures: UiFixture[]): Promise<ChromePage> {
+/** Writes a gallery of these fixtures and opens it, with `search` (such as "?floating") on its URL. */
+async function openGallery(name: string, fixtures: UiFixture[], search = ''): Promise<ChromePage> {
   const file = path.join(workDir, `${name}.html`);
   writeFileSync(file, await galleryPage(name, fixtures));
   const page = await openChrome({ width: 1600, height: 1000 });
-  await page.goto(pathToFileURL(file).href);
+  await page.goto(pathToFileURL(file).href + search);
   return page;
 }
 
@@ -180,6 +181,78 @@ test("brand color: a site pack's brandColor colors its buttons and the user's me
       if (colors[i]!.button) assert.equal(colors[i]!.button, rgb(entry.color!), `${entry.site}: the buttons`);
     }
     assert.equal(colors.at(-1)!.user, rgb('#1f5eff'), `${unbranded}: the panel's own blue`);
+  } finally {
+    await page.close();
+  }
+});
+
+/** The floating panel's box on the page, rounded to whole pixels. */
+const PANEL_BOX = `(() => {
+  const box = document.querySelector('.overlay').shadowRoot.querySelector('.panel').getBoundingClientRect();
+  return { left: Math.round(box.left), top: Math.round(box.top), width: Math.round(box.width), height: Math.round(box.height) };
+})()`;
+
+/**
+ * Presses the pointer on an element of the floating panel, 20 pixels in from its left, moves it by (deltaX, deltaY)
+ * and lets go, the way a mouse drag does; then the panel's box. The moves go to the window, where a drag listens.
+ */
+const drag = (selector: string, deltaX: number, deltaY: number) => `(() => {
+  const target = document.querySelector('.overlay').shadowRoot.querySelector(${JSON.stringify(selector)});
+  const rect = target.getBoundingClientRect();
+  const x = rect.left + Math.min(20, rect.width / 2), y = rect.top + rect.height / 2;
+  target.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y, button: 0, bubbles: true, composed: true }));
+  window.dispatchEvent(new PointerEvent('pointermove', { clientX: x + ${deltaX}, clientY: y + ${deltaY} }));
+  window.dispatchEvent(new PointerEvent('pointerup', { clientX: x + ${deltaX}, clientY: y + ${deltaY} }));
+  return ${PANEL_BOX};
+})()`;
+
+test('moving: the floating panel is dragged by its header, resized from its grips, folded and reset, always inside the window, and each change is reported', { skip }, async () => {
+  const fixture = UI_STATES[0]!;
+  const page = await openGallery('floating', [fixture], '?floating');
+  try {
+    // The default place: the window's right edge, 12 pixels in, full height (the window is 1600 by 1000).
+    assert.deepEqual(await page.evaluate(PANEL_BOX), { left: 1188, top: 12, width: 400, height: 976 });
+    // A drag down can only go as far as the window's bottom gap.
+    assert.deepEqual(await page.evaluate(drag('.head .title', -500, 100)), { left: 688, top: 16, width: 400, height: 976 });
+    assert.deepEqual(await page.evaluate(drag('.grip-top', 0, 300)), { left: 688, top: 316, width: 400, height: 676 }, 'the top grip: the bottom stays');
+    assert.deepEqual(await page.evaluate(drag('.grip-left', -200, 0)), { left: 488, top: 316, width: 600, height: 676 }, 'the left grip: the right edge stays');
+    assert.deepEqual(await page.evaluate(drag('.grip-bottom-left', 100, -100)), { left: 588, top: 316, width: 500, height: 576 }, 'the corner');
+    assert.deepEqual(await page.evaluate(drag('.grip-left', 1000, 0)), { left: 768, top: 316, width: 320, height: 576 }, 'no narrower than the minimum');
+    const moved = await page.evaluate(drag('.head .title', -5000, -5000));
+    assert.deepEqual(moved, { left: 8, top: 8, width: 320, height: 576 }, 'no further than the window');
+    let placements = await page.evaluate<unknown[]>('window.placements');
+    assert.equal(placements.length, 6, 'every drag reported');
+    assert.deepEqual(placements.at(-1), { box: moved, folded: false });
+
+    // Folded: only the header shows, in the same place.
+    await page.evaluate(`document.querySelector('.overlay').shadowRoot.querySelector('.fold').click()`);
+    const folded = await page.evaluate<{ left: number; top: number; height: number }>(PANEL_BOX);
+    assert.deepEqual([folded.left, folded.top], [8, 8]);
+    assert.ok(folded.height < 80, `folded to its header: ${folded.height}px`);
+    assert.equal(await page.evaluate(`getComputedStyle(document.querySelector('.overlay').shadowRoot.querySelector('.log')).display`), 'none');
+    placements = await page.evaluate<unknown[]>('window.placements');
+    assert.deepEqual(placements.at(-1), { box: moved, folded: true });
+    // A click on the header (a press that doesn't move) opens it out again.
+    assert.deepEqual(await page.evaluate(drag('.head .title', 0, 0)), moved, 'unfolded by a click on its header');
+    assert.deepEqual((await page.evaluate<unknown[]>('window.placements')).at(-1), { box: moved, folded: false });
+
+    // A double-click on the header puts it back in its default place.
+    await page.evaluate(`document.querySelector('.overlay').shadowRoot.querySelector('.head .title').dispatchEvent(new MouseEvent('dblclick', { bubbles: true, composed: true }))`);
+    assert.deepEqual(await page.evaluate(PANEL_BOX), { left: 1188, top: 12, width: 400, height: 976 });
+    assert.deepEqual((await page.evaluate<unknown[]>('window.placements')).at(-1), { box: null, folded: false });
+  } finally {
+    await page.close();
+  }
+});
+
+test('moving: a panel starts where it was left, folded as it was, pulled back inside a window narrower than the one it was left on', { skip }, async () => {
+  const placement = { box: { left: 3000, top: 50, width: 500, height: 600 }, folded: true };
+  const page = await openGallery('placed', [UI_STATES[0]!], `?floating&placement=${encodeURIComponent(JSON.stringify(placement))}`);
+  try {
+    const box = await page.evaluate<{ left: number; top: number; width: number; height: number }>(PANEL_BOX);
+    assert.deepEqual([box.left, box.top, box.width], [1600 - 500 - 8, 50, 500]);
+    assert.ok(box.height < 80, 'still folded');
+    assert.deepEqual(await page.evaluate(drag('.head .title', 0, 0)), { left: 1092, top: 50, width: 500, height: 600 }, 'its height when opened out');
   } finally {
     await page.close();
   }

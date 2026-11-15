@@ -7,10 +7,11 @@
 // The page is loaded again before every turn after the first, as when the user follows a link on the site, so the
 // conversation must carry over: the overlay draws it again and the next turn goes on in the same brain session.
 // Where a turn shows a card with a link to the site and another turn follows, its link is pressed (the new tab it would
-// open is cancelled, so nothing goes live).
+// open is cancelled, so nothing goes live). After the first answer, the panel is dragged and resized.
 // Passes when: each answer shows in the overlay with no error, the conversation survives every page load in one
 // brain session, the site was called for exactly the fixtures the conversation lists, and a pressed card shows in the
-// conversation and reaches the brain with the next message only. Conversations whose page
+// conversation and reaches the brain with the next message only, and the moved panel comes back in the same place on
+// every new page. Conversations whose page
 // carries data the page reader can't read yet are left out.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -49,6 +50,27 @@ const AWAIT_REPLY = `new Promise((resolve, reject) => {
 
 /** Waits for the content script, which starts at document_idle, a moment after the load event. */
 const OVERLAY_READY = `new Promise((resolve) => { const wait = () => document.querySelector('#intent-agent-overlay') ? resolve(true) : setTimeout(wait, 50); wait(); })`;
+
+/** The panel's box, rounded to whole pixels. */
+const PANEL_BOX = `(() => {
+  const box = document.querySelector('#intent-agent-overlay').shadowRoot.querySelector('.panel').getBoundingClientRect();
+  return { left: Math.round(box.left), top: Math.round(box.top), width: Math.round(box.width), height: Math.round(box.height) };
+})()`;
+
+/** Drags the panel by its header, then widens it from its left grip, the way a mouse would; then its box. */
+const MOVE_PANEL = `(() => {
+  const root = document.querySelector('#intent-agent-overlay').shadowRoot;
+  const dragBy = (target, deltaX, deltaY) => {
+    const rect = target.getBoundingClientRect();
+    const x = rect.left + Math.min(20, rect.width / 2), y = rect.top + rect.height / 2;
+    target.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y, button: 0, bubbles: true, composed: true }));
+    window.dispatchEvent(new PointerEvent('pointermove', { clientX: x + deltaX, clientY: y + deltaY }));
+    window.dispatchEvent(new PointerEvent('pointerup', { clientX: x + deltaX, clientY: y + deltaY }));
+  };
+  dragBy(root.querySelector('.head .title'), -300, 0);
+  dragBy(root.querySelector('.grip-left'), -100, 0);
+  return ${PANEL_BOX};
+})()`;
 
 /** Types a message into the overlay and presses Enter, the way a user would. */
 const typeMessage = (message: string) => `(() => {
@@ -119,6 +141,8 @@ for (const site of listSites().filter(hasFixtures)) {
         const answers = conversation.messages.flatMap((message) => (message.type === 'answer' ? [message] : []));
         // The turn whose message should carry a press, and the press.
         let pressedBefore = null as { turn: number; title: string } | null;
+        // Where the panel was moved to after the first answer.
+        let movedTo = null as { left: number; top: number; width: number; height: number } | null;
         for (const [i, turn] of turns.entries()) {
           if (i > 0) {
             // A new page of the site: the overlay comes back with the conversation so far, open as it was.
@@ -132,12 +156,19 @@ for (const site of listSites().filter(hasFixtures)) {
               assert.equal(lines.length, 1, 'the pressed card shows in the conversation after the page load');
               assert.ok(lines[0]!.includes(pressedBefore.title), lines[0]);
             }
+            if (movedTo) assert.deepEqual(await page.evaluate(PANEL_BOX), movedTo, `before turn ${i + 1}: the panel is where the user left it`);
           }
           await page.evaluate(typeMessage(turn.message));
           await page.evaluate(AWAIT_REPLY);
           const shown = await page.evaluate<{ text: string; errors: string[] }>(`(() => { const root = document.querySelector('#intent-agent-overlay').shadowRoot; const last = [...root.querySelectorAll('.agent')].at(-1); return { text: last.innerText, errors: [...root.querySelectorAll('.error')].map((node) => node.textContent) }; })()`);
           assert.deepEqual(shown.errors, [], `turn ${i + 1}; console:\n${page.console.slice(-20).join('\n')}`);
           assert.ok(squash(shown.text).includes(squash(answers[i]!.text)), `turn ${i + 1}: the answer isn't shown:\n${shown.text}`);
+          // The first answer, with a turn after it: move the panel, and give the worker a moment to store where.
+          if (i === 0 && turns.length > 1) {
+            movedTo = await page.evaluate(MOVE_PANEL);
+            assert.notEqual(movedTo!.left, 1200 - 12 - 400, 'the panel moved');
+            await page.evaluate('new Promise((resolve) => setTimeout(resolve, 300))');
+          }
           // A card with a link, and a turn after it: press the first one, cancelling the tab it would open.
           if (!pressedBefore && i + 1 < turns.length) {
             const title = await page.evaluate<string | null>(`(() => {

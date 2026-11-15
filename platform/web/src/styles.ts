@@ -2,6 +2,7 @@
 // leak out; `:host { all: initial }` also stops inherited styles (fonts, colors, line height) from crossing the
 // boundary. Colors are tokens, redefined for dark mode. A site pack's brand color (site.brandColor) comes in as --brand
 // on the panel and the launcher, marked data-brand; the accent tokens are mixed from it, so one color restyles both.
+// A panel the user moved or resized gets its box as inline styles, which win over the default place set here.
 export const OVERLAY_CSS = `
 :host { all: initial; }
 .panel {
@@ -29,6 +30,17 @@ export const OVERLAY_CSS = `
 .panel *, .panel *::before, .panel *::after { box-sizing: border-box; }
 .head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
 .head .title { font-weight: 600; flex: 1; }
+/* Moving, resizing and folding (overlay.ts); none of it in the gallery's static layout. */
+.panel:not([data-static]) .head { cursor: grab; user-select: none; touch-action: none; }
+.panel[data-dragging], .panel[data-dragging] .head { cursor: grabbing; user-select: none; }
+.panel[data-folded] { height: auto !important; bottom: auto !important; }
+.panel[data-folded] .head { border-bottom: none; cursor: pointer; }
+.panel[data-folded] .log, .panel[data-folded] .compose, .panel[data-folded] .grip { display: none; }
+.grip { position: absolute; z-index: 1; touch-action: none; }
+.grip-left { left: 0; top: 14px; bottom: 14px; width: 6px; cursor: ew-resize; }
+.grip-top { top: 0; left: 14px; right: 14px; height: 5px; cursor: ns-resize; }
+.grip-bottom-left { left: 0; bottom: 0; width: 14px; height: 14px; cursor: nesw-resize; }
+.grip:hover { background: var(--accent-soft); }
 .icon-btn { all: unset; cursor: pointer; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); }
 .icon-btn:hover { background: var(--bg-soft); color: var(--text); }
 .log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }

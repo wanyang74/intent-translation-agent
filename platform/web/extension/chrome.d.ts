@@ -20,4 +20,6 @@ declare namespace chrome.storage {
   }
   /** Kept in memory until the browser closes; shared by every tab. */
   const session: StorageArea;
+  /** Kept on disk, across browser restarts. */
+  const local: StorageArea;
 }

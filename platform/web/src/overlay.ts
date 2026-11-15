@@ -3,11 +3,15 @@
 // told and reports what the user typed; deciding whether a message starts a turn or amends one is the controller's
 // job (agent.ts). Everything lives in a shadow root, apart from the site's DOM and CSS. It keeps a record of what it
 // has shown (shown()), so the next page of the site can draw the same conversation again (restore()). A button to
-// the site leaves a quiet line saying what was pressed, the same press the model hears with the next message.
+// the site leaves a quiet line saying what was pressed, the same press the model hears with the next message. The
+// panel can be dragged by its header, resized from its left and top edges and bottom-left corner, and folded down to
+// its header, so the user can see the page under it; it reports where it is (onPlacement) for the host to keep, and
+// placement.ts keeps it inside the window.
 import type { PanelPress } from '../../contract/generated/types.ts';
 import type { Surface } from '../../core/src/link/link.ts';
 import type { PageFocus, UiComponent } from '../../core/src/present/present.ts';
 import { pressText, type ShownEntry } from './conversation.ts';
+import { fitBox, movedBox, resizedBox, type PanelBox, type PanelPlacement, type ResizeEdge, type Viewport } from './placement.ts';
 import { element, renderComponent, renderText, type ComponentActions } from './render.ts';
 import { OVERLAY_CSS } from './styles.ts';
 
@@ -29,6 +33,10 @@ export interface OverlayOptions {
   onNavigate?(url: string, focus: PageFocus | undefined, press: PanelPress): void;
   /** The user opened the site in a new tab from a card's link. */
   onPress?(press: PanelPress): void;
+  /** Where the user last left the panel, on this site; it's fitted to this window. */
+  placement?: PanelPlacement | null;
+  /** The user moved, resized, folded or reset the panel. */
+  onPlacement?(placement: PanelPlacement): void;
   /** Drawn in the page's flow at its full height instead of floating: for the UI fixture gallery and screenshots. */
   staticLayout?: boolean;
   /** Opened at once instead of behind the launcher button. */
@@ -47,6 +55,11 @@ export class Overlay implements Surface {
   private reply: { box: HTMLElement; progress: HTMLElement | null } | null = null;
   /** What has been shown, in order: the user's messages and every finished part of a reply (progress lines aren't kept). */
   private history: ShownEntry[] = [];
+  /** The box the user dragged or resized the panel to; null while it sits in its default place. */
+  private box: PanelBox | null = null;
+  /** Whether the panel is folded down to its header. */
+  private folded = false;
+  private readonly foldButton: HTMLElement;
 
   /** Draws the overlay inside a shadow root on `mountPoint`. */
   constructor(doc: Document, mountPoint: HTMLElement, options: OverlayOptions) {
@@ -82,14 +95,17 @@ export class Overlay implements Surface {
       this.input.value = '';
       this.send(message);
     });
+    this.foldButton = element(doc, 'button', 'icon-btn fold', ['–']);
+    this.foldButton.setAttribute('aria-label', 'Minimize');
+    this.foldButton.addEventListener('click', () => {
+      this.fold(!this.folded);
+      this.placed();
+    });
     const close = element(doc, 'button', 'icon-btn', ['✕']);
     close.setAttribute('aria-label', 'Close');
     close.addEventListener('click', () => this.close());
-    this.panel = element(doc, 'div', 'panel', [
-      element(doc, 'div', 'head', [element(doc, 'div', 'title', [options.title]), close]),
-      this.log,
-      element(doc, 'div', 'compose', [this.input]),
-    ]);
+    const head = element(doc, 'div', 'head', [element(doc, 'div', 'title', [options.title]), options.staticLayout ? null : this.foldButton, close]);
+    this.panel = element(doc, 'div', 'panel', [head, this.log, element(doc, 'div', 'compose', [this.input])]);
     this.panel.setAttribute('role', 'dialog');
     this.panel.setAttribute('aria-label', options.title);
     if (options.staticLayout) this.panel.setAttribute('data-static', '');
@@ -101,6 +117,7 @@ export class Overlay implements Surface {
         branded.setAttribute('data-brand', '');
       }
     }
+    if (!options.staticLayout) this.makeMovable(head, options.placement ?? null);
     root.append(style, this.panel, this.launcher);
     if (options.startOpen || options.staticLayout) this.open();
     else this.close();
@@ -125,6 +142,11 @@ export class Overlay implements Surface {
       else if (entry.type === 'answer') this.answer(entry.text, entry.components, { budgetReached: entry.budgetReached });
       else if (entry.type === 'error') this.error(entry.message);
     }
+  }
+
+  /** Where the panel is now, as the host keeps it. */
+  placement(): PanelPlacement {
+    return { box: this.box && { ...this.box }, folded: this.folded };
   }
 
   /** Shows the panel at the latest message. A hidden panel has no layout, so scrolling while hidden (restore()) does nothing. */
@@ -187,6 +209,121 @@ export class Overlay implements Surface {
   }
 
   // ------------------------------------------------------------ inside
+
+  /**
+   * Lets the user move, resize, fold and reset the panel.
+   *   1. The saved placement, fitted to this window.
+   *   2. Resize grips on the left edge, the top edge and the bottom-left corner.
+   *   3. Dragging the header moves the panel. A press on it that doesn't move (a click) unfolds a folded panel;
+   *      a double-click puts it back in its default place, unfolded.
+   *   4. When the window shrinks, the panel is pulled back inside it.
+   * A drag follows the pointer on the whole window, not only over the panel, since a fast pointer gets ahead of it.
+   */
+  private makeMovable(head: HTMLElement, saved: PanelPlacement | null): void {
+    const win = this.doc.defaultView;
+    if (!win) return;
+    const viewport = (): Viewport => ({ width: win.innerWidth, height: win.innerHeight });
+    // 1. The saved placement.
+    if (saved) {
+      this.box = saved.box && fitBox(saved.box, viewport());
+      this.fold(saved.folded);
+      this.applyBox();
+    }
+    // The panel's box when a drag starts: the dragged one, or where the default place puts it, at its unfolded height.
+    const currentBox = (): PanelBox => {
+      if (this.box) return { ...this.box };
+      const rect = this.panel.getBoundingClientRect();
+      return { left: rect.left, top: rect.top, width: rect.width, height: this.folded ? win.innerHeight - 24 : rect.height };
+    };
+    /** Follows the pointer from `start` until it's released, setting the box from how far it went. */
+    const follow = (start: PointerEvent, boxAt: (deltaX: number, deltaY: number) => PanelBox, released: (moved: boolean) => void) => {
+      let moved = false;
+      const onMove = (event: PointerEvent) => {
+        const deltaX = event.clientX - start.clientX;
+        const deltaY = event.clientY - start.clientY;
+        // A few pixels of wobble in a click isn't a drag.
+        if (!moved && Math.abs(deltaX) + Math.abs(deltaY) < 4) return;
+        moved = true;
+        this.box = boxAt(deltaX, deltaY);
+        this.applyBox();
+      };
+      const onUp = () => {
+        win.removeEventListener('pointermove', onMove);
+        win.removeEventListener('pointerup', onUp);
+        win.removeEventListener('pointercancel', onUp);
+        this.panel.removeAttribute('data-dragging');
+        released(moved);
+      };
+      win.addEventListener('pointermove', onMove);
+      win.addEventListener('pointerup', onUp);
+      win.addEventListener('pointercancel', onUp);
+      this.panel.setAttribute('data-dragging', '');
+    };
+    // 2. The grips.
+    for (const edge of ['left', 'top', 'bottom-left'] as const satisfies readonly ResizeEdge[]) {
+      const grip = element(this.doc, 'div', `grip grip-${edge}`);
+      grip.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        const start = currentBox();
+        follow(event, (deltaX, deltaY) => resizedBox(start, edge, deltaX, deltaY, viewport()), (moved) => moved && this.placed());
+      });
+      this.panel.append(grip);
+    }
+    // 3. The header. Its buttons keep their own clicks.
+    head.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 || (event.target as Element).closest('button')) return;
+      // Without this, the drag would select the page's text.
+      event.preventDefault();
+      const start = currentBox();
+      follow(event, (deltaX, deltaY) => movedBox(start, deltaX, deltaY, viewport()), (moved) => {
+        if (!moved && !this.folded) return;
+        if (!moved) this.fold(false);
+        this.placed();
+      });
+    });
+    head.addEventListener('dblclick', (event) => {
+      if ((event.target as Element).closest('button')) return;
+      this.box = null;
+      this.fold(false);
+      this.applyBox();
+      this.placed();
+    });
+    // 4. A smaller window.
+    win.addEventListener('resize', () => {
+      if (!this.box) return;
+      this.box = fitBox(this.box, viewport());
+      this.applyBox();
+    });
+  }
+
+  /** Puts the panel in its box, or back in the stylesheet's default place. */
+  private applyBox(): void {
+    const style = this.panel.style;
+    if (!this.box) {
+      for (const side of ['left', 'top', 'right', 'bottom', 'width', 'height']) style.removeProperty(side);
+      return;
+    }
+    style.left = `${this.box.left}px`;
+    style.top = `${this.box.top}px`;
+    style.width = `${this.box.width}px`;
+    style.height = `${this.box.height}px`;
+    style.right = 'auto';
+    style.bottom = 'auto';
+  }
+
+  /** Folds the panel down to its header, or opens it out again. */
+  private fold(folded: boolean): void {
+    this.folded = folded;
+    this.panel.toggleAttribute('data-folded', folded);
+    this.foldButton.textContent = folded ? '▢' : '–';
+    this.foldButton.setAttribute('aria-label', folded ? 'Expand' : 'Minimize');
+    if (!folded) this.scrollToEnd();
+  }
+
+  /** Tells the host where the panel is now. */
+  private placed(): void {
+    this.options.onPlacement?.(this.placement());
+  }
 
   /** Notes a pressed button in the conversation, as a quiet line, so the user sees what the agent will be told. */
   private pressed(press: PanelPress): void {

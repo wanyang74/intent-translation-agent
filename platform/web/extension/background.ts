@@ -4,7 +4,8 @@
 // forwards each request and relays the brain's newline-delimited JSON events one by one, so tool calls still start
 // the moment they arrive.
 // It also keeps each site's saved conversation, in the extension's session storage: shared by every tab, gone when
-// Chrome closes, and out of the site's reach (a page can't read an extension's storage).
+// Chrome closes, and out of the site's reach (a page can't read an extension's storage). Where the user left the panel
+// is kept per site in local storage instead: a preference, so it outlives the conversation and Chrome itself.
 import { ndjsonEvents } from '../../core/hosts/web.ts';
 import { BRAIN_PORT, type ConversationRequest, type FromWorker, type ToWorker } from './messages.ts';
 
@@ -43,8 +44,17 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-/** The saved conversation: `load` answers with it (or null), `save` replaces it. Keyed by site, so any tab finds it. */
+/**
+ * The saved conversation: `load` answers with it (or null), `save` replaces it. Keyed by site, so any tab finds it.
+ * The panel's placement the same way, with `loadPanel` and `savePanel`.
+ */
 chrome.runtime.onMessage.addListener((request: ConversationRequest, _sender, respond) => {
+  if (request.type === 'loadPanel' || request.type === 'savePanel') {
+    const panelKey = `panel:${request.site}`;
+    if (request.type === 'loadPanel') chrome.storage.local.get(panelKey).then((items) => respond(items[panelKey] ?? null), () => respond(null));
+    else chrome.storage.local.set({ [panelKey]: request.placement }).then(() => respond(true), () => respond(false));
+    return true;
+  }
   const key = `conversation:${request.site}`;
   if (request.type === 'load') {
     chrome.storage.session.get(key).then((items) => respond(items[key] ?? null), () => respond(null));
