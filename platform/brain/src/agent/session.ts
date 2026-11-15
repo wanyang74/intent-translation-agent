@@ -30,6 +30,11 @@ export class AgentSession {
    */
   readonly scripts: boolean;
   readonly usage: SessionUsage = { turns: 0, modelCalls: 0, tokens: 0 };
+  /**
+   * Whether the user allowed the agent to read their account (sign-in mode): set by the turn that carries their yes,
+   * for the rest of the conversation. A conversation reopened from memory asks again.
+   */
+  accountAllowed = false;
   /** The turn that's running or waiting for results; null between turns. */
   turn: Turn | null = null;
   /** The memory this session was reopened from: its turns come first when the session is condensed again. */
@@ -91,6 +96,7 @@ export class AgentSession {
     const now = this.services.now();
     const page = turnMessage.pageContext;
     if (page.entity) this.ids.learn(page.entity.kind, page.entity.id, { now });
+    if (page.granted?.includes('account')) this.accountAllowed = true;
     const earlier = this.earlierConversation;
     this.earlierConversation = null;
     this.history.push({ role: 'user', content: [...(earlier ? [{ type: 'text' as const, text: earlier }] : []), { type: 'text', text: turnMessage.message }, { type: 'text', text: contextBlock(page, now) }] });

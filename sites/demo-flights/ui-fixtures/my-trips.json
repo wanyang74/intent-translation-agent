@@ -2,7 +2,7 @@
   "id": "my-trips",
   "site": "demo-flights",
   "source": "reference",
-  "description": "A signed-in traveler's trips",
+  "description": "A signed-in traveler's trips, once they've allowed the agent to read their account",
   "turns": [
     {
       "message": "What trips do I have coming up?",
@@ -10,7 +10,10 @@
         "url": "https://www.demo-flights.example/trips",
         "pageType": "trips",
         "locale": "en-US",
-        "signedIn": true
+        "signedIn": true,
+        "granted": [
+          "account"
+        ]
       },
       "events": [
         {

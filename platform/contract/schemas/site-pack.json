@@ -65,6 +65,11 @@
           "description": "The site's own button color, as #rrggbb: the panel's buttons and the user's messages use it, with white text, so it must be dark enough to read white on. Without it, the panel's neutral blue.",
           "type": "string",
           "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "accountName": {
+          "description": "What the site calls a signed-in person's account, such as \"Example Rewards account\": the panel names it when it asks before the agent first reads the account in a conversation. Without it, \"account\".",
+          "type": "string",
+          "pattern": "^[\\s\\S]{1,48}$"
         }
       },
       "required": [
@@ -467,6 +472,10 @@
             },
             "pattern": {
               "type": "string"
+            },
+            "cardOnly": {
+              "type": "boolean",
+              "description": "This kind's IDs are private (such as a booking's confirmation number): they stay on the device, shown on cards, and the model gets a stand-in (withheld:<n>) that core.js swaps back."
             }
           },
           "required": [
@@ -669,6 +678,29 @@
         },
         "signIn": {
           "type": "boolean"
+        },
+        "privacy": {
+          "description": "Which output fields are personal. Required for a tool that needs sign-in. personal: sent to the model, but kept out of the brain's logs, traces, session memory and saved references. cardOnly: never sent to the brain; shown on cards from the record on the device, with a stand-in (withheld:<n>) in the model's copy. Paths as in ids (trips[].route).",
+          "type": "object",
+          "properties": {
+            "personal": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_$.\\[\\]-]{1,200}$"
+              },
+              "uniqueItems": true
+            },
+            "cardOnly": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_$.\\[\\]-]{1,200}$"
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
         },
         "presentation": {
           "enum": [

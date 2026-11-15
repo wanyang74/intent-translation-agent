@@ -2,12 +2,16 @@
 // the brain's log entries, one JSON line each, in one file per session: <dir>/<site>/<YYYY-MM-DD>/<sessionId>.jsonl.
 // They record what a person did in a real browser, for quality evaluation and benchmarks; `npm run traces`
 // (platform/evals/scripts/traces.ts) summarizes them and turns one into a test draft.
-// Rules: local development only and never committed (traces/ is git-ignored). Nothing is removed at write time, so a
-// trace stays a faithful record; personal details are removed when a trace is promoted into a test. Date folders
+// Rules: local development only and never committed (traces/ is git-ignored). Nothing else is removed at write time,
+// so a trace stays a faithful record, except personal data from a signed-in account (sign-in mode): a tool's personal
+// fields become a placeholder, as does a script result that read any, and the answer of a turn that read them, since
+// the model's words repeat what it read. Other personal details are removed when a trace is promoted into a test. Date folders
 // older than the retention period are deleted. Writing a trace never affects serving: a failed write is reported
 // once and dropped.
 import { appendFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
+import type { SitePack } from '../../../contract/generated/types.ts';
+import { PERSONAL_PLACEHOLDER, redactPersonal } from '../../../contract/src/privacy.ts';
 import type { BrainLogEntry } from '../agent/types.ts';
 import type { LinkTap } from './server.ts';
 
@@ -22,6 +26,8 @@ export interface TraceOptions {
   /** The traces folder; each site gets its own folder inside it. */
   dir: string;
   site: string;
+  /** The site pack, for which results are personal; without it, nothing is redacted. */
+  pack?: SitePack;
   /** Date folders older than this many days are deleted. */
   keepDays: number;
   now?: () => Date;
@@ -63,8 +69,14 @@ export class TraceWriter implements LinkTap {
   private readonly sessionOfTrace = new Map<string, string>();
   private readonly prunedDays = new Set<string>();
   private failed = false;
+  private readonly pack: SitePack | undefined;
+  /** The tool each call the brain sent is for, by trace and call ID: results name only the call. */
+  private readonly toolOfCall = new Map<string, string>();
+  /** Turns that read personal data, by trace ID: their answers aren't written. */
+  private readonly personalTurns = new Map<string, string>();
 
   constructor(options: TraceOptions) {
+    this.pack = options.pack;
     this.siteDir = path.join(options.dir, options.site);
     this.keepDays = options.keepDays;
     this.now = options.now ?? (() => new Date());
@@ -75,7 +87,7 @@ export class TraceWriter implements LinkTap {
     const sessionId = field(message, 'sessionId');
     const traceId = field(message, 'traceId');
     if (sessionId && traceId) remember(this.sessionOfTrace, traceId, sessionId);
-    this.write(sessionId, { at: this.stamp(), in: message });
+    this.write(sessionId, { at: this.stamp(), in: this.redactedResults(message) });
   }
 
   refused(message: unknown, refusal: { status: number; error: string }): void {
@@ -85,7 +97,37 @@ export class TraceWriter implements LinkTap {
 
   sent(event: unknown): void {
     const traceId = field(event, 'traceId');
-    this.write(traceId ? this.sessionOfTrace.get(traceId) : undefined, { at: this.stamp(), out: event });
+    let written = event;
+    if (traceId && field(event, 'type') === 'tool_call') {
+      const call = (event as { call?: { id?: unknown; name?: unknown } }).call;
+      if (typeof call?.id === 'string' && typeof call.name === 'string') remember(this.toolOfCall, `${traceId} ${call.id}`, call.name);
+    }
+    if (traceId && field(event, 'type') === 'answer' && this.personalTurns.has(traceId)) written = { ...(event as object), text: PERSONAL_PLACEHOLDER };
+    this.write(traceId ? this.sessionOfTrace.get(traceId) : undefined, { at: this.stamp(), out: written });
+  }
+
+  /** A results message with each result's personal data replaced, noting its turn as one that read some. */
+  private redactedResults(message: unknown): unknown {
+    const traceId = field(message, 'traceId');
+    const results = (message as { results?: unknown }).results;
+    if (!this.pack || !traceId || field(message, 'type') !== 'results' || !Array.isArray(results)) return message;
+    const pack = this.pack;
+    return {
+      ...(message as object),
+      results: results.map((result: { id?: string; ok?: boolean; output?: { personal?: unknown } }) => {
+        const tool = this.toolOfCall.get(`${traceId} ${String(result.id)}`);
+        if (!result.ok || !tool) return result;
+        if (pack.tools[tool]?.privacy) {
+          remember(this.personalTurns, traceId, tool);
+          return { ...result, output: redactPersonal(pack, tool, result.output) };
+        }
+        if (result.output?.personal === true) {
+          remember(this.personalTurns, traceId, tool);
+          return { ...result, output: { ...result.output, result: { personal: PERSONAL_PLACEHOLDER } } };
+        }
+        return result;
+      }),
+    };
   }
 
   // A forgotten session's lookups stay: the brain forgets an idle session when the next message for it arrives, after

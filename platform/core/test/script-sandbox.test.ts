@@ -1,7 +1,8 @@
 // Tests: the script sandbox (core/src/execute/): a script the model writes runs in QuickJS and can call tools (L3).
 // How: real QuickJS on the made-up shop, with scripts that call tools, try to escape, loop forever or eat memory.
 // Passes when: scripts call tools only through Execute (same checks, same budget), reach nothing else, are stopped
-// when they run too long or use too much memory, and return a small object whose known IDs are listed for the brain.
+// when they run too long or use too much memory, and return a small object whose known IDs are listed for the brain,
+// marked personal when it read the user's account.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { quickJsRunner } from '../hosts/quickjs.ts';
@@ -22,6 +23,16 @@ test('tool calls: a script calls tools through Execute; the known IDs it returns
     return { ids: cheap.map((p) => p.id), summary: cheap.length + ' under $100' };`);
   assert.deepEqual(outcome, { ok: true, output: { result: { ids: [1], summary: '1 under $100' }, knownIds: { product: [1] } } });
   assert.equal(session.ids.status('product', 2, session.host.now()), 'known', "IDs the script's tool calls returned are known to the session");
+});
+
+test("personal: a script that read the user's account says so, for the brain to keep it out of its records; one that didn't, doesn't", async () => {
+  const { session } = await withScripts();
+  session.setPage({ url: 'https://www.example.com/account', pageType: 'account', signedIn: true });
+  session.accountAllowed = true;
+  const account = await runToolCall(session, 'run_script', { source: `const { orders } = await tools.my_orders({}); return { count: orders.length };` });
+  assert.deepEqual(account, { ok: true, output: { result: { count: 1 }, knownIds: {}, personal: true } });
+  const shop = await runToolCall(session, 'run_script', { source: `const { products } = await tools.search_products({ query: 'shoe' }); return { count: products.length };` });
+  assert.deepEqual(shop.ok && shop.output.personal, undefined);
 });
 
 test('isolation: a script has no network, timers, modules or host objects', async () => {

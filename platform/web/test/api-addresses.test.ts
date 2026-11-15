@@ -27,6 +27,7 @@ test("IDs in a path are masked, so a visitor's IDs from a recording never reach 
   assert.equal(maskIds('/vehicles/4790305/images/0f1e2d3c4b5a69788796a5b4c3d2e1f0/cameras.glb'), '/vehicles/{id}/images/{id}/cameras.glb');
   assert.equal(maskIds('/consent/019e943c-ca67-78f0-992c-28c0dfd3c06c/en.json'), '/consent/{id}/en.json');
   assert.equal(maskIds('/api/v2/search'), '/api/v2/search');
+  assert.equal(maskIds('/api/referenceData/nearestAirport/12.3456/-65.4321/4/airports'), '/api/referenceData/nearestAirport/{number}/{number}/4/airports', 'coordinates could place whoever recorded it');
 });
 
 test("a webpack runtime's later chunks are listed by name and hash", () => {

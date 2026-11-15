@@ -1,12 +1,14 @@
 // One user's session on one site: the IDs it has seen, its share of the call budget and rate limit, cached responses,
 // the latest response of each endpoint (for allowed-value checks), site code's scratch space, the records Respond
-// fills cards from, and the site token while one is held. Sessions share nothing.
+// fills cards from, the stand-ins for card-only values (withheld.ts), and the site token while one is held. Sessions
+// share nothing.
 import type { PageContext, SitePack } from '../../../contract/generated/types.ts';
 import type { Host } from './host.ts';
 import { IdSet, type KnownId } from '../boundary/ids.ts';
 import { CallBudget, RateLimiter, type Policy } from '../boundary/limits.ts';
 import type { SiteCode } from '../execute/site-code.ts';
 import type { Validators } from '../shared/validate.ts';
+import { Withheld } from './withheld.ts';
 
 export interface SessionOptions {
   pack: SitePack;
@@ -37,6 +39,10 @@ export interface SessionSnapshot {
   used: { session: number; day: number; dayKey: number };
   /** The site token, so the next page doesn't fetch a new one. It stays on the device, like the rest. */
   siteToken?: SiteToken | null;
+  /** The stand-ins the model holds for card-only values, so they keep meaning the same values on the next page. */
+  withheld?: [string, string | number][];
+  /** The user allowed the agent to read their account in this conversation. */
+  accountAllowed?: true;
 }
 
 /** A token from the site's token endpoint (the site pack's token section), and when to stop using it. */
@@ -61,6 +67,10 @@ export class Session {
   /** The latest response of each endpoint. */
   readonly responses: Record<string, unknown> = {};
   readonly store = new Map<string, unknown>();
+  /** Card-only values and the stand-ins the model gets for them. */
+  readonly withheld = new Withheld();
+  /** Whether the user allowed the agent to read their account, for the rest of the conversation (sign-in mode). */
+  accountAllowed = false;
   page: PageContext | undefined;
   /** The current turn's trace ID, for the development log. */
   traceId: string | undefined;
@@ -94,6 +104,8 @@ export class Session {
       for (const [name, value] of saved.store) this.store.set(name, value);
       Object.assign(this.responses, saved.responses);
       this.siteToken = saved.siteToken ?? null;
+      this.withheld.restore(saved.withheld ?? []);
+      this.accountAllowed = saved.accountAllowed === true;
     }
   }
 
@@ -114,6 +126,8 @@ export class Session {
     const snapshot: SessionSnapshot = {
       id: this.id, ids: this.ids.entries(), records, tracking: [...this.tracking.entries()], store: [...this.store.entries()],
       responses: this.responses, used: { session, day, dayKey }, siteToken: this.siteToken,
+      ...(this.withheld.size ? { withheld: this.withheld.entries() } : {}),
+      ...(this.accountAllowed ? { accountAllowed: true as const } : {}),
     };
     return JSON.parse(JSON.stringify(snapshot)) as SessionSnapshot;
   }

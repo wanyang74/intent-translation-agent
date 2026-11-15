@@ -25,7 +25,7 @@ test('coverage: every UI component and surface event appears in some UI fixture 
   const events = all.flatMap((fixture) => fixture.turns.flatMap((turn) => turn.events));
   const components = events.flatMap((event) => ('components' in event ? event.components : []));
   assert.deepEqual([...new Set(events.map((event) => event.type))].sort(), ['answer', 'early', 'error', 'progress']);
-  assert.deepEqual([...new Set(components.map((component) => component.type))].sort(), ['comparison', 'destination', 'detail', 'form', 'items', 'notice', 'options']);
+  assert.deepEqual([...new Set(components.map((component) => component.type))].sort(), ['comparison', 'consent', 'destination', 'detail', 'form', 'items', 'notice', 'options']);
   assert.deepEqual([...new Set(components.flatMap((component) => (component.type === 'items' ? [component.layout] : [])))].sort(), ['cards', 'carousel', 'list']);
   assert.ok(events.some((event) => event.type === 'answer' && event.budgetReached), 'an answer cut short by the call budget');
 });

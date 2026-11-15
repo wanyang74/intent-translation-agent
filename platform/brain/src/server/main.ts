@@ -41,6 +41,7 @@ if (!(keepDays > 0)) {
 const traces = traceDir === 'off' ? undefined : new TraceWriter({
   dir: path.resolve(repoRoot, traceDir || 'traces'),
   site: siteId,
+  pack: site.pack,
   keepDays,
 });
 const memoryHours = setting('BRAIN_MEMORY_HOURS', envFile)?.trim();

@@ -162,6 +162,21 @@ test('system prompt: a site with buttons to its pages tells the model that "this
   assert.doesNotMatch(siteSection({ ...shopSite(), pack: noButtons }), /"Pressed" line/, 'not for a site with no buttons to its pages');
 });
 
+test("system prompt: a site with account tools says they need sign-in and the user's yes, never a password, and that stand-ins are private", () => {
+  const prompt = siteSection(shopSite());
+  assert.match(prompt, /my_orders reads the user's account\. They work only while the user is signed in on the site, and only once the user has allowed it in this conversation.*Never ask for a password/);
+  assert.match(prompt, /A value written withheld:<n> is private.*never write it in your answer/);
+  const noAccount = structuredClone(shopPack);
+  for (const tool of Object.values(noAccount.tools)) delete tool?.signIn;
+  assert.doesNotMatch(siteSection({ ...shopSite(), pack: noAccount }), /withheld:<n>|allowed it in this conversation/, 'not for a site with no account tools');
+});
+
+test("context block: the user's yes to reading their account shows on the message that carries it, inside the fence", () => {
+  const block = contextBlock({ ...HOME, signedIn: true, granted: ['account'] }, NOW);
+  assert.match(block, /<untrusted source="page-context">[\s\S]*Allowed with this message: reading the user's account, for the rest of the conversation[\s\S]*<\/untrusted>/);
+  assert.doesNotMatch(contextBlock(HOME, NOW), /Allowed with this message/);
+});
+
 test('skills and site prompts: shown to the model without authoring comments', () => {
   assert.equal(forModel('<!-- Draft, not reviewed. -->\n# Skill\n\n\n\nDo this.\n'), '# Skill\n\nDo this.');
 });

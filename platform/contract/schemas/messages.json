@@ -61,6 +61,17 @@
           },
           "minItems": 1,
           "maxItems": 5
+        },
+        "granted": {
+          "description": "What the user allowed since the last message, sent once with the next one: account means the agent may read their signed-in account for the rest of the conversation (sign-in mode; asked once per conversation, with a button in the panel).",
+          "type": "array",
+          "items": {
+            "enum": [
+              "account"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
         }
       },
       "required": [
@@ -442,6 +453,10 @@
           }
         },
         "budgetReached": {
+          "type": "boolean"
+        },
+        "askConsent": {
+          "description": "The model wanted to read the user's account, which needs their permission first: the surface shows the button that gives it.",
           "type": "boolean"
         },
         "followUps": {

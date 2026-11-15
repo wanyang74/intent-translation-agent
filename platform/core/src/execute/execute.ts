@@ -1,9 +1,12 @@
 // Execute (phase 3 on the flow chart): runs tool calls. Each call is checked at the boundary, run by the site's code
 // through a ToolContext, and its output is checked against the tool's output schema before anyone sees it. The
 // output's IDs join the session's known IDs, and its records are kept for Respond. run_script runs a model-written
-// script in the platform's sandbox, where the only way out is these same tool calls, on the same budget.
+// script in the platform's sandbox, where the only way out is these same tool calls, on the same budget. Card-only
+// values (sign-in mode) leave only as stand-ins: modelCopy makes what the brain gets, and a call's arguments have
+// their stand-ins swapped back before anything checks them.
 import type { ToolError } from '../../../contract/generated/types.ts';
 import { valuesAt } from '../../../contract/src/paths.ts';
+import { isWithheld, mapAt, withheldPaths } from '../../../contract/src/privacy.ts';
 import { checkToolCall, missingValueSources, type CheckContext } from '../boundary/checks.ts';
 import { callEndpoint } from './endpoints.ts';
 import { platformError, siteError } from '../boundary/errors.ts';
@@ -33,6 +36,7 @@ export function checkContext(session: Session): CheckContext {
     page: session.page,
     validateInput: (tool, args) => problemsWith(session.validators.site, session.pack.tools[tool]!.input, args),
     responses: session.responses,
+    accountAllowed: session.accountAllowed,
   };
 }
 
@@ -78,7 +82,18 @@ function keepRecords(session: Session, tool: string, args: unknown, output: Reco
   }
 }
 
-export async function runToolCall(session: Session, name: string, args: unknown, options: { fromScript?: boolean } = {}): Promise<CallOutcome> {
+/** What the brain gets of a tool's output: the same, with each card-only value replaced by its stand-in. */
+export function modelCopy(session: Session, name: string, output: Record<string, unknown>): Record<string, unknown> {
+  return withheldPaths(session.pack, name).reduce(
+    (copy, path) => mapAt(copy, path, (found) => (typeof found === 'string' || typeof found === 'number' ? session.withheld.alias(found) : found)),
+    output as unknown,
+  ) as Record<string, unknown>;
+}
+
+/** Runs one tool call and returns its full output, for the device; the brain gets modelCopy of it. */
+export async function runToolCall(session: Session, name: string, givenArgs: unknown, options: { fromScript?: boolean } = {}): Promise<CallOutcome> {
+  // The model passes stand-ins for card-only values (an ID it was given); the tool gets the real ones.
+  const args = session.withheld.resolve(givenArgs);
   if (name === SCRIPT_TOOL) {
     return options.fromScript ? refuse(platformError('bad_script', { details: "a script can't start another script" })) : runScript(session, args);
   }
@@ -130,8 +145,10 @@ function knownIdsIn(session: Session, value: unknown): Record<string, (string | 
     if (Array.isArray(node)) node.forEach(visit);
     else if (node && typeof node === 'object') Object.values(node).forEach(visit);
     else if (typeof node === 'string' || typeof node === 'number') {
+      // A stand-in counts as known when its value is; the brain gets the stand-in, as the script did.
+      const real = isWithheld(node) ? session.withheld.resolve(node) : node;
       for (const kind of Object.keys(session.pack.entities)) {
-        if (session.ids.status(kind, node, now) === 'known') (found[kind] ??= new Set()).add(node);
+        if (session.ids.status(kind, real, now) === 'known') (found[kind] ??= new Set()).add(node);
       }
     }
   };
@@ -146,9 +163,13 @@ async function runScript(session: Session, args: unknown): Promise<CallOutcome> 
   if (typeof source !== 'string' || !source.trim() || source.length > MAX_SCRIPT) {
     return refuse(platformError('bad_script', { details: `the source must be text of at most ${MAX_SCRIPT} characters` }));
   }
+  // Whether the script read anything personal: then its result says so, and the brain keeps it out of its records.
+  let personal = false;
   const result = await runner.run(source, async (tool, toolArgs) => {
     const outcome = await runToolCall(session, tool, toolArgs, { fromScript: true });
-    if (outcome.ok) return outcome.output;
+    if (outcome.ok && session.pack.tools[tool]?.privacy) personal = true;
+    // The script was written by the model and its result goes back to it, so it sees what the model would.
+    if (outcome.ok) return modelCopy(session, tool, outcome.output);
     throw new Error(outcome.error.message);
   }, SCRIPT_LIMITS);
   if (!result.ok) return refuse(platformError('bad_script', { details: result.error }));
@@ -160,5 +181,5 @@ async function runScript(session: Session, args: unknown): Promise<CallOutcome> 
   if (size > MAX_SCRIPT_RESULT) {
     return refuse(platformError('bad_script', { details: `it returned ${size} characters; return IDs and a short summary, at most ${MAX_SCRIPT_RESULT}` }));
   }
-  return { ok: true, output: { result: value, knownIds: knownIdsIn(session, value) } };
+  return { ok: true, output: { result: value, knownIds: knownIdsIn(session, value), ...(personal ? { personal: true } : {}) } };
 }

@@ -21,6 +21,8 @@ export interface CheckContext {
   validateInput?: ((tool: string, args: unknown) => string | null) | undefined;
   /** The latest response of each endpoint, by endpoint name, for the allowed-value rules. */
   responses?: Record<string, unknown> | undefined;
+  /** Whether the user allowed the agent to read their account in this conversation (sign-in mode). */
+  accountAllowed?: boolean | undefined;
 }
 
 const MAX_OPTIONS = 20;
@@ -75,6 +77,8 @@ export function checkToolCall(ctx: CheckContext, name: string, args: unknown): T
   if (ctx.policy.disabledTools.includes(name)) return platformError('tool_disabled', { tool: name });
   if (tool.sideEffect === 'write' && ctx.policy.writes === 'none') return platformError('writes_off', { tool: name });
   if (tool.signIn && ctx.page?.signedIn !== true) return errorFor(ctx.pack, name, 'needs_sign_in', { tool: name, what: name });
+  // Signed in isn't enough: what the account holds goes to the model, so the user says yes first, once (sign-in mode).
+  if (tool.signIn && ctx.accountAllowed !== true) return platformError('needs_consent', { tool: name, what: ctx.pack.site.accountName ?? 'account' });
   const bad = ctx.validateInput?.(name, args) ?? null;
   if (bad) return platformError('bad_arguments', { tool: name, details: bad });
   for (const idPath of tool.ids?.input ?? []) {

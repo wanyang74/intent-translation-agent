@@ -1,8 +1,10 @@
 // Server checks. core.js checks every call on the device, guarding against the model's mistakes; the brain checks
 // too, with core.js's own rules on its own copy of the session's known IDs (decision D3: what protects us runs on a
 // server). A call the brain refuses is answered here, without a round trip to the client. Presentation calls are
-// checked before they're sent, and results are accepted only for calls the brain issued, in the tool's format.
+// checked before they're sent, and results are accepted only for calls the brain issued, in the tool's format: for a
+// tool that withholds card-only values, the model view of it (contract/src/privacy.ts), stand-ins and all.
 import type { PresentationCall, ToolError } from '../../../contract/generated/types.ts';
+import { outputSchemaForModel } from '../../../contract/src/privacy.ts';
 import { PRESENTATION_TOOLS } from '../../../contract/src/site-pack.ts';
 import { checkPresentation, checkToolCall, type CheckContext } from '../../../core/src/boundary/checks.ts';
 import { platformError } from '../../../core/src/boundary/errors.ts';
@@ -20,6 +22,8 @@ export interface ServerContext {
   page: CheckContext['page'];
   /** Whether the session's device can run scripts. */
   scripts: boolean;
+  /** Whether the user allowed the agent to read their account in this conversation (sign-in mode). */
+  accountAllowed: boolean;
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -27,7 +31,7 @@ const isObject = (value: unknown): value is Record<string, unknown> => value !==
 function coreContext(ctx: ServerContext): CheckContext {
   const { pack, validators } = ctx.bundle;
   return {
-    pack, policy: ctx.policy, ids: ctx.ids, now: ctx.now, page: ctx.page,
+    pack, policy: ctx.policy, ids: ctx.ids, now: ctx.now, page: ctx.page, accountAllowed: ctx.accountAllowed,
     validateInput: (tool, args) => problemsWith(validators.site, pack.tools[tool]!.input, args),
   };
 }
@@ -62,10 +66,11 @@ export function outputProblem(bundle: SiteBundle, name: string, output: Record<s
   if (name === SCRIPT_TOOL) {
     if (!isObject(output.result)) return 'a script result needs a result object';
     if (!isObject(output.knownIds) || !Object.values(output.knownIds).every((ids) => Array.isArray(ids))) return 'a script result needs knownIds, lists by kind';
-    return Object.keys(output).every((key) => key === 'result' || key === 'knownIds') ? null : 'a script result has only result and knownIds';
+    if (output.personal !== undefined && output.personal !== true) return "a script result's personal flag is true or left out";
+    return Object.keys(output).every((key) => key === 'result' || key === 'knownIds' || key === 'personal') ? null : 'a script result has only result, knownIds and personal';
   }
-  const tool = bundle.pack.tools[name];
-  return tool ? problemsWith(bundle.validators.site, tool.output, output) : `${name} isn't a tool here`;
+  const schema = outputSchemaForModel(bundle.pack, name);
+  return schema ? problemsWith(bundle.validators.site, schema, output) : `${name} isn't a tool here`;
 }
 
 /** Learns the IDs in a result the brain accepted: the tool's output ID paths, or the known IDs a script listed. */

@@ -1,6 +1,7 @@
 # Site pack: Demo Flights (synthetic)
 # A made-up airline used only in tests, to keep the platform honest about generality. It exercises what the
-# first real site pack doesn't: a search form, offers that expire, a signed-in trips list, a rule that
+# first real site pack doesn't: a search form, offers that expire, a signed-in trips list (with private record
+# locators, kept on the device, and personal fields kept out of the brain's logs), a rule that
 # prices must include all taxes and fees, a token on every call, and a search that answers as a stream of events
 # (named events, where a real airline may name them inside the data). The .example domain is reserved and never
 # resolves.
@@ -15,6 +16,7 @@ site:
   requires:
     location: none
     signIn: some_tools
+  accountName: Demo Flights account
 
 entities:
   flight_offer:
@@ -36,7 +38,7 @@ entities:
     sections: [itinerary, fare_rules]
   trip:
     description: A booked trip, identified by its record locator
-    id: { type: string, pattern: "^[A-Z0-9]{6}$" }
+    id: { type: string, pattern: "^[A-Z0-9]{6}$", cardOnly: true }   # a record locator opens the booking: device only
     requiresSignIn: true
     fields:
       route: { label: Route, type: text, from: route }
@@ -103,6 +105,7 @@ tools:
     uses: [trips]
     sideEffect: read
     signIn: true
+    privacy: { personal: ["trips[].route", "trips[].departs"] }
     presentation: present_items
     ids: { output: [{ kind: trip, path: "trips[].recordLocator" }] }
     errors:

@@ -70,7 +70,7 @@ export const examplePack: SitePack = {
     },
     my_orders: {
       description: "The shopper's orders", input: 'tools/my_orders.input.json', output: 'tools/my_orders.output.json',
-      uses: ['orders'], sideEffect: 'read', signIn: true,
+      uses: ['orders'], sideEffect: 'read', signIn: true, privacy: { personal: ['orders[].status'] },
       ids: { output: [{ kind: 'order', path: 'orders[].id' }] },
       errors: { signed_out: { code: 'auth_required', message: 'Ask the shopper to sign in first.', retryable: true } },
     },

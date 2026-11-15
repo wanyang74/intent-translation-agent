@@ -31,7 +31,8 @@ export interface CallExpect {
  * there button to a destination.
  */
 export interface ShowExpect {
-  type?: 'items' | 'options' | 'comparison' | 'detail' | 'form' | 'notice' | 'destination';
+  /** consent: the button that lets the agent read the user's account (sign-in mode). */
+  type?: 'items' | 'options' | 'comparison' | 'detail' | 'form' | 'notice' | 'destination' | 'consent';
   entity?: string;
   notice?: string;
   destination?: string;
@@ -140,7 +141,7 @@ export interface CaseContext {
   fixtures: readonly Fixture[];
 }
 
-const SHOW_TYPES = new Set(['items', 'options', 'comparison', 'detail', 'form', 'notice', 'destination']);
+const SHOW_TYPES = new Set(['items', 'options', 'comparison', 'detail', 'form', 'notice', 'destination', 'consent']);
 
 /** Problems with a site's cases, or none. Each is named by its case. */
 export function checkCases(cases: readonly EvalCase[], ctx: CaseContext): string[] {

@@ -131,4 +131,15 @@ export const UI_STATES: UiFixture[] = [
       }],
     }],
   },
+  {
+    id: 'state-account-consent', site: 'platform', source: 'conversation',
+    description: "Sign-in mode: the model wanted to read the user's account, which needs their yes once per conversation; the button gives it",
+    turns: [{
+      message: 'What orders do I have coming?', page: { ...page, signedIn: true },
+      events: [{
+        type: 'answer', budgetReached: false, text: "I'd look up your open orders in your account.",
+        components: [{ type: 'consent', account: 'Shop Rewards account', site: 'Example Shop' }],
+      }],
+    }],
+  },
 ];

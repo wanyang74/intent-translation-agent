@@ -28,10 +28,11 @@ test('offer expiry: offers can be shown until they expire, and are refused after
   assert.equal(checkPresentation({ pack, policy, ids, now: later }, show)?.code, 'expired');
 });
 
-test("sign-in: the trips list needs it, and says so in the site's words", () => {
+test("sign-in: the trips list needs it, and says so in the site's words, and then the user's permission", () => {
   const ids = new IdSet(pack.entities);
   const page = { url: 'https://www.demo-flights.example/trips', pageType: 'trips' };
   const error = checkToolCall({ pack, policy, ids, now: NOW, page }, 'get_trips', { status: 'upcoming' });
   assert.deepEqual([error?.code, error?.reason, error?.message], ['auth_required', 'signed_out', pack.tools.get_trips!.errors!.signed_out!.message]);
-  assert.equal(checkToolCall({ pack, policy, ids, now: NOW, page: { ...page, signedIn: true } }, 'get_trips', { status: 'upcoming' }), null);
+  assert.equal(checkToolCall({ pack, policy, ids, now: NOW, page: { ...page, signedIn: true } }, 'get_trips', { status: 'upcoming' })?.reason, 'needs_consent');
+  assert.equal(checkToolCall({ pack, policy, ids, now: NOW, page: { ...page, signedIn: true }, accountAllowed: true }, 'get_trips', { status: 'upcoming' }), null);
 });

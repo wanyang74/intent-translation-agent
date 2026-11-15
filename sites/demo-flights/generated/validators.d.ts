@@ -22,3 +22,5 @@ export declare const validateGetTripsOutput: Validator<GetTripsOutput>;
 export declare const validateSearchFlightsInput: Validator<SearchFlightsInput>;
 /** sites/demo-flights/schemas/tools/search_flights.output.json */
 export declare const validateSearchFlightsOutput: Validator<SearchFlightsOutput>;
+/** sites/demo-flights/schemas/tools/get_trips.output.model.json */
+export declare const validateGetTripsOutputModel: Validator<Record<string, unknown>>;

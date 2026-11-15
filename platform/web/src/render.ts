@@ -16,6 +16,8 @@ export interface ComponentActions {
   navigate(url: string, focus: PageFocus | undefined, press: PanelPress): void;
   /** The user opened the site in a new tab from a card's link: nothing to do here but note the press. */
   press(press: PanelPress): void;
+  /** The user allowed the agent to read their account (sign-in mode): sends `message` with that permission. */
+  allowAccount(message: string): void;
 }
 
 type Children = (Node | string | null | undefined | false)[];
@@ -194,6 +196,21 @@ export function renderComponent(doc: Document, component: UiComponent, actions: 
       const summary = element(doc, 'ul', 'dest-summary', confirm.summary.map((line) => element(doc, 'li', undefined, [line])));
       const body = element(doc, 'div', 'dest-body', [element(doc, 'div', 'dest-title', [component.title]), summary, element(doc, 'div', 'consent', [confirm.consent])]);
       return element(doc, 'div', 'destination confirm', [body, go]);
+    }
+    case 'consent': {
+      // Not the model's: core.js adds it when the brain held back an account tool. One press allows it for the
+      // conversation; the message it sends says so in the user's words, and the permission goes with it.
+      const allow = element(doc, 'button', 'btn', [`Use my ${component.account}`]) as HTMLButtonElement;
+      allow.type = 'button';
+      allow.addEventListener('click', () => {
+        allow.disabled = true;
+        actions.allowAccount(`Use my ${component.account} to answer.`);
+      });
+      const body = element(doc, 'div', 'dest-body', [
+        element(doc, 'div', 'dest-title', [`Read your ${component.account}?`]),
+        element(doc, 'div', 'consent', [`To answer, I'll read your ${component.account} on ${component.site} and send what it shows to the AI model, for this conversation only. I never see your password.`]),
+      ]);
+      return element(doc, 'div', 'destination confirm ask', [body, allow]);
     }
   }
 }

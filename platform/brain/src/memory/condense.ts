@@ -7,10 +7,13 @@
 // arguments, every ID the result carried (never cut: the IDs are what let the model act on earlier items without
 // searching again), one line per returned item (its card title and short values, at most ITEM_LINES per call), the
 // rest of the result in short form, what was shown, and the answer cut to ANSWER_CHARS. Fenced third-party text, such
-// as reviews, is never copied.
+// as reviews, is never copied. Personal data (sign-in mode) isn't kept either: a tool's personal fields become a
+// placeholder, a script that read any becomes one whole, and so does the answer of a turn that read them, since the
+// model's words repeat what it read.
 // Rules: pure functions over data, no I/O. The memory is built on the server from the brain's own history and never
 // comes from the device, so a tampered client can't invent earlier tool results.
 import { valuesAt } from '../../../contract/src/paths.ts';
+import { PERSONAL_PLACEHOLDER, redactPersonal } from '../../../contract/src/privacy.ts';
 import { PRESENTATION_TOOLS } from '../../../contract/src/site-pack.ts';
 import type { IdValue, KnownId } from '../../../core/src/boundary/ids.ts';
 import { displayText } from '../../../core/src/present/present.ts';
@@ -194,7 +197,8 @@ function describeShown(call: ToolCallPart): string {
  *      memory a reopened session started from is skipped (its turns come from `previous`).
  *   2. Each tool call is matched to its result by the model's call ID. Skill loads are left out; presentation calls
  *      that were accepted become "shown"; the rest are condensed with condenseCall.
- *   3. A turn's answer is the text of its last model step, when that step called no site tool.
+ *   3. A turn's answer is the text of its last model step, when that step called no site tool; a placeholder when the
+ *      turn read personal data.
  *   4. The previous memory's turns come first; beyond MAX_TURNS, the oldest are dropped.
  */
 export function condense(input: CondenseInput): SessionMemory {
@@ -203,8 +207,10 @@ export function condense(input: CondenseInput): SessionMemory {
   let turn: MemoryTurn | null = null;
   let lastStep: { text: string; siteCalls: boolean } | null = null;
   const pending = new Map<string, ToolCallPart>();
+  // Whether the current turn read personal data: then its answer isn't kept.
+  let personal = false;
   const closeTurn = () => {
-    if (turn && lastStep && !lastStep.siteCalls && lastStep.text) turn.answer = cut(lastStep.text, ANSWER_CHARS);
+    if (turn && lastStep && !lastStep.siteCalls && lastStep.text) turn.answer = personal ? PERSONAL_PLACEHOLDER : cut(lastStep.text, ANSWER_CHARS);
   };
   // 1. The history.
   for (const message of input.history) {
@@ -217,6 +223,7 @@ export function condense(input: CondenseInput): SessionMemory {
         turn = { at: /Time: (\S+)/.exec(context)?.[1] ?? null, message: cut(words, MESSAGE_CHARS), amendments: [], calls: [], shown: [], answer: null };
         turns.push(turn);
         lastStep = null;
+        personal = false;
       } else if (turn) {
         for (const text of texts.filter((candidate) => candidate.startsWith(REMINDER_TAG))) {
           for (const match of text.matchAll(AMENDMENT)) turn.amendments.push(cut(match[1]!.trim(), MESSAGE_CHARS));
@@ -237,7 +244,18 @@ export function condense(input: CondenseInput): SessionMemory {
           if (!result.isError) turn.shown.push(describeShown(call));
           continue;
         }
-        turn.calls.push(condenseCall(bundle, call.name, call.input, result.output, result.isError));
+        // Personal fields are replaced before anything is condensed from the result.
+        const tool = bundle.pack.tools[call.name];
+        const script = call.name === SCRIPT_TOOL ? (result.output as { personal?: unknown } | null) : null;
+        let output = result.output;
+        if (!result.isError && tool?.privacy) {
+          personal = true;
+          output = redactPersonal(bundle.pack, call.name, output);
+        } else if (!result.isError && script?.personal === true) {
+          personal = true;
+          output = { ...script, result: { personal: PERSONAL_PLACEHOLDER } };
+        }
+        turn.calls.push(condenseCall(bundle, call.name, call.input, output, result.isError));
       }
     }
   }

@@ -18,7 +18,8 @@
     "requires": {
       "location": "none",
       "signIn": "some_tools"
-    }
+    },
+    "accountName": "Demo Flights account"
   },
   "entities": {
     "flight_offer": {
@@ -81,7 +82,8 @@
       "description": "A booked trip, identified by its record locator",
       "id": {
         "type": "string",
-        "pattern": "^[A-Z0-9]{6}$"
+        "pattern": "^[A-Z0-9]{6}$",
+        "cardOnly": true
       },
       "requiresSignIn": true,
       "fields": {
@@ -214,6 +216,12 @@
       ],
       "sideEffect": "read",
       "signIn": true,
+      "privacy": {
+        "personal": [
+          "trips[].route",
+          "trips[].departs"
+        ]
+      },
       "presentation": "present_items",
       "ids": {
         "output": [

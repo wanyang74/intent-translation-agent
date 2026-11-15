@@ -82,6 +82,8 @@ function expectations(component: UiComponent): { texts: string[]; cards: number;
     case 'destination':
       // A confirming button shows what will change and what the user agrees to, on a button that says what it does.
       return { texts: component.confirm ? [component.title, ...component.confirm.summary, component.confirm.consent, component.confirm.button] : [component.title, 'Take me there'], cards: 0, links: 0 };
+    case 'consent':
+      return { texts: [`Read your ${component.account}?`, `Use my ${component.account}`, 'I never see your password.'], cards: 0, links: 0 };
   }
 }
 
@@ -158,6 +160,22 @@ test("clicks: an option sends its title, a form sends its values, Take me there 
     assert.deepEqual(await page.evaluate(`[...${root('state-page-action')}.querySelectorAll('.pressed')].map((line) => line.textContent)`), ['You opened Departure 1 on platform', 'You pressed Take me there: This departure']);
     assert.deepEqual(await page.evaluate(`[...${root('state-write-action')}.querySelectorAll('.pressed')].map((line) => line.textContent)`), ['You pressed the confirming button: Add to your cart'], 'the second press of a confirming button does nothing, so it leaves no line');
     assert.equal(await page.evaluate('window.hacked'), undefined);
+  } finally {
+    await page.close();
+  }
+});
+
+test("clicks: the account button allows reading the account, sends the user's yes in their words, and takes one press", { skip }, async () => {
+  const page = await openGallery('consent', UI_STATES.filter((state) => state.id === 'state-account-consent'));
+  try {
+    const root = `document.querySelector('[data-fixture="state-account-consent"]').shadowRoot`;
+    assert.equal(await page.evaluate(`${root}.querySelector('.ask .btn').textContent`), 'Use my Shop Rewards account');
+    assert.match(await page.evaluate<string>(`${root}.querySelector('.ask .consent').textContent`), /send what it shows to the AI model, for this conversation only\. I never see your password\./);
+    await page.evaluate(`${root}.querySelector('.ask .btn').click()`);
+    await page.evaluate(`${root}.querySelector('.ask .btn').click()`);
+    assert.deepEqual(await page.evaluate('window.allowed'), ['state-account-consent'], 'allowed once');
+    assert.deepEqual(await page.evaluate('window.sent'), [{ fixture: 'state-account-consent', message: 'Use my Shop Rewards account to answer.' }]);
+    assert.deepEqual(await page.evaluate(`[...${root}.querySelectorAll('.user')].map((node) => node.textContent)`), ['What orders do I have coming?', 'Use my Shop Rewards account to answer.']);
   } finally {
     await page.close();
   }

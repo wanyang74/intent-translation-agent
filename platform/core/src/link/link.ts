@@ -2,10 +2,12 @@
 // Brain link is the only part of core.js that talks to the agentic brain. It sends the user's turn, starts each tool
 // call the moment it arrives (eager dispatch: tool calls stream out as the model finishes writing each one), returns
 // the results the brain waits for, and hands the answer to Respond. Every message, both ways, is checked against the
-// protocol first. A call marked "render: direct" is shown as soon as its result is ready (the fast path).
-import type { ClientAmend, ClientMessage, ClientTurn, ServerEvent, ToolResult } from '../../../contract/generated/types.ts';
+// protocol first. A call marked "render: direct" is shown as soon as its result is ready (the fast path). Card-only
+// values never go out: results carry their stand-ins (modelCopy), and so does the page context, where a pressed card's
+// ID or title, or the page's address, could hold one.
+import type { ClientAmend, ClientMessage, ClientTurn, PageContext, ServerEvent, ToolResult } from '../../../contract/generated/types.ts';
 import { platformError } from '../boundary/errors.ts';
-import { runToolCall } from '../execute/execute.ts';
+import { modelCopy, runToolCall } from '../execute/execute.ts';
 import { present, presentToolResult, type UiComponent } from '../present/present.ts';
 import type { Session } from '../runtime/session.ts';
 import { describeProblems, validatorFor } from '../shared/validate.ts';
@@ -34,10 +36,27 @@ const SERVER_EVENTS = new Set(['tool_call', 'progress', 'await_results', 'answer
  */
 export function makeTurn(session: Session, message: string): ClientTurn {
   if (!session.page) throw new Error('the surface must set the page context before a turn');
+  // The user's yes to reading their account holds for the rest of the conversation, here as in the brain.
+  if (session.page.granted?.includes('account')) session.accountAllowed = true;
   return {
     type: 'turn', site: session.pack.site.id, sessionId: session.id,
-    traceId: `trace_${session.host.randomId()}`, message, pageContext: session.page,
+    traceId: `trace_${session.host.randomId()}`, message, pageContext: pageForBrain(session, session.page),
     ...(session.host.scripts ? { capabilities: { scripts: true } } : {}),
+  };
+}
+
+/**
+ * The page context as the brain may see it: an item ID of a kind with private IDs (the item on screen, a pressed
+ * card) becomes its stand-in, and any card-only value in the address or a pressed button's title is hidden.
+ */
+function pageForBrain(session: Session, page: PageContext): PageContext {
+  const { withheld } = session;
+  const idFor = (kind: string, id: string | number) => (session.pack.entities[kind]?.id.cardOnly ? withheld.alias(id) : id);
+  return {
+    ...page,
+    url: withheld.hide(page.url),
+    ...(page.entity ? { entity: { ...page.entity, id: idFor(page.entity.kind, page.entity.id) } } : {}),
+    ...(page.pressed ? { pressed: page.pressed.map((press) => ({ ...press, title: withheld.hide(press.title), ...(press.kind && press.id !== undefined ? { id: idFor(press.kind, press.id) } : {}) })) as typeof page.pressed } : {}),
   };
 }
 
@@ -127,20 +146,22 @@ async function runOneTurn(session: Session, message: string, surface: Surface): 
           const { id, name, args } = ev.call;
           if (running.has(id)) return failed(stop(`call ${id} arrived twice`, 'Something went wrong. Try again.'));
           session.log('tool_call', { id, name });
-          const result = runToolCall(session, name, args).then(
-            (outcome): ToolResult => (outcome.ok ? { id, ok: true, output: outcome.output } : { id, ok: false, error: outcome.error }),
+          const outcome = runToolCall(session, name, args);
+          const result = outcome.then(
+            (settled): ToolResult => (settled.ok ? { id, ok: true, output: modelCopy(session, name, settled.output) } : { id, ok: false, error: settled.error }),
             (error: unknown): ToolResult => {
               session.log('tool_crashed', { tool: name, error: String(error) });
               return { id, ok: false, error: platformError('site_code_error', { tool: name, details: 'an unexpected error' }) };
             },
           );
           running.set(id, result);
+          // The fast path draws from the full output, on the device; a crash was already reported through `result`.
           if (ev.call.render === 'direct' && surface.early) {
-            void result.then((settled) => {
+            void outcome.then((settled) => {
               if (!settled.ok) return;
               const components = presentToolResult(session, name, settled.output);
               if (components.length) surface.early!(components);
-            });
+            }, () => {});
           }
         } else if (ev.type === 'progress') {
           surface.progress(ev.text);
@@ -149,7 +170,9 @@ async function runOneTurn(session: Session, message: string, surface: Surface): 
           break;
         } else if (ev.type === 'answer') {
           const shown = present(session, ev.present ?? []);
-          surface.answer(ev.text, shown.components, { budgetReached: ev.budgetReached === true });
+          // The brain held back an account tool: the button that allows it goes last, under the model's answer.
+          const consent: UiComponent[] = ev.askConsent && !session.accountAllowed ? [{ type: 'consent', account: session.pack.site.accountName ?? 'account', site: session.pack.site.name }] : [];
+          surface.answer(ev.text, [...shown.components, ...consent], { budgetReached: ev.budgetReached === true });
           session.log('answer', { components: shown.components.length, refused: shown.refused.length });
           return { outcome: { ok: true }, followUps: ev.followUps ?? [] };
         } else if (ev.type === 'error') {

@@ -83,7 +83,8 @@ async function loadPlacement(): Promise<PanelPlacement | null> {
  *   3. The overlay on the page, where the user left it, drawing the saved conversation as it was.
  *   4. The controller between them, which saves the conversation after every turn; a Take me there button saves it
  *      before it opens its page, with the page action to run there. The model hears how the last write went, and
- *      which of the panel's buttons the user pressed, with the next message, once.
+ *      which of the panel's buttons the user pressed, and whether they just allowed it to read their account, with
+ *      the next message, once.
  *   5. A write's check, if the last page's press led here: confirmed on this page, then dropped.
  *   6. The page action saved for this page, if any: dropped by saving again without it, then run once. A write runs
  *      only once that save is stored, so a reload can't press its button twice.
@@ -110,6 +111,8 @@ async function start(): Promise<void> {
   let actionReport: ActionReport | null = saved?.actionReport ?? null;
   // The panel's buttons pressed since the last message, saved with the conversation until that message is sent.
   let pressed: PanelPress[] = saved?.pressed ?? [];
+  // The user just allowed the agent to read their account: the next message says so, once.
+  let accountAllowed = false;
   /** Saves the conversation; true once the worker has stored it. */
   const save = async (focus?: SavedConversation['focus']): Promise<boolean> => {
     const conversation: SavedConversation = {
@@ -134,6 +137,9 @@ async function start(): Promise<void> {
       pressed = withPress(pressed, press);
       void save();
     },
+    onAllowAccount: () => {
+      accountAllowed = true;
+    },
   });
   if (saved) {
     overlay.restore(saved.shown);
@@ -145,9 +151,14 @@ async function start(): Promise<void> {
     const { context } = currentPage();
     const report = actionReport;
     const presses = pressed;
+    const granted = accountAllowed;
     actionReport = null;
     pressed = [];
-    return { ...context, ...(report ? { pageAction: report } : {}), ...(presses.length ? { pressed: presses as NonNullable<PageContext['pressed']> } : {}) };
+    accountAllowed = false;
+    return {
+      ...context, ...(report ? { pageAction: report } : {}), ...(presses.length ? { pressed: presses as NonNullable<PageContext['pressed']> } : {}),
+      ...(granted ? { granted: ['account'] as NonNullable<PageContext['granted']> } : {}),
+    };
   };
   const controller = new AgentController(session, overlay, pageForTurn, () => void save());
   /** Tells the user how a write went, and keeps the report for the model's next message. */

@@ -37,7 +37,8 @@ test('bundle: core.js builds for the browser with no Node built-ins, eval or new
     platform: 'browser', target: 'es2020', write: false, minify: true, logLevel: 'silent',
   })).outputFiles[0]!.text;
   assert.doesNotMatch(core, /\brequire\(|\bprocess\.|\bBuffer\b|\beval\(|\bnew Function\b|\bTextEncoder\b|\bbtoa\(/);
-  assert.ok(gzipSync(core).length < 15 * 1024, `core.js pure logic is ${Math.round(gzipSync(core).length / 1024)} KB gzipped`);
+  // 15 KB until sign-in mode (2026-11-15), whose stand-ins for private values added about 0.7 KB.
+  assert.ok(gzipSync(core).length < 17 * 1024, `core.js pure logic is ${Math.round(gzipSync(core).length / 1024)} KB gzipped`);
 });
 
 test('pure functions: same results in a bare Node context', () => {

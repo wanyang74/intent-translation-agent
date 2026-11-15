@@ -1,11 +1,15 @@
 // Loads the platform schemas and the site packs' schemas into one Ajv instance (JSON Schema 2020-12, strict mode),
 // and checks each site.yaml against the site-pack schema. Shared by the contract check, the generator and the testkit.
+// A tool whose output withholds personal fields from the model also gets its output's model view (privacy.ts), as one
+// more site schema, so the generator makes its validator like any other's.
 import Ajv2020 from 'ajv/dist/2020.js';
 import type { ValidateFunction } from 'ajv/dist/2020.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { listSites, readSite, type Site } from './site-pack.ts';
+import { modelViewSchema, schemaResolver } from './model-view.ts';
+import { modelOutputSchema, withheldPaths } from './privacy.ts';
+import { entriesOf, listSites, readSite, type Site } from './site-pack.ts';
 
 export const BASE = 'https://intent-agent.invalid/';
 export const platformSchemaDir = fileURLToPath(new URL('../schemas/', import.meta.url));
@@ -17,6 +21,8 @@ export interface SchemaFile {
   /** The $id this file must have. */
   id: string;
   doc: { $id?: string; examples?: unknown[] } & Record<string, unknown>;
+  /** Made at load time (a model view), not read from a file: no types are generated for it. */
+  derived?: boolean;
 }
 
 /** Every schema under dir; idPrefix is "schemas/" for the platform and "sites/<id>/schemas/" for a site. */
@@ -68,6 +74,7 @@ export function loadContract(options: { sites?: string[] } = {}): Contract {
     const site = readSite(id);
     if (!validatePack(site.pack)) throw new Error(`sites/${id}/site.yaml doesn't match the site-pack format: ${describeErrors(validatePack.errors)}`);
     const schemas = listSchemas(site.schemasDir, `sites/${id}/schemas/`);
+    schemas.push(...modelViews(id, site, schemas, platform));
     for (const schema of schemas) ajv.addSchema(schema.doc);
     sites[id] = { ...site, schemas };
   }
@@ -79,6 +86,25 @@ export function loadContract(options: { sites?: string[] } = {}): Contract {
     validator: (rel) => get(BASE + 'schemas/' + rel),
     siteValidator: (site, rel) => get(`${BASE}sites/${site}/schemas/${rel}`),
   };
+}
+
+/** The model view of each output schema that withholds fields; a path that doesn't fit the schema stops the load. */
+export function modelViews(id: string, site: Site, schemas: SchemaFile[], platform: SchemaFile[]): SchemaFile[] {
+  const resolve = schemaResolver([...platform, ...schemas].map((schema) => ({ ...schema.doc, $id: schema.id })));
+  return entriesOf(site.pack.tools).flatMap(([name, tool]) => {
+    const paths = withheldPaths(site.pack, name);
+    const output = schemas.find((schema) => schema.rel === tool.output);
+    if (!output) return [];
+    // Personal paths aren't withheld, but they must lead to a field too, or they'd keep nothing out of the logs.
+    const personal = tool.privacy?.personal ?? [];
+    const walked = personal.length ? modelViewSchema({ ...output.doc, $id: output.id }, output.id, personal, resolve) : null;
+    if (walked && 'problem' in walked) throw new Error(`sites/${id}/site.yaml: tools.${name}: a personal path doesn't fit the output schema: ${walked.problem}`);
+    if (!paths.length) return [];
+    const rel = modelOutputSchema(tool);
+    const view = modelViewSchema({ ...output.doc, $id: output.id }, BASE + `sites/${id}/schemas/` + rel, paths, resolve);
+    if ('problem' in view) throw new Error(`sites/${id}/site.yaml: tools.${name}: a withheld path doesn't fit the output schema: ${view.problem}`);
+    return [{ file: output.file, rel, id: BASE + `sites/${id}/schemas/` + rel, doc: view, derived: true }];
+  });
 }
 
 /** Short, readable summary of Ajv errors. */

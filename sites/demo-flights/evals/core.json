@@ -46,12 +46,15 @@
     },
     {
       "id": "my-trips",
-      "description": "A signed-in traveler's trips",
+      "description": "A signed-in traveler's trips, once they've allowed the agent to read their account",
       "page": {
         "url": "https://www.demo-flights.example/trips",
         "pageType": "trips",
         "locale": "en-US",
-        "signedIn": true
+        "signedIn": true,
+        "granted": [
+          "account"
+        ]
       },
       "message": "What trips do I have coming up?",
       "expect": {
@@ -69,6 +72,36 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "id": "my-trips-asks-first",
+      "description": "Signed in, but the traveler hasn't allowed the agent to read their account yet: it asks with the button, and reads nothing",
+      "page": {
+        "url": "https://www.demo-flights.example/trips",
+        "pageType": "trips",
+        "locale": "en-US",
+        "signedIn": true
+      },
+      "message": "What trips do I have coming up?",
+      "expect": {
+        "noCalls": [
+          "get_trips"
+        ],
+        "shows": [
+          {
+            "type": "consent"
+          }
+        ],
+        "showsNoItems": true,
+        "text": {
+          "excludes": [
+            "password",
+            "Q7K2LM",
+            "you have (one|1|\\d+) (upcoming )?trips?",
+            "SFO to SEA"
+          ]
+        }
       }
     }
   ]

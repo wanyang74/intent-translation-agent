@@ -3,6 +3,7 @@
 // declares) and from the item on screen. Scripts get a read-only view.
 import type { SitePack } from '../../../contract/generated/types.ts';
 import { valuesAt } from '../../../contract/src/paths.ts';
+import { isWithheld } from '../../../contract/src/privacy.ts';
 
 type Entity = NonNullable<SitePack['entities'][string]>;
 export type IdValue = string | number;
@@ -22,8 +23,12 @@ export interface IdView {
   list(kind: string): IdValue[];
 }
 
-/** Whether a value has the type and pattern the entity kind declares for its IDs. */
+/**
+ * Whether a value has the type and pattern the entity kind declares for its IDs. A kind with private IDs also takes
+ * their stand-ins (withheld:<n>): the brain only ever sees those.
+ */
 export function idShapeOk(entity: Entity, id: unknown): id is IdValue {
+  if (entity.id.cardOnly && isWithheld(id)) return true;
   if (entity.id.type === 'integer') return typeof id === 'number' && Number.isSafeInteger(id);
   if (typeof id !== 'string' || id === '') return false;
   return !entity.id.pattern || new RegExp(entity.id.pattern).test(id);

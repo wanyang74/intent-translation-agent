@@ -131,6 +131,11 @@ export function crossCheck(site: Site): string[] {
     for (const rel of [tool.input, tool.output]) if (!schemaExists(rel)) add(`tools.${name}`, `schema ${rel} not found`);
     for (const endpointName of tool.uses) if (!pack.endpoints[endpointName]) add(`tools.${name}.uses`, `unknown endpoint ${endpointName}`);
     for (const id of [...(tool.ids?.input ?? []), ...(tool.ids?.output ?? [])]) if (!kinds.has(id.kind)) add(`tools.${name}.ids`, `unknown entity kind ${id.kind}`);
+    // Sign-in mode: a tool that reads the person's account says which of its fields are personal, even if none are, so
+    // nobody adds one without deciding what the brain may keep and what stays on the device.
+    if (tool.signIn && !tool.privacy) add(`tools.${name}`, 'needs sign-in, so it needs privacy (personal and cardOnly fields; {} if none)');
+    const cardOnly = new Set(tool.privacy?.cardOnly ?? []);
+    for (const both of tool.privacy?.personal ?? []) if (cardOnly.has(both)) add(`tools.${name}.privacy`, `${both} is both personal and cardOnly; cardOnly already keeps it from the brain`);
   }
   const fieldKeys = new Set(entriesOf(pack.entities).flatMap(([, entity]) => Object.keys(entity.fields ?? {})));
   for (const [kind, entity] of entriesOf(pack.entities)) {

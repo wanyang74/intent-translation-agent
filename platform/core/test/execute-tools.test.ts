@@ -101,6 +101,7 @@ test('statuses: become errors the model can act on, in the tool\'s own words whe
       network: () => { if (status === 'network') throw new Error('socket hang up'); return json({}, status); },
     });
     session.setPage(signedIn);
+    session.accountAllowed = true;
     const outcome = await runToolCall(session, 'my_orders', {});
     assert.equal(reason(outcome), expected, String(status));
     assert.equal(!outcome.ok && outcome.error.retryable, retryable, String(status));

@@ -75,7 +75,12 @@ export type UiComponent =
    * `confirm`, its page action changes the site, so it's drawn as a confirming button instead. `item` is the one item
    * its params name, if they name one, so a press of it can tell the model which item the user opened.
    */
-  | { type: 'destination'; destination: string; title: string; url: string; appRoute?: string; focus?: PageFocus; confirm?: ConfirmView; item?: { kind: string; id: string | number } };
+  | { type: 'destination'; destination: string; title: string; url: string; appRoute?: string; focus?: PageFocus; confirm?: ConfirmView; item?: { kind: string; id: string | number } }
+  /**
+   * The button that lets the agent read the user's account for the rest of the conversation (sign-in mode). Not the
+   * model's: drawn when the brain held back an account tool for want of it. `account` is what the site calls it.
+   */
+  | { type: 'consent'; account: string; site: string };
 
 /** A confirming button for a page action that changes the site (D6): what changes, what the user agrees to, and its label. */
 export interface ConfirmView {
@@ -379,12 +384,12 @@ function destinationOf(session: Session, name: string, params: Record<string, un
  *   2. Fill the rest from tool results, with required notices added.
  */
 export function present(session: Session, calls: readonly PresentationCall[]): Presented {
-  // 1. Check.
+  // 1. Check, with the real values behind any stand-ins the model passed (sign-in mode's private IDs).
   const ctx = checkContext(session);
   const refused: Presented['refused'] = [];
   const accepted: PresentationCall[] = [];
   const destinations = new Map<PresentationCall, UiComponent>();
-  for (const call of calls) {
+  for (const call of calls.map((given) => ({ ...given, args: session.withheld.resolve(given.args) }) as PresentationCall)) {
     const error = checkPresentation(ctx, call);
     if (error) {
       refused.push({ call, error });

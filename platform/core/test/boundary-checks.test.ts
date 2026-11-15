@@ -58,14 +58,18 @@ test("error wording: a tool call's problem uses the tool's own error when exactl
   assert.equal(errorFor(pack, 'compare_products', 'expired_id', { kind: 'product', id: 1 }).reason, 'expired_id', 'no own error: the platform wording');
 });
 
-test('checkToolCall: unknown, switched off, writes, sign-in and bad arguments are refused in that order', () => {
+test('checkToolCall: unknown, switched off, writes, sign-in, the user\'s permission for the account and bad arguments are refused in that order', () => {
   const ctx = context();
   assert.equal(reason(checkToolCall(ctx, 'no_such_tool', {})), 'unknown_tool');
   assert.equal(reason(checkToolCall({ ...ctx, policy: { ...ctx.policy, disabledTools: ['place_order'] } }, 'place_order', {})), 'tool_disabled');
   assert.equal(reason(checkToolCall(ctx, 'place_order', { offerId: 'of_ab12' })), 'writes_off');
   assert.equal(checkToolCall(ctx, 'place_order', { offerId: 'of_ab12' })!.code, 'policy_blocked');
   assert.equal(reason(checkToolCall(ctx, 'my_orders', {})), 'signed_out', 'the site wording for auth_required');
-  assert.equal(checkToolCall({ ...ctx, page: { url: 'https://www.example.com/', pageType: 'account', signedIn: true } }, 'my_orders', {}), null);
+  const signedIn = { ...ctx, page: { url: 'https://www.example.com/', pageType: 'account', signedIn: true } };
+  const notYet = checkToolCall(signedIn, 'my_orders', {});
+  assert.deepEqual([notYet?.reason, notYet?.code], ['needs_consent', 'auth_required'], 'signed in, but the user hasn\'t allowed reading the account yet');
+  assert.match(notYet!.message, /my_orders reads the user's account, which needs their permission first/);
+  assert.equal(checkToolCall({ ...signedIn, accountAllowed: true }, 'my_orders', {}), null);
   const bad = checkToolCall({ ...ctx, validateInput: () => 'colors must be a list' }, 'search_products', { colors: 'Gray' });
   assert.deepEqual([bad?.reason, bad?.code], ['bad_arguments', 'invalid_value']);
   assert.match(bad!.message, /colors must be a list/);

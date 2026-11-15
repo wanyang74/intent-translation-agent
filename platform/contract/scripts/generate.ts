@@ -16,7 +16,7 @@ import standaloneCode from 'ajv/dist/standalone/index.js';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { AJV_OPTIONS, listSchemas, platformSchemaDir, type SchemaFile } from '../src/load.ts';
+import { AJV_OPTIONS, listSchemas, modelViews, platformSchemaDir, type SchemaFile } from '../src/load.ts';
 import { PLATFORM_TOOLS, PRESENTATION_TOOLS, entriesOf, listSites, readSite } from '../src/site-pack.ts';
 import { defName, typeName, validatorName } from '../src/names.ts';
 
@@ -93,7 +93,8 @@ async function generateTypes(prefix: string, schemas: SchemaFile[], platformType
 function generateValidators(scope: SchemaFile[], all: SchemaFile[], validatorTypesImport: string | null): { js: string; dts: string } {
   const ajv = new Ajv2020({ ...AJV_OPTIONS, allErrors: false, code: { source: true, esm: true } });
   for (const schema of all) ajv.addSchema(schema.doc);
-  const exported = scope.filter((schema) => schema.rel !== 'common.json').map((schema) => ({ fn: validatorName(schema.rel), type: typeName(schema.rel), id: schema.id, rel: schema.rel }));
+  // A model view (load.ts) has no generated type of its own; its validator checks a plain object.
+  const exported = scope.filter((schema) => schema.rel !== 'common.json').map((schema) => ({ fn: validatorName(schema.rel), type: schema.derived ? null : typeName(schema.rel), id: schema.id, rel: schema.rel }));
   const js = standaloneCode(ajv, Object.fromEntries(exported.map((entry) => [entry.fn, entry.id])));
   const forbidden = [/\brequire\(/, /^\s*import\s/m, /\bnew Function\b/, /\beval\(/].filter((re) => re.test(js));
   if (forbidden.length) {
@@ -108,9 +109,9 @@ function generateValidators(scope: SchemaFile[], all: SchemaFile[], validatorTyp
         'export interface Validator<T> {', '  (data: unknown): data is T;', '  errors?: ValidationError[] | null;', '}',
       ];
   const dts = [
-    `import type { ${exported.map((entry) => entry.type).join(', ')} } from './types.ts';`,
+    `import type { ${exported.flatMap((entry) => entry.type ?? []).join(', ')} } from './types.ts';`,
     ...validatorDecl, '',
-    ...exported.map((entry) => `/** ${entry.id.replace(/^https:\/\/intent-agent\.invalid\//, '')} */\nexport declare const ${entry.fn}: Validator<${entry.type}>;`), '',
+    ...exported.map((entry) => `/** ${entry.id.replace(/^https:\/\/intent-agent\.invalid\//, '')} */\nexport declare const ${entry.fn}: Validator<${entry.type ?? 'Record<string, unknown>'}>;`), '',
   ].join('\n');
   return { js: BANNER + js + '\n', dts: BANNER + dts };
 }
@@ -194,7 +195,8 @@ for (const id of listSites()) {
   const schemas = listSchemas(site.schemasDir, prefix);
   byPrefix.set(prefix, schemas);
   const out = path.join(site.dir, 'generated');
-  const validators = generateValidators(schemas, [...platform, ...schemas], '../../../platform/contract/generated/validators.js');
+  const views = modelViews(id, site, schemas, platform);
+  const validators = generateValidators([...schemas, ...views], [...platform, ...schemas, ...views], '../../../platform/contract/generated/validators.js');
   outputs.push(
     { file: path.join(out, 'types.ts'), text: await generateTypes(prefix, schemas, '../../../platform/contract/generated/types.ts') },
     { file: path.join(out, 'validators.js'), text: validators.js },

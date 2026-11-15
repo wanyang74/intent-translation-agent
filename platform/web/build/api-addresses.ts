@@ -10,7 +10,8 @@ export const API_PATH = /(^|\/)(api|apis|graphql|gql|v\d+|rest|svc|service|servi
 export const FLAG_WORDS = ['create', 'submit', 'update', 'delete', 'remove', 'save', 'cancel', 'purchase', 'checkout', 'order', 'reserve', 'apply', 'upload',
   'signup', 'register', 'login', 'logout', 'signin', 'auth', 'token', 'password', 'payment', 'account', 'profile', 'favorite', 'user', 'customer', 'document', 'sign'];
 /** A path with numbers and long hex IDs as {id}: the code's own IDs, or a visitor's in a recorded call. */
-export const maskIds = (urlPath: string) => urlPath.replace(/\/\d{3,}(?=\/|$)/g, '/{id}').replace(/\/[0-9a-f-]{32,36}(?=\/|$)/gi, '/{id}').replace(/\/[0-9a-f]{16,}(?=\/|$)/gi, '/{id}');
+// Decimal numbers in a path (a latitude and longitude, say) are masked first: they can place the visitor who recorded it.
+export const maskIds = (urlPath: string) => urlPath.replace(/\/-?\d+\.\d+(?=\/|$)/g, '/{number}').replace(/\/\d{3,}(?=\/|$)/g, '/{id}').replace(/\/[0-9a-f-]{32,36}(?=\/|$)/gi, '/{id}').replace(/\/[0-9a-f]{16,}(?=\/|$)/gi, '/{id}');
 /** Static files and bare base URLs (an API's base joined to a path elsewhere) aren't endpoints. */
 export const isStatic = (urlPath: string) => ASSET.test(urlPath) || urlPath.includes('/_next/') || urlPath === '/';
 /** String literals: "…", '…' and `…` with ${…} parts kept as {…}. */

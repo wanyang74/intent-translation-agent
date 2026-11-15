@@ -223,6 +223,8 @@ export class Turn {
   private cardRetries = 0;
   /** Whether a reply was cut off at the output limit in this turn: later steps get retryOutputTokens. */
   private outputLimitRaised = false;
+  /** Whether an account tool was held back for want of the user's permission: the answer asks for it. */
+  private askConsent = false;
   /** Amendments queued for the model's next step, in the order the user sent them. */
   private amendments: string[] = [];
   /** Aborts when the client of the request being served goes away. */
@@ -377,7 +379,7 @@ export class Turn {
   /** What the server checks need: the site, its policy, this session's known IDs, the time, and the page. */
   private checks(): ServerContext {
     const { site } = this.services;
-    return { bundle: site.bundle, policy: site.policy, ids: this.session.ids, now: this.services.now(), page: this.page, scripts: this.session.scripts };
+    return { bundle: site.bundle, policy: site.policy, ids: this.session.ids, now: this.services.now(), page: this.page, scripts: this.session.scripts, accountAllowed: this.session.accountAllowed };
   }
 
   // ------------------------------------------------------------------ steps
@@ -771,6 +773,7 @@ export class Turn {
     return StepEndingResult.answered({
       type: 'answer', traceId: this.traceId, text, present: withRequiredNotices(this.services.site.bundle.pack, shown),
       ...(followUps.length ? { followUps: followUps as [string, ...string[]] } : {}),
+      ...(this.askConsent ? { askConsent: true } : {}),
     });
   }
 
@@ -780,6 +783,7 @@ export class Turn {
    */
   private refuse(call: CallRecord, error: ToolError): null {
     call.result = errorResult(call, error);
+    if (error.reason === 'needs_consent') this.askConsent = true;
     this.log('call_refused', { tool: call.name, reason: error.reason });
     return null;
   }

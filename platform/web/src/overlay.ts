@@ -33,6 +33,8 @@ export interface OverlayOptions {
   onNavigate?(url: string, focus: PageFocus | undefined, press: PanelPress): void;
   /** The user opened the site in a new tab from a card's link. */
   onPress?(press: PanelPress): void;
+  /** The user allowed the agent to read their account; called just before the message that says so is sent. */
+  onAllowAccount?(): void;
   /** Where the user last left the panel, on this site; it's fitted to this window. */
   placement?: PanelPlacement | null;
   /** The user moved, resized, folded or reset the panel. */
@@ -76,6 +78,11 @@ export class Overlay implements Surface {
       press: (press) => {
         this.pressed(press);
         options.onPress?.(press);
+      },
+      // The permission is noted first, so the message it goes with carries it.
+      allowAccount: (message) => {
+        options.onAllowAccount?.();
+        this.send(message);
       },
     };
     const root = mountPoint.attachShadow({ mode: 'open' });

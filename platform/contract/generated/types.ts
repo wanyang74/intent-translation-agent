@@ -284,6 +284,13 @@ export interface PageContext {
     | [PanelPress, PanelPress, PanelPress]
     | [PanelPress, PanelPress, PanelPress, PanelPress]
     | [PanelPress, PanelPress, PanelPress, PanelPress, PanelPress];
+  /**
+   * What the user allowed since the last message, sent once with the next one: account means the agent may read their signed-in account for the rest of the conversation (sign-in mode; asked once per conversation, with a button in the panel).
+   *
+   * @minItems 1
+   * @maxItems 1
+   */
+  granted?: ['account'];
 }
 /**
  * One press of a panel button that goes to the site: a card's View on site, a Take me there, or a confirming button (D6). kind and id are the item it was for, an ID a tool returned; destination is the button's destination.
@@ -587,6 +594,10 @@ export interface AnswerEvent {
   present?: PresentationCall[];
   budgetReached?: boolean;
   /**
+   * The model wanted to read the user's account, which needs their permission first: the surface shows the button that gives it.
+   */
+  askConsent?: boolean;
+  /**
    * Messages the user sent during this turn that arrived after its last model call. The client sends them as the next turn.
    *
    * @minItems 1
@@ -670,6 +681,10 @@ export interface Entity {
   id: {
     type: 'integer' | 'string';
     pattern?: string;
+    /**
+     * This kind's IDs are private (such as a booking's confirmation number): they stay on the device, shown on cards, and the model gets a stand-in (withheld:<n>) that core.js swaps back.
+     */
+    cardOnly?: boolean;
   };
   /**
    * Never shown to the user (e.g. routing tokens).
@@ -753,6 +768,13 @@ export interface Tool {
   uses: [string, ...string[]];
   sideEffect: 'read' | 'write';
   signIn?: boolean;
+  /**
+   * Which output fields are personal. Required for a tool that needs sign-in. personal: sent to the model, but kept out of the brain's logs, traces, session memory and saved references. cardOnly: never sent to the brain; shown on cards from the record on the device, with a stand-in (withheld:<n>) in the model's copy. Paths as in ids (trips[].route).
+   */
+  privacy?: {
+    personal?: string[];
+    cardOnly?: string[];
+  };
   presentation?:
     | 'present_items'
     | 'present_comparison'
@@ -902,6 +924,10 @@ export interface SitePack {
      * The site's own button color, as #rrggbb: the panel's buttons and the user's messages use it, with white text, so it must be dark enough to read white on. Without it, the panel's neutral blue.
      */
     brandColor?: string;
+    /**
+     * What the site calls a signed-in person's account, such as "Example Rewards account": the panel names it when it asks before the agent first reads the account in a conversation. Without it, "account".
+     */
+    accountName?: string;
   };
   entities: {
     [k: string]: Entity | undefined;

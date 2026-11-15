@@ -20,6 +20,7 @@ export const PLATFORM_ERRORS = {
   bad_id: { code: 'invalid_value', message: '{id} isn\'t a valid {kind} ID: {kind} IDs are {idType}.', retryable: true },
   expired_id: { code: 'expired', message: '{kind} {id} has expired. Get a fresh one before using it.', retryable: true },
   needs_sign_in: { code: 'auth_required', message: 'The user needs to be signed in for {what}. Ask them to sign in on the site, then try again.', retryable: true },
+  needs_consent: { code: 'auth_required', message: "{tool} reads the user's {what}, which needs their permission first, once per conversation. A button for it shows under your answer: say in one sentence what you'd look up in their {what}, then wait for them.", retryable: true },
   writes_off: { code: 'policy_blocked', message: "{tool} would change something on the site, which this version doesn't do. Give the user a link to do it on the site.", retryable: false },
   tool_disabled: { code: 'tool_disabled', message: '{tool} is unavailable right now. Answer without it and say so.', retryable: false },
   budget_reached: { code: 'budget_reached', message: 'This {scope} reached its limit of {limit} calls. Summarize what you have and offer to continue.', retryable: false },

@@ -124,6 +124,13 @@ function ruleLines(pack: Pack): string[] {
   if (writes.length) {
     lines.push(`- ${writes.map(([name]) => name).join(', ')} change${writes.length === 1 ? 's' : ''} something on the site when the user presses the button. Offer one only when the user asks for exactly that, for one item they chose. You never press it and never see the site do it: never say it's done, added or reserved. The extension reports what happened in the context block's "Page action" line on the next message; go by that line alone.`);
   }
+  // Sign-in mode: the account needs the user's yes once, and private values reach the model only as stand-ins.
+  const accountTools = entriesOf(pack.tools).filter(([, tool]) => tool.signIn).map(([name]) => name);
+  if (accountTools.length) {
+    const account = pack.site.accountName ?? 'account';
+    lines.push(`- ${accountTools.join(', ')} read${accountTools.length === 1 ? 's' : ''} the user's ${account}. They work only while the user is signed in on the site, and only once the user has allowed it in this conversation, with the button the panel shows when you're refused for want of it. Never ask for a password or sign-in details: the user signs in on the site itself.`);
+    lines.push('- A value written withheld:<n> is private (such as a confirmation number): it stays on the user\'s device and shows only on cards. Use it as given to show an item, but never write it in your answer, and never try to guess the value behind it; say it\'s on the card.');
+  }
   // The panel's buttons the user pressed, so "this one" can mean the item they opened rather than a guess.
   if (Object.keys(pack.destinations ?? {}).length || entriesOf(pack.entities).some(([, entity]) => entity.card?.link || entity.card?.destination)) {
     lines.push('- The context block\'s "Pressed" line lists the panel\'s buttons the user pressed since their last message, oldest first, with the item each was for. When the user says "this one" or "that one" without naming it, they mean the item they pressed last; if they pressed several and it\'s still unclear, ask which. A press only opened a page: it chose and changed nothing.');
@@ -226,6 +233,7 @@ export function contextBlock(page: PageContext, now: number): string {
   if (page.pageAction) lines.push(`Page action: ${page.pageAction.action}, ${page.pageAction.result}: ${page.pageAction.message}`);
   // The panel's buttons pressed since the last message: the item each was for, and its title as the panel showed it.
   if (page.pressed?.length) lines.push(`Pressed since the last message, oldest first: ${page.pressed.map(pressLine).join('; ')}`);
+  if (page.granted?.includes('account')) lines.push("Allowed with this message: reading the user's account, for the rest of the conversation");
   const time = new Date(now);
   const iso = time.toISOString().replace(/\.\d{3}Z$/, 'Z');
   return `<context>\n${fence(lines.join('\n'), 'page-context', 2000)}\nTime: ${iso} (${WEEKDAYS[time.getUTCDay()]}, UTC)\n</context>`;
