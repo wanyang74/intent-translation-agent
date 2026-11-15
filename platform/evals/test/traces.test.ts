@@ -3,7 +3,9 @@
 // moved to another zip with a URL query added, as a real user's session would be; plus small made-up traces.
 // Passes when: promoting gives back the example conversation (the standard zip, no query, the exact fixtures, no
 // checker problems); the summary counts steps, calls, failures, unavailable tools, refusals, times and tokens;
-// IP addresses are blanked and an encoded value still holding the user's zip is reported.
+// IP addresses are blanked and an encoded value still holding the user's zip is reported; showing a session gives each
+// turn's message, calls with arguments and results, and answer, and one turn's every event, its long results cut, next
+// to what the memory kept.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { gzipSync } from 'node:zlib';
@@ -12,7 +14,8 @@ import type { Message } from '../../contract/generated/types.ts';
 import type { TraceLine } from '../../brain/src/server/traces.ts';
 import { loadConversations, type Conversation } from '../../testkit/src/conversations.ts';
 import { hasFixtures } from '../../testkit/src/fixtures.ts';
-import { costOf, describeTraces, promoteTrace, standardZip, summarizeTrace, type Trace } from '../src/traces.ts';
+import type { SessionMemory } from '../../brain/src/memory/condense.ts';
+import { costOf, describeTraces, promoteTrace, showTrace, standardZip, summarizeTrace, type Trace } from '../src/traces.ts';
 
 const USER_ZIP = '00501';
 const isClient = (message: Message) => message.type === 'turn' || message.type === 'results' || message.type === 'amend';
@@ -112,3 +115,57 @@ for (const site of listSites().filter(hasFixtures)) {
     if (zip) assert.ok(promoted.notes.some((note) => /1 encoded values still hold the user's zip/.test(note)), promoted.notes.join('\n'));
   });
 }
+
+for (const site of listSites().filter(hasFixtures)) {
+  const [conversation] = loadConversations(site).filter((candidate) => candidate.pageData === undefined);
+  if (!conversation) continue;
+  test(`${site}: showing a session gives every turn's message, each call with its arguments, and the answer`, () => {
+    const trace = traceOf(conversation);
+    const shown = showTrace(trace);
+    const turns = conversation.messages.filter((message) => message.type === 'turn');
+    assert.equal(shown.match(/^Turn \d+ /gm)?.length, turns.length);
+    for (const turn of turns) assert.ok(shown.includes(`you: ${turn.message.split('\n')[0]}`), turn.message);
+    for (const message of conversation.messages) {
+      if (message.type === 'tool_call') assert.ok(shown.includes(`call: ${message.call.name} ${JSON.stringify(message.call.args)} → `), message.call.name);
+    }
+    assert.equal(shown.match(/^  answer: /gm)?.length, conversation.messages.filter((message) => message.type === 'answer').length);
+    assert.match(shown, /memory: none saved/);
+    assert.match(showTrace(trace, { turn: 1 }), /^\s+\+\d+\.\ds → answer/m, 'one turn in full: its events, timed from the message');
+  });
+}
+
+test('one turn in full: refusals and failed results, long results cut unless full, and what the memory kept or dropped', () => {
+  const at = (second: number) => `2026-11-05T20:00:${String(second).padStart(2, '0')}.000Z`;
+  const turn = (traceId: string, message: string) => ({ type: 'turn', site: 'made-up-site', sessionId: 'sess_made_up', traceId, message, pageContext: { url: 'https://example.test/', pageType: 'home' } });
+  const trace: Trace = {
+    file: '/traces/made-up-site/2026-11-05/sess_made_up.jsonl', site: 'made-up-site', sessionId: 'sess_made_up',
+    lines: [
+      { at: at(0), in: turn('t1', 'first question') },
+      { at: at(1), out: { type: 'answer', traceId: 't1', text: 'first answer', present: [] } },
+      { at: at(2), in: turn('t2', 'second question') },
+      { at: at(3), log: { sessionId: 'sess_made_up', traceId: 't2', kind: 'call_refused', detail: { tool: 'list_trips', reason: 'needs_consent' } } },
+      { at: at(3), out: { type: 'tool_call', traceId: 't2', call: { id: 'call_1', name: 'search_flights', args: { from: 'AAA' } } } },
+      { at: at(3), out: { type: 'tool_call', traceId: 't2', call: { id: 'call_2', name: 'fare_details', args: {} } } },
+      { at: at(4), in: { type: 'results', sessionId: 'sess_made_up', traceId: 't2', results: [
+        { id: 'call_1', ok: true, output: { flights: ['f1', 'f2', 'f3', 'f4', 'f5'], note: 'x'.repeat(250) } },
+        { id: 'call_2', ok: false, error: { code: 'not_found', reason: 'no_such_fare', message: 'No such fare.' } },
+      ] } },
+      { at: at(5), out: { type: 'answer', traceId: 't2', text: 'second answer\non two lines', present: [] } },
+    ],
+  };
+  const brief = showTrace(trace);
+  assert.match(brief, /refused: list_trips \(needs_consent\)/);
+  assert.match(brief, /call: search_flights \{"from":"AAA"\} → ✓ flights: 5, note/);
+  assert.match(brief, /call: fare_details \{\} → ✗ not_found \(no_such_fare\)/);
+  assert.match(brief, /answer: second answer\n {10}on two lines/, 'later lines line up under the first');
+  const memoryTurn = { at: at(2), message: 'second question', amendments: [], calls: [], shown: [], answer: 'second answer' };
+  const memory = { version: 1, sessionId: 'sess_made_up', site: 'made-up-site', savedAt: 0, lastSeen: 0, usage: { turns: 2, modelCalls: 2, tokens: 0 }, knownIds: [], turns: [memoryTurn], droppedTurns: 1 } as unknown as SessionMemory;
+  const full = showTrace(trace, { turn: 2, memory });
+  assert.match(full, /\+2\.0s ← result call_1/);
+  assert.match(full, /"… 2 more"/);
+  assert.match(full, /… \(250 chars\)/);
+  assert.match(full, /memory of this turn[^]*"answer": "second answer"/);
+  assert.ok(!showTrace(trace, { turn: 2, full: true }).includes('more"'), 'full: nothing cut');
+  assert.match(showTrace(trace, { turn: 1, memory }), /this turn was dropped for space/);
+  assert.match(showTrace(trace, { turn: 3 }), /No turn 3: this session has 2/);
+});

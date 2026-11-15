@@ -2,18 +2,24 @@
 // quality evaluation.
 //   npm run traces                                   every session: each turn's steps, calls, failures, times, tokens
 //   npm run traces -- --site <id> --since 2026-11-01
+//   npm run traces -- show <session ID, or part of it, or trace file> [--turn <n>] [--full]
+//                                                    one session turn by turn: messages, calls with arguments and
+//                                                    results, answers; --turn shows one turn's every event and what
+//                                                    the session's memory (sites/<site>/session_log/) kept of it
 //   npm run traces -- promote <trace file> [--id <draft id>] [--zip <zip>]
 //                                                    a conversation draft and eval case stubs, with personal details
 //                                                    removed, in traces/<site>/drafts/ for review before they become tests
 // Cost needs prices: TRACE_PRICES in the environment or .env.local, as dollars per million tokens
 // "input,output,cacheRead,cacheWrite". There's no default, since prices change. Traces stay on this machine; a draft
 // is committed only after a person has read it.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { repoRoot } from '../../contract/src/site-pack.ts';
+import type { SessionMemory } from '../../brain/src/memory/condense.ts';
+import { memoryFileName } from '../../brain/src/memory/store.ts';
 import { setting } from '../../brain/src/server/env.ts';
-import { defaultTraceDir, describeTraces, shownPath, listTraces, promoteTrace, readTrace, summarizeTrace, type Prices } from '../src/traces.ts';
+import { defaultTraceDir, describeTraces, shownPath, listTraces, promoteTrace, readTrace, showTrace, summarizeTrace, type Prices } from '../src/traces.ts';
 
 const { values: options, positionals } = parseArgs({
   allowPositionals: true,
@@ -23,6 +29,8 @@ const { values: options, positionals } = parseArgs({
     dir: { type: 'string' },
     id: { type: 'string' },
     zip: { type: 'string' },
+    turn: { type: 'string' },
+    full: { type: 'boolean' },
   },
 });
 const dir = options.dir ? path.resolve(options.dir) : defaultTraceDir;
@@ -58,8 +66,20 @@ if (positionals[0] === 'promote') {
   console.log(`fixtures that answer: ${promoted.conversation.fixtures.join(', ') || 'none'}`);
   for (const note of promoted.notes) console.log(`note: ${note}`);
   for (const problem of promoted.problems) console.log(`problem: ${problem}`);
+} else if (positionals[0] === 'show') {
+  // A trace file, or the one session whose ID contains what was given.
+  const wanted = positionals[1];
+  const matches = wanted && existsSync(wanted) ? [path.resolve(wanted)] : listTraces(dir).filter((file) => wanted && path.basename(file).includes(wanted));
+  if (!wanted || matches.length !== 1) {
+    console.error(wanted ? `${matches.length} sessions match ${wanted}${matches.length ? `:\n${matches.map(shownPath).join('\n')}` : ''}` : 'Usage: npm run traces -- show <session ID, or part of it, or trace file> [--turn <n>] [--full]');
+    process.exit(1);
+  }
+  const trace = readTrace(matches[0]!);
+  const memoryFile = path.join(repoRoot, 'sites', trace.site, 'session_log', memoryFileName(trace.sessionId));
+  const memory = existsSync(memoryFile) ? (JSON.parse(readFileSync(memoryFile, 'utf8')) as SessionMemory) : undefined;
+  console.log(showTrace(trace, { ...(options.turn ? { turn: Number(options.turn) } : {}), ...(options.full ? { full: true } : {}), ...(memory ? { memory } : {}) }));
 } else if (positionals.length) {
-  console.error(`Unknown command ${positionals[0]}. Use no command for the report, or promote.`);
+  console.error(`Unknown command ${positionals[0]}. Use no command for the report, show, or promote.`);
   process.exit(1);
 } else {
   const files = listTraces(dir, { ...(options.site ? { sites: options.site } : {}), ...(options.since ? { since: options.since } : {}) });

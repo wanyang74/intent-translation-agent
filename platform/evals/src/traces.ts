@@ -1,7 +1,8 @@
 // Real-session traces, read back: the files the local brain writes as people use the agent in a real browser
 // (brain/src/server/traces.ts), summarized for benchmarks and turned into test drafts for quality evaluation.
 // summarizeTrace measures each turn (steps, tool calls, failures, refusals, time to the first event and to the answer,
-// tokens and cache use); describeTraces prints them as a report. promoteTrace makes a conversation draft from a trace
+// tokens and cache use); describeTraces prints them as a report; showTrace prints one session turn by turn for a person
+// to read, or one turn in full next to what the session's memory kept of it. promoteTrace makes a conversation draft from a trace
 // for a person to review before it becomes a test: personal details are removed (the user's zip becomes the site's
 // standard test zip, page URLs lose their query, IP addresses are blanked), and core.js replays it against the
 // site's fixtures to show which requests still need a recording.
@@ -14,6 +15,7 @@ import { loadContract } from '../../contract/src/load.ts';
 import { repoRoot } from '../../contract/src/site-pack.ts';
 import { runTurn, startSession } from '../../core/src/index.ts';
 import type { BrainLogEntry } from '../../brain/src/agent/types.ts';
+import type { SessionMemory } from '../../brain/src/memory/condense.ts';
 import type { TraceLine } from '../../brain/src/server/traces.ts';
 import { checkConversation, type Conversation } from '../../testkit/src/conversations.ts';
 import { FakeBrain } from '../../testkit/src/fake-brain.ts';
@@ -213,6 +215,126 @@ export function describeTraces(sessions: readonly SessionSummary[], prices?: Pri
   if (failures.length) out.push(`  failed tool results: ${tally(failures)}`);
   const refusals = turns.flatMap((turn) => turn.refusals);
   if (refusals.length) out.push(`  refusals: ${tally(refusals)}`);
+  return out.join('\n');
+}
+
+export interface ShowOptions {
+  /** One turn (from 1) in full: every event in order, with arguments and results. Without it, each turn in brief. */
+  turn?: number;
+  /** Don't cut long lists and strings in results. */
+  full?: boolean;
+  /** The session's saved memory (brain/src/memory/condense.ts), to show what the model will remember of the turn. */
+  memory?: SessionMemory;
+}
+
+/** How many items of a list, and characters of a string, a result shows unless --full. */
+const SHOWN_ITEMS = 3;
+const SHOWN_CHARS = 200;
+
+/** A value with long lists and strings cut, saying how much was left out. */
+function abridge(value: unknown): unknown {
+  if (typeof value === 'string') return value.length > SHOWN_CHARS ? `${value.slice(0, SHOWN_CHARS)}… (${value.length} chars)` : value;
+  if (Array.isArray(value)) {
+    const kept = value.slice(0, SHOWN_ITEMS).map(abridge);
+    return value.length > SHOWN_ITEMS ? [...kept, `… ${value.length - SHOWN_ITEMS} more`] : kept;
+  }
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, inner]) => [key, abridge(inner)]));
+  return value;
+}
+
+/** A value as indented JSON under a label, every line indented by `indent`. */
+const block = (label: string, value: unknown, indent: string) =>
+  `${indent}${label}\n${JSON.stringify(value, null, 2).split('\n').map((line) => `${indent}  ${line}`).join('\n')}`;
+
+/** Text after a label, its later lines indented to line up under the first. */
+const labeled = (label: string, text: string) => `${label}${text.split('\n').join(`\n${' '.repeat(label.length)}`)}`;
+
+/** A result in one line: ok with its top-level fields (lists as counts), or the error's code and reason. */
+function resultLine(result: ToolResult): string {
+  if (!result.ok) return `✗ ${result.error.code}${result.error.reason ? ` (${result.error.reason})` : ''}`;
+  const fields = Object.entries(result.output as Record<string, unknown>).map(([key, value]) => (Array.isArray(value) ? `${key}: ${value.length}` : key));
+  return `✓ ${fields.join(', ')}`;
+}
+
+/**
+ * One session, turn by turn, for a person reading it (`npm run traces -- show`).
+ *   1. Find the turns, as summarizeTrace does, and the lines of each by trace ID.
+ *   2. In brief: per turn, the summary line, the message, each call with its arguments and result, refusals, the answer.
+ *   3. One turn in full: every line of the turn in order, with times from the message, and results as JSON (cut unless
+ *      full); then what the session's memory kept of it, which is all the model has of it in a reopened session.
+ */
+export function showTrace(trace: Trace, options: ShowOptions = {}): string {
+  // 1. The turns and their lines.
+  const summary = summarizeTrace(trace);
+  const turnLines = summary.turns.map((turn) => trace.lines.filter((line) => {
+    const traceId = 'in' in line ? traceOf(line.in) : 'out' in line ? traceOf(line.out) : 'log' in line ? line.log.traceId : line.refused.traceId;
+    return traceId === turn.traceId;
+  }));
+  const out = [`${trace.site} ${summary.started.replace('T', ' ').slice(0, 19)} ${trace.sessionId} (${shownPath(trace.file)})`];
+  out.push(options.memory ? `memory: ${options.memory.turns.length} turns kept, ${options.memory.droppedTurns} dropped` : 'memory: none saved for this session');
+  if (options.turn !== undefined && (options.turn < 1 || options.turn > summary.turns.length)) {
+    out.push(`No turn ${options.turn}: this session has ${summary.turns.length}.`);
+    return out.join('\n');
+  }
+  summary.turns.forEach((turn, i) => {
+    if (options.turn !== undefined && options.turn !== i + 1) return;
+    const lines = turnLines[i]!;
+    const calls = Object.entries(turn.calls).map(([tool, count]) => (count > 1 ? `${tool}×${count}` : tool)).join(' ') || 'no calls';
+    out.push('', `Turn ${i + 1} · ${turn.at.slice(11, 19)} on ${turn.pageType} · ${turn.steps} steps · ${calls} · answer ${seconds(turn.answerMs)} · ${turn.ended ?? 'no end logged'}`);
+    out.push(labeled('  you: ', turn.message));
+    if (options.turn === undefined) {
+      // 2. In brief.
+      const toolCalls = new Map<string, ToolCall>();
+      for (const line of lines) {
+        if ('out' in line && typeOf(line.out) === 'tool_call') {
+          const call = (line.out as { call: ToolCall }).call;
+          toolCalls.set(call.id, call);
+        } else if ('in' in line && typeOf(line.in) === 'results') {
+          for (const result of (line.in as { results: ToolResult[] }).results) {
+            const call = toolCalls.get(result.id);
+            out.push(`  call: ${call?.name ?? result.id} ${JSON.stringify(call?.args ?? {})} → ${resultLine(result)}`);
+          }
+        } else if ('in' in line && typeOf(line.in) === 'amend') {
+          out.push(labeled('  you, while it ran: ', (line.in as { message?: string }).message ?? ''));
+        } else if ('log' in line && line.log.kind === 'call_refused') {
+          const detail = line.log.detail as { tool?: string; reason?: string };
+          out.push(`  refused: ${detail.tool ?? ''} (${detail.reason ?? ''})`);
+        } else if ('out' in line && typeOf(line.out) === 'answer') {
+          const answer = line.out as { text: string; present?: { name: string; args: { heading?: string } }[] };
+          for (const shown of answer.present ?? []) out.push(`  shown: ${shown.name}${shown.args.heading ? ` "${shown.args.heading}"` : ''}`);
+          out.push(labeled('  answer: ', answer.text));
+        }
+      }
+      return;
+    }
+    // 3. One turn in full.
+    const at = Date.parse(turn.at);
+    for (const line of lines.slice(1)) {
+      const time = `+${((Date.parse(line.at) - at) / 1000).toFixed(1)}s`.padStart(7);
+      if ('log' in line) {
+        out.push(`${time} brain  ${line.log.kind} ${JSON.stringify(line.log.detail ?? {})}`);
+      } else if ('refused' in line) {
+        out.push(`${time} brain  refused ${line.refused.status}: ${line.refused.error}`);
+      } else if ('out' in line) {
+        const { type, traceId: _traceId, ...event } = line.out as { type: string; traceId?: string };
+        if (type === 'tool_call') out.push(`${time} → call ${JSON.stringify((event as { call: ToolCall }).call)}`);
+        else if (type === 'answer') out.push(block(`${time} → answer`, event, ''));
+        else out.push(`${time} → ${type} ${JSON.stringify(event)}`);
+      } else {
+        const message = line.in as { type: string; results?: ToolResult[]; message?: string };
+        if (message.type === 'results') {
+          for (const result of message.results ?? []) {
+            out.push(block(`${time} ← result ${result.id} ${resultLine(result)}`, result.ok ? (options.full ? result.output : abridge(result.output)) : result.error, ''));
+          }
+        } else {
+          out.push(`${time} ← ${message.type}${message.message ? `: ${message.message}` : ''}`);
+        }
+      }
+    }
+    // A memory keeps the newest turns; the oldest were dropped, so this turn may have none.
+    const memoryTurn = options.memory?.turns[i - options.memory.droppedTurns];
+    if (options.memory) out.push(memoryTurn ? block('memory of this turn (all a reopened session has of it):', memoryTurn, '') : 'memory: this turn was dropped for space');
+  });
   return out.join('\n');
 }
 
