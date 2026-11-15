@@ -44,7 +44,7 @@ docs/                      local copy of the design doc
   enterprise runs on a server.
 - **One brain per site.** Each site deploys its own brain. Several sites in one process means one Brain per site
   behind a router, never a multi-site Brain.
-- Settled decisions are in the design doc's decision log (D1 to D5). Don't reverse one silently; propose it. The log
+- Settled decisions are in the design doc's decision log (D1 to D7). Don't reverse one silently; propose it. The log
   is for decisions with a real alternative worth revisiting; obvious ones (such as one brain per site) get no entry.
 
 ## Data structures and isolation
