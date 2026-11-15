@@ -11,7 +11,10 @@ export const FLAG_WORDS = ['create', 'submit', 'update', 'delete', 'remove', 'sa
   'signup', 'register', 'login', 'logout', 'signin', 'auth', 'token', 'password', 'payment', 'account', 'profile', 'favorite', 'user', 'customer', 'document', 'sign'];
 /** A path with numbers and long hex IDs as {id}: the code's own IDs, or a visitor's in a recorded call. */
 // Decimal numbers in a path (a latitude and longitude, say) are masked first: they can place the visitor who recorded it.
-export const maskIds = (urlPath: string) => urlPath.replace(/\/-?\d+\.\d+(?=\/|$)/g, '/{number}').replace(/\/\d{3,}(?=\/|$)/g, '/{id}').replace(/\/[0-9a-f-]{32,36}(?=\/|$)/gi, '/{id}').replace(/\/[0-9a-f]{16,}(?=\/|$)/gi, '/{id}');
+// Matrix parameters (";key=value" in a path, as ad trackers send click and visitor IDs) go whole, and so does any long
+// segment mixing letters and digits (a session or fingerprint token), since only the shape of an address is wanted.
+export const maskIds = (urlPath: string) => urlPath.replace(/;[^/]*/g, ';{params}').replace(/\/-?\d+\.\d+(?=\/|$)/g, '/{number}').replace(/\/\d{3,}(?=\/|$)/g, '/{id}')
+  .replace(/\/[0-9a-f-]{32,36}(?=\/|$)/gi, '/{id}').replace(/\/[0-9a-f]{16,}(?=\/|$)/gi, '/{id}').replace(/\/(?=[\w-]*\d)(?=[\w-]*[A-Za-z])[\w-]{12,}(?=\/|$)/g, '/{id}');
 /** Static files and bare base URLs (an API's base joined to a path elsewhere) aren't endpoints. */
 export const isStatic = (urlPath: string) => ASSET.test(urlPath) || urlPath.includes('/_next/') || urlPath === '/';
 /** String literals: "…", '…' and `…` with ${…} parts kept as {…}. */
@@ -48,6 +51,12 @@ export interface CodeAddress {
   context: string;
 }
 
+/**
+ * Code around an address with its parameter values and long hex IDs masked. A script in a recording can be made for
+ * the visitor (a tracker's config with their session ID inlined, say), so values near an address never reach the report.
+ */
+export const maskContext = (code: string) => code.replace(/([?&;][A-Za-z_][\w.-]*=)[^&"'`\s;\\]+/g, '$1{value}').replace(/[0-9a-f]{24,}/gi, '{id}');
+
 /** Every API address written in a script, in order. */
 export function addressesIn(code: string): CodeAddress[] {
   const out: CodeAddress[] = [];
@@ -55,7 +64,7 @@ export function addressesIn(code: string): CodeAddress[] {
     const address = apiAddress(match[1] ?? match[2] ?? match[3]!);
     if (!address) continue;
     const context = code.slice(Math.max(0, match.index - 120), match.index + match[0].length + 160).replace(/\s+/g, ' ');
-    out.push({ address, methods: methodsNear(code, match.index), context });
+    out.push({ address, methods: methodsNear(code, match.index), context: maskContext(context) });
   }
   return out;
 }

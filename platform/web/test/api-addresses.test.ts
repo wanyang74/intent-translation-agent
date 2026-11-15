@@ -4,7 +4,7 @@
 // URLs are left out; IDs are masked; and a bundler runtime's later chunks are listed by file name.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { addressesIn, apiAddress, laterChunks, maskIds } from '../build/api-addresses.ts';
+import { addressesIn, apiAddress, laterChunks, maskContext, maskIds } from '../build/api-addresses.ts';
 
 test('API addresses in minified code are found, with query names and the methods written near them', () => {
   const code = 'const a="https://api.example-shop.test/catalog/api/v2/search?zip=94402&page=1";fetch(a,{method:"POST",body:b});'
@@ -15,6 +15,7 @@ test('API addresses in minified code are found, with query names and the methods
     { host: '(relative)', path: '/api/v1/items/{id}/reviews', queryNames: [], methods: ['GET', 'POST'] },
   ]);
   assert.ok(addressesIn(code).every((entry) => entry.context.length > 0));
+  assert.ok(!addressesIn(code).some((entry) => entry.context.includes('94402')), 'query values near an address are masked');
 });
 
 test('pages, static files and bare base URLs are not endpoints', () => {
@@ -28,6 +29,11 @@ test("IDs in a path are masked, so a visitor's IDs from a recording never reach 
   assert.equal(maskIds('/consent/019e943c-ca67-78f0-992c-28c0dfd3c06c/en.json'), '/consent/{id}/en.json');
   assert.equal(maskIds('/api/v2/search'), '/api/v2/search');
   assert.equal(maskIds('/api/referenceData/nearestAirport/12.3456/-65.4321/4/airports'), '/api/referenceData/nearestAirport/{number}/{number}/4/airports', 'coordinates could place whoever recorded it');
+  assert.equal(maskIds('/activity;src=123;gclid=Cj0KCQabc;ord=765'), '/activity;{params}', "a tracker's click and visitor IDs");
+  assert.equal(maskIds('/fp/check.js;SID=5A0E85A8/Z5XO0-8iVmf-mtvL'), '/fp/check.js;{params}/{id}', 'a session ID and a fingerprint token');
+  assert.equal(maskContext('"https://fp.test/check.js;SID=5A0E85A82E1E12F7607509EE5B6A3E7F","x":1'), '"https://fp.test/check.js;SID={value}","x":1');
+  assert.equal(maskContext('id:"0f1e2d3c4b5a69788796a5b4c3d2e1f0"'), 'id:"{id}"');
+  assert.equal(maskIds('/api/mytrips/MyTripsByMileagePlus/v2'), '/api/mytrips/MyTripsByMileagePlus/v2', 'words and short versions stay');
 });
 
 test("a webpack runtime's later chunks are listed by name and hash", () => {
