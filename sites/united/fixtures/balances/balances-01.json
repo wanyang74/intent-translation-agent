@@ -1,0 +1,62 @@
+{
+  "id": "balances-01",
+  "site": "united",
+  "endpoint": "balances",
+  "kind": "synthetic",
+  "source": "hand-written from the shapes of the signed-in recording of 2026-11-15 (names and types only); every value is made up",
+  "description": "a made-up member: 25,000 miles, 61,000 lifetime miles, TravelBank $120.50",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/myunited/user/balances",
+    "headers": {
+      "accept": "application/json",
+      "x-authorization-api": "bearer fixture-page-token-0001"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "ServerName": "fixture",
+        "AccountStatus": "Active",
+        "CanRedeemFromPool": false,
+        "Balances": [
+          {
+            "TotalBalance": 25000,
+            "ProgramCurrencyType": "RDM",
+            "SubBalances": [],
+            "BalancesBySubAccount": []
+          },
+          {
+            "TotalBalance": 0,
+            "ProgramCurrencyType": "UGC",
+            "SubBalances": [],
+            "BalancesBySubAccount": []
+          },
+          {
+            "TotalBalance": 120.5,
+            "ProgramCurrencyType": "UBC",
+            "SubBalances": [],
+            "BalancesBySubAccount": []
+          },
+          {
+            "TotalBalance": 1,
+            "ProgramCurrencyType": "RPU",
+            "SubBalances": [],
+            "BalancesBySubAccount": []
+          }
+        ],
+        "LifetimeMiles": 61000,
+        "LoyaltyID": "00000000-0000-4000-8000-000000000006",
+        "CustomerId": 100000001,
+        "TravelBankAccountNumber": "00000000-0000-4000-8000-000000000007",
+        "Errors": [],
+        "Status": 1
+      }
+    }
+  }
+}

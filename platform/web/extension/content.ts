@@ -14,7 +14,7 @@ import { checkToRun, conversationToResume, focusToRun, withPress, type SavedConv
 import { controlOf, runCheck, runFocus, runWrite, writeStopped, type ActionReport, type PendingCheck } from '../src/page-actions.ts';
 import { Overlay } from '../src/overlay.ts';
 import { placementOf, type PanelPlacement } from '../src/placement.ts';
-import { viewOf } from '../src/page.ts';
+import { storageOf, viewOf } from '../src/page.ts';
 import { BRAIN_PORT, type ConversationRequest, type FromWorker, type ToWorker } from './messages.ts';
 
 /**
@@ -94,6 +94,8 @@ async function start(): Promise<void> {
   const host = webHost({
     brain: brainThroughWorker,
     readPage: () => currentPage().data,
+    // Read for each call that needs it, by the site's own code; core.js never keeps it (D7).
+    ...(pageModule.pageToken ? { pageToken: () => pageModule.pageToken!(storageOf(document, indexedDB)) } : {}),
     // The development log goes to the console, where the extension's tests read it.
     log: (entry) => console.debug('[intent-agent]', JSON.stringify(entry)),
   });

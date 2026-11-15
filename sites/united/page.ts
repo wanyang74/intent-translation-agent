@@ -1,8 +1,16 @@
-// United's page code: the page reader, and the page actions on the results page: opening a flight's details, opening
-// a fare's options, and adding a fare to United's cart (D6).
+// United's page code: the page reader, the signed-in token the page keeps (D7), the header's Sign in button, and the
+// page actions on the results page: opening a flight's details, opening a fare's options, and adding a fare to
+// United's cart (D6).
 // Page reader: the page type from the URL's path. The results page (/fsr/choose-flights) is a search's; the home page
-// is where searches start; anything else (trips, check-in, help) is "other". United's pages carry nothing the agent
-// reads about the item on screen.
+// is where searches start; My United, account activity and My Trips are the account's; anything else (check-in, help)
+// is "other". United's pages carry nothing the agent reads about the item on screen.
+// Signed in or not, from the header (seen 2026-11-15): its #loginButton is a "Sign in" button (atm-c-btn) when signed
+// out and the traveler's avatar (atm-c-avatar) when signed in. Only whether the avatar is there is read, never its text
+// (the traveler's name). localStorage's loginStatus can't tell: United leaves it in place after signing out.
+// The token: United's page keeps its current token in its saved app state (IndexedDB "localforage", key
+// "reduxPersist:global", a compact list with no field names): the anonymous one when signed out, the traveler's own
+// once signed in, renewed on every load. Exactly one token-shaped value is there; anything else reads as none, rather
+// than a guess. Read only when an account tool runs, and handed to core.js, which never keeps it.
 // United has no page for one flight, so a flight's or fare's button opens the search's results page and the action
 // finds the flight there. The results page (seen 2026-11-10 and 2026-11-13 in the user's Chrome) is a grid: one
 // role="row" per flight, whose text says "Departing at 8:45 AM", "Arriving at 5:23 PM", the airports as "(SJC)", the
@@ -17,12 +25,41 @@
 // Only Select changes anything (it puts the fare in United's cart). The actions lean on these labels and texts, not
 // on United's generated class names, and press nothing when anything doesn't match exactly.
 import type { PageAction, PageControl, PageElement, WriteAction, WriteStop } from '../../platform/web/src/page-actions.ts';
-import type { PageReader } from '../../platform/web/src/page.ts';
+import type { PageReader, PageTokenReader } from '../../platform/web/src/page.ts';
+
+/** The header's button: the traveler's avatar when signed in, a Sign in button when not. */
+const SIGNED_IN_AVATAR = '#loginButton.atm-c-avatar';
+const SIGN_IN_BUTTON = '#loginButton.atm-c-btn';
+const ACCOUNT_PAGES = /\/(myunited|account\/[a-z-]+|manageres\/mytrips)$/;
 
 export const readPage: PageReader = (view) => {
   const path = new URL(view.url).pathname.replace(/\/+$/, '');
-  const pageType = /\/fsr\/choose-flights$/.test(path) ? 'results' : /^(\/[a-z]{2}\/[a-z]{2})?$/.test(path) ? 'home' : 'other';
-  return { context: { url: view.url, pageType, locale: 'en-US' }, data: null };
+  const pageType = /\/fsr\/choose-flights$/.test(path) ? 'results'
+    : /^(\/[a-z]{2}\/[a-z]{2})?$/.test(path) ? 'home'
+      : ACCOUNT_PAGES.test(path) ? 'account' : 'other';
+  // Whether the avatar is there; its text, the traveler's name, isn't kept.
+  const signedIn = view.text(SIGNED_IN_AVATAR) !== null;
+  return { context: { url: view.url, pageType, signedIn, locale: 'en-US' }, data: null };
+};
+
+/** A token as United's page keeps it: 200 characters of base64, standing alone. */
+const TOKEN = /(?<![A-Za-z0-9+/=])[A-Za-z0-9+/=]{200}(?![A-Za-z0-9+/=])/g;
+
+/** The token United's page keeps: the only token-shaped value in its saved state, or null. */
+export const pageToken: PageTokenReader = async (storage) => {
+  const saved = await storage.stored('localforage', 'keyvaluepairs', 'reduxPersist:global');
+  const text = typeof saved === 'string' ? saved : saved === null || saved === undefined ? '' : JSON.stringify(saved);
+  const found = text.match(TOKEN) ?? [];
+  return found.length === 1 ? found[0]! : null;
+};
+
+/** Presses the header's Sign in, which opens United's own sign-in; signed in, the button is the avatar and nothing is pressed. */
+const openSignIn: PageAction = async (page) => {
+  if (page.findAll(SIGNED_IN_AVATAR).length === 1) return { done: true };
+  const buttons = page.findAll(SIGN_IN_BUTTON);
+  if (buttons.length !== 1) return { done: false, reason: buttons.length ? 'ambiguous' : 'not_found' };
+  buttons[0]!.click();
+  return { done: true };
 };
 
 /** A flight as United's results page shows it, from the search's own data (tools.ts builds it). */
@@ -247,5 +284,5 @@ const addFareToCart: WriteAction = {
   },
 };
 
-export const pageActions: Record<string, PageAction> = { open_flight_details: openFlightDetails, open_fare_options: openFareOptions };
+export const pageActions: Record<string, PageAction> = { open_sign_in: openSignIn, open_flight_details: openFlightDetails, open_fare_options: openFareOptions };
 export const writeActions: Record<string, WriteAction> = { add_fare_to_cart: addFareToCart };

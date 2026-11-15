@@ -43,6 +43,11 @@ export interface Host {
   brain?(message: ClientMessage): AsyncIterable<unknown>;
   /** What the current page carries about the item on screen, as the site's page reader found it; null if nothing. */
   pageData?(): unknown;
+  /**
+   * The signed-in token the site's page keeps, read by the site's page code, for a tool that needs sign-in on a site
+   * whose token rule says signedIn: page (D7); null when there's none. core.js never keeps or logs it.
+   */
+  pageToken?(): Promise<string | null>;
   /** The platform's script sandbox. Without one, scripts are refused and the model calls tools one at a time. */
   scripts?: ScriptRunner;
   /** Checks the remote config's signature. Without it, remote config isn't accepted. */

@@ -89,5 +89,19 @@
     "kind": "recorded",
     "description": "\"PVG\": 1 airports",
     "file": "airports/airports-05.json"
+  },
+  {
+    "id": "balances-01",
+    "endpoint": "balances",
+    "kind": "synthetic",
+    "description": "a made-up member: 25,000 miles, 61,000 lifetime miles, TravelBank $120.50",
+    "file": "balances/balances-01.json"
+  },
+  {
+    "id": "activities-01",
+    "endpoint": "activities",
+    "kind": "synthetic",
+    "description": "a made-up member: 3 recent activities",
+    "file": "activities/activities-01.json"
   }
 ]

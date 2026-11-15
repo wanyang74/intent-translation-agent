@@ -3,7 +3,7 @@
 # first real site pack doesn't: a search form, offers that expire, a signed-in trips list (with private record
 # locators, kept on the device; trip routes and dates kept in session memory but not traces; and the traveler's name,
 # kept out of both), a rule that
-# prices must include all taxes and fees, a token on every call, and a search that answers as a stream of events
+# prices must include all taxes and fees, a token on every call (the page's own once signed in), and a search that answers as a stream of events
 # (named events, where a real airline may name them inside the data). The .example domain is reserved and never
 # resolves.
 
@@ -85,6 +85,7 @@ token:
   header: X-Demo-Token
   format: "Bearer {token}"
   refusedStatuses: [403]
+  signedIn: { from: page }   # the trips list is signed with the token the page keeps once the traveler signs in (D7)
 
 tools:
   search_flights:

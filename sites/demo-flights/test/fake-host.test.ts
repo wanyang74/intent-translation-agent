@@ -1,11 +1,12 @@
 // Tests: FakeHost on Demo Flights' hand-written fixtures.
 // How: sends search and trips requests with different fields, with and without the site's token.
 // Passes when: the search form's fields decide the response, which arrives as a stream; a request with an invalid
-// airport code never reaches a fixture; and a call without a token the site issued is refused, as the site refuses it.
+// airport code never reaches a fixture; a call without a token the site issued is refused, as the site refuses it; and
+// the trips list, which needs sign-in, takes only the page's signed-in token (D7).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { groupEvents, parseEventStream } from '../../../platform/contract/src/events.ts';
-import { FakeHost } from '../../../platform/testkit/src/fake-host.ts';
+import { FAKE_PAGE_TOKEN, FakeHost } from '../../../platform/testkit/src/fake-host.ts';
 import { loadFixtures, toHostRequest } from '../../../platform/testkit/src/fixtures.ts';
 
 const fixtures = loadFixtures('demo-flights');
@@ -42,9 +43,11 @@ test('contract: a lowercase airport code gets a 400 naming the field', async () 
   assert.match(json(res.body).details, /origin/);
 });
 
-test('trips: a GET whose status filter decides the response', async () => {
+test("trips: a GET whose status filter decides the response, signed with the page's token, not the anonymous one", async () => {
   const host = new FakeHost('demo-flights', fixtures);
-  const headers = { 'x-demo-token': 'Bearer fixture-token-0001' };
+  const url = 'https://api.demo-flights.example/v1/trips?status=upcoming';
+  assert.equal((await host.request({ method: 'GET', url, headers: { 'x-demo-token': 'Bearer fixture-token-0001' } })).status, 403, 'the anonymous token reads no account');
+  const headers = { 'x-demo-token': `Bearer ${FAKE_PAGE_TOKEN}` };
   const res = await host.request({ method: 'GET', url: 'https://api.demo-flights.example/v1/trips?status=upcoming', headers });
   assert.equal(json(res.body).trips[0].recordLocator, 'Q7K2LM');
   await assert.rejects(host.request({ method: 'GET', url: 'https://api.demo-flights.example/v1/trips?status=past', headers }), /no trips fixture matches/);

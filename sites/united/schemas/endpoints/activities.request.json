@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/activities.request.json",
+  "title": "United MileagePlus activity request (GET /api/myunited/account/Activities/{start}/{count})",
+  "type": "object",
+  "properties": {
+    "start": {
+      "type": "string",
+      "pattern": "^[0-9]{1,4}$",
+      "description": "How many of the newest activities to skip"
+    },
+    "count": {
+      "type": "string",
+      "pattern": "^([1-9]|[1-4][0-9]|50)$",
+      "description": "How many to list, 1 to 50"
+    }
+  },
+  "required": [
+    "start",
+    "count"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "start": "0",
+      "count": "5"
+    }
+  ]
+}

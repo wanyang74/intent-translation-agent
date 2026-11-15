@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/get_miles_activity.input.json",
+  "title": "get_miles_activity: input",
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "description": "How many of the newest activities to list; 10 if left out"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "count": 10
+    }
+  ]
+}

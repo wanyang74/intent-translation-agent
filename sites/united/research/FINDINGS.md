@@ -65,3 +65,29 @@ united.com the same day. Phase 0 is not done yet: the open checks are at the end
 4. Signed in to MileagePlus: the same search through the anonymous token and in United's own page, to see which prices
    or bag rules differ; and whether the token endpoint stays anonymous then (`isAuthenticated`).
 5. Whether a search without `RecentSearchKey` works, so our searches needn't show in the user's recent searches.
+
+## Signed in (2026-11-15, sign-in mode)
+
+From a signed-in recording in the user's Chrome, read by field names and types only (`platform/testkit/scripts/har-shapes.ts`),
+and console checks that printed names, lengths, statuses and short hash fingerprints, never values:
+
+- **No sign-in in the recording**: it starts after sign-in, so no password is in it. The only auth call is `validate-token`.
+- **One token signs every call**, signed in or not: `X-Authorization-api: bearer <200 characters of base64>`. United
+  issues the signed-in one at sign-in; nothing in the recording hands it out.
+- **Where the page keeps it**: not in local or session storage, nor in a cookie scripts can read. It is in IndexedDB,
+  database `localforage`, store `keyvaluepairs`, key `reduxPersist:global`: the app's saved state, JSON quoted inside
+  a string, a compact list with no field names. Exactly one token-shaped value is there: the anonymous token when
+  signed out, the traveler's own once signed in (the fingerprint changes). The page calls `/api/auth/refresh-token`
+  on every load.
+- **Checked live**: the stored token got `GET /api/myunited/user/balances` answered with data (200) signed in; signed
+  out, United answered **202 with only `Errors`**, not a 401.
+- **Signed in or not**: the header's `#loginButton` is a Sign in button (`atm-c-btn`) signed out and the traveler's
+  avatar (`atm-c-avatar`) signed in. `localStorage.loginStatus` (fields MPS, CID, MPN; not valid JSON) stays after
+  sign-out, so it can't tell.
+- **Balances**: amounts by `ProgramCurrencyType`. From united.com's own scripts: `RDM` redeemable miles, `UGC`
+  PlusPoints, `UBC` TravelBank (dollars), `RPU` and `GPU` upgrade certificates, `PQF` and `PQP` Premier qualifying
+  flights and points. The answer also carries the loyalty ID, a customer ID and the TravelBank account number.
+- **Activity**: `GET /api/myunited/account/Activities/{start}/{count}`; each line has dates, a description, the partner,
+  base, bonus and total miles, qualifying points, and `TicketNames` (travelers' names).
+- **Trips**: `POST /api/mytrips/MyTripsByMileagePlus/` came back empty in every window the page asked for (no trip
+  on the account), so its item shape is still unknown.

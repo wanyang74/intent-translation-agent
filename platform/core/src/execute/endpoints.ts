@@ -6,7 +6,9 @@
 //   map statuses to errors → read the response by its format (JSON, a page through the site's reader, or a stream of
 //   events) and check it against its schema → learn its IDs → cache it.
 // The site token is fetched here too, from the site's own token endpoint, and kept on the session; it goes only into
-// requests to the site, never into the log or a message to the brain.
+// requests to the site, never into the log or a message to the brain. A tool that needs sign-in, on a site whose token
+// rule says signedIn: page, sends the token the page keeps instead (Host.pageToken, D7): read for each call and never
+// kept, since the page renews it and signing out replaces it.
 import type { SitePack } from '../../../contract/generated/types.ts';
 import { groupEvents, parseEventStream } from '../../../contract/src/events.ts';
 import { canonical, select } from '../../../contract/src/paths.ts';
@@ -144,19 +146,29 @@ async function send(session: Session, tool: string, name: string, ep: Endpoint, 
 /**
  * A call with the site token, for sites that use one:
  *   1. No token rule, or this is the token endpoint itself: send as it is.
- *   2. Send with the token in its header.
- *   3. Refused for the token (one of the site's refusedStatuses): drop it, get a new one and send once more. A second
+ *   2. A tool that needs sign-in, where the page keeps the signed-in token: send with the page's token. None, or a
+ *      refusal, means the user isn't signed in: a new anonymous token wouldn't help, so there's no retry.
+ *   3. Send with the token in its header.
+ *   4. Refused for the token (one of the site's refusedStatuses): drop it, get a new one and send once more. A second
  *      refusal goes on to the usual status errors, so a site that keeps refusing costs two calls, not a loop.
  */
 async function sendWithToken(session: Session, tool: string, name: string, ep: Endpoint, request: HostRequest): Promise<HostResponse> {
   const rule = session.pack.token;
   // 1. No token
   if (!rule || name === rule.endpoint) return send(session, tool, name, ep, request);
-  // 2. With the token
   const withToken = (token: string): HostRequest => ({ ...request, headers: { ...request.headers, [rule.header]: (rule.format ?? '{token}').replace('{token}', token) } });
+  // 2. The page's signed-in token
+  if (rule.signedIn?.from === 'page' && session.pack.tools[tool]?.signIn) {
+    const pageToken = await session.host.pageToken?.();
+    if (!pageToken) throw new ToolFailure(errorFor(session.pack, tool, 'needs_sign_in', { tool, what: tool }));
+    const answer = await send(session, tool, name, ep, withToken(pageToken));
+    if (rule.refusedStatuses.includes(answer.status)) throw new ToolFailure(errorFor(session.pack, tool, 'needs_sign_in', { tool, what: tool }));
+    return answer;
+  }
+  // 3. With the token
   const first = await send(session, tool, name, ep, withToken(await siteToken(session, tool, rule)));
   if (!rule.refusedStatuses.includes(first.status)) return first;
-  // 3. Refused: once more with a new token
+  // 4. Refused: once more with a new token
   session.log('token_refused', { endpoint: name, status: first.status });
   session.siteToken = null;
   return send(session, tool, name, ep, withToken(await siteToken(session, tool, rule)));

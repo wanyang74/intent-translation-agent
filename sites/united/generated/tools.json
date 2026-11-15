@@ -171,5 +171,30 @@
       ],
       "additionalProperties": false
     }
+  },
+  {
+    "name": "get_miles_balance",
+    "description": "The traveler's MileagePlus balance, from their signed-in United account; redeemable miles, lifetime miles, PlusPoints and TravelBank dollars",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "get_miles_activity",
+    "description": "The traveler's recent MileagePlus activity, newest first, from their signed-in United account; what earned or spent miles, and how many",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "How many of the newest activities to list; 10 if left out"
+        }
+      },
+      "additionalProperties": false
+    }
   }
 ]

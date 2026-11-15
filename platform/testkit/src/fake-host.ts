@@ -6,13 +6,18 @@
 //   3. Faults can be injected: a status, a delay, or a network error, for the next N calls.
 //   4. For a site with a token (the site pack's token section), every other call must carry, in the token's header, a
 //      token one of the token endpoint's fixtures issues, or it's refused with the site's first refused status, as the
-//      real site refuses it. So a test sees a missing or misformatted token header, not a silent pass.
+//      real site refuses it. So a test sees a missing or misformatted token header, not a silent pass. Where the
+//      token rule says signedIn: page, a call to an endpoint that needs sign-in must carry the test page's signed-in
+//      token (FAKE_PAGE_TOKEN) instead, so a tool that sent the anonymous one fails as it would on the real site.
 // A response is sent the way the site sends it: a stream's fixture holds its events, and they go out as a stream.
 import type { ErrorObject } from 'ajv/dist/2020.js';
 import { loadContract, describeErrors, type Contract } from '../../contract/src/load.ts';
 import { select } from '../../contract/src/paths.ts';
 import { endpointOf, matchKey, requestValue, type Endpoint, type SitePack } from '../../contract/src/site-pack.ts';
 import { type Fixture, type HostRequest, type HostResponse, loadFixtures, responseText } from './fixtures.ts';
+
+/** The made-up signed-in token a test page keeps (Host.pageToken in tests), unless a test says otherwise. */
+export const FAKE_PAGE_TOKEN = 'fixture-page-token-0001';
 
 export interface Fault {
   /** Only calls to this endpoint; any endpoint if omitted. */
@@ -104,7 +109,9 @@ export class FakeHost {
     const rule = this.#pack.token;
     if (rule && name !== rule.endpoint) {
       const sent = Object.entries(req.headers ?? {}).find(([header]) => header.toLowerCase() === rule.header.toLowerCase())?.[1];
-      if (!sent || !this.#acceptedTokens.has(sent)) return this.#record(name, null, null, { status: rule.refusedStatuses[0], headers: {}, body: '' });
+      const pageSigned = rule.signedIn?.from === 'page' && endpoint.signIn === true;
+      const accepted = pageSigned ? sent === (rule.format ?? '{token}').replace('{token}', FAKE_PAGE_TOKEN) : sent !== undefined && this.#acceptedTokens.has(sent);
+      if (!accepted) return this.#record(name, null, null, { status: rule.refusedStatuses[0], headers: {}, body: '' });
     }
 
     const value = requestValue(this.#pack, req);

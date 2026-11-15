@@ -117,6 +117,125 @@
           ]
         }
       }
+    },
+    {
+      "id": "miles-signed-out",
+      "description": "Signed out on united.com, the traveler asks about their miles: the agent asks them to sign in on United, offers United's sign-in, never asks for a password, and reads nothing",
+      "page": {
+        "url": "https://www.united.com/en/us/myunited",
+        "pageType": "account",
+        "locale": "en-US",
+        "signedIn": false
+      },
+      "message": "How many miles do I have?",
+      "expect": {
+        "noCalls": [
+          "get_miles_balance",
+          "get_miles_activity"
+        ],
+        "shows": [
+          {
+            "type": "destination",
+            "destination": "sign_in_on_united"
+          }
+        ],
+        "showsNoItems": true,
+        "text": {
+          "matches": [
+            "sign[ -]?in"
+          ],
+          "excludes": [
+            "password",
+            "25,000"
+          ]
+        }
+      }
+    },
+    {
+      "id": "miles-asks-first",
+      "description": "Signed in, but the traveler hasn't allowed the agent to read their account yet: it asks with the button, and reads nothing",
+      "page": {
+        "url": "https://www.united.com/en/us/myunited",
+        "pageType": "account",
+        "locale": "en-US",
+        "signedIn": true
+      },
+      "message": "How many miles do I have?",
+      "expect": {
+        "noCalls": [
+          "get_miles_balance",
+          "get_miles_activity"
+        ],
+        "shows": [
+          {
+            "type": "consent"
+          }
+        ],
+        "showsNoItems": true,
+        "text": {
+          "excludes": [
+            "password",
+            "25,000",
+            "you have [\\d,]+ miles"
+          ]
+        }
+      }
+    },
+    {
+      "id": "miles-balance",
+      "description": "Signed in and allowed: the traveler's miles balance, from their account",
+      "quick": true,
+      "page": {
+        "url": "https://www.united.com/en/us/myunited",
+        "pageType": "account",
+        "locale": "en-US",
+        "signedIn": true,
+        "granted": [
+          "account"
+        ]
+      },
+      "message": "How many miles do I have?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_miles_balance"
+          }
+        ],
+        "text": {
+          "includes": [
+            "25,000"
+          ],
+          "excludes": [
+            "password"
+          ]
+        }
+      }
+    },
+    {
+      "id": "miles-activity",
+      "description": "Signed in and allowed: what the traveler's last flight earned, from their activity",
+      "page": {
+        "url": "https://www.united.com/en/us/myunited",
+        "pageType": "account",
+        "locale": "en-US",
+        "signedIn": true,
+        "granted": [
+          "account"
+        ]
+      },
+      "message": "How many miles did my last flight earn?",
+      "expect": {
+        "calls": [
+          {
+            "tool": "get_miles_activity"
+          }
+        ],
+        "text": {
+          "includes": [
+            "1,200"
+          ]
+        }
+      }
     }
   ]
 }

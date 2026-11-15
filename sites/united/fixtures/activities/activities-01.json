@@ -1,0 +1,69 @@
+{
+  "id": "activities-01",
+  "site": "united",
+  "endpoint": "activities",
+  "kind": "synthetic",
+  "source": "hand-written from the shapes of the signed-in recording of 2026-11-15 (names and types only); every value is made up",
+  "description": "a made-up member: 3 recent activities",
+  "request": {
+    "method": "GET",
+    "url": "https://www.united.com/api/myunited/account/Activities/0/10",
+    "headers": {
+      "accept": "application/json",
+      "x-authorization-api": "bearer fixture-page-token-0001"
+    },
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": {
+        "activities": [
+          {
+            "ActivityType": "Flight",
+            "Description": "UA 1554 SFO to EWR",
+            "PartnerCode": "UA",
+            "PartnerName": "United Airlines",
+            "PartnerType": "Airline",
+            "TransactionDate": "2026-10-02T00:00:00",
+            "BaseMiles": 1000,
+            "BonusMiles": 200,
+            "CobrandedBonusMiles": 0,
+            "PremierBonusMiles": 0,
+            "TotalMiles": 1200,
+            "IsRedeposit": false,
+            "TicketNames": [
+              "FIXTURE TRAVELER"
+            ],
+            "ActivityDetailsData": []
+          },
+          {
+            "ActivityType": "Partner",
+            "Description": "Card purchases",
+            "PartnerName": "Fixture Bank",
+            "TransactionDate": "2026-09-15T00:00:00",
+            "BaseMiles": 800,
+            "BonusMiles": 0,
+            "TotalMiles": 800,
+            "TicketNames": []
+          },
+          {
+            "ActivityType": "Redemption",
+            "Description": "Award travel",
+            "PartnerName": "United Airlines",
+            "TransactionDate": "2026-08-20T00:00:00",
+            "BaseMiles": -12500,
+            "BonusMiles": 0,
+            "TotalMiles": -12500,
+            "TicketNames": [
+              "FIXTURE TRAVELER"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

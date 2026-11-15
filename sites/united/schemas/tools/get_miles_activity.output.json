@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/get_miles_activity.output.json",
+  "title": "get_miles_activity: output",
+  "type": "object",
+  "properties": {
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "The activity's date, as United writes it"
+          },
+          "description": {
+            "type": "string"
+          },
+          "partner": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "United's kind of activity, as United names it"
+          },
+          "miles": {
+            "type": "number",
+            "description": "Total miles earned (negative: spent)"
+          },
+          "baseMiles": {
+            "type": "number"
+          },
+          "bonusMiles": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "description",
+          "miles"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "activities"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "activities": [
+        {
+          "date": "2026-10-02",
+          "description": "Flight UA 1554 SFO to EWR",
+          "partner": "United Airlines",
+          "type": "Flight",
+          "miles": 1200,
+          "baseMiles": 1000,
+          "bonusMiles": 200
+        }
+      ]
+    }
+  ]
+}

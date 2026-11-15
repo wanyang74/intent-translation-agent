@@ -4,7 +4,8 @@
 // issues tokens and refuses calls without a current one, and a virtual clock.
 // Passes when: the token is fetched once, shared by calls side by side, sent in the site's own format, renewed before it
 // expires and after a refusal (with one retry only), carried to the next page, and never written to the log; a broken
-// token answer is a changed format; a stream is read whole and grouped by kind before the site's code and the schema
+// token answer is a changed format; a tool that needs sign-in, where the page keeps the token, sends the page's (read
+// each time, never kept or logged) and treats none or a refusal as signed out; a stream is read whole and grouped by kind before the site's code and the schema
 // see it; and an endpoint's own time limit reaches the host.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -120,6 +121,51 @@ test('site token: a site without one sends no token header and makes no token ca
   const { session, requests } = await exampleSession();
   await runToolCall(session, 'search_products', { query: 'shoe' });
   assert.ok(requests.every((request) => !Object.keys(request.headers).some((header) => /token/i.test(header))));
+});
+
+// ---------------------------------------------------------------- the page's signed-in token (D7)
+
+const pageSignedPack: SitePack = { ...tokenPack, token: { ...tokenPack.token!, signedIn: { from: 'page' } } };
+
+/** The shop signed with the page's token for its orders: the anonymous token reads products, only the page's reads orders. */
+async function pageSignedSession(pageToken: () => Promise<string | null>, options: { refuseOrders?: boolean } = {}) {
+  const site = tokenSite();
+  let clockNow = () => START;
+  const network = (req: HostRequest): HostResponse => {
+    if (new URL(req.url).pathname !== '/orders') return site.network(clockNow)(req);
+    return req.headers['X-Shop-Token'] === 'bearer page-token-1' && !options.refuseOrders ? json({ orders: [{ id: 'ABC123', status: 'open' }] }) : json('', 405);
+  };
+  const shop = await exampleSession({ pack: pageSignedPack, validators: exampleValidators({}, pageSignedPack), network, host: { pageToken } });
+  clockNow = () => shop.clock.now();
+  shop.session.setPage({ url: 'https://www.example.com/account', pageType: 'account', signedIn: true });
+  shop.session.accountAllowed = true;
+  return shop;
+}
+
+test("page token: a tool that needs sign-in sends the page's token, read for each call and never kept or logged; other tools keep the anonymous one", async () => {
+  let reads = 0;
+  const { session, requests, log } = await pageSignedSession(async () => { reads++; return 'page-token-1'; });
+  assert.equal(reason(await runToolCall(session, 'my_orders', {})), 'ok');
+  assert.equal(reason(await runToolCall(session, 'search_products', { query: 'shoe' })), 'ok');
+  const orders = requests.find((request) => request.url.includes('/orders'))!;
+  const search = requests.find((request) => request.url.includes('/search'))!;
+  assert.equal(orders.headers['X-Shop-Token'], 'bearer page-token-1');
+  assert.equal(search.headers['X-Shop-Token'], 'bearer sess-1');
+  assert.equal(reads, 1, 'read only for the tool that needs sign-in');
+  assert.equal(session.siteToken?.value, 'sess-1', 'the session keeps only the anonymous token');
+  assert.ok(!JSON.stringify(log).includes('page-token-1'), 'the log never has it');
+});
+
+test("page token: none on the page, or one the site refuses, means signed out: no anonymous token instead, and no retry", async () => {
+  const signedOut = await pageSignedSession(async () => null);
+  const missing = await runToolCall(signedOut.session, 'my_orders', {});
+  assert.equal(missing.ok ? 'ok' : missing.error.code, 'auth_required');
+  assert.equal(signedOut.requests.length, 0, 'nothing was sent');
+  const refused = await pageSignedSession(async () => 'page-token-1', { refuseOrders: true });
+  const outcome = await runToolCall(refused.session, 'my_orders', {});
+  assert.equal(outcome.ok ? 'ok' : outcome.error.code, 'auth_required');
+  assert.equal(refused.requests.filter((request) => request.url.includes('/orders')).length, 1, 'one try');
+  assert.equal(tokenRequests(refused.requests).length, 0, 'no anonymous token was fetched for it');
 });
 
 // ---------------------------------------------------------------- streams

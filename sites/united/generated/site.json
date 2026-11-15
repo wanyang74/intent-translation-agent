@@ -13,12 +13,14 @@
     "pageTypes": [
       "home",
       "results",
+      "account",
       "other"
     ],
     "requires": {
       "location": "none",
-      "signIn": "never"
-    }
+      "signIn": "some_tools"
+    },
+    "accountName": "MileagePlus account"
   },
   "entities": {
     "airport": {
@@ -226,6 +228,29 @@
       "matchKey": [],
       "verified": "2026-11-06, the user's console"
     },
+    "balances": {
+      "description": "The signed-in traveler's MileagePlus balances, by program currency, and lifetime miles",
+      "method": "GET",
+      "url": "https://www.united.com/api/myunited/user/balances",
+      "request": "endpoints/balances.request.json",
+      "response": "endpoints/balances.response.json",
+      "matchKey": [],
+      "signIn": true,
+      "verified": "2026-11-15, the user's signed-in recording (shapes only) and console (200 signed in, 202 with Errors signed out)"
+    },
+    "activities": {
+      "description": "The signed-in traveler's MileagePlus activity, newest first, a page at a time",
+      "method": "GET",
+      "url": "https://www.united.com/api/myunited/account/Activities/{start}/{count}",
+      "request": "endpoints/activities.request.json",
+      "response": "endpoints/activities.response.json",
+      "matchKey": [
+        "start",
+        "count"
+      ],
+      "signIn": true,
+      "verified": "2026-11-15, the user's signed-in recording (shapes only)"
+    },
     "airports": {
       "description": "Airports and cities matching typed text",
       "method": "GET",
@@ -339,7 +364,10 @@
       405,
       401,
       403
-    ]
+    ],
+    "signedIn": {
+      "from": "page"
+    }
   },
   "tools": {
     "find_airport": {
@@ -473,6 +501,59 @@
         "calendar"
       ],
       "sideEffect": "read"
+    },
+    "get_miles_balance": {
+      "description": "The traveler's MileagePlus balance, from their signed-in United account; redeemable miles, lifetime miles, PlusPoints and TravelBank dollars",
+      "input": "tools/get_miles_balance.input.json",
+      "output": "tools/get_miles_balance.output.json",
+      "uses": [
+        "balances"
+      ],
+      "sideEffect": "read",
+      "signIn": true,
+      "privacy": {
+        "account": [
+          "miles",
+          "lifetimeMiles",
+          "plusPoints",
+          "travelBankDollars"
+        ]
+      },
+      "errors": {
+        "signed_out": {
+          "code": "auth_required",
+          "message": "United says the traveler isn't signed in. Ask them to sign in on united.com, and offer the sign-in button.",
+          "retryable": true
+        }
+      }
+    },
+    "get_miles_activity": {
+      "description": "The traveler's recent MileagePlus activity, newest first, from their signed-in United account; what earned or spent miles, and how many",
+      "input": "tools/get_miles_activity.input.json",
+      "output": "tools/get_miles_activity.output.json",
+      "uses": [
+        "activities"
+      ],
+      "sideEffect": "read",
+      "signIn": true,
+      "privacy": {
+        "account": [
+          "activities[].date",
+          "activities[].description",
+          "activities[].partner",
+          "activities[].type",
+          "activities[].miles",
+          "activities[].baseMiles",
+          "activities[].bonusMiles"
+        ]
+      },
+      "errors": {
+        "signed_out": {
+          "code": "auth_required",
+          "message": "United says the traveler isn't signed in. Ask them to sign in on united.com, and offer the sign-in button.",
+          "retryable": true
+        }
+      }
     }
   },
   "forms": {
@@ -603,13 +684,28 @@
       },
       "pageAction": "add_fare_to_cart"
     },
+    "sign_in_on_united": {
+      "title": "Sign in on United",
+      "description": "Opens United's own sign-in on its home page, for when the traveler asks about their MileagePlus account and isn't signed in. The traveler signs in there; the agent never asks for a password",
+      "pageAction": "open_sign_in"
+    },
     "united_home": {
       "title": "United's home page",
-      "description": "The place to sign in, manage a trip, check in, or cancel; the agent can't do these",
+      "description": "The place to manage a trip, check in, or cancel; the agent can't do these",
       "link": "home"
     }
   },
   "pageActions": {
+    "open_sign_in": {
+      "description": "On any United page, presses the header's Sign in button, which opens United's own sign-in. Does nothing when the traveler is already signed in (the button is then their avatar)",
+      "effect": "shows_information",
+      "pageTypes": [
+        "home",
+        "results",
+        "account",
+        "other"
+      ]
+    },
     "open_flight_details": {
       "description": "On United's results page, scrolls to the chosen flight and opens its Details, which show its flight numbers, aircraft and times. Never Select, which puts the flight in a cart",
       "effect": "shows_information",
@@ -658,7 +754,11 @@
       "lastResultId",
       "LastBBXSolutionSetId",
       "BBXSolutionSetId",
-      "EditSearchCartId"
+      "EditSearchCartId",
+      "LoyaltyID",
+      "CustomerId",
+      "TravelBankAccountNumber",
+      "MileagePlusNumber"
     ],
     "scrubHeaders": [],
     "keepHeaders": [

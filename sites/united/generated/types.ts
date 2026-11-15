@@ -154,6 +154,42 @@ export interface SearchStream {
   [k: string]: unknown | undefined;
 }
 /**
+ * United MileagePlus activity request (GET /api/myunited/account/Activities/{start}/{count})
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "ActivitiesRequest".
+ */
+export interface ActivitiesRequest {
+  /**
+   * How many of the newest activities to skip
+   */
+  start: string;
+  /**
+   * How many to list, 1 to 50
+   */
+  count: string;
+}
+/**
+ * United MileagePlus activity response. Signed in: data.activities, newest first. Signed out, 202 with only Errors. TicketNames (the travelers' names) is never passed on.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "ActivitiesResponse".
+ */
+export interface ActivitiesResponse {
+  data?: {
+    activities: {
+      ActivityType?: string;
+      Description: string;
+      PartnerName?: string;
+      TransactionDate: string;
+      BaseMiles?: number;
+      BonusMiles?: number;
+      TotalMiles: number;
+    }[];
+  };
+  Errors?: unknown[];
+}
+/**
  * United airport lookup request (GET /api/airports/lookup/, query string)
  *
  * This interface was referenced by `ContractTypes`'s JSON-Schema
@@ -194,6 +230,30 @@ export interface AirportsResponse {
     [k: string]: unknown | undefined;
   };
   [k: string]: unknown | undefined;
+}
+/**
+ * United MileagePlus balances request (GET /api/myunited/user/balances, nothing sent)
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "BalancesRequest".
+ */
+export interface BalancesRequest {}
+/**
+ * United MileagePlus balances response. Signed in: data, with each balance by program currency (RDM: redeemable miles; UGC: PlusPoints; UBC: Travel Bank, in dollars; RPU, GPU: upgrade certificates; names from united.com's own scripts) and lifetime miles. Signed out (the anonymous token), United answers 202 with only Errors. The answer also carries the loyalty ID, a customer ID and the Travel Bank account number, which no tool passes on.
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "BalancesResponse".
+ */
+export interface BalancesResponse {
+  data?: {
+    Balances: {
+      TotalBalance: number;
+      ProgramCurrencyType: string;
+    }[];
+    LifetimeMiles?: number;
+    AccountStatus?: string;
+  };
+  Errors?: unknown[];
 }
 /**
  * United fare calendar request (POST /api/FlexPricer/CalendarPricing)
@@ -742,6 +802,75 @@ export interface FindAirportOutput {
     country?: string;
     allAirports: boolean;
   }[];
+}
+/**
+ * get_miles_activity: input
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "GetMilesActivityInput".
+ */
+export interface GetMilesActivityInput {
+  /**
+   * How many of the newest activities to list; 10 if left out
+   */
+  count?: number;
+}
+/**
+ * get_miles_activity: output
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "GetMilesActivityOutput".
+ */
+export interface GetMilesActivityOutput {
+  activities: {
+    /**
+     * The activity's date, as United writes it
+     */
+    date: string;
+    description: string;
+    partner?: string;
+    /**
+     * United's kind of activity, as United names it
+     */
+    type?: string;
+    /**
+     * Total miles earned (negative: spent)
+     */
+    miles: number;
+    baseMiles?: number;
+    bonusMiles?: number;
+  }[];
+}
+/**
+ * get_miles_balance: input
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "GetMilesBalanceInput".
+ */
+export interface GetMilesBalanceInput {}
+/**
+ * get_miles_balance: output
+ *
+ * This interface was referenced by `ContractTypes`'s JSON-Schema
+ * via the `definition` "GetMilesBalanceOutput".
+ */
+export interface GetMilesBalanceOutput {
+  /**
+   * Redeemable MileagePlus miles
+   */
+  miles: number;
+  /**
+   * Lifetime flight miles, which count toward Million Miler status
+   */
+  lifetimeMiles?: number;
+  /**
+   * PlusPoints, for upgrades (Premier members)
+   */
+  plusPoints?: number;
+  /**
+   * United TravelBank balance, in US dollars
+   */
+  travelBankDollars?: number;
 }
 /**
  * return_flights: input

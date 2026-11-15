@@ -172,7 +172,10 @@
     "format": "Bearer {token}",
     "refusedStatuses": [
       403
-    ]
+    ],
+    "signedIn": {
+      "from": "page"
+    }
   },
   "tools": {
     "search_flights": {

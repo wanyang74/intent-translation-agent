@@ -965,6 +965,12 @@ export interface SitePack {
      * @minItems 1
      */
     refusedStatuses: [number, ...number[]];
+    /**
+     * Where a tool that needs sign-in gets its token, when the site signs its account calls with a token the page keeps after the user signs in (D7). page: the site's page code reads it from the page when such a tool runs (Host.pageToken); core.js sends it in the same header, never keeps it, and treats a refusal as signed out, without retrying.
+     */
+    signedIn?: {
+      from: 'page';
+    };
   };
   tools: {
     [k: string]: Tool | undefined;

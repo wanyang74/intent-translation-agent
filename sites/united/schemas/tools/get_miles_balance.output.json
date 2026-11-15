@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/tools/get_miles_balance.output.json",
+  "title": "get_miles_balance: output",
+  "type": "object",
+  "properties": {
+    "miles": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Redeemable MileagePlus miles"
+    },
+    "lifetimeMiles": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Lifetime flight miles, which count toward Million Miler status"
+    },
+    "plusPoints": {
+      "type": "number",
+      "minimum": 0,
+      "description": "PlusPoints, for upgrades (Premier members)"
+    },
+    "travelBankDollars": {
+      "type": "number",
+      "minimum": 0,
+      "description": "United TravelBank balance, in US dollars"
+    }
+  },
+  "required": [
+    "miles"
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "miles": 25000,
+      "lifetimeMiles": 61000,
+      "plusPoints": 0,
+      "travelBankDollars": 120.5
+    }
+  ]
+}

@@ -2,8 +2,11 @@
 # The platform reads this file; it never names a site itself. Validated against platform/contract/schemas/site-pack.json.
 # History: inferred from two signed-out HAR recordings (2026-11-06: a search, and a booking up to payment) and four
 # console checks in the user's own Chrome on united.com (the anonymous token, a lookup and a search with our own token).
-# Read-only and signed out: booking, seats and cancelling are handoffs to United's own pages. Nothing here has been
-# reviewed by United. Findings and open checks: research/FINDINGS.md.
+# Read-only: booking, seats and cancelling are handoffs to United's own pages. Signed in (sign-in mode, D7), two account
+# tools read the traveler's MileagePlus balance and activity, with the token United's page keeps once they sign in on
+# united.com; their shapes come from a signed-in recording of 2026-11-15, read by field names and types only, and the
+# currency codes from united.com's own scripts. Nothing here has been reviewed by United. Findings and open checks:
+# research/FINDINGS.md.
 
 site:
   id: united
@@ -12,10 +15,11 @@ site:
   pages: ["https://www.united.com/*"]
   locale: en-US
   brandColor: "#1414d2"     # the blue of united.com's own Select buttons (2026-11-13)
-  pageTypes: [home, results, other]
+  pageTypes: [home, results, account, other]
   requires:
     location: none
-    signIn: never           # signed-out fares; MileagePlus benefits apply when the traveler signs in on united.com
+    signIn: some_tools      # fares are signed out; the MileagePlus tools need the traveler signed in on united.com
+  accountName: MileagePlus account
 
 entities:
   airport:
@@ -83,6 +87,24 @@ endpoints:
     response: endpoints/token.response.json
     matchKey: []
     verified: "2026-11-06, the user's console"
+  balances:
+    description: The signed-in traveler's MileagePlus balances, by program currency, and lifetime miles
+    method: GET
+    url: https://www.united.com/api/myunited/user/balances
+    request: endpoints/balances.request.json
+    response: endpoints/balances.response.json
+    matchKey: []
+    signIn: true
+    verified: "2026-11-15, the user's signed-in recording (shapes only) and console (200 signed in, 202 with Errors signed out)"
+  activities:
+    description: The signed-in traveler's MileagePlus activity, newest first, a page at a time
+    method: GET
+    url: https://www.united.com/api/myunited/account/Activities/{start}/{count}
+    request: endpoints/activities.request.json
+    response: endpoints/activities.response.json
+    matchKey: [start, count]
+    signIn: true
+    verified: "2026-11-15, the user's signed-in recording (shapes only)"
   airports:
     description: Airports and cities matching typed text
     method: GET
@@ -144,6 +166,9 @@ token:
   header: X-Authorization-api
   format: "bearer {token}"
   refusedStatuses: [405, 401, 403]   # 405 is what United answered without a token (2026-11-06)
+  # Signed in, United's page keeps the traveler's own token in its saved state, renews it on every load, and swaps it
+  # for an anonymous one at sign-out (seen 2026-11-15); page.ts reads it when an account tool runs (D7).
+  signedIn: { from: page }
 
 tools:
   find_airport:
@@ -204,6 +229,26 @@ tools:
     output: tools/fare_calendar.output.json
     uses: [calendar]
     sideEffect: read
+  get_miles_balance:
+    description: The traveler's MileagePlus balance, from their signed-in United account; redeemable miles, lifetime miles, PlusPoints and TravelBank dollars
+    input: tools/get_miles_balance.input.json
+    output: tools/get_miles_balance.output.json
+    uses: [balances]
+    sideEffect: read
+    signIn: true
+    privacy: { account: [miles, lifetimeMiles, plusPoints, travelBankDollars] }
+    errors:
+      signed_out: { code: auth_required, message: "United says the traveler isn't signed in. Ask them to sign in on united.com, and offer the sign-in button.", retryable: true }
+  get_miles_activity:
+    description: The traveler's recent MileagePlus activity, newest first, from their signed-in United account; what earned or spent miles, and how many
+    input: tools/get_miles_activity.input.json
+    output: tools/get_miles_activity.output.json
+    uses: [activities]
+    sideEffect: read
+    signIn: true
+    privacy: { account: ["activities[].date", "activities[].description", "activities[].partner", "activities[].type", "activities[].miles", "activities[].baseMiles", "activities[].bonusMiles"] }
+    errors:
+      signed_out: { code: auth_required, message: "United says the traveler isn't signed in. Ask them to sign in on united.com, and offer the sign-in button.", retryable: true }
 
 forms:
   flight_search:
@@ -270,12 +315,20 @@ destinations:
     params:
       fareId: { type: string, entity: fare, description: A fare a search returned }
     pageAction: add_fare_to_cart
+  sign_in_on_united:
+    title: Sign in on United
+    description: Opens United's own sign-in on its home page, for when the traveler asks about their MileagePlus account and isn't signed in. The traveler signs in there; the agent never asks for a password
+    pageAction: open_sign_in
   united_home:
     title: United's home page
-    description: The place to sign in, manage a trip, check in, or cancel; the agent can't do these
+    description: The place to manage a trip, check in, or cancel; the agent can't do these
     link: home
 
 pageActions:
+  open_sign_in:
+    description: On any United page, presses the header's Sign in button, which opens United's own sign-in. Does nothing when the traveler is already signed in (the button is then their avatar)
+    effect: shows_information
+    pageTypes: [home, results, account, other]
   open_flight_details:
     description: On United's results page, scrolls to the chosen flight and opens its Details, which show its flight numbers, aircraft and times. Never Select, which puts the flight in a cart
     effect: shows_information
@@ -301,6 +354,7 @@ skills:
 
 recording:
   hars: [recordings/www.united.com.searchflight.har, recordings/www.united.com.allthewayToCheckout.har]
-  scrubFields: [CartId, cartId, SessionId, sessionKey, lastResultId, LastBBXSolutionSetId, BBXSolutionSetId, EditSearchCartId]
+  scrubFields: [CartId, cartId, SessionId, sessionKey, lastResultId, LastBBXSolutionSetId, BBXSolutionSetId, EditSearchCartId,
+    LoyaltyID, CustomerId, TravelBankAccountNumber, MileagePlusNumber]
   scrubHeaders: []
   keepHeaders: [accept, content-type]

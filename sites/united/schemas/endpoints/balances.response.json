@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/balances.response.json",
+  "title": "United MileagePlus balances response",
+  "description": "Signed in: data, with each balance by program currency (RDM: redeemable miles; UGC: PlusPoints; UBC: Travel Bank, in dollars; RPU, GPU: upgrade certificates; names from united.com's own scripts) and lifetime miles. Signed out (the anonymous token), United answers 202 with only Errors. The answer also carries the loyalty ID, a customer ID and the Travel Bank account number, which no tool passes on.",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "Balances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "TotalBalance": {
+                "type": "number"
+              },
+              "ProgramCurrencyType": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "TotalBalance",
+              "ProgramCurrencyType"
+            ]
+          }
+        },
+        "LifetimeMiles": {
+          "type": "number"
+        },
+        "AccountStatus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Balances"
+      ]
+    },
+    "Errors": {
+      "type": "array"
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "Balances": [
+          {
+            "TotalBalance": 25000,
+            "ProgramCurrencyType": "RDM"
+          }
+        ],
+        "LifetimeMiles": 61000
+      }
+    },
+    {
+      "Errors": [
+        {}
+      ]
+    }
+  ]
+}

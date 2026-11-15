@@ -14,6 +14,10 @@
 //     rebuild from what United sends, so it's left out rather than shown at the wrong price. Seats are bought on
 //     United's own pages.
 // Times are local at each airport, as United sends them, so they're shown as text, never converted to a time zone.
+// The MileagePlus tools (sign-in mode) read the signed-in traveler's balances and activity. core.js signs their calls
+// with the token United's page keeps (D7). Signed out, United answers 202 with only Errors, so no data means signed out.
+// They pass on only the amounts and the activity lines: the loyalty ID, customer ID, TravelBank account number and the
+// travelers' names on tickets, which the same answers carry, never leave this file.
 import type { FareTarget, FlightTarget } from './page.ts';
 import type { SiteCode, ToolContext } from '../../platform/core/src/index.ts';
 
@@ -363,8 +367,63 @@ function cartButton(ref: FareRef | undefined, link: (name: string, values: Recor
   return { url, focus: { target, hint: `${ref.flight.flightNumbers} leaving ${ref.target.origin} at ${ref.target.departs}, ${fare}, ${dollars(ref.total)}` }, summary };
 }
 
+/** United's program currencies, as its own scripts name them (2026-11-15). */
+const CURRENCY = { miles: 'RDM', plusPoints: 'UGC', travelBank: 'UBC' } as const;
+
+interface BalancesAnswer {
+  data?: { Balances: { TotalBalance: number; ProgramCurrencyType: string }[]; LifetimeMiles?: number };
+}
+interface ActivitiesAnswer {
+  data?: { activities: { ActivityType?: string; Description: string; PartnerName?: string; TransactionDate: string; BaseMiles?: number; BonusMiles?: number; TotalMiles: number }[] };
+}
+
+/**
+ * The traveler's balances:
+ *   1. No data means United took the traveler as signed out.
+ *   2. Each amount by its program currency; a currency United didn't send is left out, except miles, which is 0.
+ */
+function balancesOf(ctx: ToolContext, answer: BalancesAnswer) {
+  // 1. Signed out
+  if (!answer.data) return ctx.fail('signed_out');
+  // 2. The amounts
+  const amount = (currency: string) => answer.data!.Balances.find((balance) => balance.ProgramCurrencyType === currency)?.TotalBalance;
+  const plusPoints = amount(CURRENCY.plusPoints);
+  const travelBank = amount(CURRENCY.travelBank);
+  return {
+    miles: Math.max(0, Math.round(amount(CURRENCY.miles) ?? 0)),
+    ...(answer.data.LifetimeMiles !== undefined ? { lifetimeMiles: Math.max(0, Math.round(answer.data.LifetimeMiles)) } : {}),
+    ...(plusPoints !== undefined ? { plusPoints: Math.max(0, plusPoints) } : {}),
+    ...(travelBank !== undefined ? { travelBankDollars: Math.max(0, travelBank) } : {}),
+  };
+}
+
+/** The traveler's activity lines, without the names on tickets; no data means signed out. */
+function activitiesOf(ctx: ToolContext, answer: ActivitiesAnswer) {
+  if (!answer.data) return ctx.fail('signed_out');
+  return {
+    activities: answer.data.activities.map((activity) => ({
+      date: activity.TransactionDate,
+      description: activity.Description,
+      ...(activity.PartnerName ? { partner: activity.PartnerName } : {}),
+      ...(activity.ActivityType ? { type: activity.ActivityType } : {}),
+      miles: activity.TotalMiles,
+      ...(activity.BaseMiles !== undefined ? { baseMiles: activity.BaseMiles } : {}),
+      ...(activity.BonusMiles !== undefined ? { bonusMiles: activity.BonusMiles } : {}),
+    })),
+  };
+}
+
 export const site: SiteCode = {
   tools: {
+    async get_miles_balance(ctx) {
+      return balancesOf(ctx, await ctx.call('balances', {}));
+    },
+
+    async get_miles_activity(ctx) {
+      const count = (ctx.args as { count?: number }).count ?? 10;
+      return activitiesOf(ctx, await ctx.call('activities', { params: { start: 0, count } }));
+    },
+
     async find_airport(ctx) {
       const res = await ctx.call('airports', { query: { airport: ctx.args.query, allAirports: 'true', matches: '5' } });
       return {
@@ -464,5 +523,10 @@ export const site: SiteCode = {
       return { ...shown, focus: { ...shown.focus, target: { ...shown.focus.target, ...ref.page } satisfies FareTarget } };
     },
     add_fare_to_cart: (params: { fareId: string }, link, store) => cartButton(store.get(`fare:${params.fareId}`) as FareRef | undefined, link),
+    // United's home page, where page.ts presses the header's Sign in.
+    sign_in_on_united: (_params: Record<string, never>, link) => {
+      const url = link('home', {});
+      return url ? { url, focus: { target: {}, hint: "United's sign-in" } } : undefined;
+    },
   },
 };

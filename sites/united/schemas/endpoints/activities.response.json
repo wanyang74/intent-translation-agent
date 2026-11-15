@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-agent.invalid/sites/united/schemas/endpoints/activities.response.json",
+  "title": "United MileagePlus activity response",
+  "description": "Signed in: data.activities, newest first. Signed out, 202 with only Errors. TicketNames (the travelers' names) is never passed on.",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ActivityType": {
+                "type": "string"
+              },
+              "Description": {
+                "type": "string"
+              },
+              "PartnerName": {
+                "type": "string"
+              },
+              "TransactionDate": {
+                "type": "string"
+              },
+              "BaseMiles": {
+                "type": "number"
+              },
+              "BonusMiles": {
+                "type": "number"
+              },
+              "TotalMiles": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "Description",
+              "TransactionDate",
+              "TotalMiles"
+            ]
+          }
+        }
+      },
+      "required": [
+        "activities"
+      ]
+    },
+    "Errors": {
+      "type": "array"
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "activities": [
+          {
+            "Description": "Flight",
+            "TransactionDate": "2026-10-02T00:00:00",
+            "TotalMiles": 1200
+          }
+        ]
+      }
+    }
+  ]
+}

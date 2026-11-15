@@ -11,6 +11,8 @@ export interface WebHostOptions {
   brain?: Host['brain'];
   /** Reads what the current page carries about the item on screen (the site's page reader). */
   readPage?: () => unknown;
+  /** Reads the signed-in token the page keeps (the site's page code), for tools that need sign-in (D7). */
+  pageToken?: () => Promise<string | null>;
   scripts?: ScriptRunner;
   verifyConfig?: (config: unknown) => Promise<boolean>;
   log?: Host['log'];
@@ -75,6 +77,7 @@ export function webHost(options: WebHostOptions): Host {
       yield* ndjsonEvents(res.body);
     },
     pageData: () => options.readPage?.() ?? null,
+    ...(options.pageToken ? { pageToken: options.pageToken } : {}),
   };
   if (options.scripts) host.scripts = options.scripts;
   if (options.verifyConfig) host.verifyConfig = options.verifyConfig;
