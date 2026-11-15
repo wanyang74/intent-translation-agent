@@ -9,11 +9,12 @@
 // rest of the result in short form, what was shown, and the answer cut to ANSWER_CHARS. Fenced third-party text, such
 // as reviews, is never copied. Personal data (sign-in mode) isn't kept either: a tool's personal fields become a
 // placeholder, a script that read any becomes one whole, and so does the answer of a turn that read them, since the
-// model's words repeat what it read.
+// model's words repeat what it read. Account data (a miles balance, a trip's dates) is kept, so the reopened
+// conversation still knows it and the user needn't ask again (REDACTED_IN in contract/src/privacy.ts).
 // Rules: pure functions over data, no I/O. The memory is built on the server from the brain's own history and never
 // comes from the device, so a tampered client can't invent earlier tool results.
 import { valuesAt } from '../../../contract/src/paths.ts';
-import { PERSONAL_PLACEHOLDER, redactPersonal } from '../../../contract/src/privacy.ts';
+import { PERSONAL_PLACEHOLDER, readsLevel, redact, REDACTED_IN } from '../../../contract/src/privacy.ts';
 import { PRESENTATION_TOOLS } from '../../../contract/src/site-pack.ts';
 import type { IdValue, KnownId } from '../../../core/src/boundary/ids.ts';
 import { displayText } from '../../../core/src/present/present.ts';
@@ -245,12 +246,11 @@ export function condense(input: CondenseInput): SessionMemory {
           continue;
         }
         // Personal fields are replaced before anything is condensed from the result.
-        const tool = bundle.pack.tools[call.name];
         const script = call.name === SCRIPT_TOOL ? (result.output as { personal?: unknown } | null) : null;
         let output = result.output;
-        if (!result.isError && tool?.privacy) {
+        if (!result.isError && readsLevel(bundle.pack, call.name, REDACTED_IN.memory)) {
           personal = true;
-          output = redactPersonal(bundle.pack, call.name, output);
+          output = redact(bundle.pack, call.name, output, REDACTED_IN.memory);
         } else if (!result.isError && script?.personal === true) {
           personal = true;
           output = { ...script, result: { personal: PERSONAL_PLACEHOLDER } };

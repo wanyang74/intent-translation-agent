@@ -208,7 +208,7 @@ export function renderComponent(doc: Document, component: UiComponent, actions: 
       });
       const body = element(doc, 'div', 'dest-body', [
         element(doc, 'div', 'dest-title', [`Read your ${component.account}?`]),
-        element(doc, 'div', 'consent', [`To answer, I'll read your ${component.account} on ${component.site} and send what it shows to the AI model, for this conversation only. I never see your password.`]),
+        element(doc, 'div', 'consent', [`To answer, I'll read your ${component.account} on ${component.site} and send what it shows to the AI model, for this conversation only. What it shows about your account is remembered with the conversation; your name and contact details are not. I never see your password.`]),
       ]);
       return element(doc, 'div', 'destination confirm ask', [body, allow]);
     }

@@ -30,11 +30,12 @@ export const site: SiteCode = {
     async get_trips(ctx) {
       const res = await ctx.call('trips', { query: { status: (ctx.args as { status?: string }).status ?? 'upcoming' } });
       return {
-        trips: res.trips.map((trip: { recordLocator: string; status: string; segments: Segment[] }) => ({
+        trips: res.trips.map((trip: { recordLocator: string; status: string; segments: Segment[]; leadTraveler?: string }) => ({
           recordLocator: trip.recordLocator,
           route: `${trip.segments[0]!.from} to ${trip.segments[trip.segments.length - 1]!.to}`,
           departs: trip.segments[0]!.departs,
           status: trip.status,
+          ...(trip.leadTraveler ? { traveler: trip.leadTraveler } : {}),
         })),
       };
     },

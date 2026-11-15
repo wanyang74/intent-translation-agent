@@ -163,11 +163,15 @@ async function runScript(session: Session, args: unknown): Promise<CallOutcome> 
   if (typeof source !== 'string' || !source.trim() || source.length > MAX_SCRIPT) {
     return refuse(platformError('bad_script', { details: `the source must be text of at most ${MAX_SCRIPT} characters` }));
   }
-  // Whether the script read anything personal: then its result says so, and the brain keeps it out of its records.
+  // Whether the script read personal or account data: then its result says so, and the brain keeps it out of the
+  // records that don't keep that level (personal: memory and traces; account: traces).
   let personal = false;
+  let account = false;
   const result = await runner.run(source, async (tool, toolArgs) => {
     const outcome = await runToolCall(session, tool, toolArgs, { fromScript: true });
-    if (outcome.ok && session.pack.tools[tool]?.privacy) personal = true;
+    const privacy = session.pack.tools[tool]?.privacy;
+    if (outcome.ok && privacy?.personal?.length) personal = true;
+    if (outcome.ok && privacy?.account?.length) account = true;
     // The script was written by the model and its result goes back to it, so it sees what the model would.
     if (outcome.ok) return modelCopy(session, tool, outcome.output);
     throw new Error(outcome.error.message);
@@ -181,5 +185,5 @@ async function runScript(session: Session, args: unknown): Promise<CallOutcome> 
   if (size > MAX_SCRIPT_RESULT) {
     return refuse(platformError('bad_script', { details: `it returned ${size} characters; return IDs and a short summary, at most ${MAX_SCRIPT_RESULT}` }));
   }
-  return { ok: true, output: { result: value, knownIds: knownIdsIn(session, value), ...(personal ? { personal: true } : {}) } };
+  return { ok: true, output: { result: value, knownIds: knownIdsIn(session, value), ...(personal ? { personal: true } : {}), ...(account ? { account: true } : {}) } };
 }

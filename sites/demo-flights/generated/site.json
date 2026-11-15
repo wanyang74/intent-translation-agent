@@ -217,9 +217,12 @@
       "sideEffect": "read",
       "signIn": true,
       "privacy": {
-        "personal": [
+        "account": [
           "trips[].route",
           "trips[].departs"
+        ],
+        "personal": [
+          "trips[].traveler"
         ]
       },
       "presentation": "present_items",

@@ -66,8 +66,8 @@ export function outputProblem(bundle: SiteBundle, name: string, output: Record<s
   if (name === SCRIPT_TOOL) {
     if (!isObject(output.result)) return 'a script result needs a result object';
     if (!isObject(output.knownIds) || !Object.values(output.knownIds).every((ids) => Array.isArray(ids))) return 'a script result needs knownIds, lists by kind';
-    if (output.personal !== undefined && output.personal !== true) return "a script result's personal flag is true or left out";
-    return Object.keys(output).every((key) => key === 'result' || key === 'knownIds' || key === 'personal') ? null : 'a script result has only result, knownIds and personal';
+    for (const flag of ['personal', 'account'] as const) if (output[flag] !== undefined && output[flag] !== true) return `a script result's ${flag} flag is true or left out`;
+    return Object.keys(output).every((key) => ['result', 'knownIds', 'personal', 'account'].includes(key)) ? null : 'a script result has only result, knownIds, personal and account';
   }
   const schema = outputSchemaForModel(bundle.pack, name);
   return schema ? problemsWith(bundle.validators.site, schema, output) : `${name} isn't a tool here`;

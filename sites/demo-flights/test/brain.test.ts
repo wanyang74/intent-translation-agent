@@ -19,7 +19,7 @@ const validate = validatorFor(bundle.validators.platform, 'messages.json');
 const conversation = loadConversations('demo-flights').find((example) => example.id === 'one-way-search')!;
 const searchOutput = (conversation.messages.find((message) => message.type === 'results') as { results: { output: Record<string, unknown> }[] }).results[0]!.output;
 // What core.js sends the brain: the record locator is private, so the model's copy holds its stand-in.
-const TRIPS = { trips: [{ recordLocator: 'withheld:1', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed' }] };
+const TRIPS = { trips: [{ recordLocator: 'withheld:1', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed', traveler: 'Alex Rivera' }] };
 const HOME: PageContext = { url: 'https://www.demo-flights.example/', pageType: 'home', locale: 'en-US' };
 const results: ResultFor = (call) => ({ ok: true, output: call.name === 'get_trips' ? TRIPS : searchOutput });
 const search = { name: 'search_flights', input: { origin: 'SFO', destination: 'JFK', departDate: '2026-11-20', adults: 1, cabin: 'economy' } };

@@ -33,7 +33,8 @@
               "departs": "2026-12-03T16:00:00Z",
               "arrives": "2026-12-03T18:10:00Z"
             }
-          ]
+          ],
+          "leadTraveler": "Alex Rivera"
         }
       ]
     }

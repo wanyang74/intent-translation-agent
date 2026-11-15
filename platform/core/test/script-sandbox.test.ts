@@ -2,12 +2,13 @@
 // How: real QuickJS on the made-up shop, with scripts that call tools, try to escape, loop forever or eat memory.
 // Passes when: scripts call tools only through Execute (same checks, same budget), reach nothing else, are stopped
 // when they run too long or use too much memory, and return a small object whose known IDs are listed for the brain,
-// marked personal when it read the user's account.
+// marked with the levels of account data it read.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { quickJsRunner } from '../hosts/quickjs.ts';
 import { runToolCall } from '../src/index.ts';
-import { exampleSession } from './example-site.ts';
+import { examplePack } from './example-pack.ts';
+import { exampleSession, exampleValidators } from './example-site.ts';
 
 const runner = quickJsRunner();
 const withScripts = () => exampleSession({ host: { scripts: runner } });
@@ -25,14 +26,18 @@ test('tool calls: a script calls tools through Execute; the known IDs it returns
   assert.equal(session.ids.status('product', 2, session.host.now()), 'known', "IDs the script's tool calls returned are known to the session");
 });
 
-test("personal: a script that read the user's account says so, for the brain to keep it out of its records; one that didn't, doesn't", async () => {
-  const { session } = await withScripts();
+test("privacy levels: a script that read the user's account says which levels, for the brain to keep them out of its records; one that didn't, doesn't", async () => {
+  // A copy of the shop's pack, so making its orders personal below changes no other test's.
+  const pack = structuredClone(examplePack);
+  const { session } = await exampleSession({ pack, validators: exampleValidators({}, pack), host: { scripts: runner } });
   session.setPage({ url: 'https://www.example.com/account', pageType: 'account', signedIn: true });
   session.accountAllowed = true;
-  const account = await runToolCall(session, 'run_script', { source: `const { orders } = await tools.my_orders({}); return { count: orders.length };` });
-  assert.deepEqual(account, { ok: true, output: { result: { count: 1 }, knownIds: {}, personal: true } });
+  const readOrders = `const { orders } = await tools.my_orders({}); return { count: orders.length };`;
+  assert.deepEqual(await runToolCall(session, 'run_script', { source: readOrders }), { ok: true, output: { result: { count: 1 }, knownIds: {}, account: true } });
+  pack.tools.my_orders!.privacy = { personal: ['orders[].status'] };
+  assert.deepEqual(await runToolCall(session, 'run_script', { source: readOrders }), { ok: true, output: { result: { count: 1 }, knownIds: {}, personal: true } });
   const shop = await runToolCall(session, 'run_script', { source: `const { products } = await tools.search_products({ query: 'shoe' }); return { count: products.length };` });
-  assert.deepEqual(shop.ok && shop.output.personal, undefined);
+  assert.deepEqual(shop.ok && [shop.output.personal, shop.output.account], [undefined, undefined]);
 });
 
 test('isolation: a script has no network, timers, modules or host objects', async () => {

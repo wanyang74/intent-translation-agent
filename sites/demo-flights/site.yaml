@@ -1,7 +1,8 @@
 # Site pack: Demo Flights (synthetic)
 # A made-up airline used only in tests, to keep the platform honest about generality. It exercises what the
 # first real site pack doesn't: a search form, offers that expire, a signed-in trips list (with private record
-# locators, kept on the device, and personal fields kept out of the brain's logs), a rule that
+# locators, kept on the device; trip routes and dates kept in session memory but not traces; and the traveler's name,
+# kept out of both), a rule that
 # prices must include all taxes and fees, a token on every call, and a search that answers as a stream of events
 # (named events, where a real airline may name them inside the data). The .example domain is reserved and never
 # resolves.
@@ -105,7 +106,7 @@ tools:
     uses: [trips]
     sideEffect: read
     signIn: true
-    privacy: { personal: ["trips[].route", "trips[].departs"] }
+    privacy: { account: ["trips[].route", "trips[].departs"], personal: ["trips[].traveler"] }
     presentation: present_items
     ids: { output: [{ kind: trip, path: "trips[].recordLocator" }] }
     errors:

@@ -2,14 +2,16 @@
 // model view of an output schema the brain checks the model's copy against, and what the brain may keep.
 // How: small hand-written schemas and outputs, and every site pack with a tool that needs sign-in.
 // Passes when: card-only fields and private IDs are withheld; the model view accepts a stand-in only where a value is
-// withheld, following $refs across documents; a path that doesn't fit the schema is reported; personal values are
-// replaced for logs and nothing else is; and the pack checks require privacy on every signed-in tool.
+// withheld, following $refs across documents; a path that doesn't fit the schema is reported; memory replaces personal
+// values and keeps account ones, traces replace both, and nothing else is touched; the pack checks require privacy on
+// every signed-in tool and one level per field; and a signed-in tool's output can't have a field it must never read.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import Ajv2020 from 'ajv/dist/2020.js';
-import { AJV_OPTIONS, loadContract } from '../src/load.ts';
+import { AJV_OPTIONS, loadContract, modelViews } from '../src/load.ts';
 import { modelViewSchema, schemaResolver } from '../src/model-view.ts';
-import { PERSONAL_PLACEHOLDER, isWithheld, mapAt, modelOutputSchema, outputSchemaForModel, redactPersonal, withheldPaths } from '../src/privacy.ts';
+import { valuesAt } from '../src/paths.ts';
+import { PERSONAL_PLACEHOLDER, isNeverRead, isWithheld, mapAt, modelOutputSchema, outputSchemaForModel, redact, REDACTED_IN, withheldPaths } from '../src/privacy.ts';
 import { crossCheck, entriesOf, listSites, readSite } from '../src/site-pack.ts';
 
 const BASE = 'https://schemas.example/';
@@ -59,7 +61,7 @@ test('there is a site pack with a signed-in tool, so the privacy rules run on at
 });
 
 for (const { site, name } of signedIn) {
-  test(`${site}/${name}: personal values are replaced for logs, withheld paths have a model view, and the rest is kept`, () => {
+  test(`${site}/${name}: memory replaces personal values, traces replace account ones too, and withheld paths have a model view`, () => {
     const contract = loadContract({ sites: [site] });
     const { pack } = contract.sites[site]!;
     const tool = pack.tools[name]!;
@@ -68,20 +70,46 @@ for (const { site, name } of signedIn) {
     if (withheld.length) assert.ok(contract.siteValidator(site, modelOutputSchema(tool)), 'the model view is loaded');
     const example = (contract.sites[site]!.schemas.find((schema) => schema.rel === tool.output)!.doc.examples ?? [])[0];
     assert.ok(example, `${tool.output} has an example`);
-    const redacted = JSON.stringify(redactPersonal(pack, name, example));
-    for (const path of tool.privacy?.personal ?? []) {
-      const before: string = JSON.stringify(mapAt(example, path, () => PERSONAL_PLACEHOLDER));
-      assert.equal(redacted.includes(PERSONAL_PLACEHOLDER), before.includes(PERSONAL_PLACEHOLDER), `${path} is replaced`);
+    for (const [record, levels] of Object.entries(REDACTED_IN)) {
+      const redacted = redact(pack, name, example, levels);
+      for (const level of ['account', 'personal'] as const) {
+        for (const path of tool.privacy?.[level] ?? []) {
+          const expected: unknown[] = (levels as readonly string[]).includes(level) ? valuesAt(example, path).map(() => PERSONAL_PLACEHOLDER) : valuesAt(example, path);
+          assert.deepEqual(valuesAt(redacted, path), expected, `${record}: ${level} ${path}`);
+        }
+      }
     }
+    assert.deepEqual(REDACTED_IN, { memory: ['personal'], traces: ['personal', 'account'] }, "memory keeps account data so the user needn't repeat themselves");
   });
 }
 
-test('the pack checks: a signed-in tool must declare its privacy, and a field is personal or card-only, not both', () => {
+test('the pack checks: a signed-in tool must declare its privacy, and a field has one level', () => {
   const { site, name } = signedIn[0]!;
   const loaded = readSite(site);
   const withTool = (tool: object) => crossCheck({ ...loaded, pack: { ...loaded.pack, tools: { ...loaded.pack.tools, [name]: tool as never } } }).map((problem) => problem.slice(problem.indexOf(': ') + 2));
   const { privacy: _privacy, ...bare } = loaded.pack.tools[name]!;
-  assert.deepEqual(withTool(bare), [`tools.${name}: needs sign-in, so it needs privacy (personal and cardOnly fields; {} if none)`]);
+  assert.deepEqual(withTool(bare), [`tools.${name}: needs sign-in, so it needs privacy (account, personal and cardOnly fields; {} if none)`]);
   assert.deepEqual(withTool({ ...bare, privacy: {} }), []);
-  assert.deepEqual(withTool({ ...bare, privacy: { personal: ['a.b'], cardOnly: ['a.b'] } }), [`tools.${name}.privacy: a.b is both personal and cardOnly; cardOnly already keeps it from the brain`]);
+  assert.deepEqual(withTool({ ...bare, privacy: { personal: ['a.b'], cardOnly: ['a.b'] } }), [`tools.${name}.privacy: a.b is both personal and cardOnly; give it one level, the stricter`]);
+  assert.deepEqual(withTool({ ...bare, privacy: { account: ['a.b'], personal: ['a.b'] } }), [`tools.${name}.privacy: a.b is both account and personal; give it one level, the stricter`]);
+});
+
+test('never read: secrets and identity documents are recognized however they are spelled, and ordinary names are not', () => {
+  for (const name of ['password', 'dateOfBirth', 'date_of_birth', 'DOB', 'passportNumber', 'known-traveler-number', 'cvv', 'securityAnswers']) assert.ok(isNeverRead(name), name);
+  for (const name of ['route', 'departs', 'balance', 'pinned', 'passengers', 'cardTitle']) assert.ok(!isNeverRead(name), name);
+});
+
+test("a signed-in tool whose output has a field it must never read stops the load, at any depth; a signed-out tool's output isn't checked", () => {
+  const { site, name } = signedIn[0]!;
+  const contract = loadContract({ sites: [site] });
+  const loaded = readSite(site);
+  const own = contract.sites[site]!.schemas.filter((schema) => !schema.derived);
+  const tool = loaded.pack.tools[name]!;
+  const withSecret = own.map((schema) => (schema.rel !== tool.output ? schema : {
+    ...schema, doc: { ...schema.doc, properties: { ...(schema.doc.properties as object), holder: { type: 'object', properties: { date_of_birth: { type: 'string' } } } } },
+  }));
+  assert.doesNotThrow(() => modelViews(site, loaded, own, contract.platform));
+  assert.throws(() => modelViews(site, loaded, withSecret, contract.platform), new RegExp(`tools\\.${name}: its output has date_of_birth, which a signed-in tool must never read`));
+  const signedOut = { ...loaded, pack: { ...loaded.pack, tools: { ...loaded.pack.tools, [name]: { ...tool, signIn: false } } } };
+  assert.doesNotThrow(() => modelViews(site, signedOut, withSecret, contract.platform));
 });

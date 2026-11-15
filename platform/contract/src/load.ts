@@ -7,8 +7,8 @@ import type { ValidateFunction } from 'ajv/dist/2020.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { modelViewSchema, schemaResolver } from './model-view.ts';
-import { modelOutputSchema, withheldPaths } from './privacy.ts';
+import { modelViewSchema, propertyNames, schemaResolver } from './model-view.ts';
+import { isNeverRead, modelOutputSchema, withheldPaths } from './privacy.ts';
 import { entriesOf, listSites, readSite, type Site } from './site-pack.ts';
 
 export const BASE = 'https://intent-agent.invalid/';
@@ -88,17 +88,24 @@ export function loadContract(options: { sites?: string[] } = {}): Contract {
   };
 }
 
-/** The model view of each output schema that withholds fields; a path that doesn't fit the schema stops the load. */
+/**
+ * The model view of each output schema that withholds fields. A privacy path that doesn't fit the schema stops the load,
+ * and so does a signed-in tool whose output has a field it must never read (NEVER_READ).
+ */
 export function modelViews(id: string, site: Site, schemas: SchemaFile[], platform: SchemaFile[]): SchemaFile[] {
   const resolve = schemaResolver([...platform, ...schemas].map((schema) => ({ ...schema.doc, $id: schema.id })));
   return entriesOf(site.pack.tools).flatMap(([name, tool]) => {
     const paths = withheldPaths(site.pack, name);
     const output = schemas.find((schema) => schema.rel === tool.output);
     if (!output) return [];
-    // Personal paths aren't withheld, but they must lead to a field too, or they'd keep nothing out of the logs.
-    const personal = tool.privacy?.personal ?? [];
-    const walked = personal.length ? modelViewSchema({ ...output.doc, $id: output.id }, output.id, personal, resolve) : null;
-    if (walked && 'problem' in walked) throw new Error(`sites/${id}/site.yaml: tools.${name}: a personal path doesn't fit the output schema: ${walked.problem}`);
+    // Account and personal paths aren't withheld, but they must lead to a field too, or they'd keep nothing out of the
+    // brain's records.
+    const kept = [...(tool.privacy?.account ?? []), ...(tool.privacy?.personal ?? [])];
+    const walked = kept.length ? modelViewSchema({ ...output.doc, $id: output.id }, output.id, kept, resolve) : null;
+    if (walked && 'problem' in walked) throw new Error(`sites/${id}/site.yaml: tools.${name}: an account or personal path doesn't fit the output schema: ${walked.problem}`);
+    // A signed-in tool never fetches secrets or identity documents: none may be in its output, at any depth.
+    const secret = tool.signIn ? propertyNames({ ...output.doc, $id: output.id }, resolve).find(isNeverRead) : undefined;
+    if (secret) throw new Error(`sites/${id}/site.yaml: tools.${name}: its output has ${secret}, which a signed-in tool must never read`);
     if (!paths.length) return [];
     const rel = modelOutputSchema(tool);
     const view = modelViewSchema({ ...output.doc, $id: output.id }, BASE + `sites/${id}/schemas/` + rel, paths, resolve);

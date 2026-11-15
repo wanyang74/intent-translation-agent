@@ -37,7 +37,9 @@ test('bundle: core.js builds for the browser with no Node built-ins, eval or new
     platform: 'browser', target: 'es2020', write: false, minify: true, logLevel: 'silent',
   })).outputFiles[0]!.text;
   assert.doesNotMatch(core, /\brequire\(|\bprocess\.|\bBuffer\b|\beval\(|\bnew Function\b|\bTextEncoder\b|\bbtoa\(/);
-  // 15 KB until sign-in mode (2026-11-15), whose stand-ins for private values added about 0.7 KB.
+  // 15 KB until sign-in mode (2026-11-15), whose stand-ins for private values added about 0.7 KB (15.9 KB then). The
+  // limit is there to catch a dependency pulled in by mistake, which costs far more than that; most of the size is the
+  // model-facing error messages and checks, which aren't worth cutting to stay under a round number.
   assert.ok(gzipSync(core).length < 17 * 1024, `core.js pure logic is ${Math.round(gzipSync(core).length / 1024)} KB gzipped`);
 });
 

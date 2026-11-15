@@ -170,7 +170,7 @@ test("clicks: the account button allows reading the account, sends the user's ye
   try {
     const root = `document.querySelector('[data-fixture="state-account-consent"]').shadowRoot`;
     assert.equal(await page.evaluate(`${root}.querySelector('.ask .btn').textContent`), 'Use my Shop Rewards account');
-    assert.match(await page.evaluate<string>(`${root}.querySelector('.ask .consent').textContent`), /send what it shows to the AI model, for this conversation only\. I never see your password\./);
+    assert.match(await page.evaluate<string>(`${root}.querySelector('.ask .consent').textContent`), /send what it shows to the AI model, for this conversation only\. What it shows about your account is remembered with the conversation; your name and contact details are not\. I never see your password\./);
     await page.evaluate(`${root}.querySelector('.ask .btn').click()`);
     await page.evaluate(`${root}.querySelector('.ask .btn').click()`);
     assert.deepEqual(await page.evaluate('window.allowed'), ['state-account-consent'], 'allowed once');

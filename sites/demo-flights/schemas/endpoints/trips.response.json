@@ -26,6 +26,10 @@
               "$ref": "/sites/demo-flights/schemas/common.json#/$defs/Segment"
             },
             "minItems": 1
+          },
+          "leadTraveler": {
+            "type": "string",
+            "description": "The name of the booking's first traveler"
           }
         },
         "required": [

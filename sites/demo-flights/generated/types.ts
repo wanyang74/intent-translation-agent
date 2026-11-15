@@ -139,6 +139,10 @@ export interface TripsResponse {
      * @minItems 1
      */
     segments: [Segment, ...Segment[]];
+    /**
+     * The name of the booking's first traveler
+     */
+    leadTraveler?: string;
     [k: string]: unknown | undefined;
   }[];
   [k: string]: unknown | undefined;
@@ -164,6 +168,10 @@ export interface GetTripsOutput {
     route: string;
     departs: DateTime;
     status: string;
+    /**
+     * The booking's first traveler
+     */
+    traveler?: string;
   }[];
 }
 /**

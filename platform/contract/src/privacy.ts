@@ -1,7 +1,10 @@
 // Personal data in tool results (sign-in mode). A site pack marks it per tool (tool.privacy) and per kind of item
-// (entity.id.cardOnly):
-//   personal   sent to the model, which needs it to answer, but replaced in what the brain keeps: logs, traces,
-//              session memory, saved references (redactPersonal)
+// (entity.id.cardOnly); a field it doesn't mark is ordinary, and fields it must never read aren't in the output at all
+// (NEVER_READ, checked by the loader):
+//   account    the account's own data, such as a miles balance or a trip's route and dates: sent to the model and kept
+//              in session memory, so a reopened conversation still knows it, but replaced in traces
+//   personal   details that identify or reach the person, such as a name or an email: sent to the model, which needs
+//              them to answer, but replaced in everything the brain keeps: traces and session memory (redact)
 //   cardOnly   never sent to the brain at all: core.js shows it on cards from the record on the device, and the model's
 //              copy of the result holds a stand-in, withheld:<n>, that core.js swaps back when the model passes it
 //              (an ID the model shows a card for, say)
@@ -18,8 +21,20 @@ const withheldRe = new RegExp(WITHHELD_PATTERN);
 
 export const isWithheld = (value: unknown): value is string => typeof value === 'string' && withheldRe.test(value);
 
-/** What a personal value becomes in the brain's logs, traces, memory and references. */
+/** What a personal or account value becomes where the brain doesn't keep it. */
 export const PERSONAL_PLACEHOLDER = '[personal]';
+
+/** The levels the brain replaces in what it keeps; card-only values never reach it. */
+export type KeptLevel = 'account' | 'personal';
+/** What each record the brain keeps replaces: memory keeps account data so the user needn't repeat themselves. */
+export const REDACTED_IN = { memory: ['personal'], traces: ['personal', 'account'] } as const satisfies Record<string, readonly KeptLevel[]>;
+
+/**
+ * Field names a signed-in tool's output may never have, at any depth: secrets and identity documents the agent never
+ * needs, so it never fetches them. Matched on the whole name, ignoring case, underscores and dashes.
+ */
+export const NEVER_READ = /^(password|passcode|pin|securityquestions?|securityanswers?|dateofbirth|birthdate|dob|ssn|socialsecuritynumber|passport(number)?|knowntraveler(number)?|redress(number)?|cardnumber|creditcardnumber|cvv|cvc|securitycode)$/;
+export const isNeverRead = (name: string) => NEVER_READ.test(name.toLowerCase().replace(/[_-]/g, ''));
 
 /** The output paths of a tool whose values stay on the device: its cardOnly fields, and its IDs of kinds with private IDs. */
 export function withheldPaths(pack: SitePack, toolName: string): string[] {
@@ -57,8 +72,15 @@ export function mapAt(value: unknown, path: string, fn: (found: unknown) => unkn
   return { ...record, [key]: isArray ? (Array.isArray(child) ? child.map(apply) : child) : apply(child) };
 }
 
-/** The output with every personal value replaced by PERSONAL_PLACEHOLDER, for anything the brain keeps. */
-export function redactPersonal(pack: SitePack, toolName: string, output: unknown): unknown {
-  const paths = pack.tools[toolName]?.privacy?.personal ?? [];
+/** Whether a tool's results have fields of any of these levels. */
+export function readsLevel(pack: SitePack, toolName: string, levels: readonly KeptLevel[]): boolean {
+  const privacy = pack.tools[toolName]?.privacy;
+  return levels.some((level) => (privacy?.[level]?.length ?? 0) > 0);
+}
+
+/** The output with every value of these levels replaced by PERSONAL_PLACEHOLDER, for a record the brain keeps. */
+export function redact(pack: SitePack, toolName: string, output: unknown, levels: readonly KeptLevel[]): unknown {
+  const privacy = pack.tools[toolName]?.privacy;
+  const paths = levels.flatMap((level) => privacy?.[level] ?? []);
   return paths.reduce((redacted, path) => mapAt(redacted, path, (found) => (found === undefined || found === null ? found : PERSONAL_PLACEHOLDER)), output);
 }

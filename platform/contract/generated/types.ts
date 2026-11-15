@@ -769,9 +769,10 @@ export interface Tool {
   sideEffect: 'read' | 'write';
   signIn?: boolean;
   /**
-   * Which output fields are personal. Required for a tool that needs sign-in. personal: sent to the model, but kept out of the brain's logs, traces, session memory and saved references. cardOnly: never sent to the brain; shown on cards from the record on the device, with a stand-in (withheld:<n>) in the model's copy. Paths as in ids (trips[].route).
+   * Which output fields are private. Required for a tool that needs sign-in. account: the account's own data (a miles balance, a trip's route and dates); sent to the model and kept in session memory, but not in traces. personal: details that identify or reach the person (a name, an email); sent to the model, but kept out of traces and session memory. cardOnly: never sent to the brain; shown on cards from the record on the device, with a stand-in (withheld:<n>) in the model's copy. Fields not listed are ordinary. Paths as in ids (trips[].route).
    */
   privacy?: {
+    account?: string[];
     personal?: string[];
     cardOnly?: string[];
   };

@@ -3,15 +3,15 @@
 // They record what a person did in a real browser, for quality evaluation and benchmarks; `npm run traces`
 // (platform/evals/scripts/traces.ts) summarizes them and turns one into a test draft.
 // Rules: local development only and never committed (traces/ is git-ignored). Nothing else is removed at write time,
-// so a trace stays a faithful record, except personal data from a signed-in account (sign-in mode): a tool's personal
-// fields become a placeholder, as does a script result that read any, and the answer of a turn that read them, since
-// the model's words repeat what it read. Other personal details are removed when a trace is promoted into a test. Date folders
+// so a trace stays a faithful record, except data from a signed-in account (sign-in mode): a tool's personal and
+// account fields become a placeholder, as does a script result that read any, and the answer of a turn that read them,
+// since the model's words repeat what it read (REDACTED_IN in contract/src/privacy.ts). Other personal details are removed when a trace is promoted into a test. Date folders
 // older than the retention period are deleted. Writing a trace never affects serving: a failed write is reported
 // once and dropped.
 import { appendFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import type { SitePack } from '../../../contract/generated/types.ts';
-import { PERSONAL_PLACEHOLDER, redactPersonal } from '../../../contract/src/privacy.ts';
+import { PERSONAL_PLACEHOLDER, readsLevel, redact, REDACTED_IN } from '../../../contract/src/privacy.ts';
 import type { BrainLogEntry } from '../agent/types.ts';
 import type { LinkTap } from './server.ts';
 
@@ -114,14 +114,14 @@ export class TraceWriter implements LinkTap {
     const pack = this.pack;
     return {
       ...(message as object),
-      results: results.map((result: { id?: string; ok?: boolean; output?: { personal?: unknown } }) => {
+      results: results.map((result: { id?: string; ok?: boolean; output?: { personal?: unknown; account?: unknown } }) => {
         const tool = this.toolOfCall.get(`${traceId} ${String(result.id)}`);
         if (!result.ok || !tool) return result;
-        if (pack.tools[tool]?.privacy) {
+        if (readsLevel(pack, tool, REDACTED_IN.traces)) {
           remember(this.personalTurns, traceId, tool);
-          return { ...result, output: redactPersonal(pack, tool, result.output) };
+          return { ...result, output: redact(pack, tool, result.output, REDACTED_IN.traces) };
         }
-        if (result.output?.personal === true) {
+        if (result.output?.personal === true || result.output?.account === true) {
           remember(this.personalTurns, traceId, tool);
           return { ...result, output: { ...result.output, result: { personal: PERSONAL_PLACEHOLDER } } };
         }

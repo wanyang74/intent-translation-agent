@@ -20,6 +20,10 @@
           },
           "status": {
             "type": "string"
+          },
+          "traveler": {
+            "type": "string",
+            "description": "The booking's first traveler"
           }
         },
         "required": [
@@ -43,7 +47,8 @@
           "recordLocator": "Q7K2LM",
           "route": "SFO to SEA",
           "departs": "2026-12-03T16:00:00Z",
-          "status": "confirmed"
+          "status": "confirmed",
+          "traveler": "Alex Rivera"
         }
       ]
     }

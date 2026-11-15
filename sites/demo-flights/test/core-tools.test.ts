@@ -36,7 +36,7 @@ test("sign-in: the trips list is refused when signed out, and when signed in unt
   assert.equal(signed.fake.calls.length, 0, 'nothing is read before the user allows it');
   signed.coreSession.accountAllowed = true;
   const trips = await runToolCall(signed.coreSession, 'get_trips', { status: 'upcoming' });
-  assert.deepEqual(trips.ok && trips.output, { trips: [{ recordLocator: 'Q7K2LM', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed' }] });
+  assert.deepEqual(trips.ok && trips.output, { trips: [{ recordLocator: 'Q7K2LM', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed', traveler: 'Alex Rivera' }] });
   const [list] = present(signed.coreSession, [{ name: 'present_items', args: { entity: 'trip', ids: ['Q7K2LM'] } }]).components;
   assert.deepEqual(list?.type === 'items' && [list.items[0]!.title, list.items[0]!.subtitle], ['SFO to SEA', '2026-12-03T16:00:00Z']);
 });
@@ -47,7 +47,7 @@ test("private IDs: the model's copy of the trips has a stand-in for each record 
   const trips = await runToolCall(signed.coreSession, 'get_trips', { status: 'upcoming' });
   assert.ok(trips.ok);
   const forModel = modelCopy(signed.coreSession, 'get_trips', trips.output);
-  assert.deepEqual(forModel, { trips: [{ recordLocator: 'withheld:1', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed' }] });
+  assert.deepEqual(forModel, { trips: [{ recordLocator: 'withheld:1', route: 'SFO to SEA', departs: '2026-12-03T16:00:00Z', status: 'confirmed', traveler: 'Alex Rivera' }] });
   assert.ok(!JSON.stringify(forModel).includes('Q7K2LM'));
   assert.equal(modelCopy(signed.coreSession, 'get_trips', trips.output).trips && signed.coreSession.withheld.size, 1, 'the same value keeps its stand-in');
   const shown = present(signed.coreSession, [{ name: 'present_items', args: { entity: 'trip', ids: ['withheld:1'] } }]);

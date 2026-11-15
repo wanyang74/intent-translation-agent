@@ -86,3 +86,23 @@ export function modelViewSchema(doc: Record<string, unknown>, id: string, paths:
   }
   return root;
 }
+
+/** Every property name in a schema, at any depth, following $refs (each target once). */
+export function propertyNames(doc: Record<string, unknown>, resolve: SchemaResolver): string[] {
+  const names = new Set<string>();
+  const seen = new Set<unknown>();
+  const visit = (node: unknown, base: string): void => {
+    if (!node || typeof node !== 'object' || seen.has(node)) return;
+    seen.add(node);
+    if (Array.isArray(node)) return node.forEach((child) => visit(child, base));
+    const record = node as Record<string, unknown>;
+    if (typeof record.$ref === 'string') {
+      const target = resolve(record.$ref, base);
+      if (target) visit(target.schema, target.base);
+    }
+    if (record.properties && typeof record.properties === 'object') for (const name of Object.keys(record.properties)) names.add(name);
+    for (const child of Object.values(record)) visit(child, base);
+  };
+  visit(doc, String(doc.$id));
+  return [...names];
+}
