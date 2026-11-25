@@ -33,6 +33,7 @@ test("IDs in a path are masked, so a visitor's IDs from a recording never reach 
   assert.equal(maskIds('/fp/check.js;SID=5A0E85A8/Z5XO0-8iVmf-mtvL'), '/fp/check.js;{params}/{id}', 'a session ID and a fingerprint token');
   assert.equal(maskContext('"https://fp.test/check.js;SID=5A0E85A82E1E12F7607509EE5B6A3E7F","x":1'), '"https://fp.test/check.js;SID={value}","x":1');
   assert.equal(maskContext('id:"0f1e2d3c4b5a69788796a5b4c3d2e1f0"'), 'id:"{id}"');
+  assert.equal(maskContext(`key:"AIza${'x'.repeat(35)}"`), 'key:"{key}"', "a site's browser API key is the site's, not ours to republish");
   assert.equal(maskIds('/api/mytrips/MyTripsByMileagePlus/v2'), '/api/mytrips/MyTripsByMileagePlus/v2', 'words and short versions stay');
 });
 

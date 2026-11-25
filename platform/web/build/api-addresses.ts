@@ -54,8 +54,11 @@ export interface CodeAddress {
 /**
  * Code around an address with its parameter values and long hex IDs masked. A script in a recording can be made for
  * the visitor (a tracker's config with their session ID inlined, say), so values near an address never reach the report.
+ * A site's browser API keys (Google's start with "AIza") are masked too: they are public in the site's own scripts, but
+ * they are the site's, not ours to republish, and secret scanners flag them in our repository.
  */
-export const maskContext = (code: string) => code.replace(/([?&;][A-Za-z_][\w.-]*=)[^&"'`\s;\\]+/g, '$1{value}').replace(/[0-9a-f]{24,}/gi, '{id}');
+export const maskContext = (code: string) => code.replace(/([?&;][A-Za-z_][\w.-]*=)[^&"'`\s;\\]+/g, '$1{value}').replace(/[0-9a-f]{24,}/gi, '{id}')
+  .replace(/AIza[\w-]{35}/g, '{key}');
 
 /** Every API address written in a script, in order. */
 export function addressesIn(code: string): CodeAddress[] {
